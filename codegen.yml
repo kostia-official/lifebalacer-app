@@ -1,0 +1,13 @@
+schema: https://rewarder-staging.herokuapp.com/graphql
+generates:
+  ./src/generated/apollo.ts:
+    documents: './src/**/*.graphql'
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+    config:
+      withHooks: true
+      withRefetchFn: true
+      scalars:
+        Date: Date

@@ -1,0 +1,83 @@
+query GetAchievements {
+  achievements {
+    _id
+    name
+    points
+    priority
+    createdAt
+  }
+}
+
+query GetRewards {
+  rewards {
+    _id
+    name
+    points
+  }
+}
+
+query GetSpendings {
+  spendings {
+    _id
+    points
+    reward {
+      _id
+      name
+    }
+    createdAt
+  }
+}
+
+query GetBalance {
+  balance
+}
+
+mutation CreateReward($data: CreateRewardInput!) {
+  createReward(data: $data) {
+    _id
+    name
+    points
+  }
+}
+
+mutation UpdateRewardById($_id: ID!, $data: UpdateRewardInput!) {
+  updateRewardById(_id: $_id, data: $data) {
+    _id
+    name
+    points
+  }
+}
+
+mutation DeleteReward($_id: ID!) {
+  deleteReward(_id: $_id)
+}
+
+mutation SpendReward($rewardId: ID!) {
+  spendReward(rewardId: $rewardId) {
+    _id
+    points
+    reward {
+      _id
+      name
+    }
+    createdAt
+  }
+}
+
+mutation DeleteSpending($_id: ID!) {
+  deleteSpending(_id: $_id)
+}
+
+mutation DeleteAchievement($_id: ID!) {
+  deleteAchievement(_id: $_id)
+}
+
+subscription OnAchievementCreated {
+  achievementCreated {
+    _id
+    createdAt
+    name
+    points
+    priority
+  }
+}
