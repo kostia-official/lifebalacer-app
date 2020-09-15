@@ -1,4 +1,4 @@
-schema: https://rewarder-staging.herokuapp.com/graphql
+schema: http://localhost:4000/graphql
 generates:
   ./src/generated/apollo.ts:
     documents: './src/**/*.graphql'

@@ -32,6 +32,14 @@ query GetBalance {
   balance
 }
 
+query GetProfile {
+  profile {
+    _id
+    todoistUserId
+    userId
+  }
+}
+
 mutation CreateReward($data: CreateRewardInput!) {
   createReward(data: $data) {
     _id
@@ -70,6 +78,13 @@ mutation DeleteSpending($_id: ID!) {
 
 mutation DeleteAchievement($_id: ID!) {
   deleteAchievement(_id: $_id)
+}
+
+mutation ConnectTodoist($authCode: String!) {
+  connectTodoist(authCode: $authCode) {
+    _id
+    todoistUserId
+  }
 }
 
 subscription OnAchievementCreated {

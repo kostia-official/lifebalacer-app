@@ -10,5 +10,9 @@ export const config = {
     responseType: 'token id_token',
     scope: 'openid',
     audience: 'rewarder-api'
-  } as Auth0ProviderOptions
+  } as Auth0ProviderOptions,
+  todoist: {
+    clientId: process.env.REACT_APP_TODOIST_CLIENT_ID || 'c2620bca88914009852a7efa297317e8',
+    scope: 'data:read'
+  }
 };

@@ -9,6 +9,9 @@ import { Achievements } from './Achievements';
 import { Spendings } from './Spendings';
 import { Auth } from './Auth';
 import { useAuth } from '../hooks/useAuth';
+import { TodoistAuth } from './TodoistAuth';
+import { Persist } from '../components/Persist';
+import { useDeviceDetect } from '../hooks/useIsDesktop';
 
 export interface IPage {
   name: string;
@@ -59,7 +62,8 @@ export interface IAppProps {
 export const App: React.FC = () => {
   const { isAuthenticated } = useAuth();
   const history = useHistory();
-  const [isExpandedMenu, setIsExpandedMenu] = useState(true);
+  const { isDesktop } = useDeviceDetect();
+  const [isExpandedMenu, setIsExpandedMenu] = useState(isDesktop);
 
   const onMenuClick = useCallback(() => {
     setIsExpandedMenu((prevValue) => !prevValue);
@@ -80,6 +84,13 @@ export const App: React.FC = () => {
 
   return (
     <div>
+      <Persist
+        name="app"
+        data={{ isExpandedMenu }}
+        onMount={({ isExpandedMenu }) => {
+          setIsExpandedMenu(isExpandedMenu);
+        }}
+      />
       <Header
         title="Rewarder"
         onMenuClick={onMenuClick}
@@ -100,6 +111,7 @@ export const App: React.FC = () => {
             {pages.map((page) => {
               return <Route key={page.path} path={page.path} exact component={page.component} />;
             })}
+            <Route path="/todoist/auth" exact component={TodoistAuth} />
           </Switch>
         </PageWrapper>
       </ContentWrapper>

@@ -4,13 +4,13 @@ import Drawer from '@material-ui/core/Drawer';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import List from '@material-ui/core/List';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import _ from 'lodash';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Icon from '@material-ui/core/Icon';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { IPage } from '../containers/App';
+import { useDeviceDetect } from '../hooks/useIsDesktop';
 
 export const drawerWidth = '240px';
 
@@ -59,8 +59,7 @@ export const Navigation: React.FC<INavigationProps> = ({
   onItemClick
 }) => {
   const classes = useStyles();
-  const theme = useTheme();
-  const isDesktop = useMediaQuery(theme.breakpoints.up('sm'));
+  const { isDesktop } = useDeviceDetect();
 
   return (
     <>

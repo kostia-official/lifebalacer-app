@@ -13,7 +13,7 @@ import {
 import { Table } from '../components/Table';
 import { Spinner } from '../components/Spinner';
 import { ErrorMessage } from '../components/ErrorMessage';
-import { useApolloError } from '../hooks/errorMessage';
+import { useApolloError } from '../hooks/useApolloError';
 
 export const Rewards = () => {
   const { errorMessage, onError } = useApolloError();

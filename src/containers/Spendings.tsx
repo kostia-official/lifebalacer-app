@@ -7,7 +7,7 @@ import {
 } from '../generated/apollo';
 import { Table } from '../components/Table';
 import { Spinner } from '../components/Spinner';
-import { useApolloError } from '../hooks/errorMessage';
+import { useApolloError } from '../hooks/useApolloError';
 import { ErrorMessage } from '../components/ErrorMessage';
 
 export const Spendings = () => {

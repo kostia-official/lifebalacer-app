@@ -23,6 +23,7 @@ export type Achievement = {
   priority?: Maybe<Scalars['Int']>;
   points: Scalars['Int'];
   createdAt: Scalars['Date'];
+  userId: Scalars['String'];
 };
 
 export type Reward = {
@@ -30,6 +31,7 @@ export type Reward = {
   _id: Scalars['ID'];
   name: Scalars['String'];
   points: Scalars['Int'];
+  userId: Scalars['String'];
 };
 
 export type Spending = {
@@ -39,6 +41,15 @@ export type Spending = {
   rewardId: Scalars['ID'];
   reward?: Maybe<Reward>;
   createdAt: Scalars['Date'];
+  userId: Scalars['String'];
+};
+
+export type Profile = {
+  __typename?: 'Profile';
+  _id: Scalars['ID'];
+  userId: Scalars['String'];
+  todoistUserId: Scalars['String'];
+  createdAt: Scalars['Date'];
 };
 
 export type Query = {
@@ -47,6 +58,7 @@ export type Query = {
   rewards: Array<Reward>;
   spendings: Array<Spending>;
   balance: Scalars['Int'];
+  profile?: Maybe<Profile>;
 };
 
 export type Mutation = {
@@ -59,6 +71,7 @@ export type Mutation = {
   deleteAchievement: Scalars['Boolean'];
   spendReward: Spending;
   deleteSpending: Scalars['Boolean'];
+  connectTodoist: Profile;
 };
 
 
@@ -103,6 +116,11 @@ export type MutationDeleteSpendingArgs = {
   _id: Scalars['ID'];
 };
 
+
+export type MutationConnectTodoistArgs = {
+  authCode: Scalars['String'];
+};
+
 export type Subscription = {
   __typename?: 'Subscription';
   achievementCreated: Achievement;
@@ -112,11 +130,13 @@ export type CreateRewardInput = {
   _id?: Maybe<Scalars['ID']>;
   name: Scalars['String'];
   points: Scalars['Int'];
+  userId?: Maybe<Scalars['String']>;
 };
 
 export type UpdateRewardInput = {
   name?: Maybe<Scalars['String']>;
   points?: Maybe<Scalars['Int']>;
+  userId?: Maybe<Scalars['String']>;
 };
 
 export type CreateAchievementInput = {
@@ -124,12 +144,14 @@ export type CreateAchievementInput = {
   name: Scalars['String'];
   priority?: Maybe<Scalars['Int']>;
   points: Scalars['Int'];
+  userId?: Maybe<Scalars['String']>;
 };
 
 export type UpdateAchievementInput = {
   name?: Maybe<Scalars['String']>;
   priority?: Maybe<Scalars['Int']>;
   points?: Maybe<Scalars['Int']>;
+  userId?: Maybe<Scalars['String']>;
 };
 
 export enum CacheControlScope {
@@ -181,6 +203,17 @@ export type GetBalanceQueryVariables = Exact<{ [key: string]: never; }>;
 export type GetBalanceQuery = (
   { __typename?: 'Query' }
   & Pick<Query, 'balance'>
+);
+
+export type GetProfileQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetProfileQuery = (
+  { __typename?: 'Query' }
+  & { profile?: Maybe<(
+    { __typename?: 'Profile' }
+    & Pick<Profile, '_id' | 'todoistUserId' | 'userId'>
+  )> }
 );
 
 export type CreateRewardMutationVariables = Exact<{
@@ -255,6 +288,19 @@ export type DeleteAchievementMutationVariables = Exact<{
 export type DeleteAchievementMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'deleteAchievement'>
+);
+
+export type ConnectTodoistMutationVariables = Exact<{
+  authCode: Scalars['String'];
+}>;
+
+
+export type ConnectTodoistMutation = (
+  { __typename?: 'Mutation' }
+  & { connectTodoist: (
+    { __typename?: 'Profile' }
+    & Pick<Profile, '_id' | 'todoistUserId'>
+  ) }
 );
 
 export type OnAchievementCreatedSubscriptionVariables = Exact<{ [key: string]: never; }>;
@@ -418,6 +464,43 @@ export type GetBalanceLazyQueryHookResult = ReturnType<typeof useGetBalanceLazyQ
 export type GetBalanceQueryResult = Apollo.QueryResult<GetBalanceQuery, GetBalanceQueryVariables>;
 export function refetchGetBalanceQuery(variables?: GetBalanceQueryVariables) {
       return { query: GetBalanceDocument, variables: variables }
+    }
+export const GetProfileDocument = gql`
+    query GetProfile {
+  profile {
+    _id
+    todoistUserId
+    userId
+  }
+}
+    `;
+
+/**
+ * __useGetProfileQuery__
+ *
+ * To run a query within a React component, call `useGetProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProfileQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetProfileQuery(baseOptions?: Apollo.QueryHookOptions<GetProfileQuery, GetProfileQueryVariables>) {
+        return Apollo.useQuery<GetProfileQuery, GetProfileQueryVariables>(GetProfileDocument, baseOptions);
+      }
+export function useGetProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProfileQuery, GetProfileQueryVariables>) {
+          return Apollo.useLazyQuery<GetProfileQuery, GetProfileQueryVariables>(GetProfileDocument, baseOptions);
+        }
+export type GetProfileQueryHookResult = ReturnType<typeof useGetProfileQuery>;
+export type GetProfileLazyQueryHookResult = ReturnType<typeof useGetProfileLazyQuery>;
+export type GetProfileQueryResult = Apollo.QueryResult<GetProfileQuery, GetProfileQueryVariables>;
+export function refetchGetProfileQuery(variables?: GetProfileQueryVariables) {
+      return { query: GetProfileDocument, variables: variables }
     }
 export const CreateRewardDocument = gql`
     mutation CreateReward($data: CreateRewardInput!) {
@@ -616,6 +699,39 @@ export function useDeleteAchievementMutation(baseOptions?: Apollo.MutationHookOp
 export type DeleteAchievementMutationHookResult = ReturnType<typeof useDeleteAchievementMutation>;
 export type DeleteAchievementMutationResult = Apollo.MutationResult<DeleteAchievementMutation>;
 export type DeleteAchievementMutationOptions = Apollo.BaseMutationOptions<DeleteAchievementMutation, DeleteAchievementMutationVariables>;
+export const ConnectTodoistDocument = gql`
+    mutation ConnectTodoist($authCode: String!) {
+  connectTodoist(authCode: $authCode) {
+    _id
+    todoistUserId
+  }
+}
+    `;
+export type ConnectTodoistMutationFn = Apollo.MutationFunction<ConnectTodoistMutation, ConnectTodoistMutationVariables>;
+
+/**
+ * __useConnectTodoistMutation__
+ *
+ * To run a mutation, you first call `useConnectTodoistMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConnectTodoistMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [connectTodoistMutation, { data, loading, error }] = useConnectTodoistMutation({
+ *   variables: {
+ *      authCode: // value for 'authCode'
+ *   },
+ * });
+ */
+export function useConnectTodoistMutation(baseOptions?: Apollo.MutationHookOptions<ConnectTodoistMutation, ConnectTodoistMutationVariables>) {
+        return Apollo.useMutation<ConnectTodoistMutation, ConnectTodoistMutationVariables>(ConnectTodoistDocument, baseOptions);
+      }
+export type ConnectTodoistMutationHookResult = ReturnType<typeof useConnectTodoistMutation>;
+export type ConnectTodoistMutationResult = Apollo.MutationResult<ConnectTodoistMutation>;
+export type ConnectTodoistMutationOptions = Apollo.BaseMutationOptions<ConnectTodoistMutation, ConnectTodoistMutationVariables>;
 export const OnAchievementCreatedDocument = gql`
     subscription OnAchievementCreated {
   achievementCreated {
