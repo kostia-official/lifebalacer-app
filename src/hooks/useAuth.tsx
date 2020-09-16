@@ -13,8 +13,6 @@ export const useAuth = (): IUseAuthResult => {
 
   useEffect(() => {
     (async () => {
-      if (!isAuthenticated) return;
-
       try {
         const accessToken = await getAccessTokenSilently();
 
@@ -27,7 +25,7 @@ export const useAuth = (): IUseAuthResult => {
         setAccessToken('');
       }
     })();
-  }, [getAccessTokenSilently, isAuthenticated]);
+  }, [setAccessToken, getAccessTokenSilently, isAuthenticated]);
 
   return {
     ...auth,

@@ -9,7 +9,8 @@ export const config = {
     redirectUri: process.env.REACT_APP_AUTH0_REDIRECT_URI || 'http://localhost:3000',
     responseType: 'token id_token',
     scope: 'openid',
-    audience: 'rewarder-api'
+    audience: 'rewarder-api',
+    useRefreshTokens: true
   } as Auth0ProviderOptions,
   todoist: {
     clientId: process.env.REACT_APP_TODOIST_CLIENT_ID || 'c2620bca88914009852a7efa297317e8',
