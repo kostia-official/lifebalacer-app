@@ -12,6 +12,7 @@ import { useAuth } from '../hooks/useAuth';
 import { TodoistAuth } from './TodoistAuth';
 import { Persist } from '../components/Persist';
 import { useDeviceDetect } from '../hooks/useIsDesktop';
+import { useSwipeable } from 'react-swipeable';
 
 export interface IPage {
   name: string;
@@ -41,6 +42,10 @@ const pages: IPage[] = [
   }
 ];
 
+const AppWrapper = styled.div`
+  height: 100vh;
+`;
+
 const ContentWrapper = styled.div`
   display: flex;
 `;
@@ -65,6 +70,11 @@ export const App: React.FC = () => {
   const { isDesktop } = useDeviceDetect();
   const [isExpandedMenu, setIsExpandedMenu] = useState(isDesktop);
 
+  const swipeHandlers = useSwipeable({
+    onSwipedRight: () => setIsExpandedMenu(true),
+    onSwipedLeft: () => setIsExpandedMenu(false)
+  });
+
   const onMenuClick = useCallback(() => {
     setIsExpandedMenu((prevValue) => !prevValue);
   }, [setIsExpandedMenu]);
@@ -83,7 +93,7 @@ export const App: React.FC = () => {
   if (!isAuthenticated) return <Auth />;
 
   return (
-    <div>
+    <AppWrapper {...swipeHandlers}>
       <Persist
         name="app"
         data={{ isExpandedMenu }}
@@ -115,6 +125,6 @@ export const App: React.FC = () => {
           </Switch>
         </PageWrapper>
       </ContentWrapper>
-    </div>
+    </AppWrapper>
   );
 };
