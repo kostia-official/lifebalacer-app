@@ -1,3 +1,58 @@
+query GetActivity($_id: ID!) {
+  activity(_id: $_id) {
+    _id
+    name
+    emoji
+    category
+    valueType
+    pointsType
+    points
+  }
+}
+
+query GetActivities {
+  activities {
+    _id
+    name
+    emoji
+    category
+    valueType
+    pointsType
+    points
+    createdAt
+  }
+}
+
+query GetEntry($_id: ID!) {
+  entry(_id: $_id) {
+    _id
+    description
+    points
+    value
+    completedAt
+    activity {
+      name
+      emoji
+      category
+    }
+  }
+}
+
+query GetEntries {
+  entries {
+    _id
+    description
+    points
+    value
+    completedAt
+    activity {
+      name
+      emoji
+      category
+    }
+  }
+}
+
 query GetAchievements {
   achievements {
     _id
@@ -38,6 +93,38 @@ query GetProfile {
     todoistUserId
     userId
   }
+}
+
+mutation CreateActivity($data: CreateActivityInput!) {
+  createActivity(data: $data) {
+    _id
+  }
+}
+
+mutation UpdateActivity($_id: ID!, $data: UpdateActivityInput!) {
+  updateActivityById(_id: $_id, data: $data) {
+    _id
+  }
+}
+
+mutation DeleteActivity($_id: ID!) {
+  deleteActivity(_id: $_id)
+}
+
+mutation CreateEntry($data: CreateEntryInput!) {
+  createEntry(data: $data) {
+    _id
+  }
+}
+
+mutation UpdateEntry($_id: ID!, $data: UpdateEntryInput!) {
+  updateEntryById(_id: $_id, data: $data) {
+    _id
+  }
+}
+
+mutation DeleteEntry($_id: ID!) {
+  deleteEntry(_id: $_id)
 }
 
 mutation CreateReward($data: CreateRewardInput!) {
@@ -81,7 +168,7 @@ mutation DeleteAchievement($_id: ID!) {
 }
 
 mutation ConnectTodoist($authCode: String!) {
-  connectTodoist(authCode: $authCode) {
+  authorizeInTodoist(authCode: $authCode) {
     _id
     todoistUserId
   }

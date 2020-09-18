@@ -52,8 +52,77 @@ export type Profile = {
   createdAt: Scalars['Date'];
 };
 
+export enum ActivityType {
+  Simple = 'Simple',
+  Value = 'Value',
+  Range = 'Range',
+  Todoist = 'Todoist'
+}
+
+export enum PointsType {
+  Const = 'Const',
+  Linear = 'Linear'
+}
+
+export enum ActivityCategory {
+  Neutral = 'Neutral',
+  Positive = 'Positive',
+  Negative = 'Negative'
+}
+
+export type RangeMeta = {
+  __typename?: 'RangeMeta';
+  from: Scalars['Int'];
+  to: Scalars['Int'];
+};
+
+export type RangeMetaInput = {
+  from: Scalars['Int'];
+  to: Scalars['Int'];
+};
+
+export type TodoistMeta = {
+  __typename?: 'TodoistMeta';
+  todoistUserId: Scalars['String'];
+};
+
+export type TodoistMetaInput = {
+  todoistUserId: Scalars['String'];
+};
+
+export type Activity = {
+  __typename?: 'Activity';
+  _id: Scalars['ID'];
+  name: Scalars['String'];
+  emoji: Scalars['String'];
+  userId: Scalars['String'];
+  valueType: ActivityType;
+  pointsType: PointsType;
+  category: ActivityCategory;
+  points: Scalars['Int'];
+  rangeMeta?: Maybe<RangeMeta>;
+  todoistMeta?: Maybe<TodoistMeta>;
+  createdAt: Scalars['Date'];
+};
+
+export type Entry = {
+  __typename?: 'Entry';
+  _id: Scalars['ID'];
+  userId: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  completedAt: Scalars['Date'];
+  activityId: Scalars['ID'];
+  activity: Activity;
+  points: Scalars['Int'];
+  value?: Maybe<Scalars['Int']>;
+};
+
 export type Query = {
   __typename?: 'Query';
+  entry?: Maybe<Entry>;
+  entries: Array<Entry>;
+  activity?: Maybe<Activity>;
+  activities: Array<Activity>;
   achievements: Array<Achievement>;
   rewards: Array<Reward>;
   spendings: Array<Spending>;
@@ -61,8 +130,24 @@ export type Query = {
   profile?: Maybe<Profile>;
 };
 
+
+export type QueryEntryArgs = {
+  _id: Scalars['ID'];
+};
+
+
+export type QueryActivityArgs = {
+  _id: Scalars['ID'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  createActivity: Activity;
+  updateActivityById: Activity;
+  deleteActivity: Scalars['Boolean'];
+  createEntry: Entry;
+  updateEntryById: Entry;
+  deleteEntry: Scalars['Boolean'];
   createReward: Reward;
   updateRewardById: Reward;
   deleteReward: Scalars['Boolean'];
@@ -71,7 +156,39 @@ export type Mutation = {
   deleteAchievement: Scalars['Boolean'];
   spendReward: Spending;
   deleteSpending: Scalars['Boolean'];
-  connectTodoist: Profile;
+  authorizeInTodoist: Profile;
+};
+
+
+export type MutationCreateActivityArgs = {
+  data: CreateActivityInput;
+};
+
+
+export type MutationUpdateActivityByIdArgs = {
+  _id: Scalars['ID'];
+  data: UpdateActivityInput;
+};
+
+
+export type MutationDeleteActivityArgs = {
+  _id: Scalars['ID'];
+};
+
+
+export type MutationCreateEntryArgs = {
+  data: CreateEntryInput;
+};
+
+
+export type MutationUpdateEntryByIdArgs = {
+  _id: Scalars['ID'];
+  data: UpdateEntryInput;
+};
+
+
+export type MutationDeleteEntryArgs = {
+  _id: Scalars['ID'];
 };
 
 
@@ -117,13 +234,48 @@ export type MutationDeleteSpendingArgs = {
 };
 
 
-export type MutationConnectTodoistArgs = {
+export type MutationAuthorizeInTodoistArgs = {
   authCode: Scalars['String'];
 };
 
 export type Subscription = {
   __typename?: 'Subscription';
   achievementCreated: Achievement;
+};
+
+export type CreateActivityInput = {
+  name: Scalars['String'];
+  emoji: Scalars['String'];
+  valueType: ActivityType;
+  pointsType: PointsType;
+  category: ActivityCategory;
+  points: Scalars['Int'];
+  rangeMeta?: Maybe<RangeMetaInput>;
+  todoistMeta?: Maybe<TodoistMetaInput>;
+};
+
+export type UpdateActivityInput = {
+  name?: Maybe<Scalars['String']>;
+  emoji?: Maybe<Scalars['String']>;
+  valueType?: Maybe<ActivityType>;
+  pointsType?: Maybe<PointsType>;
+  category?: Maybe<ActivityCategory>;
+  points?: Maybe<Scalars['Int']>;
+  rangeMeta?: Maybe<RangeMetaInput>;
+  todoistMeta?: Maybe<TodoistMetaInput>;
+};
+
+export type CreateEntryInput = {
+  description?: Maybe<Scalars['String']>;
+  completedAt: Scalars['Date'];
+  activityId: Scalars['ID'];
+  value?: Maybe<Scalars['Int']>;
+};
+
+export type UpdateEntryInput = {
+  description?: Maybe<Scalars['String']>;
+  completedAt?: Maybe<Scalars['Date']>;
+  value?: Maybe<Scalars['Int']>;
 };
 
 export type CreateRewardInput = {
@@ -159,6 +311,62 @@ export enum CacheControlScope {
   Private = 'PRIVATE'
 }
 
+
+export type GetActivityQueryVariables = Exact<{
+  _id: Scalars['ID'];
+}>;
+
+
+export type GetActivityQuery = (
+  { __typename?: 'Query' }
+  & { activity?: Maybe<(
+    { __typename?: 'Activity' }
+    & Pick<Activity, '_id' | 'name' | 'emoji' | 'category' | 'valueType' | 'pointsType' | 'points'>
+  )> }
+);
+
+export type GetActivitiesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetActivitiesQuery = (
+  { __typename?: 'Query' }
+  & { activities: Array<(
+    { __typename?: 'Activity' }
+    & Pick<Activity, '_id' | 'name' | 'emoji' | 'category' | 'valueType' | 'pointsType' | 'points' | 'createdAt'>
+  )> }
+);
+
+export type GetEntryQueryVariables = Exact<{
+  _id: Scalars['ID'];
+}>;
+
+
+export type GetEntryQuery = (
+  { __typename?: 'Query' }
+  & { entry?: Maybe<(
+    { __typename?: 'Entry' }
+    & Pick<Entry, '_id' | 'description' | 'points' | 'value' | 'completedAt'>
+    & { activity: (
+      { __typename?: 'Activity' }
+      & Pick<Activity, 'name' | 'emoji' | 'category'>
+    ) }
+  )> }
+);
+
+export type GetEntriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetEntriesQuery = (
+  { __typename?: 'Query' }
+  & { entries: Array<(
+    { __typename?: 'Entry' }
+    & Pick<Entry, '_id' | 'description' | 'points' | 'value' | 'completedAt'>
+    & { activity: (
+      { __typename?: 'Activity' }
+      & Pick<Activity, 'name' | 'emoji' | 'category'>
+    ) }
+  )> }
+);
 
 export type GetAchievementsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -214,6 +422,80 @@ export type GetProfileQuery = (
     { __typename?: 'Profile' }
     & Pick<Profile, '_id' | 'todoistUserId' | 'userId'>
   )> }
+);
+
+export type CreateActivityMutationVariables = Exact<{
+  data: CreateActivityInput;
+}>;
+
+
+export type CreateActivityMutation = (
+  { __typename?: 'Mutation' }
+  & { createActivity: (
+    { __typename?: 'Activity' }
+    & Pick<Activity, '_id'>
+  ) }
+);
+
+export type UpdateActivityMutationVariables = Exact<{
+  _id: Scalars['ID'];
+  data: UpdateActivityInput;
+}>;
+
+
+export type UpdateActivityMutation = (
+  { __typename?: 'Mutation' }
+  & { updateActivityById: (
+    { __typename?: 'Activity' }
+    & Pick<Activity, '_id'>
+  ) }
+);
+
+export type DeleteActivityMutationVariables = Exact<{
+  _id: Scalars['ID'];
+}>;
+
+
+export type DeleteActivityMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteActivity'>
+);
+
+export type CreateEntryMutationVariables = Exact<{
+  data: CreateEntryInput;
+}>;
+
+
+export type CreateEntryMutation = (
+  { __typename?: 'Mutation' }
+  & { createEntry: (
+    { __typename?: 'Entry' }
+    & Pick<Entry, '_id'>
+  ) }
+);
+
+export type UpdateEntryMutationVariables = Exact<{
+  _id: Scalars['ID'];
+  data: UpdateEntryInput;
+}>;
+
+
+export type UpdateEntryMutation = (
+  { __typename?: 'Mutation' }
+  & { updateEntryById: (
+    { __typename?: 'Entry' }
+    & Pick<Entry, '_id'>
+  ) }
+);
+
+export type DeleteEntryMutationVariables = Exact<{
+  _id: Scalars['ID'];
+}>;
+
+
+export type DeleteEntryMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteEntry'>
 );
 
 export type CreateRewardMutationVariables = Exact<{
@@ -297,7 +579,7 @@ export type ConnectTodoistMutationVariables = Exact<{
 
 export type ConnectTodoistMutation = (
   { __typename?: 'Mutation' }
-  & { connectTodoist: (
+  & { authorizeInTodoist: (
     { __typename?: 'Profile' }
     & Pick<Profile, '_id' | 'todoistUserId'>
   ) }
@@ -315,6 +597,179 @@ export type OnAchievementCreatedSubscription = (
 );
 
 
+export const GetActivityDocument = gql`
+    query GetActivity($_id: ID!) {
+  activity(_id: $_id) {
+    _id
+    name
+    emoji
+    category
+    valueType
+    pointsType
+    points
+  }
+}
+    `;
+
+/**
+ * __useGetActivityQuery__
+ *
+ * To run a query within a React component, call `useGetActivityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetActivityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetActivityQuery({
+ *   variables: {
+ *      _id: // value for '_id'
+ *   },
+ * });
+ */
+export function useGetActivityQuery(baseOptions?: Apollo.QueryHookOptions<GetActivityQuery, GetActivityQueryVariables>) {
+        return Apollo.useQuery<GetActivityQuery, GetActivityQueryVariables>(GetActivityDocument, baseOptions);
+      }
+export function useGetActivityLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetActivityQuery, GetActivityQueryVariables>) {
+          return Apollo.useLazyQuery<GetActivityQuery, GetActivityQueryVariables>(GetActivityDocument, baseOptions);
+        }
+export type GetActivityQueryHookResult = ReturnType<typeof useGetActivityQuery>;
+export type GetActivityLazyQueryHookResult = ReturnType<typeof useGetActivityLazyQuery>;
+export type GetActivityQueryResult = Apollo.QueryResult<GetActivityQuery, GetActivityQueryVariables>;
+export function refetchGetActivityQuery(variables?: GetActivityQueryVariables) {
+      return { query: GetActivityDocument, variables: variables }
+    }
+export const GetActivitiesDocument = gql`
+    query GetActivities {
+  activities {
+    _id
+    name
+    emoji
+    category
+    valueType
+    pointsType
+    points
+    createdAt
+  }
+}
+    `;
+
+/**
+ * __useGetActivitiesQuery__
+ *
+ * To run a query within a React component, call `useGetActivitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetActivitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetActivitiesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetActivitiesQuery(baseOptions?: Apollo.QueryHookOptions<GetActivitiesQuery, GetActivitiesQueryVariables>) {
+        return Apollo.useQuery<GetActivitiesQuery, GetActivitiesQueryVariables>(GetActivitiesDocument, baseOptions);
+      }
+export function useGetActivitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetActivitiesQuery, GetActivitiesQueryVariables>) {
+          return Apollo.useLazyQuery<GetActivitiesQuery, GetActivitiesQueryVariables>(GetActivitiesDocument, baseOptions);
+        }
+export type GetActivitiesQueryHookResult = ReturnType<typeof useGetActivitiesQuery>;
+export type GetActivitiesLazyQueryHookResult = ReturnType<typeof useGetActivitiesLazyQuery>;
+export type GetActivitiesQueryResult = Apollo.QueryResult<GetActivitiesQuery, GetActivitiesQueryVariables>;
+export function refetchGetActivitiesQuery(variables?: GetActivitiesQueryVariables) {
+      return { query: GetActivitiesDocument, variables: variables }
+    }
+export const GetEntryDocument = gql`
+    query GetEntry($_id: ID!) {
+  entry(_id: $_id) {
+    _id
+    description
+    points
+    value
+    completedAt
+    activity {
+      name
+      emoji
+      category
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetEntryQuery__
+ *
+ * To run a query within a React component, call `useGetEntryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetEntryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetEntryQuery({
+ *   variables: {
+ *      _id: // value for '_id'
+ *   },
+ * });
+ */
+export function useGetEntryQuery(baseOptions?: Apollo.QueryHookOptions<GetEntryQuery, GetEntryQueryVariables>) {
+        return Apollo.useQuery<GetEntryQuery, GetEntryQueryVariables>(GetEntryDocument, baseOptions);
+      }
+export function useGetEntryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEntryQuery, GetEntryQueryVariables>) {
+          return Apollo.useLazyQuery<GetEntryQuery, GetEntryQueryVariables>(GetEntryDocument, baseOptions);
+        }
+export type GetEntryQueryHookResult = ReturnType<typeof useGetEntryQuery>;
+export type GetEntryLazyQueryHookResult = ReturnType<typeof useGetEntryLazyQuery>;
+export type GetEntryQueryResult = Apollo.QueryResult<GetEntryQuery, GetEntryQueryVariables>;
+export function refetchGetEntryQuery(variables?: GetEntryQueryVariables) {
+      return { query: GetEntryDocument, variables: variables }
+    }
+export const GetEntriesDocument = gql`
+    query GetEntries {
+  entries {
+    _id
+    description
+    points
+    value
+    completedAt
+    activity {
+      name
+      emoji
+      category
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetEntriesQuery__
+ *
+ * To run a query within a React component, call `useGetEntriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetEntriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetEntriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetEntriesQuery(baseOptions?: Apollo.QueryHookOptions<GetEntriesQuery, GetEntriesQueryVariables>) {
+        return Apollo.useQuery<GetEntriesQuery, GetEntriesQueryVariables>(GetEntriesDocument, baseOptions);
+      }
+export function useGetEntriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEntriesQuery, GetEntriesQueryVariables>) {
+          return Apollo.useLazyQuery<GetEntriesQuery, GetEntriesQueryVariables>(GetEntriesDocument, baseOptions);
+        }
+export type GetEntriesQueryHookResult = ReturnType<typeof useGetEntriesQuery>;
+export type GetEntriesLazyQueryHookResult = ReturnType<typeof useGetEntriesLazyQuery>;
+export type GetEntriesQueryResult = Apollo.QueryResult<GetEntriesQuery, GetEntriesQueryVariables>;
+export function refetchGetEntriesQuery(variables?: GetEntriesQueryVariables) {
+      return { query: GetEntriesDocument, variables: variables }
+    }
 export const GetAchievementsDocument = gql`
     query GetAchievements {
   achievements {
@@ -502,6 +957,196 @@ export type GetProfileQueryResult = Apollo.QueryResult<GetProfileQuery, GetProfi
 export function refetchGetProfileQuery(variables?: GetProfileQueryVariables) {
       return { query: GetProfileDocument, variables: variables }
     }
+export const CreateActivityDocument = gql`
+    mutation CreateActivity($data: CreateActivityInput!) {
+  createActivity(data: $data) {
+    _id
+  }
+}
+    `;
+export type CreateActivityMutationFn = Apollo.MutationFunction<CreateActivityMutation, CreateActivityMutationVariables>;
+
+/**
+ * __useCreateActivityMutation__
+ *
+ * To run a mutation, you first call `useCreateActivityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateActivityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createActivityMutation, { data, loading, error }] = useCreateActivityMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateActivityMutation(baseOptions?: Apollo.MutationHookOptions<CreateActivityMutation, CreateActivityMutationVariables>) {
+        return Apollo.useMutation<CreateActivityMutation, CreateActivityMutationVariables>(CreateActivityDocument, baseOptions);
+      }
+export type CreateActivityMutationHookResult = ReturnType<typeof useCreateActivityMutation>;
+export type CreateActivityMutationResult = Apollo.MutationResult<CreateActivityMutation>;
+export type CreateActivityMutationOptions = Apollo.BaseMutationOptions<CreateActivityMutation, CreateActivityMutationVariables>;
+export const UpdateActivityDocument = gql`
+    mutation UpdateActivity($_id: ID!, $data: UpdateActivityInput!) {
+  updateActivityById(_id: $_id, data: $data) {
+    _id
+  }
+}
+    `;
+export type UpdateActivityMutationFn = Apollo.MutationFunction<UpdateActivityMutation, UpdateActivityMutationVariables>;
+
+/**
+ * __useUpdateActivityMutation__
+ *
+ * To run a mutation, you first call `useUpdateActivityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateActivityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateActivityMutation, { data, loading, error }] = useUpdateActivityMutation({
+ *   variables: {
+ *      _id: // value for '_id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateActivityMutation(baseOptions?: Apollo.MutationHookOptions<UpdateActivityMutation, UpdateActivityMutationVariables>) {
+        return Apollo.useMutation<UpdateActivityMutation, UpdateActivityMutationVariables>(UpdateActivityDocument, baseOptions);
+      }
+export type UpdateActivityMutationHookResult = ReturnType<typeof useUpdateActivityMutation>;
+export type UpdateActivityMutationResult = Apollo.MutationResult<UpdateActivityMutation>;
+export type UpdateActivityMutationOptions = Apollo.BaseMutationOptions<UpdateActivityMutation, UpdateActivityMutationVariables>;
+export const DeleteActivityDocument = gql`
+    mutation DeleteActivity($_id: ID!) {
+  deleteActivity(_id: $_id)
+}
+    `;
+export type DeleteActivityMutationFn = Apollo.MutationFunction<DeleteActivityMutation, DeleteActivityMutationVariables>;
+
+/**
+ * __useDeleteActivityMutation__
+ *
+ * To run a mutation, you first call `useDeleteActivityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteActivityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteActivityMutation, { data, loading, error }] = useDeleteActivityMutation({
+ *   variables: {
+ *      _id: // value for '_id'
+ *   },
+ * });
+ */
+export function useDeleteActivityMutation(baseOptions?: Apollo.MutationHookOptions<DeleteActivityMutation, DeleteActivityMutationVariables>) {
+        return Apollo.useMutation<DeleteActivityMutation, DeleteActivityMutationVariables>(DeleteActivityDocument, baseOptions);
+      }
+export type DeleteActivityMutationHookResult = ReturnType<typeof useDeleteActivityMutation>;
+export type DeleteActivityMutationResult = Apollo.MutationResult<DeleteActivityMutation>;
+export type DeleteActivityMutationOptions = Apollo.BaseMutationOptions<DeleteActivityMutation, DeleteActivityMutationVariables>;
+export const CreateEntryDocument = gql`
+    mutation CreateEntry($data: CreateEntryInput!) {
+  createEntry(data: $data) {
+    _id
+  }
+}
+    `;
+export type CreateEntryMutationFn = Apollo.MutationFunction<CreateEntryMutation, CreateEntryMutationVariables>;
+
+/**
+ * __useCreateEntryMutation__
+ *
+ * To run a mutation, you first call `useCreateEntryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateEntryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createEntryMutation, { data, loading, error }] = useCreateEntryMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateEntryMutation(baseOptions?: Apollo.MutationHookOptions<CreateEntryMutation, CreateEntryMutationVariables>) {
+        return Apollo.useMutation<CreateEntryMutation, CreateEntryMutationVariables>(CreateEntryDocument, baseOptions);
+      }
+export type CreateEntryMutationHookResult = ReturnType<typeof useCreateEntryMutation>;
+export type CreateEntryMutationResult = Apollo.MutationResult<CreateEntryMutation>;
+export type CreateEntryMutationOptions = Apollo.BaseMutationOptions<CreateEntryMutation, CreateEntryMutationVariables>;
+export const UpdateEntryDocument = gql`
+    mutation UpdateEntry($_id: ID!, $data: UpdateEntryInput!) {
+  updateEntryById(_id: $_id, data: $data) {
+    _id
+  }
+}
+    `;
+export type UpdateEntryMutationFn = Apollo.MutationFunction<UpdateEntryMutation, UpdateEntryMutationVariables>;
+
+/**
+ * __useUpdateEntryMutation__
+ *
+ * To run a mutation, you first call `useUpdateEntryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateEntryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateEntryMutation, { data, loading, error }] = useUpdateEntryMutation({
+ *   variables: {
+ *      _id: // value for '_id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateEntryMutation(baseOptions?: Apollo.MutationHookOptions<UpdateEntryMutation, UpdateEntryMutationVariables>) {
+        return Apollo.useMutation<UpdateEntryMutation, UpdateEntryMutationVariables>(UpdateEntryDocument, baseOptions);
+      }
+export type UpdateEntryMutationHookResult = ReturnType<typeof useUpdateEntryMutation>;
+export type UpdateEntryMutationResult = Apollo.MutationResult<UpdateEntryMutation>;
+export type UpdateEntryMutationOptions = Apollo.BaseMutationOptions<UpdateEntryMutation, UpdateEntryMutationVariables>;
+export const DeleteEntryDocument = gql`
+    mutation DeleteEntry($_id: ID!) {
+  deleteEntry(_id: $_id)
+}
+    `;
+export type DeleteEntryMutationFn = Apollo.MutationFunction<DeleteEntryMutation, DeleteEntryMutationVariables>;
+
+/**
+ * __useDeleteEntryMutation__
+ *
+ * To run a mutation, you first call `useDeleteEntryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteEntryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteEntryMutation, { data, loading, error }] = useDeleteEntryMutation({
+ *   variables: {
+ *      _id: // value for '_id'
+ *   },
+ * });
+ */
+export function useDeleteEntryMutation(baseOptions?: Apollo.MutationHookOptions<DeleteEntryMutation, DeleteEntryMutationVariables>) {
+        return Apollo.useMutation<DeleteEntryMutation, DeleteEntryMutationVariables>(DeleteEntryDocument, baseOptions);
+      }
+export type DeleteEntryMutationHookResult = ReturnType<typeof useDeleteEntryMutation>;
+export type DeleteEntryMutationResult = Apollo.MutationResult<DeleteEntryMutation>;
+export type DeleteEntryMutationOptions = Apollo.BaseMutationOptions<DeleteEntryMutation, DeleteEntryMutationVariables>;
 export const CreateRewardDocument = gql`
     mutation CreateReward($data: CreateRewardInput!) {
   createReward(data: $data) {
@@ -701,7 +1346,7 @@ export type DeleteAchievementMutationResult = Apollo.MutationResult<DeleteAchiev
 export type DeleteAchievementMutationOptions = Apollo.BaseMutationOptions<DeleteAchievementMutation, DeleteAchievementMutationVariables>;
 export const ConnectTodoistDocument = gql`
     mutation ConnectTodoist($authCode: String!) {
-  connectTodoist(authCode: $authCode) {
+  authorizeInTodoist(authCode: $authCode) {
     _id
     todoistUserId
   }

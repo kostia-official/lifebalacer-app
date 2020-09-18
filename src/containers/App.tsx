@@ -3,16 +3,16 @@ import { Header } from '../components/Header';
 import { Navigation } from '../components/Navigation';
 import styled from 'styled-components';
 import { Route, Switch, useHistory } from 'react-router-dom';
-import { Rewards } from './Rewards';
 import { HeaderRightContent } from './HeaderRightContent';
-import { Achievements } from './Achievements';
-import { Spendings } from './Spendings';
 import { Auth } from './Auth';
 import { useAuth } from '../hooks/useAuth';
 import { TodoistAuth } from './TodoistAuth';
 import { Persist } from '../components/Persist';
 import { useDeviceDetect } from '../hooks/useIsDesktop';
 import { useSwipeable } from 'react-swipeable';
+import { ActivityForm } from './ActivityForm';
+import { Activities } from './Activities';
+import { Entries } from './Entries';
 
 export interface IPage {
   name: string;
@@ -23,22 +23,22 @@ export interface IPage {
 
 const pages: IPage[] = [
   {
-    name: 'Rewards',
-    icon: 'emoji_events',
-    path: '/',
-    component: Rewards
-  },
-  {
-    name: 'Achievements',
-    path: '/achievements',
-    icon: 'assignment_turned_in',
-    component: Achievements
-  },
-  {
-    name: 'Spendings',
-    path: '/spendings',
+    name: 'Entries',
     icon: 'receipt_long',
-    component: Spendings
+    path: '/',
+    component: Entries
+  },
+  {
+    name: 'Activities',
+    icon: 'assignment_turned_in',
+    path: '/activities',
+    component: Activities
+  },
+  {
+    name: 'Create Activity',
+    icon: 'add_circle_outline',
+    path: '/activities/create',
+    component: ActivityForm
   }
 ];
 
@@ -121,6 +121,7 @@ export const App: React.FC = () => {
             {pages.map((page) => {
               return <Route key={page.path} path={page.path} exact component={page.component} />;
             })}
+            <Route path="/activities/edit/:_id" exact component={ActivityForm} />
             <Route path="/todoist/auth" exact component={TodoistAuth} />
           </Switch>
         </PageWrapper>
