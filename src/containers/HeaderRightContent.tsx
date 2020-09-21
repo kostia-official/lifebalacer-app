@@ -1,12 +1,9 @@
 import React, { Fragment } from 'react';
-import { useGetBalanceQuery, useOnAchievementCreatedSubscription } from '../generated/apollo';
+import { useGetBalanceQuery } from '../generated/apollo';
 import _ from 'lodash';
 
 export const HeaderRightContent = () => {
-  const { data, loading, refetch } = useGetBalanceQuery();
-  useOnAchievementCreatedSubscription({
-    onSubscriptionData: () => refetch()
-  });
+  const { data, loading } = useGetBalanceQuery();
 
   const isLoaded = !loading && !_.isNil(data?.balance);
 

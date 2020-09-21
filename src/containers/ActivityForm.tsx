@@ -147,7 +147,7 @@ export const ActivityForm = () => {
         label="Points"
         type="number"
         value={activity.points}
-        onChange={updateActivityField('points')}
+        onChange={updateActivityField('points', { isNumber: true })}
       />
 
       {activity.valueType === ActivityType.Range && (
@@ -158,14 +158,14 @@ export const ActivityForm = () => {
             type="number"
             label="From"
             value={rangeMeta.from}
-            onChange={updateRangeMetaField('from')}
+            onChange={updateRangeMetaField('from', { isNumber: true })}
           />
           <TextField
             required
             label="To"
             type="number"
             value={rangeMeta.to}
-            onChange={updateRangeMetaField('to')}
+            onChange={updateRangeMetaField('to', { isNumber: true })}
           />
         </FormControl>
       )}

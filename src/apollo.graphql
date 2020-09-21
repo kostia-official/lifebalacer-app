@@ -38,6 +38,33 @@ query GetEntry($_id: ID!) {
   }
 }
 
+fragment EntriesByDayResult on EntriesByDay {
+  date
+  points
+  entries {
+    _id
+    value
+    completedAt
+    activity {
+      _id
+      name
+      emoji
+    }
+  }
+}
+
+query GetEntriesByDay {
+  entriesByDay {
+    ...EntriesByDayResult
+  }
+}
+
+query GetEntriesByOneDay($date: Date!) {
+  entriesByOneDay(date: $date) {
+    ...EntriesByDayResult
+  }
+}
+
 query GetEntries {
   entries {
     _id
@@ -53,46 +80,8 @@ query GetEntries {
   }
 }
 
-query GetAchievements {
-  achievements {
-    _id
-    name
-    points
-    priority
-    createdAt
-  }
-}
-
-query GetRewards {
-  rewards {
-    _id
-    name
-    points
-  }
-}
-
-query GetSpendings {
-  spendings {
-    _id
-    points
-    reward {
-      _id
-      name
-    }
-    createdAt
-  }
-}
-
 query GetBalance {
   balance
-}
-
-query GetProfile {
-  profile {
-    _id
-    todoistUserId
-    userId
-  }
 }
 
 mutation CreateActivity($data: CreateActivityInput!) {
@@ -125,61 +114,4 @@ mutation UpdateEntry($_id: ID!, $data: UpdateEntryInput!) {
 
 mutation DeleteEntry($_id: ID!) {
   deleteEntry(_id: $_id)
-}
-
-mutation CreateReward($data: CreateRewardInput!) {
-  createReward(data: $data) {
-    _id
-    name
-    points
-  }
-}
-
-mutation UpdateRewardById($_id: ID!, $data: UpdateRewardInput!) {
-  updateRewardById(_id: $_id, data: $data) {
-    _id
-    name
-    points
-  }
-}
-
-mutation DeleteReward($_id: ID!) {
-  deleteReward(_id: $_id)
-}
-
-mutation SpendReward($rewardId: ID!) {
-  spendReward(rewardId: $rewardId) {
-    _id
-    points
-    reward {
-      _id
-      name
-    }
-    createdAt
-  }
-}
-
-mutation DeleteSpending($_id: ID!) {
-  deleteSpending(_id: $_id)
-}
-
-mutation DeleteAchievement($_id: ID!) {
-  deleteAchievement(_id: $_id)
-}
-
-mutation ConnectTodoist($authCode: String!) {
-  authorizeInTodoist(authCode: $authCode) {
-    _id
-    todoistUserId
-  }
-}
-
-subscription OnAchievementCreated {
-  achievementCreated {
-    _id
-    createdAt
-    name
-    points
-    priority
-  }
 }

@@ -6,13 +6,13 @@ import { Route, Switch, useHistory } from 'react-router-dom';
 import { HeaderRightContent } from './HeaderRightContent';
 import { Auth } from './Auth';
 import { useAuth } from '../hooks/useAuth';
-import { TodoistAuth } from './TodoistAuth';
 import { Persist } from '../components/Persist';
 import { useDeviceDetect } from '../hooks/useIsDesktop';
 import { useSwipeable } from 'react-swipeable';
 import { ActivityForm } from './ActivityForm';
 import { Activities } from './Activities';
 import { Entries } from './Entries';
+import { EntriesCreateForm } from './EntriesCreateForm';
 
 export interface IPage {
   name: string;
@@ -122,7 +122,8 @@ export const App: React.FC = () => {
               return <Route key={page.path} path={page.path} exact component={page.component} />;
             })}
             <Route path="/activities/edit/:_id" exact component={ActivityForm} />
-            <Route path="/todoist/auth" exact component={TodoistAuth} />
+            <Route path="/entries/create/:date" exact component={EntriesCreateForm} />
+            <Route path="/entries/edit/:date" exact component={EntriesCreateForm} />
           </Switch>
         </PageWrapper>
       </ContentWrapper>

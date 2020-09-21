@@ -10,6 +10,8 @@ import { ApolloProvider } from '@apollo/client';
 import { apolloClient } from './apollo';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { config } from './config';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 const history = createBrowserHistory();
 
@@ -18,7 +20,9 @@ ReactDOM.render(
     <ApolloProvider client={apolloClient}>
       <Router history={history}>
         <ThemeProvider>
-          <App />
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <App />
+          </MuiPickersUtilsProvider>
         </ThemeProvider>
       </Router>
     </ApolloProvider>

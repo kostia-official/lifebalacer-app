@@ -6,14 +6,17 @@ import { getMainDefinition } from '@apollo/client/utilities';
 import { setContext } from '@apollo/client/link/context';
 import { RetryLink } from '@apollo/client/link/retry';
 import _ from 'lodash';
+import { useTimezone } from './hooks/useTimezone';
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('token');
+  const timezone = useTimezone();
 
   return {
     headers: {
       ...headers,
-      Authorization: token
+      Authorization: token,
+      timezone
     }
   };
 });
@@ -70,6 +73,19 @@ export const apolloClient = new ApolloClient({
               __typename: 'Activity',
               _id: args?._id
             });
+          },
+          entriesByOneDay(existing, { args, readField }) {
+            if (existing) return existing;
+
+            const entriesByDay = readField('entriesByDay');
+
+            if (_.isArray(entriesByDay)) {
+              return _.find(entriesByDay, (day) => {
+                return day.date === args?.date;
+              });
+            }
+
+            return undefined;
           }
         }
       }

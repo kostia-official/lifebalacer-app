@@ -10,4 +10,4 @@ generates:
       withHooks: true
       withRefetchFn: true
       scalars:
-        Date: Date
+        Date: string
