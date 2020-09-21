@@ -37,7 +37,7 @@ type SelectedEntry = Pick<Entry, '_id' | 'activityId' | 'completedAt' | 'value'>
 
 type ActivityResult = GetActivitiesQuery['activities'][0];
 
-export const EntriesCreateForm = () => {
+export const EntriesForm = () => {
   const [activityIdForModal, setActivityIdForModal] = useState<string | null>(null);
 
   const history = useHistory();

@@ -12,7 +12,7 @@ import { useSwipeable } from 'react-swipeable';
 import { ActivityForm } from './ActivityForm';
 import { Activities } from './Activities';
 import { Entries } from './Entries';
-import { EntriesCreateForm } from './EntriesCreateForm';
+import { EntriesForm } from './EntriesForm';
 
 export interface IPage {
   name: string;
@@ -122,8 +122,8 @@ export const App: React.FC = () => {
               return <Route key={page.path} path={page.path} exact component={page.component} />;
             })}
             <Route path="/activities/edit/:_id" exact component={ActivityForm} />
-            <Route path="/entries/create/:date" exact component={EntriesCreateForm} />
-            <Route path="/entries/edit/:date" exact component={EntriesCreateForm} />
+            <Route path="/entries/create/:date" exact component={EntriesForm} />
+            <Route path="/entries/edit/:date" exact component={EntriesForm} />
           </Switch>
         </PageWrapper>
       </ContentWrapper>
