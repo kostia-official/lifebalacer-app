@@ -56,16 +56,11 @@ const retryLink = new RetryLink({
 });
 
 export const apolloClient = new ApolloClient({
-  defaultOptions: {
-    mutate: {
-      errorPolicy: 'all'
-    },
-    query: {
-      errorPolicy: 'all'
-    }
-  },
   cache: new InMemoryCache({
     typePolicies: {
+      EntriesByDay: {
+        keyFields: ["date"],
+      },
       Query: {
         fields: {
           activity(_, { args, toReference }) {

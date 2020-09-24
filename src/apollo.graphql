@@ -1,25 +1,26 @@
+fragment ActivityResult on Activity {
+  _id
+  name
+  emoji
+  category
+  valueType
+  pointsType
+  points
+  rangeMeta {
+    from
+    to
+  }
+}
+
 query GetActivity($_id: ID!) {
   activity(_id: $_id) {
-    _id
-    name
-    emoji
-    category
-    valueType
-    pointsType
-    points
+    ...ActivityResult
   }
 }
 
 query GetActivities {
   activities {
-    _id
-    name
-    emoji
-    category
-    valueType
-    pointsType
-    points
-    createdAt
+    ...ActivityResult
   }
 }
 
@@ -82,6 +83,14 @@ query GetEntries {
 
 query GetBalance {
   balance
+}
+
+query GetDaysStatistic {
+  daysStatistic {
+    missing
+    streak
+    total
+  }
 }
 
 mutation CreateActivity($data: CreateActivityInput!) {

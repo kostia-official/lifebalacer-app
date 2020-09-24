@@ -50,6 +50,13 @@ export type EntriesByDay = {
   entries: Array<Entry>;
 };
 
+export type DaysStatistic = {
+  __typename?: 'DaysStatistic';
+  total: Scalars['Int'];
+  missing: Scalars['Int'];
+  streak: Scalars['Int'];
+};
+
 export enum ActivityType {
   Simple = 'Simple',
   Value = 'Value',
@@ -94,6 +101,7 @@ export type Query = {
   entries: Array<Entry>;
   entriesByOneDay?: Maybe<EntriesByDay>;
   entriesByDay: Array<EntriesByDay>;
+  daysStatistic: DaysStatistic;
   activity?: Maybe<Activity>;
   activities: Array<Activity>;
   balance: Scalars['Int'];
@@ -199,6 +207,15 @@ export enum CacheControlScope {
 }
 
 
+export type ActivityResultFragment = (
+  { __typename?: 'Activity' }
+  & Pick<Activity, '_id' | 'name' | 'emoji' | 'category' | 'valueType' | 'pointsType' | 'points'>
+  & { rangeMeta?: Maybe<(
+    { __typename?: 'RangeMeta' }
+    & Pick<RangeMeta, 'from' | 'to'>
+  )> }
+);
+
 export type GetActivityQueryVariables = Exact<{
   _id: Scalars['ID'];
 }>;
@@ -208,7 +225,7 @@ export type GetActivityQuery = (
   { __typename?: 'Query' }
   & { activity?: Maybe<(
     { __typename?: 'Activity' }
-    & Pick<Activity, '_id' | 'name' | 'emoji' | 'category' | 'valueType' | 'pointsType' | 'points'>
+    & ActivityResultFragment
   )> }
 );
 
@@ -219,7 +236,7 @@ export type GetActivitiesQuery = (
   { __typename?: 'Query' }
   & { activities: Array<(
     { __typename?: 'Activity' }
-    & Pick<Activity, '_id' | 'name' | 'emoji' | 'category' | 'valueType' | 'pointsType' | 'points' | 'createdAt'>
+    & ActivityResultFragment
   )> }
 );
 
@@ -260,15 +277,7 @@ export type GetEntriesByDayQuery = (
   { __typename?: 'Query' }
   & { entriesByDay: Array<(
     { __typename?: 'EntriesByDay' }
-    & Pick<EntriesByDay, 'date' | 'points'>
-    & { entries: Array<(
-      { __typename?: 'Entry' }
-      & Pick<Entry, '_id' | 'value' | 'completedAt'>
-      & { activity: (
-        { __typename?: 'Activity' }
-        & Pick<Activity, '_id' | 'name' | 'emoji'>
-      ) }
-    )> }
+    & EntriesByDayResultFragment
   )> }
 );
 
@@ -281,15 +290,7 @@ export type GetEntriesByOneDayQuery = (
   { __typename?: 'Query' }
   & { entriesByOneDay?: Maybe<(
     { __typename?: 'EntriesByDay' }
-    & Pick<EntriesByDay, 'date' | 'points'>
-    & { entries: Array<(
-      { __typename?: 'Entry' }
-      & Pick<Entry, '_id' | 'value' | 'completedAt'>
-      & { activity: (
-        { __typename?: 'Activity' }
-        & Pick<Activity, '_id' | 'name' | 'emoji'>
-      ) }
-    )> }
+    & EntriesByDayResultFragment
   )> }
 );
 
@@ -314,6 +315,17 @@ export type GetBalanceQueryVariables = Exact<{ [key: string]: never; }>;
 export type GetBalanceQuery = (
   { __typename?: 'Query' }
   & Pick<Query, 'balance'>
+);
+
+export type GetDaysStatisticQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetDaysStatisticQuery = (
+  { __typename?: 'Query' }
+  & { daysStatistic: (
+    { __typename?: 'DaysStatistic' }
+    & Pick<DaysStatistic, 'missing' | 'streak' | 'total'>
+  ) }
 );
 
 export type CreateActivityMutationVariables = Exact<{
@@ -390,6 +402,21 @@ export type DeleteEntryMutation = (
   & Pick<Mutation, 'deleteEntry'>
 );
 
+export const ActivityResultFragmentDoc = gql`
+    fragment ActivityResult on Activity {
+  _id
+  name
+  emoji
+  category
+  valueType
+  pointsType
+  points
+  rangeMeta {
+    from
+    to
+  }
+}
+    `;
 export const EntriesByDayResultFragmentDoc = gql`
     fragment EntriesByDayResult on EntriesByDay {
   date
@@ -409,16 +436,10 @@ export const EntriesByDayResultFragmentDoc = gql`
 export const GetActivityDocument = gql`
     query GetActivity($_id: ID!) {
   activity(_id: $_id) {
-    _id
-    name
-    emoji
-    category
-    valueType
-    pointsType
-    points
+    ...ActivityResult
   }
 }
-    `;
+    ${ActivityResultFragmentDoc}`;
 
 /**
  * __useGetActivityQuery__
@@ -451,17 +472,10 @@ export function refetchGetActivityQuery(variables?: GetActivityQueryVariables) {
 export const GetActivitiesDocument = gql`
     query GetActivities {
   activities {
-    _id
-    name
-    emoji
-    category
-    valueType
-    pointsType
-    points
-    createdAt
+    ...ActivityResult
   }
 }
-    `;
+    ${ActivityResultFragmentDoc}`;
 
 /**
  * __useGetActivitiesQuery__
@@ -538,21 +552,10 @@ export function refetchGetEntryQuery(variables?: GetEntryQueryVariables) {
 export const GetEntriesByDayDocument = gql`
     query GetEntriesByDay {
   entriesByDay {
-    date
-    points
-    entries {
-      _id
-      value
-      completedAt
-      activity {
-        _id
-        name
-        emoji
-      }
-    }
+    ...EntriesByDayResult
   }
 }
-    `;
+    ${EntriesByDayResultFragmentDoc}`;
 
 /**
  * __useGetEntriesByDayQuery__
@@ -584,21 +587,10 @@ export function refetchGetEntriesByDayQuery(variables?: GetEntriesByDayQueryVari
 export const GetEntriesByOneDayDocument = gql`
     query GetEntriesByOneDay($date: Date!) {
   entriesByOneDay(date: $date) {
-    date
-    points
-    entries {
-      _id
-      value
-      completedAt
-      activity {
-        _id
-        name
-        emoji
-      }
-    }
+    ...EntriesByDayResult
   }
 }
-    `;
+    ${EntriesByDayResultFragmentDoc}`;
 
 /**
  * __useGetEntriesByOneDayQuery__
@@ -704,6 +696,43 @@ export type GetBalanceLazyQueryHookResult = ReturnType<typeof useGetBalanceLazyQ
 export type GetBalanceQueryResult = Apollo.QueryResult<GetBalanceQuery, GetBalanceQueryVariables>;
 export function refetchGetBalanceQuery(variables?: GetBalanceQueryVariables) {
       return { query: GetBalanceDocument, variables: variables }
+    }
+export const GetDaysStatisticDocument = gql`
+    query GetDaysStatistic {
+  daysStatistic {
+    missing
+    streak
+    total
+  }
+}
+    `;
+
+/**
+ * __useGetDaysStatisticQuery__
+ *
+ * To run a query within a React component, call `useGetDaysStatisticQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDaysStatisticQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDaysStatisticQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetDaysStatisticQuery(baseOptions?: Apollo.QueryHookOptions<GetDaysStatisticQuery, GetDaysStatisticQueryVariables>) {
+        return Apollo.useQuery<GetDaysStatisticQuery, GetDaysStatisticQueryVariables>(GetDaysStatisticDocument, baseOptions);
+      }
+export function useGetDaysStatisticLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDaysStatisticQuery, GetDaysStatisticQueryVariables>) {
+          return Apollo.useLazyQuery<GetDaysStatisticQuery, GetDaysStatisticQueryVariables>(GetDaysStatisticDocument, baseOptions);
+        }
+export type GetDaysStatisticQueryHookResult = ReturnType<typeof useGetDaysStatisticQuery>;
+export type GetDaysStatisticLazyQueryHookResult = ReturnType<typeof useGetDaysStatisticLazyQuery>;
+export type GetDaysStatisticQueryResult = Apollo.QueryResult<GetDaysStatisticQuery, GetDaysStatisticQueryVariables>;
+export function refetchGetDaysStatisticQuery(variables?: GetDaysStatisticQueryVariables) {
+      return { query: GetDaysStatisticDocument, variables: variables }
     }
 export const CreateActivityDocument = gql`
     mutation CreateActivity($data: CreateActivityInput!) {

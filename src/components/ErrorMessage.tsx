@@ -4,9 +4,10 @@ import Alert from '@material-ui/lab/Alert';
 
 export interface IErrorMessage {
   errorMessage?: string;
+  errorTime?: number; // To show error with the same message again
 }
 
-export const ErrorMessage: React.FC<IErrorMessage> = ({ errorMessage }) => {
+export const ErrorMessage: React.FC<IErrorMessage> = ({ errorMessage, errorTime }) => {
   const [isShow, setIsShow] = useState(!!errorMessage);
 
   const onClose = useCallback(() => {
@@ -15,7 +16,7 @@ export const ErrorMessage: React.FC<IErrorMessage> = ({ errorMessage }) => {
 
   useEffect(() => {
     setIsShow(!!errorMessage);
-  }, [setIsShow, errorMessage]);
+  }, [errorMessage, errorTime]);
 
   return (
     <Snackbar

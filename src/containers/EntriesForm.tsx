@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import ObjectId from 'bson-objectid';
 import {
   useGetActivitiesQuery,
@@ -7,9 +7,11 @@ import {
   useDeleteEntryMutation,
   refetchGetBalanceQuery,
   Entry,
-  GetActivitiesQuery,
   refetchGetEntriesByDayQuery,
-  useGetEntriesByOneDayQuery
+  useGetEntriesByOneDayQuery,
+  useUpdateEntryMutation,
+  refetchGetEntriesByOneDayQuery,
+  refetchGetDaysStatisticQuery
 } from '../generated/apollo';
 import { useApolloError } from '../hooks/useApolloError';
 import { Spinner } from '../components/Spinner';
@@ -20,6 +22,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { CardModal } from '../components/CardModal';
 import { EntryValueModalContent } from '../components/EntryValueModalContent';
+import { ActivityResult } from '../types';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
@@ -35,24 +38,24 @@ const DoneButton = styled(Button)`
 
 type SelectedEntry = Pick<Entry, '_id' | 'activityId' | 'completedAt' | 'value'>;
 
-type ActivityResult = GetActivitiesQuery['activities'][0];
-
 export const EntriesForm = () => {
-  const [activityIdForModal, setActivityIdForModal] = useState<string | null>(null);
+  const [modalEntry, setModalEntry] = useState<SelectedEntry | null>(null);
 
   const history = useHistory();
   const { date } = useParams();
   const completedAt = date || new Date().toISOString;
 
-  const { errorMessage, onError } = useApolloError();
+  const { errorMessage, errorTime, onError } = useApolloError();
 
   const { data: entriesData } = useGetEntriesByOneDayQuery({
     variables: { date: completedAt },
     onError
   });
-  const entriesByDay = entriesData?.entriesByOneDay?.entries || [];
+  const entriesByDay = entriesData?.entriesByOneDay?.entries;
 
   const getSelectedEntriesFromEntriesByDay = useCallback(() => {
+    if (!entriesByDay) return [];
+
     return entriesByDay.map(({ _id, value, completedAt, activity }) => {
       return { _id, value, completedAt, activityId: activity._id };
     });
@@ -63,8 +66,8 @@ export const EntriesForm = () => {
   );
 
   useEffect(() => {
-    setSelectedEntries(getSelectedEntriesFromEntriesByDay())
-  }, [entriesByDay, setSelectedEntries, getSelectedEntriesFromEntriesByDay]);
+    setSelectedEntries(getSelectedEntriesFromEntriesByDay());
+  }, [getSelectedEntriesFromEntriesByDay]);
 
   const { data: getActivitiesData, loading: activitiesLoading } = useGetActivitiesQuery({
     onError
@@ -80,10 +83,16 @@ export const EntriesForm = () => {
 
   const mutationOptions = {
     onError,
-    refetchQueries: [refetchGetEntriesByDayQuery(), refetchGetBalanceQuery()]
+    refetchQueries: [
+      refetchGetDaysStatisticQuery(),
+      refetchGetEntriesByDayQuery(),
+      refetchGetEntriesByOneDayQuery({ date: completedAt }),
+      refetchGetBalanceQuery()
+    ]
   };
   const [createEntryMutation] = useCreateEntryMutation(mutationOptions);
   const [deleteEntryMutation] = useDeleteEntryMutation(mutationOptions);
+  const [updateEntryMutation] = useUpdateEntryMutation(mutationOptions);
 
   const createEntry = useCallback(
     async (activityId: string, value?: Entry['value']) => {
@@ -102,66 +111,102 @@ export const EntriesForm = () => {
     [getEntryByActivityId, completedAt, createEntryMutation]
   );
 
-  const isSelectedEntry = useCallback(
-    (activityId: string) => {
-      return selectedEntries.map(({ activityId }) => activityId).includes(activityId);
-    },
-    [selectedEntries]
-  );
-
   const selectEntry = useCallback(
     async (activity: ActivityResult) => {
-      if (isSelectedEntry(activity._id)) {
-        const entry = getEntryByActivityId(activity._id);
-        if (!entry?._id) return;
-
-        await deleteEntryMutation({ variables: { _id: entry._id } });
-
-        setSelectedEntries((prev) => {
-          return prev.filter((entry) => entry.activityId !== activity._id);
-        });
-      } else {
-        switch (activity.valueType) {
-          case ActivityType.Value: {
-            return setActivityIdForModal(activity._id);
-          }
-          default: {
-            await createEntry(activity._id);
-          }
+      switch (activity.valueType) {
+        case ActivityType.Value: {
+          return setModalEntry({
+            _id: new ObjectId().toString(),
+            completedAt,
+            activityId: activity._id
+          });
+        }
+        default: {
+          await createEntry(activity._id);
         }
       }
     },
-    [isSelectedEntry, deleteEntryMutation, createEntry, getEntryByActivityId]
+    [completedAt, createEntry]
   );
+
+  const unselectEntry = useCallback(
+    async (entry: SelectedEntry) => {
+      if (entry.value) {
+        return setModalEntry(entry);
+      }
+
+      const { _id } = entry;
+      await deleteEntryMutation({ variables: { _id } });
+
+      setSelectedEntries((prev) => {
+        return prev.filter((entry) => entry._id !== _id);
+      });
+    },
+    [deleteEntryMutation]
+  );
+
+  const closeModal = useCallback(() => {
+    setModalEntry(null);
+  }, []);
 
   const onValueSave = useCallback(
     async (value: number) => {
-      if (!activityIdForModal) return;
+      if (!modalEntry) return;
 
-      await createEntry(activityIdForModal, value);
-      setActivityIdForModal(null);
+      const existingEntry = selectedEntries.find((entry) => entry._id === modalEntry._id);
+
+      if (existingEntry) {
+        closeModal();
+
+        return updateEntryMutation({
+          variables: { _id: existingEntry._id, data: { value } }
+        });
+      }
+
+      setModalEntry(null);
+      await createEntry(modalEntry.activityId, value);
     },
-    [createEntry, activityIdForModal]
+    [updateEntryMutation, closeModal, selectedEntries, createEntry, modalEntry]
   );
 
-  const onCloseModal = useCallback(() => {
-    setActivityIdForModal(null);
-  }, []);
+  const onDeleteFromModal = useCallback(() => {
+    if (!modalEntry) return;
+    const existingEntry = selectedEntries.find((entry) => entry._id === modalEntry._id);
+
+    if (!existingEntry) {
+      return closeModal();
+    }
+
+    deleteEntryMutation({ variables: { _id: existingEntry._id } }).then();
+    closeModal();
+  }, [selectedEntries, deleteEntryMutation, modalEntry, closeModal]);
 
   const onDoneClick = useCallback(async () => {
     history.replace('/');
   }, [history]);
 
-  const activitiesByCategory = _.groupBy(activities, (activity) => activity.category);
+  const activitiesByCategory = useMemo(
+    () => _.groupBy(activities, (activity) => activity.category),
+    [activities]
+  );
+  const modalActivity = useMemo(
+    () => _.find(activities, (activity) => activity._id === modalEntry?.activityId),
+    [activities, modalEntry]
+  );
 
   if (activitiesLoading) return <Spinner />;
 
   return (
     <div>
-      <ErrorMessage errorMessage={errorMessage} />
+      <ErrorMessage errorMessage={errorMessage} errorTime={errorTime}/>
 
-      <CardModal isShow={!!activityIdForModal} onClose={onCloseModal}>
-        <EntryValueModalContent onSave={onValueSave} />
+      <CardModal isShow={!!modalEntry} onClose={closeModal}>
+        <EntryValueModalContent
+          onDelete={onDeleteFromModal}
+          onSave={onValueSave}
+          value={modalEntry?.value}
+          activity={modalActivity}
+        />
       </CardModal>
 
       {Object.entries(activitiesByCategory).map(([category, activities]) => {
@@ -174,12 +219,13 @@ export const EntriesForm = () => {
 
               {activities.map((activity) => {
                 const entry = getEntryByActivityId(activity._id);
+
                 return (
                   <ButtonStyled
                     key={activity._id}
-                    variant={isSelectedEntry(activity._id) ? 'contained' : 'outlined'}
+                    variant={entry ? 'contained' : 'outlined'}
                     color="primary"
-                    onClick={() => selectEntry(activity)}
+                    onClick={() => (entry ? unselectEntry(entry) : selectEntry(activity))}
                     startIcon={<Typography variant="h5">{activity.emoji}</Typography>}
                     disableRipple
                     disableElevation

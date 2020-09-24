@@ -32,7 +32,7 @@ const AddFabButtonWrapper = styled.div`
 
 export const Entries = () => {
   const history = useHistory();
-  const { errorMessage, onError } = useApolloError();
+  const { errorMessage, errorTime, onError } = useApolloError();
   const { data, loading } = useGetEntriesByDayQuery({ onError });
 
   const onEntryCreate = useCallback(
@@ -55,7 +55,7 @@ export const Entries = () => {
 
   return (
     <div>
-      <ErrorMessage errorMessage={errorMessage} />
+      <ErrorMessage errorMessage={errorMessage} errorTime={errorTime}/>
 
       {_.isEmpty(entries) ? (
         <Typography>So far no entries...</Typography>

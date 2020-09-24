@@ -14,7 +14,7 @@ import { useHistory } from 'react-router-dom';
 
 export const Activities = () => {
   const history = useHistory();
-  const { errorMessage, onError } = useApolloError();
+  const { errorMessage, onError, errorTime } = useApolloError();
 
   const { data, loading } = useGetActivitiesQuery({ onError });
   const [deleteActivity] = useDeleteActivityMutation({
@@ -26,7 +26,7 @@ export const Activities = () => {
 
   return (
     <Fragment>
-      <ErrorMessage errorMessage={errorMessage} />
+      <ErrorMessage errorMessage={errorMessage} errorTime={errorTime}/>
       <Table
         title="Activities"
         columns={[
