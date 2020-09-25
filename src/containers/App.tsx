@@ -13,6 +13,7 @@ import { ActivityForm } from './ActivityForm';
 import { Activities } from './Activities';
 import { Entries } from './Entries';
 import { EntriesForm } from './EntriesForm';
+import { Calendar } from './Calendar';
 
 export interface IPage {
   name: string;
@@ -27,6 +28,12 @@ const pages: IPage[] = [
     icon: 'receipt_long',
     path: '/',
     component: Entries
+  },
+  {
+    name: 'Calendar',
+    icon: 'date_range',
+    path: '/calendar',
+    component: Calendar
   },
   {
     name: 'Activities',
@@ -122,8 +129,7 @@ export const App: React.FC = () => {
               return <Route key={page.path} path={page.path} exact component={page.component} />;
             })}
             <Route path="/activities/edit/:_id" exact component={ActivityForm} />
-            <Route path="/entries/create/:date" exact component={EntriesForm} />
-            <Route path="/entries/edit/:date" exact component={EntriesForm} />
+            <Route path="/entries/:date" exact component={EntriesForm} />
           </Switch>
         </PageWrapper>
       </ContentWrapper>

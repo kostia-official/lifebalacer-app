@@ -3,6 +3,7 @@ import { CardContent, CardActions, Button } from '@material-ui/core';
 import { TextField } from './TextField';
 import { Entry, ActivityType } from '../generated/apollo';
 import { ActivityResult } from '../types';
+import styled from 'styled-components';
 
 export interface EntryValueModalContentProps {
   onSave: (value: number) => void;
@@ -10,6 +11,10 @@ export interface EntryValueModalContentProps {
   value: Entry['value'];
   activity?: ActivityResult;
 }
+
+const TextFieldStyled = styled(TextField)`
+  width: 200px;
+`;
 
 export const EntryValueModalContent: React.FC<EntryValueModalContentProps> = ({
   onSave,
@@ -51,7 +56,7 @@ export const EntryValueModalContent: React.FC<EntryValueModalContentProps> = ({
   return (
     <form onSubmit={onSubmit}>
       <CardContent>
-        <TextField
+        <TextFieldStyled
           required
           fullWidth
           autoFocus={true}

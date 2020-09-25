@@ -60,6 +60,18 @@ query GetEntriesByDay {
   }
 }
 
+query GetActivityEntriesByDay($activityId: ID) {
+  entriesByDay(activityId: $activityId) {
+    date
+    points
+    entries {
+      _id
+      value
+      activityId
+    }
+  }
+}
+
 query GetEntriesByOneDay($date: Date!) {
   entriesByOneDay(date: $date) {
     ...EntriesByDayResult

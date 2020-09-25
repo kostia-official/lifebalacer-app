@@ -114,6 +114,7 @@ export const EntriesForm = () => {
   const selectEntry = useCallback(
     async (activity: ActivityResult) => {
       switch (activity.valueType) {
+        case ActivityType.Range:
         case ActivityType.Value: {
           return setModalEntry({
             _id: new ObjectId().toString(),

@@ -59,7 +59,14 @@ export const apolloClient = new ApolloClient({
   cache: new InMemoryCache({
     typePolicies: {
       EntriesByDay: {
-        keyFields: ["date"],
+        keyFields: ['date'],
+        fields: {
+          entries: {
+            merge(existing, incoming) {
+              return incoming;
+            }
+          }
+        }
       },
       Query: {
         fields: {
@@ -68,6 +75,11 @@ export const apolloClient = new ApolloClient({
               __typename: 'Activity',
               _id: args?._id
             });
+          },
+          entriesByDay: {
+            merge(existing, incoming) {
+              return incoming;
+            }
           },
           entriesByOneDay(existing, { args, readField }) {
             if (existing) return existing;

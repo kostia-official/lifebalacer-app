@@ -35,27 +35,38 @@ export const Entries = () => {
   const { errorMessage, errorTime, onError } = useApolloError();
   const { data, loading } = useGetEntriesByDayQuery({ onError });
 
-  const onEntryCreate = useCallback(
+  const onEntryFormOpen = useCallback(
     (date = new Date()) => {
-      history.push(`/entries/create/${date.toISOString()}`);
-    },
-    [history]
-  );
-
-  const onEntryEdit = useCallback(
-    (date: string) => () => {
-      history.push(`/entries/edit/${date}`);
+      history.push(`/entries/${new Date(date).toISOString()}`);
     },
     [history]
   );
 
   const entries = data?.entriesByDay;
 
+  const renderPickerDay = useCallback(
+    (date: Date) => {
+      const calendarDate = DateTime.fromJSDate(date).ordinal;
+
+      const isMark = !!entries?.find((day) => {
+        const entryDay = DateTime.fromISO(day.date).ordinal;
+
+        return calendarDate === entryDay;
+      });
+
+      return {
+        isMark,
+        color: 'white'
+      };
+    },
+    [entries]
+  );
+
   if (loading) return <Spinner />;
 
   return (
     <div>
-      <ErrorMessage errorMessage={errorMessage} errorTime={errorTime}/>
+      <ErrorMessage errorMessage={errorMessage} errorTime={errorTime} />
 
       {_.isEmpty(entries) ? (
         <Typography>So far no entries...</Typography>
@@ -69,7 +80,7 @@ export const Entries = () => {
               .join(', ');
 
             return (
-              <ListItem key={day.date} onClick={onEntryEdit(day.date)} button>
+              <ListItem key={day.date} onClick={() => onEntryFormOpen(day.date)} button>
                 <ListItemText
                   primary={DateTime.fromISO(day.date).toLocaleString(DateTime.DATE_HUGE)}
                   secondary={activitiesText}
@@ -82,10 +93,10 @@ export const Entries = () => {
       )}
 
       <DatePickerButtonWrapper>
-        <DatePickerButton onChange={onEntryCreate} />
+        <DatePickerButton onChange={onEntryFormOpen} onRenderDay={renderPickerDay} />
       </DatePickerButtonWrapper>
       <AddFabButtonWrapper>
-        <AddFabButton onClick={() => onEntryCreate()} />
+        <AddFabButton onClick={() => onEntryFormOpen()} />
       </AddFabButtonWrapper>
     </div>
   );

@@ -115,6 +115,12 @@ export type QueryEntryArgs = {
 
 export type QueryEntriesByOneDayArgs = {
   date: Scalars['Date'];
+  activityId?: Maybe<Scalars['ID']>;
+};
+
+
+export type QueryEntriesByDayArgs = {
+  activityId?: Maybe<Scalars['ID']>;
 };
 
 
@@ -278,6 +284,23 @@ export type GetEntriesByDayQuery = (
   & { entriesByDay: Array<(
     { __typename?: 'EntriesByDay' }
     & EntriesByDayResultFragment
+  )> }
+);
+
+export type GetActivityEntriesByDayQueryVariables = Exact<{
+  activityId?: Maybe<Scalars['ID']>;
+}>;
+
+
+export type GetActivityEntriesByDayQuery = (
+  { __typename?: 'Query' }
+  & { entriesByDay: Array<(
+    { __typename?: 'EntriesByDay' }
+    & Pick<EntriesByDay, 'date' | 'points'>
+    & { entries: Array<(
+      { __typename?: 'Entry' }
+      & Pick<Entry, '_id' | 'value' | 'activityId'>
+    )> }
   )> }
 );
 
@@ -583,6 +606,48 @@ export type GetEntriesByDayLazyQueryHookResult = ReturnType<typeof useGetEntries
 export type GetEntriesByDayQueryResult = Apollo.QueryResult<GetEntriesByDayQuery, GetEntriesByDayQueryVariables>;
 export function refetchGetEntriesByDayQuery(variables?: GetEntriesByDayQueryVariables) {
       return { query: GetEntriesByDayDocument, variables: variables }
+    }
+export const GetActivityEntriesByDayDocument = gql`
+    query GetActivityEntriesByDay($activityId: ID) {
+  entriesByDay(activityId: $activityId) {
+    date
+    points
+    entries {
+      _id
+      value
+      activityId
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetActivityEntriesByDayQuery__
+ *
+ * To run a query within a React component, call `useGetActivityEntriesByDayQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetActivityEntriesByDayQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetActivityEntriesByDayQuery({
+ *   variables: {
+ *      activityId: // value for 'activityId'
+ *   },
+ * });
+ */
+export function useGetActivityEntriesByDayQuery(baseOptions?: Apollo.QueryHookOptions<GetActivityEntriesByDayQuery, GetActivityEntriesByDayQueryVariables>) {
+        return Apollo.useQuery<GetActivityEntriesByDayQuery, GetActivityEntriesByDayQueryVariables>(GetActivityEntriesByDayDocument, baseOptions);
+      }
+export function useGetActivityEntriesByDayLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetActivityEntriesByDayQuery, GetActivityEntriesByDayQueryVariables>) {
+          return Apollo.useLazyQuery<GetActivityEntriesByDayQuery, GetActivityEntriesByDayQueryVariables>(GetActivityEntriesByDayDocument, baseOptions);
+        }
+export type GetActivityEntriesByDayQueryHookResult = ReturnType<typeof useGetActivityEntriesByDayQuery>;
+export type GetActivityEntriesByDayLazyQueryHookResult = ReturnType<typeof useGetActivityEntriesByDayLazyQuery>;
+export type GetActivityEntriesByDayQueryResult = Apollo.QueryResult<GetActivityEntriesByDayQuery, GetActivityEntriesByDayQueryVariables>;
+export function refetchGetActivityEntriesByDayQuery(variables?: GetActivityEntriesByDayQueryVariables) {
+      return { query: GetActivityEntriesByDayDocument, variables: variables }
     }
 export const GetEntriesByOneDayDocument = gql`
     query GetEntriesByOneDay($date: Date!) {
