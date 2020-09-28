@@ -54,10 +54,6 @@ export const Activities = () => {
             field: 'name'
           },
           {
-            title: 'Value type',
-            field: 'valueType'
-          },
-          {
             title: 'Points',
             field: 'points'
           }
