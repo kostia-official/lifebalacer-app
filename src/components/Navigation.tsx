@@ -10,7 +10,7 @@ import _ from 'lodash';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Icon from '@material-ui/core/Icon';
 import { IPage } from '../containers/App';
-import { useDeviceDetect } from '../hooks/useIsDesktop';
+import { useDeviceDetect } from '../hooks/useDeviceDetect';
 
 export const drawerWidth = '240px';
 

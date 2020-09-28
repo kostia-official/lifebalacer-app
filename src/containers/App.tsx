@@ -7,7 +7,7 @@ import { HeaderRightContent } from './HeaderRightContent';
 import { Auth } from './Auth';
 import { useAuth } from '../hooks/useAuth';
 import { Persist } from '../components/Persist';
-import { useDeviceDetect } from '../hooks/useIsDesktop';
+import { useDeviceDetect } from '../hooks/useDeviceDetect';
 import { useSwipeable } from 'react-swipeable';
 import { ActivityForm } from './ActivityForm';
 import { Activities } from './Activities';

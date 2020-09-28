@@ -15,6 +15,7 @@ import { PageWrapper } from '../components/PageWrapper';
 import { Button } from '@material-ui/core';
 import { useTodoist } from '../hooks/useTodoist';
 import { useGetTodoistActivity } from '../hooks/useGetTodoistActivity';
+import { useDeviceDetect } from '../hooks/useDeviceDetect';
 
 const AddFabButtonWrapper = styled.div`
   position: fixed;
@@ -29,6 +30,7 @@ const ConnectTodoistButtonWrapper = styled.div`
 `;
 
 export const Activities = () => {
+  const { isMobile } = useDeviceDetect();
   const history = useHistory();
   const { errorMessage, onError, errorTime } = useApolloError();
   const { authorizeInTodoist } = useTodoist();
@@ -44,6 +46,14 @@ export const Activities = () => {
     history.push('/activities/create');
   }, [history]);
 
+  const activities =
+    data?.activities.map((activity) => {
+      return {
+        ...activity,
+        name: `${activity.emoji} ${activity.name}`
+      };
+    }) || [];
+
   return (
     <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={loading}>
       <Table
@@ -54,11 +64,16 @@ export const Activities = () => {
             field: 'name'
           },
           {
+            title: 'Value type',
+            field: 'valueType',
+            hidden: isMobile
+          },
+          {
             title: 'Points',
             field: 'points'
           }
         ]}
-        data={data?.activities || []}
+        data={activities}
         actions={[
           {
             icon: 'edit',

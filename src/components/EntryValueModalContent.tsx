@@ -53,6 +53,12 @@ export const EntryValueModalContent: React.FC<EntryValueModalContentProps> = ({
         }
       : {};
 
+  const label = `Value ${
+    activity?.valueType === ActivityType.Range
+      ? `(${activity.rangeMeta?.from}-${activity.rangeMeta?.to})`
+      : ''
+  }`;
+
   return (
     <form onSubmit={onSubmit}>
       <CardContent>
@@ -60,7 +66,7 @@ export const EntryValueModalContent: React.FC<EntryValueModalContentProps> = ({
           required
           fullWidth
           autoFocus={true}
-          label="Value"
+          label={label}
           type="number"
           value={value}
           InputProps={{
