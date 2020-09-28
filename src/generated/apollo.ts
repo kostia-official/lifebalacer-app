@@ -136,6 +136,7 @@ export type Mutation = {
   createEntry: Entry;
   updateEntryById: Entry;
   deleteEntry: Scalars['Boolean'];
+  connectTodoist: Activity;
 };
 
 
@@ -168,6 +169,11 @@ export type MutationUpdateEntryByIdArgs = {
 
 export type MutationDeleteEntryArgs = {
   _id: Scalars['ID'];
+};
+
+
+export type MutationConnectTodoistArgs = {
+  authCode: Scalars['String'];
 };
 
 export type CreateActivityInput = {
@@ -268,7 +274,7 @@ export type EntriesByDayResultFragment = (
   & Pick<EntriesByDay, 'date' | 'points'>
   & { entries: Array<(
     { __typename?: 'Entry' }
-    & Pick<Entry, '_id' | 'value' | 'completedAt'>
+    & Pick<Entry, '_id' | 'description' | 'value' | 'completedAt'>
     & { activity: (
       { __typename?: 'Activity' }
       & Pick<Activity, '_id' | 'name' | 'emoji'>
@@ -425,6 +431,19 @@ export type DeleteEntryMutation = (
   & Pick<Mutation, 'deleteEntry'>
 );
 
+export type ConnectTodoistMutationVariables = Exact<{
+  authCode: Scalars['String'];
+}>;
+
+
+export type ConnectTodoistMutation = (
+  { __typename?: 'Mutation' }
+  & { connectTodoist: (
+    { __typename?: 'Activity' }
+    & Pick<Activity, '_id'>
+  ) }
+);
+
 export const ActivityResultFragmentDoc = gql`
     fragment ActivityResult on Activity {
   _id
@@ -446,6 +465,7 @@ export const EntriesByDayResultFragmentDoc = gql`
   points
   entries {
     _id
+    description
     value
     completedAt
     activity {
@@ -989,3 +1009,35 @@ export function useDeleteEntryMutation(baseOptions?: Apollo.MutationHookOptions<
 export type DeleteEntryMutationHookResult = ReturnType<typeof useDeleteEntryMutation>;
 export type DeleteEntryMutationResult = Apollo.MutationResult<DeleteEntryMutation>;
 export type DeleteEntryMutationOptions = Apollo.BaseMutationOptions<DeleteEntryMutation, DeleteEntryMutationVariables>;
+export const ConnectTodoistDocument = gql`
+    mutation connectTodoist($authCode: String!) {
+  connectTodoist(authCode: $authCode) {
+    _id
+  }
+}
+    `;
+export type ConnectTodoistMutationFn = Apollo.MutationFunction<ConnectTodoistMutation, ConnectTodoistMutationVariables>;
+
+/**
+ * __useConnectTodoistMutation__
+ *
+ * To run a mutation, you first call `useConnectTodoistMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConnectTodoistMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [connectTodoistMutation, { data, loading, error }] = useConnectTodoistMutation({
+ *   variables: {
+ *      authCode: // value for 'authCode'
+ *   },
+ * });
+ */
+export function useConnectTodoistMutation(baseOptions?: Apollo.MutationHookOptions<ConnectTodoistMutation, ConnectTodoistMutationVariables>) {
+        return Apollo.useMutation<ConnectTodoistMutation, ConnectTodoistMutationVariables>(ConnectTodoistDocument, baseOptions);
+      }
+export type ConnectTodoistMutationHookResult = ReturnType<typeof useConnectTodoistMutation>;
+export type ConnectTodoistMutationResult = Apollo.MutationResult<ConnectTodoistMutation>;
+export type ConnectTodoistMutationOptions = Apollo.BaseMutationOptions<ConnectTodoistMutation, ConnectTodoistMutationVariables>;

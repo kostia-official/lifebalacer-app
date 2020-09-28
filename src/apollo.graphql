@@ -44,6 +44,7 @@ fragment EntriesByDayResult on EntriesByDay {
   points
   entries {
     _id
+    description
     value
     completedAt
     activity {
@@ -135,4 +136,10 @@ mutation UpdateEntry($_id: ID!, $data: UpdateEntryInput!) {
 
 mutation DeleteEntry($_id: ID!) {
   deleteEntry(_id: $_id)
+}
+
+mutation connectTodoist($authCode: String!) {
+  connectTodoist(authCode: $authCode) {
+    _id
+  }
 }

@@ -6,13 +6,13 @@ export interface UseUpdateInputOptions {
 
 export const useUpdateInput = <O extends object>(setter: Function) =>
   useCallback(
-    (key: keyof O, options: UseUpdateInputOptions = {}) => (el: ChangeEvent<any>) => {
-      const value = el.target?.value;
+    (key: keyof O) => (el: ChangeEvent<any>) => {
+      let value = el.target?.value;
 
       setter((prevData: any) => {
         return {
           ...prevData,
-          [key]: options.isNumber ? Number(value) : value
+          [key]: value
         };
       });
     },

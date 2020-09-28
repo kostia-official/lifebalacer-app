@@ -45,7 +45,7 @@ export const EntryValueModalContent: React.FC<EntryValueModalContentProps> = ({
     setValue(valueProp ? String(valueProp) : '');
   }, [valueProp]);
 
-  const inputProps =
+  const rangeInputProps =
     activity?.valueType === ActivityType.Range
       ? {
           min: activity.rangeMeta?.from,
@@ -63,7 +63,12 @@ export const EntryValueModalContent: React.FC<EntryValueModalContentProps> = ({
           label="Value"
           type="number"
           value={value}
-          InputProps={{ inputProps }}
+          InputProps={{
+            inputProps: {
+              inputMode: 'numeric',
+              ...rangeInputProps
+            }
+          }}
           onChange={onChange}
         />
       </CardContent>

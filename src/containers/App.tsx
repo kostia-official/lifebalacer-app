@@ -14,6 +14,7 @@ import { Activities } from './Activities';
 import { Entries } from './Entries';
 import { EntriesForm } from './EntriesForm';
 import { Calendar } from './Calendar';
+import { TodoistAuth } from './TodoistAuth';
 
 export interface IPage {
   name: string;
@@ -40,12 +41,6 @@ const pages: IPage[] = [
     icon: 'assignment_turned_in',
     path: '/activities',
     component: Activities
-  },
-  {
-    name: 'Create Activity',
-    icon: 'add_circle_outline',
-    path: '/activities/create',
-    component: ActivityForm
   }
 ];
 
@@ -128,8 +123,10 @@ export const App: React.FC = () => {
             {pages.map((page) => {
               return <Route key={page.path} path={page.path} exact component={page.component} />;
             })}
+            <Route path="/activities/create" exact component={ActivityForm} />
             <Route path="/activities/edit/:_id" exact component={ActivityForm} />
             <Route path="/entries/:date" exact component={EntriesForm} />
+            <Route path="/todoist/auth" exact component={TodoistAuth} />
           </Switch>
         </PageWrapper>
       </ContentWrapper>

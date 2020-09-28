@@ -1,7 +1,14 @@
 import React, { useState, useCallback, SyntheticEvent, useEffect } from 'react';
 import styled from 'styled-components';
-import { TextField } from '../components/TextField';
-import { FormControl, FormLabel, Select, MenuItem, InputLabel, Button } from '@material-ui/core';
+import {
+  FormControl,
+  FormLabel,
+  Select,
+  MenuItem,
+  InputLabel,
+  Button,
+  TextField
+} from '@material-ui/core';
 import {
   ActivityType,
   PointsType,
@@ -59,13 +66,13 @@ export const ActivityForm = () => {
     refetchQueries: [refetchGetActivitiesQuery()]
   });
 
-  const [activity, setActivity] = useState<CreateActivityInput>({
+  const [activity, setActivity] = useState<Partial<CreateActivityInput>>({
     name: '',
     emoji: '',
     valueType: ActivityType.Simple,
     pointsType: PointsType.Const,
     category: ActivityCategory.Neutral,
-    points: 0
+    points: undefined
   });
   const [rangeMeta, setRangeMeta] = useState<Partial<RangeMeta>>({});
 
@@ -83,15 +90,23 @@ export const ActivityForm = () => {
           ? ({ from: rangeMeta.from, to: rangeMeta.to } as RangeMetaInput)
           : undefined;
 
+      const formData = {
+        name: activity.name!,
+        emoji: activity.emoji!,
+        valueType: activity.valueType!,
+        pointsType: activity.pointsType!,
+        category: activity.category!,
+        points: Number(activity.points),
+        rangeMeta:
+          activity.valueType === ActivityType.Range
+            ? { from: Number(rangeMetaInput?.from!), to: Number(rangeMetaInput?.to!) }
+            : null
+      };
+
       if (isEdit) {
-        const updatedData = {
-          ..._.omit(activity, ['_id', 'createdAt', '__typename']),
-          rangeMeta: rangeMetaInput
-        };
-        updateActivity({ variables: { _id, data: updatedData } }).then();
+        updateActivity({ variables: { _id, data: formData } }).then();
       } else {
-        const createData = { ...activity, rangeMeta: rangeMetaInput };
-        createActivity({ variables: { data: createData } }).then();
+        createActivity({ variables: { data: formData } }).then();
       }
 
       e.preventDefault();
@@ -103,7 +118,7 @@ export const ActivityForm = () => {
 
   return (
     <FormContainer onSubmit={onSubmit}>
-      <ErrorMessage errorMessage={errorMessage} errorTime={errorTime}/>
+      <ErrorMessage errorMessage={errorMessage} errorTime={errorTime} />
 
       <TextField
         required
@@ -161,9 +176,12 @@ export const ActivityForm = () => {
         required
         margin="dense"
         label="Points"
-        type="number"
+        type="text"
+        inputProps={{
+          inputMode: 'numeric'
+        }}
         value={activity.points}
-        onChange={updateActivityField('points', { isNumber: true })}
+        onChange={updateActivityField('points')}
       />
 
       {activity.valueType === ActivityType.Range && (
@@ -171,17 +189,25 @@ export const ActivityForm = () => {
           <FormLabel>Range</FormLabel>
           <TextField
             required
-            type="number"
+            type="text"
+            margin="dense"
+            inputProps={{
+              inputMode: 'numeric'
+            }}
             label="From"
-            value={rangeMeta.from ?? ''}
-            onChange={updateRangeMetaField('from', { isNumber: true })}
+            value={rangeMeta.from}
+            onChange={updateRangeMetaField('from')}
           />
           <TextField
             required
+            margin="dense"
             label="To"
-            type="number"
-            value={rangeMeta.to ?? ''}
-            onChange={updateRangeMetaField('to', { isNumber: true })}
+            type="text"
+            inputProps={{
+              inputMode: 'numeric'
+            }}
+            value={rangeMeta.to}
+            onChange={updateRangeMetaField('to')}
           />
         </FormControl>
       )}

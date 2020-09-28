@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { useCallback } from 'react';
 import {
   useGetActivitiesQuery,
   useDeleteActivityMutation,
@@ -7,26 +7,45 @@ import {
   Activity
 } from '../generated/apollo';
 import { Table } from '../components/Table';
-import { Spinner } from '../components/Spinner';
 import { useApolloError } from '../hooks/useApolloError';
-import { ErrorMessage } from '../components/ErrorMessage';
 import { useHistory } from 'react-router-dom';
+import styled from 'styled-components';
+import { AddFabButton } from '../components/AddFabButton';
+import { PageWrapper } from '../components/PageWrapper';
+import { Button } from '@material-ui/core';
+import { useTodoist } from '../hooks/useTodoist';
+import { useGetTodoistActivity } from '../hooks/useGetTodoistActivity';
+
+const AddFabButtonWrapper = styled.div`
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+`;
+
+const ConnectTodoistButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+`;
 
 export const Activities = () => {
   const history = useHistory();
   const { errorMessage, onError, errorTime } = useApolloError();
+  const { authorizeInTodoist } = useTodoist();
 
+  const { todoistActivity } = useGetTodoistActivity({ onError });
   const { data, loading } = useGetActivitiesQuery({ onError });
   const [deleteActivity] = useDeleteActivityMutation({
     onError,
     refetchQueries: [refetchGetActivitiesQuery(), refetchGetEntriesQuery()]
   });
 
-  if (loading) return <Spinner />;
+  const onActivityCreateClick = useCallback(() => {
+    history.push('/activities/create');
+  }, [history]);
 
   return (
-    <Fragment>
-      <ErrorMessage errorMessage={errorMessage} errorTime={errorTime}/>
+    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={loading}>
       <Table
         title="Activities"
         columns={[
@@ -59,6 +78,18 @@ export const Activities = () => {
           }
         }}
       />
-    </Fragment>
+
+      {!todoistActivity && (
+        <ConnectTodoistButtonWrapper>
+          <Button variant="contained" color="primary" onClick={authorizeInTodoist}>
+            Connect Todoist
+          </Button>
+        </ConnectTodoistButtonWrapper>
+      )}
+
+      <AddFabButtonWrapper>
+        <AddFabButton onClick={onActivityCreateClick} />
+      </AddFabButtonWrapper>
+    </PageWrapper>
   );
 };

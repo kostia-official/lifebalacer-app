@@ -4,12 +4,13 @@ import { AddFabButton } from '../components/AddFabButton';
 import styled from 'styled-components';
 import { useGetEntriesByDayQuery } from '../generated/apollo';
 import { useApolloError } from '../hooks/useApolloError';
-import { ErrorMessage } from '../components/ErrorMessage';
-import { Spinner } from '../components/Spinner';
-import { List, ListItem, ListItemText, Typography } from '@material-ui/core';
+import { List, ListItem, ListItemText, Typography, ListSubheader } from '@material-ui/core';
 import { DateTime } from 'luxon';
 import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
+import { PageWrapper } from '../components/PageWrapper';
+import { useDaysStatisticText } from '../hooks/useDaysStatisticText';
+import { getEntryLabel } from '../helpers/getEntryLabel';
 
 const StyledList = styled(List)`
   background-color: ${({ theme }) => theme.palette.background.paper};
@@ -33,7 +34,8 @@ const AddFabButtonWrapper = styled.div`
 export const Entries = () => {
   const history = useHistory();
   const { errorMessage, errorTime, onError } = useApolloError();
-  const { data, loading } = useGetEntriesByDayQuery({ onError });
+  const { data, loading: isEntriesLoading } = useGetEntriesByDayQuery({ onError });
+  const { isStatisticLoading, statisticText } = useDaysStatisticText();
 
   const onEntryFormOpen = useCallback(
     (date = new Date()) => {
@@ -62,21 +64,23 @@ export const Entries = () => {
     [entries]
   );
 
-  if (loading) return <Spinner />;
+  const isLoading = isStatisticLoading || isEntriesLoading;
 
   return (
-    <div>
-      <ErrorMessage errorMessage={errorMessage} errorTime={errorTime} />
-
+    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={isLoading}>
       {_.isEmpty(entries) ? (
         <Typography>So far no entries...</Typography>
       ) : (
-        <StyledList>
+        <StyledList
+          subheader={
+            <ListSubheader component="div" id="nested-list-subheader">
+              {statisticText}
+            </ListSubheader>
+          }
+        >
           {entries?.map((day) => {
             const activitiesText = day.entries
-              .map(({ activity, value }) => {
-                return `${activity.emoji} ${activity.name}${value ? ` (${value})` : ''}`;
-              })
+              .map((entry) => getEntryLabel(entry))
               .join(', ');
 
             return (
@@ -98,6 +102,6 @@ export const Entries = () => {
       <AddFabButtonWrapper>
         <AddFabButton onClick={() => onEntryFormOpen()} />
       </AddFabButtonWrapper>
-    </div>
+    </PageWrapper>
   );
 };
