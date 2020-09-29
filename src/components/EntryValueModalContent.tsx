@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, SyntheticEvent } from 'react';
 import { CardContent, CardActions, Button } from '@material-ui/core';
 import { TextField } from './TextField';
 import { Entry, ActivityType } from '../generated/apollo';
-import { ActivityResult } from '../types';
+import { ActivityResult } from '../common/types';
 import styled from 'styled-components';
 
 export interface EntryValueModalContentProps {
@@ -14,6 +14,11 @@ export interface EntryValueModalContentProps {
 
 const TextFieldStyled = styled(TextField)`
   width: 200px;
+`;
+
+const CardActionsStyled = styled(CardActions)`
+  display: flex;
+  justify-content: space-between;
 `;
 
 export const EntryValueModalContent: React.FC<EntryValueModalContentProps> = ({
@@ -78,10 +83,12 @@ export const EntryValueModalContent: React.FC<EntryValueModalContentProps> = ({
           onChange={onChange}
         />
       </CardContent>
-      <CardActions>
-        <Button type="submit">Save</Button>
+      <CardActionsStyled>
+        <Button type="submit" variant="contained" color="primary">
+          Save
+        </Button>
         <Button onClick={onDelete}>Delete</Button>
-      </CardActions>
+      </CardActionsStyled>
     </form>
   );
 };

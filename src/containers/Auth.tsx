@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, makeStyles } from '@material-ui/core';
-import { config } from '../config';
+import { config } from '../common/config';
 import { useAuth } from '../hooks/useAuth';
 import { useLocation } from 'react-router-dom';
 import queryString from 'query-string';

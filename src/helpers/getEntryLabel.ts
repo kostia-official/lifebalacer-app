@@ -1,4 +1,4 @@
-import { EntryResult } from '../types';
+import { EntryResult } from '../common/types';
 
 export const getEntryLabel = (entry: EntryResult) => {
   const { activity, value } = entry;

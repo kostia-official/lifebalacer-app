@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import * as uuid from 'uuid';
 import queryString from 'querystring';
-import { config } from '../config';
+import { config } from '../common/config';
 
 export const useTodoist = () => {
   const authorizeInTodoist = useCallback(() => {

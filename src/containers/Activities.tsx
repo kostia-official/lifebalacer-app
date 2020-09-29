@@ -50,7 +50,7 @@ export const Activities = () => {
     data?.activities.map((activity) => {
       return {
         ...activity,
-        name: `${activity.emoji} ${activity.name}`
+        name: `${activity.emoji}  ${activity.name}`
       };
     }) || [];
 
@@ -70,7 +70,8 @@ export const Activities = () => {
           },
           {
             title: 'Points',
-            field: 'points'
+            field: 'points',
+            defaultSort: 'desc'
           }
         ]}
         data={activities}

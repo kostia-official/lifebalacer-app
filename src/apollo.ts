@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache, HttpLink, split } from '@apollo/client';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { ApolloLink } from '@apollo/client/link/core';
-import { config } from './config';
+import { config } from './common/config';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { setContext } from '@apollo/client/link/context';
 import { RetryLink } from '@apollo/client/link/retry';

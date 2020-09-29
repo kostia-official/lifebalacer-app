@@ -16,21 +16,22 @@ import {
 import { useApolloError } from '../hooks/useApolloError';
 import { Spinner } from '../components/Spinner';
 import { ErrorMessage } from '../components/ErrorMessage';
-import * as _ from 'remeda';
+import * as R from 'remeda';
 import { Card, CardContent, Typography, Button } from '@material-ui/core';
 import { useParams, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { CardModal } from '../components/CardModal';
 import { EntryValueModalContent } from '../components/EntryValueModalContent';
-import { ActivityResult } from '../types';
+import { ActivityResult } from '../common/types';
+import { ActivityCategoryOrder } from '../common/mappers';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
 `;
 
-const ButtonStyled = styled(Button)`
+const EntryPickButton: typeof Button = styled(Button)`
   height: 40px;
-  margin-right: 8px;
+  margin: 8px 8px 0 0;
 `;
 
 const DoneButton = styled(Button)`
@@ -188,11 +189,16 @@ export const EntriesForm = () => {
   }, [history]);
 
   const activitiesByCategory = useMemo(
-    () => _.groupBy(activities, (activity) => activity.category),
+    () =>
+      R.pipe(
+        activities,
+        R.sortBy((activity) => ActivityCategoryOrder[activity.category]),
+        R.groupBy((activity) => activity.category)
+      ),
     [activities]
   );
   const modalActivity = useMemo(
-    () => _.find(activities, (activity) => activity._id === modalEntry?.activityId),
+    () => R.find(activities, (activity) => activity._id === modalEntry?.activityId),
     [activities, modalEntry]
   );
 
@@ -200,7 +206,7 @@ export const EntriesForm = () => {
 
   return (
     <div>
-      <ErrorMessage errorMessage={errorMessage} errorTime={errorTime}/>
+      <ErrorMessage errorMessage={errorMessage} errorTime={errorTime} />
 
       <CardModal isShow={!!modalEntry} onClose={closeModal}>
         <EntryValueModalContent
@@ -223,17 +229,18 @@ export const EntriesForm = () => {
                 const entry = getEntryByActivityId(activity._id);
 
                 return (
-                  <ButtonStyled
+                  <EntryPickButton
                     key={activity._id}
                     variant={entry ? 'contained' : 'outlined'}
                     color="primary"
+                    size="small"
                     onClick={() => (entry ? unselectEntry(entry) : selectEntry(activity))}
                     startIcon={<Typography variant="h5">{activity.emoji}</Typography>}
                     disableRipple
                     disableElevation
                   >
                     {activity.name} {entry?.value && `(${entry.value})`}
-                  </ButtonStyled>
+                  </EntryPickButton>
                 );
               })}
             </CardContent>

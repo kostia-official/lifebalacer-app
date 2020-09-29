@@ -114,6 +114,10 @@ export const ActivityForm = () => {
     [activity, rangeMeta, createActivity, updateActivity, _id, isEdit]
   );
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   if (loading) return <Spinner />;
 
   return (

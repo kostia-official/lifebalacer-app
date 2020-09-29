@@ -1,4 +1,4 @@
-import { RenderDayResult } from '../types';
+import { RenderDayResult } from '../common/types';
 import React, { useCallback } from 'react';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
