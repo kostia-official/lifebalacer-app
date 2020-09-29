@@ -80,7 +80,7 @@ export const Entries = () => {
         >
           {entries?.map((day) => {
             const activitiesText = day.entries
-              .map((entry) => getEntryLabel(entry))
+              .map((entry) => getEntryLabel({ entry, activity: entry.activity }))
               .join(', ');
 
             return (

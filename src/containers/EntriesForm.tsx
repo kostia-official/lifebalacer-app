@@ -17,28 +17,23 @@ import { useApolloError } from '../hooks/useApolloError';
 import { Spinner } from '../components/Spinner';
 import { ErrorMessage } from '../components/ErrorMessage';
 import * as R from 'remeda';
+import _ from 'lodash';
 import { Card, CardContent, Typography, Button } from '@material-ui/core';
 import { useParams, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { CardModal } from '../components/CardModal';
 import { EntryValueModalContent } from '../components/EntryValueModalContent';
-import { ActivityResult } from '../common/types';
+import { ActivityResult, SelectedEntry } from '../common/types';
 import { ActivityCategoryOrder } from '../common/mappers';
+import { EntryPickButton } from '../components/EntryPickButton';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
 `;
 
-const EntryPickButton: typeof Button = styled(Button)`
-  height: 40px;
-  margin: 8px 8px 0 0;
-`;
-
 const DoneButton = styled(Button)`
   width: 100%;
 `;
-
-type SelectedEntry = Pick<Entry, '_id' | 'activityId' | 'completedAt' | 'value'>;
 
 export const EntriesForm = () => {
   const [modalEntry, setModalEntry] = useState<SelectedEntry | null>(null);
@@ -58,8 +53,8 @@ export const EntriesForm = () => {
   const getSelectedEntriesFromEntriesByDay = useCallback(() => {
     if (!entriesByDay) return [];
 
-    return entriesByDay.map(({ _id, value, completedAt, activity }) => {
-      return { _id, value, completedAt, activityId: activity._id };
+    return entriesByDay.map(({ _id, value, completedAt, activity, description }) => {
+      return { _id, value, completedAt, activityId: activity._id, description };
     });
   }, [entriesByDay]);
 
@@ -76,9 +71,9 @@ export const EntriesForm = () => {
   });
   const activities = getActivitiesData?.activities || [];
 
-  const getEntryByActivityId = useCallback(
+  const getEntriesByActivityId = useCallback(
     (activityId: string) => {
-      return selectedEntries.find((entry) => entry.activityId === activityId);
+      return selectedEntries.filter((entry) => entry.activityId === activityId);
     },
     [selectedEntries]
   );
@@ -98,7 +93,7 @@ export const EntriesForm = () => {
 
   const createEntry = useCallback(
     async (activityId: string, value?: Entry['value']) => {
-      if (getEntryByActivityId(activityId)) return;
+      if (!_.isEmpty(getEntriesByActivityId(activityId))) return;
 
       const entry: SelectedEntry = {
         _id: new ObjectId().toString(),
@@ -110,7 +105,7 @@ export const EntriesForm = () => {
       setSelectedEntries((prev) => [...prev, entry]);
       await createEntryMutation({ variables: { data: entry } });
     },
-    [getEntryByActivityId, completedAt, createEntryMutation]
+    [getEntriesByActivityId, completedAt, createEntryMutation]
   );
 
   const selectEntry = useCallback(
@@ -226,22 +221,23 @@ export const EntriesForm = () => {
               </Typography>
 
               {activities.map((activity) => {
-                const entry = getEntryByActivityId(activity._id);
+                const entries = getEntriesByActivityId(activity._id);
 
-                return (
-                  <EntryPickButton
-                    key={activity._id}
-                    variant={entry ? 'contained' : 'outlined'}
-                    color="primary"
-                    size="small"
-                    onClick={() => (entry ? unselectEntry(entry) : selectEntry(activity))}
-                    startIcon={<Typography variant="h5">{activity.emoji}</Typography>}
-                    disableRipple
-                    disableElevation
-                  >
-                    {activity.name} {entry?.value && `(${entry.value})`}
-                  </EntryPickButton>
-                );
+                if (_.isEmpty(entries)) {
+                  return <EntryPickButton activity={activity} selectEntry={selectEntry} />;
+                }
+
+                return entries?.map((entry) => {
+                  return (
+                    <EntryPickButton
+                      key={entry._id}
+                      entry={entry}
+                      activity={activity}
+                      selectEntry={selectEntry}
+                      unselectEntry={unselectEntry}
+                    />
+                  );
+                });
               })}
             </CardContent>
           </CardStyled>
