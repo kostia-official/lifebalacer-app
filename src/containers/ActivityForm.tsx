@@ -33,8 +33,8 @@ const FormContainer = styled.form`
   flex-direction: column;
 `;
 
-const SubmitButton = styled(Button)`
-  margin-top: 10px;
+const SubmitButton: typeof Button = styled(Button)`
+  margin-top: 8px;
 `;
 
 export const ActivityForm = () => {
@@ -125,12 +125,14 @@ export const ActivityForm = () => {
         label="Name"
         value={activity.name}
         onChange={updateActivityField('name')}
+        margin="dense"
       />
       <TextField
         required
         label="Emoji"
         value={activity.emoji}
         onChange={updateActivityField('emoji')}
+        margin="dense"
       />
 
       <FormControl margin="dense" required>
@@ -178,9 +180,10 @@ export const ActivityForm = () => {
         label="Points"
         type="text"
         inputProps={{
+          shrink: true,
           inputMode: 'numeric'
         }}
-        value={activity.points}
+        value={activity.points ?? ''}
         onChange={updateActivityField('points')}
       />
 
@@ -192,10 +195,11 @@ export const ActivityForm = () => {
             type="text"
             margin="dense"
             inputProps={{
+              shrink: true,
               inputMode: 'numeric'
             }}
             label="From"
-            value={rangeMeta.from}
+            value={rangeMeta.from ?? ''}
             onChange={updateRangeMetaField('from')}
           />
           <TextField
@@ -204,9 +208,10 @@ export const ActivityForm = () => {
             label="To"
             type="text"
             inputProps={{
+              shrink: true,
               inputMode: 'numeric'
             }}
-            value={rangeMeta.to}
+            value={rangeMeta.to ?? ''}
             onChange={updateRangeMetaField('to')}
           />
         </FormControl>

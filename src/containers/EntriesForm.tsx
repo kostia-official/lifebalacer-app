@@ -30,6 +30,7 @@ const CardStyled = styled(Card)`
 
 const ButtonStyled = styled(Button)`
   height: 40px;
+  margin-right: 8px;
 `;
 
 const DoneButton = styled(Button)`

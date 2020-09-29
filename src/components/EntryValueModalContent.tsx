@@ -55,7 +55,7 @@ export const EntryValueModalContent: React.FC<EntryValueModalContentProps> = ({
 
   const label = `Value ${
     activity?.valueType === ActivityType.Range
-      ? `(${activity.rangeMeta?.from}-${activity.rangeMeta?.to})`
+      ? `(${activity.rangeMeta?.from} - ${activity.rangeMeta?.to})`
       : ''
   }`;
 
@@ -67,12 +67,12 @@ export const EntryValueModalContent: React.FC<EntryValueModalContentProps> = ({
           fullWidth
           autoFocus={true}
           label={label}
-          type="number"
+          type="text"
           value={value}
           InputProps={{
             inputProps: {
-              inputMode: 'numeric',
-              ...rangeInputProps
+              ...rangeInputProps,
+              inputMode: 'numeric'
             }
           }}
           onChange={onChange}
