@@ -11,7 +11,7 @@ import { apolloClient } from './apollo';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { config } from './common/config';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
+import LuxonUtils from '@date-io/luxon';
 
 const history = createBrowserHistory();
 
@@ -20,7 +20,7 @@ ReactDOM.render(
     <ApolloProvider client={apolloClient}>
       <Router history={history}>
         <ThemeProvider>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <MuiPickersUtilsProvider utils={LuxonUtils}>
             <App />
           </MuiPickersUtilsProvider>
         </ThemeProvider>

@@ -224,7 +224,7 @@ export const EntriesForm = () => {
                 const entries = getEntriesByActivityId(activity._id);
 
                 if (_.isEmpty(entries)) {
-                  return <EntryPickButton activity={activity} selectEntry={selectEntry} />;
+                  return <EntryPickButton key={activity._id} activity={activity} selectEntry={selectEntry} />;
                 }
 
                 return entries?.map((entry) => {

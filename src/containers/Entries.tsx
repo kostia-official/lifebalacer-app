@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import { DatePickerButton } from '../components/DatePickerButton';
+import React, { useCallback, useState, Fragment } from 'react';
+import { DatePickerButton } from './DatePickerButton';
 import { AddFabButton } from '../components/AddFabButton';
 import styled from 'styled-components';
 import { useGetEntriesByDayQuery } from '../generated/apollo';
@@ -11,6 +11,7 @@ import _ from 'lodash';
 import { PageWrapper } from '../components/PageWrapper';
 import { useDaysStatisticText } from '../hooks/useDaysStatisticText';
 import { getEntryLabel } from '../helpers/getEntryLabel';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const StyledList = styled(List)`
   background-color: ${({ theme }) => theme.palette.background.paper};
@@ -18,6 +19,8 @@ const StyledList = styled(List)`
 
 const PointsText = styled(ListItemText)`
   flex-grow: 0;
+  min-width: 30px;
+  margin-left: 10px;
 `;
 
 const DatePickerButtonWrapper = styled.div`
@@ -34,8 +37,39 @@ const AddFabButtonWrapper = styled.div`
 export const Entries = () => {
   const history = useHistory();
   const { errorMessage, errorTime, onError } = useApolloError();
-  const { data, loading: isEntriesLoading } = useGetEntriesByDayQuery({ onError });
   const { isStatisticLoading, statisticText } = useDaysStatisticText();
+  const [isHasMore, setIsHasMore] = useState(true);
+
+  const { data, loading: isEntriesLoading, fetchMore } = useGetEntriesByDayQuery({ onError });
+  const days = data?.entriesByDay;
+
+  const onLoadMore = useCallback(() => {
+    const lastDate: string = _.chain(days)
+      .last()
+      .get('entries')
+      .orderBy(['completedAt'], ['desc'])
+      .last()
+      .get('completedAt')
+      .value();
+
+    if (!lastDate) return;
+
+    fetchMore({
+      variables: {
+        dateAfter: lastDate
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult || _.isEmpty(fetchMoreResult?.entriesByDay)) {
+          setIsHasMore(false);
+          return prev;
+        }
+
+        return Object.assign({}, prev, {
+          entriesByDay: [...prev.entriesByDay, ...fetchMoreResult.entriesByDay]
+        });
+      }
+    }).then();
+  }, [days, fetchMore]);
 
   const onEntryFormOpen = useCallback(
     (date = new Date()) => {
@@ -44,60 +78,48 @@ export const Entries = () => {
     [history]
   );
 
-  const entries = data?.entriesByDay;
-
-  const renderPickerDay = useCallback(
-    (date: Date) => {
-      const calendarDate = DateTime.fromJSDate(date).ordinal;
-
-      const isMark = !!entries?.find((day) => {
-        const entryDay = DateTime.fromISO(day.date).ordinal;
-
-        return calendarDate === entryDay;
-      });
-
-      return {
-        isMark,
-        color: 'white'
-      };
-    },
-    [entries]
-  );
-
   const isLoading = isStatisticLoading || isEntriesLoading;
 
   return (
     <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={isLoading}>
-      {_.isEmpty(entries) ? (
+      {_.isEmpty(days) ? (
         <Typography>So far no entries...</Typography>
       ) : (
-        <StyledList
-          subheader={
-            <ListSubheader component="div" id="nested-list-subheader">
-              {statisticText}
-            </ListSubheader>
-          }
+        <InfiniteScroll
+          style={{ overflow: 'hidden' }}
+          dataLength={days?.length ?? 0}
+          next={onLoadMore}
+          hasMore={isHasMore}
+          loader={<Fragment />}
         >
-          {entries?.map((day) => {
-            const activitiesText = day.entries
-              .map((entry) => getEntryLabel({ entry, activity: entry.activity }))
-              .join(', ');
+          <StyledList
+            subheader={
+              <ListSubheader component="div" id="nested-list-subheader">
+                {statisticText}
+              </ListSubheader>
+            }
+          >
+            {days?.map((day) => {
+              const activitiesText = day.entries
+                .map((entry) => getEntryLabel({ entry, activity: entry.activity }))
+                .join(', ');
 
-            return (
-              <ListItem key={day.date} onClick={() => onEntryFormOpen(day.date)} button>
-                <ListItemText
-                  primary={DateTime.fromISO(day.date).toLocaleString(DateTime.DATE_HUGE)}
-                  secondary={activitiesText}
-                />
-                <PointsText primary={day.points} />
-              </ListItem>
-            );
-          })}
-        </StyledList>
+              return (
+                <ListItem key={day.date} onClick={() => onEntryFormOpen(day.date)} button>
+                  <ListItemText
+                    primary={DateTime.fromISO(day.date).toLocaleString(DateTime.DATE_HUGE)}
+                    secondary={activitiesText}
+                  />
+                  <PointsText primary={day.points} />
+                </ListItem>
+              );
+            })}
+          </StyledList>
+        </InfiniteScroll>
       )}
 
       <DatePickerButtonWrapper>
-        <DatePickerButton onChange={onEntryFormOpen} onRenderDay={renderPickerDay} />
+        <DatePickerButton onChange={onEntryFormOpen} />
       </DatePickerButtonWrapper>
       <AddFabButtonWrapper>
         <AddFabButton onClick={() => onEntryFormOpen()} />

@@ -55,14 +55,14 @@ fragment EntriesByDayResult on EntriesByDay {
   }
 }
 
-query GetEntriesByDay {
-  entriesByDay {
+query GetEntriesByDay($dateAfter: Date) {
+  entriesByDay(dateAfter: $dateAfter) {
     ...EntriesByDayResult
   }
 }
 
-query GetActivityEntriesByDay($activityId: ID) {
-  entriesByDay(activityId: $activityId) {
+query GetCalendarDays($dateAfter: Date, $dateBefore: Date) {
+  entriesByDay(dateAfter: $dateAfter, dateBefore: $dateBefore) {
     date
     points
     entries {
