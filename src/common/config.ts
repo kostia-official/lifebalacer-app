@@ -8,7 +8,7 @@ export const config = {
     clientId: process.env.REACT_APP_AUTH0_CLIENT_ID || 'kSGokvSXbW2fpANxozdHRE7MvU6GFZAa',
     redirectUri: process.env.REACT_APP_AUTH0_REDIRECT_URI || 'http://localhost:3000',
     responseType: 'token id_token',
-    scope: 'openid',
+    scope: 'openid email',
     audience: 'rewarder-api',
     useRefreshTokens: true
   } as Auth0ProviderOptions,

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Fragment } from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -11,6 +11,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Icon from '@material-ui/core/Icon';
 import { IPage } from '../containers/App';
 import { useDeviceDetect } from '../hooks/useDeviceDetect';
+import { ListItemAvatar, Avatar, Divider } from '@material-ui/core';
 
 export const drawerWidth = '240px';
 
@@ -42,6 +43,10 @@ const useStyles = makeStyles((theme) => ({
   },
   icon: {
     paddingLeft: theme.spacing(1)
+  },
+  userListItem: {
+    marginBottom: theme.spacing(1),
+    height: '70px'
   }
 }));
 
@@ -50,13 +55,19 @@ export interface INavigationProps {
   items: IPage[];
   onClose: () => void;
   onItemClick: (path: string) => void;
+  user?: {
+    name: string;
+    email: string;
+    avatar: string;
+  };
 }
 
 export const Navigation: React.FC<INavigationProps> = ({
   isExpanded,
   items,
   onClose,
-  onItemClick
+  onItemClick,
+  user
 }) => {
   const classes = useStyles();
   const { isDesktop } = useDeviceDetect();
@@ -79,6 +90,23 @@ export const Navigation: React.FC<INavigationProps> = ({
         open={isExpanded}
       >
         <List className={classes.list}>
+          <Fragment>
+            <ListItem className={classes.userListItem}>
+              <ListItemAvatar>
+                {user?.avatar ? (
+                  <Avatar alt={user?.name} src={user?.avatar} />
+                ) : (
+                  <Avatar>
+                    <Icon>person</Icon>
+                  </Avatar>
+                )}
+              </ListItemAvatar>
+              <ListItemText primary={user?.name} secondary={user?.email} />
+            </ListItem>
+
+            <Divider />
+          </Fragment>
+
           {_.map(items, ({ icon, name, path }) => (
             <ListItem
               button
