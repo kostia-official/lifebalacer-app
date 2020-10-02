@@ -3,6 +3,7 @@ import { Typography, Button } from '@material-ui/core';
 import { getEntryLabel } from '../helpers/getEntryLabel';
 import styled from 'styled-components';
 import { SelectedEntry, ActivityResult } from '../common/types';
+import { ActivityType } from '../generated/apollo';
 
 const ButtonStyled: typeof Button = styled(Button)`
   height: 40px;
@@ -27,7 +28,11 @@ export const EntryPickButton: React.FC<EntryPickButtonProps> = ({
       variant={entry ? 'contained' : 'outlined'}
       color="primary"
       size="small"
-      onClick={() => (entry ? unselectEntry && unselectEntry(entry) : selectEntry(activity))}
+      onClick={() => {
+        if (activity.valueType === ActivityType.Todoist) return ;
+
+        return entry ? unselectEntry && unselectEntry(entry) : selectEntry(activity);
+      }}
       startIcon={<Typography variant="h5">{activity.emoji}</Typography>}
       disableRipple
       disableElevation

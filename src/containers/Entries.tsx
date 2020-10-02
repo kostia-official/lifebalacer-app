@@ -12,6 +12,8 @@ import { PageWrapper } from '../components/PageWrapper';
 import { useDaysStatisticText } from '../hooks/useDaysStatisticText';
 import { getEntryLabel } from '../helpers/getEntryLabel';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { useGetTodoistActivity } from '../hooks/useGetTodoistActivity';
+import { groupTodoistEntries } from '../helpers/groupTodoistEntries';
 
 const StyledList = styled(List)`
   background-color: ${({ theme }) => theme.palette.background.paper};
@@ -42,6 +44,8 @@ export const Entries = () => {
 
   const { data, loading: isEntriesLoading, fetchMore } = useGetEntriesByDayQuery({ onError });
   const days = data?.entriesByDay;
+
+  const { todoistActivity } = useGetTodoistActivity({ onError });
 
   const onLoadMore = useCallback(() => {
     const lastDate: string = _.chain(days)
@@ -100,7 +104,12 @@ export const Entries = () => {
             }
           >
             {days?.map((day) => {
-              const activitiesText = day.entries
+              const { entriesWithTodoistGroup } = groupTodoistEntries({
+                entries: day.entries,
+                todoistActivityId: todoistActivity?._id
+              });
+
+              const activitiesText = entriesWithTodoistGroup
                 .map((entry) => getEntryLabel({ entry, activity: entry.activity }))
                 .join(', ');
 

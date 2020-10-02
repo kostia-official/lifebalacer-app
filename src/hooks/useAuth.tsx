@@ -38,7 +38,7 @@ export const useAuth = (): IUseAuthResult => {
         setAccessToken('');
       }
     })();
-  }, [setAccessToken, getAccessTokenSilently, isAuthenticated]);
+  }, [setAccessToken, getAccessTokenSilently, getIdTokenClaims, isAuthenticated]);
 
   return {
     ...auth,

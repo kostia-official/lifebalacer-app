@@ -26,6 +26,8 @@ import { EntryValueModalContent } from '../components/EntryValueModalContent';
 import { ActivityResult, SelectedEntry } from '../common/types';
 import { ActivityCategoryOrder } from '../common/mappers';
 import { EntryPickButton } from '../components/EntryPickButton';
+import { groupTodoistEntries } from '../helpers/groupTodoistEntries';
+import { useGetTodoistActivity } from '../hooks/useGetTodoistActivity';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
@@ -70,12 +72,13 @@ export const EntriesForm = () => {
     onError
   });
   const activities = getActivitiesData?.activities || [];
+  const { todoistActivity } = useGetTodoistActivity({ onError });
 
   const getEntriesByActivityId = useCallback(
     (activityId: string) => {
-      return selectedEntries.filter((entry) => entry.activityId === activityId);
+      return entriesByDay?.filter((entry) => entry.activity._id === activityId);
     },
-    [selectedEntries]
+    [entriesByDay]
   );
 
   const mutationOptions = {
@@ -224,10 +227,25 @@ export const EntriesForm = () => {
                 const entries = getEntriesByActivityId(activity._id);
 
                 if (_.isEmpty(entries)) {
-                  return <EntryPickButton key={activity._id} activity={activity} selectEntry={selectEntry} />;
+                  return (
+                    <EntryPickButton
+                      key={activity._id}
+                      activity={activity}
+                      selectEntry={selectEntry}
+                    />
+                  );
                 }
 
-                return entries?.map((entry) => {
+                let finalEntries = entries;
+                if (activity.valueType === ActivityType.Todoist) {
+                  const { entriesWithTodoistGroup } = groupTodoistEntries({
+                    entries: entries!,
+                    todoistActivityId: todoistActivity?._id
+                  });
+                  finalEntries = entriesWithTodoistGroup;
+                }
+
+                return finalEntries?.map((entry) => {
                   return (
                     <EntryPickButton
                       key={entry._id}

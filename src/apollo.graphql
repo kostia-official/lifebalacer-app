@@ -47,6 +47,7 @@ fragment EntriesByDayResult on EntriesByDay {
     description
     value
     completedAt
+    activityId
     activity {
       _id
       name
