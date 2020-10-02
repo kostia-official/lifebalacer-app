@@ -46,7 +46,16 @@ const useStyles = makeStyles((theme) => ({
   },
   userListItem: {
     marginBottom: theme.spacing(1),
-    height: '70px'
+    height: '80px',
+    [theme.breakpoints.up('sm')]: {
+      height: '70px'
+    }
+  },
+  divider: {
+    marginBottom: '16px',
+    [theme.breakpoints.up('sm')]: {
+      marginBottom: theme.spacing(1),
+    }
   }
 }));
 
@@ -104,7 +113,7 @@ export const Navigation: React.FC<INavigationProps> = ({
               <ListItemText primary={user?.name} secondary={user?.email} />
             </ListItem>
 
-            <Divider />
+            <Divider className={classes.divider}/>
           </Fragment>
 
           {_.map(items, ({ icon, name, path }) => (
