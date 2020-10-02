@@ -1,5 +1,6 @@
 import { EntryResult } from '../common/types';
 import * as R from 'remeda';
+import _ from 'lodash';
 
 export interface HookProps {
   entries: EntryResult[];
@@ -8,17 +9,19 @@ export interface HookProps {
 
 export const groupTodoistEntries = ({ entries, todoistActivityId }: HookProps) => {
   const { todoistEntries = [], regularEntries = [] } = R.groupBy(entries, (entry) => {
-    return entry.activity._id === todoistActivityId ? 'todoistEntries' : 'regularEntries';
+    return entry.activityId === todoistActivityId ? 'todoistEntries' : 'regularEntries';
   });
 
-  const todoistGroup = todoistEntries?.reduce<EntryResult>((acc, item) => {
-    return {
-      ...acc,
-      ...item,
-      value: (acc.value ?? 0) + (item.value ?? 0),
-      description: 'Todoist tasks'
-    };
-  }, {} as EntryResult);
+  const todoistGroup = _.isEmpty(todoistEntries)
+    ? null
+    : todoistEntries?.reduce<EntryResult>((acc, item) => {
+        return {
+          ...acc,
+          ...item,
+          value: (acc.value ?? 0) + (item.value ?? 0),
+          description: 'Todoist tasks'
+        };
+      }, {} as EntryResult);
 
   return {
     regularEntries,
