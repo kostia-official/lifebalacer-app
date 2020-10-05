@@ -9,7 +9,14 @@ export interface UseDatePickerRenderDayProps {
   activityId?: string;
 }
 
-export const useDatePickerRenderDay = ({ onError, activityId }: UseDatePickerRenderDayProps = {}) => {
+export interface DaysPayload {
+  [key: string]: { points: number; }
+}
+
+export const useDatePickerRenderDay = ({
+  onError,
+  activityId
+}: UseDatePickerRenderDayProps = {}) => {
   const { data: daysData } = useGetCalendarDaysQuery({
     onError,
     variables: {
@@ -19,23 +26,23 @@ export const useDatePickerRenderDay = ({ onError, activityId }: UseDatePickerRen
     fetchPolicy: 'cache-and-network'
   });
 
-  const daysDates: string[] =
+  const daysPayload: DaysPayload =
     useMemo(
       () =>
-        daysData?.entriesByDay?.reduce((acc, day) => {
+        daysData?.entriesByDay?.reduce<DaysPayload>((acc, day) => {
           const date = DateTime.fromISO(day.date).toISODate();
 
           if (!activityId) {
-            return [...acc, date];
+            return { ...acc, [date]: { points: day.points } };
           }
           if (day.entries.find((entry) => entry.activityId === activityId)) {
-            return [...acc, date];
+            return { ...acc, [date]: { points: day.points } };
           }
 
           return acc;
-        }, [] as string[]),
+        }, {}),
       [daysData, activityId]
-    ) ?? [];
+    ) ?? {};
 
   const renderDay = useCallback(
     (
@@ -47,19 +54,28 @@ export const useDatePickerRenderDay = ({ onError, activityId }: UseDatePickerRen
       if (!day) return dayComponent;
 
       const calendarDate = day.toISODate();
-      const isMark = !!daysDates?.includes(calendarDate);
+      const dayPayload = daysPayload[calendarDate];
 
-      if (!isMark) return dayComponent;
+      if (!dayPayload) return dayComponent;
+
+      const color = getColorFromPoints(dayPayload.points);
 
       return React.cloneElement(dayComponent, {
         style: {
-          border: `2px solid white`,
+          border: `2px solid ${color}`,
           borderRadius: '50%'
         }
       });
     },
-    [daysDates]
+    [daysPayload]
   );
 
   return { renderDay, daysData };
 };
+
+function getColorFromPoints(points: number) {
+  if (points > 300) return 'darkgreen';
+  if (points < -300) return 'darkred';
+
+  return '#757500';
+}
