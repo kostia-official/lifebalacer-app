@@ -20,7 +20,7 @@ import * as R from 'remeda';
 import _ from 'lodash';
 import { Card, CardContent, Typography, Button } from '@material-ui/core';
 import { useParams, useHistory } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { CardModal } from '../components/CardModal';
 import { EntryValueModalContent } from '../components/EntryValueModalContent';
 import { ActivityResult, SelectedEntry } from '../common/types';
@@ -28,6 +28,8 @@ import { ActivityCategoryOrder } from '../common/mappers';
 import { EntryPickButton } from '../components/EntryPickButton';
 import { groupTodoistEntries } from '../helpers/groupTodoistEntries';
 import { useGetTodoistActivity } from '../hooks/useGetTodoistActivity';
+import { DateTime } from 'luxon';
+import { useDeviceDetect } from '../hooks/useDeviceDetect';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
@@ -37,12 +39,24 @@ const DoneButton = styled(Button)`
   width: 100%;
 `;
 
+const DateTitleWrapper = styled.div<{ isCenter: boolean }>`
+  ${(props) =>
+    props.isCenter
+      ? css`
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        `
+      : ''}
+`;
+
 export const EntriesForm = () => {
+  const { isMobile } = useDeviceDetect();
   const [modalEntry, setModalEntry] = useState<SelectedEntry | null>(null);
 
   const history = useHistory();
   const { date } = useParams();
-  const completedAt = date || new Date().toISOString;
+  const completedAt = date || new Date().toISOString();
 
   const { errorMessage, errorTime, onError } = useApolloError();
 
@@ -205,6 +219,12 @@ export const EntriesForm = () => {
   return (
     <div>
       <ErrorMessage errorMessage={errorMessage} errorTime={errorTime} />
+
+      <DateTitleWrapper isCenter={isMobile}>
+        <Typography color="textSecondary" gutterBottom>
+          {DateTime.fromISO(completedAt).toLocaleString(DateTime.DATE_HUGE)}
+        </Typography>
+      </DateTitleWrapper>
 
       <CardModal isShow={!!modalEntry} onClose={closeModal}>
         <EntryValueModalContent

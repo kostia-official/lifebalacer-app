@@ -17,7 +17,7 @@ export const getEntryLabel = ({ entry, activity, isWithEmoji = true }: GetEntryL
 
   const prefix = isWithEmoji ? `${activity?.emoji} ` : '';
 
-  const value = entry?.value ? ` (${entry.value})` : '';
+  const value = _.isNumber(entry?.value) ? ` (${entry?.value})` : '';
 
   return prefix + name + value;
 };
