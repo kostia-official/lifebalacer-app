@@ -1,7 +1,7 @@
 import { Auth0ProviderOptions } from '@auth0/auth0-react';
 
 export const config = {
-  apiUrl: process.env.REACT_APP_API_URL || 'https://rewarder-prod.herokuapp.com/graphql',
+  apiUrl: process.env.REACT_APP_API_URL || 'https://rewarder-staging.herokuapp.com/graphql',
   wsUrl: process.env.REACT_APP_WS_URL || 'wss://rewarder-staging.herokuapp.com/graphql',
   auth: {
     domain: 'kozzztya.auth0.com',
