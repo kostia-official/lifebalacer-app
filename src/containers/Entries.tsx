@@ -39,10 +39,14 @@ const AddFabButtonWrapper = styled.div`
 export const Entries = () => {
   const history = useHistory();
   const { errorMessage, errorTime, onError } = useApolloError();
-  const { isStatisticLoading, statisticText } = useDaysStatisticText();
+  const { statisticText } = useDaysStatisticText();
+
   const [isHasMore, setIsHasMore] = useState(true);
 
-  const { data, loading: isEntriesLoading, fetchMore } = useGetEntriesByDayQuery({ onError });
+  const { data, fetchMore } = useGetEntriesByDayQuery({
+    onError,
+    fetchPolicy: 'cache-and-network'
+  });
   const days = data?.entriesByDay;
 
   const { todoistActivity } = useGetTodoistActivity({ onError });
@@ -82,11 +86,9 @@ export const Entries = () => {
     [history]
   );
 
-  const isLoading = isStatisticLoading || isEntriesLoading;
-
   return (
-    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={isLoading}>
-      {_.isEmpty(days) ? (
+    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!days}>
+      {days && days.length === 0 ? (
         <Typography>So far no entries...</Typography>
       ) : (
         <InfiniteScroll

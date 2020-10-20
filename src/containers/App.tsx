@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, Fragment } from 'react';
 import { Header } from '../components/Header';
 import { Navigation } from '../components/Navigation';
 import styled from 'styled-components';
@@ -15,6 +15,8 @@ import { Entries } from './Entries';
 import { EntriesForm } from './EntriesForm';
 import { Calendar } from './Calendar';
 import { TodoistAuth } from './TodoistAuth';
+import { loadCache } from '../apollo';
+import { Spinner } from '../components/Spinner';
 
 export interface IPage {
   name: string;
@@ -71,6 +73,14 @@ export const App: React.FC = () => {
   const history = useHistory();
   const { isDesktop } = useDeviceDetect();
   const [isExpandedMenu, setIsExpandedMenu] = useState(isDesktop);
+  const [isCacheLoaded, setIsCacheLoaded] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      await loadCache();
+      setIsCacheLoaded(true);
+    })();
+  }, []);
 
   const swipeHandlers = useSwipeable({
     onSwipedRight: () => setIsExpandedMenu(true),
@@ -93,6 +103,7 @@ export const App: React.FC = () => {
   }, [history]);
 
   if (!isAuthenticated) return <Auth />;
+  if (!isCacheLoaded) return <Fragment />;
 
   return (
     <AppWrapper {...swipeHandlers}>

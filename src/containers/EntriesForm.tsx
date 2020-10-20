@@ -62,6 +62,7 @@ export const EntriesForm = () => {
 
   const { data: entriesData } = useGetEntriesByOneDayQuery({
     variables: { date: completedAt },
+    fetchPolicy: 'cache-and-network',
     onError
   });
   const entriesByDay = entriesData?.entriesByOneDay?.entries;

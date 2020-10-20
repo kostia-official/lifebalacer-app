@@ -1,4 +1,10 @@
-import { ApolloClient, InMemoryCache, HttpLink, split } from '@apollo/client';
+import {
+  ApolloClient,
+  InMemoryCache,
+  HttpLink,
+  split,
+  NormalizedCacheObject
+} from '@apollo/client';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { ApolloLink } from '@apollo/client/link/core';
 import { config } from './common/config';
@@ -7,6 +13,8 @@ import { setContext } from '@apollo/client/link/context';
 import { RetryLink } from '@apollo/client/link/retry';
 import _ from 'lodash';
 import { useTimezone } from './hooks/useTimezone';
+import { persistCache, PersistentStorage } from 'apollo3-cache-persist';
+import { PersistedData } from 'apollo3-cache-persist/lib/types';
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('token');
@@ -55,48 +63,54 @@ const retryLink = new RetryLink({
   }
 });
 
-export const apolloClient = new ApolloClient({
-  cache: new InMemoryCache({
-    typePolicies: {
-      EntriesByDay: {
-        keyFields: ['date'],
-        fields: {
-          entries: {
-            merge(existing, incoming) {
-              return incoming;
-            }
-          }
-        }
-      },
-      Query: {
-        fields: {
-          activity(_, { args, toReference }) {
-            return toReference({
-              __typename: 'Activity',
-              _id: args?._id
-            });
-          },
-          entriesByDay: {
-            merge(existing, incoming) {
-              return incoming;
-            }
-          },
-          entriesByOneDay(existing, { args, readField }) {
-            if (existing) return existing;
-
-            const entriesByDay = readField('entriesByDay');
-
-            if (_.isArray(entriesByDay)) {
-              return _.find(entriesByDay, (day) => {
-                return day.date === args?.date;
-              });
-            }
-
-            return undefined;
+const cache = new InMemoryCache({
+  typePolicies: {
+    EntriesByDay: {
+      keyFields: ['date'],
+      fields: {
+        entries: {
+          merge(existing, incoming) {
+            return incoming;
           }
         }
       }
+    },
+    Query: {
+      fields: {
+        activity(_, { args, toReference }) {
+          return toReference({
+            __typename: 'Activity',
+            _id: args?._id
+          });
+        },
+        entriesByDay: {
+          merge(existing, incoming) {
+            return incoming;
+          }
+        },
+        entriesByOneDay(existing, { args, readField }) {
+          if (existing) return existing;
+
+          const entriesByDay = readField('entriesByDay');
+
+          if (_.isArray(entriesByDay)) {
+            return _.find(entriesByDay, (day) => {
+              return day.date === args?.date;
+            });
+          }
+
+          return undefined;
+        }
+      }
     }
-  }),
+  }
+});
+
+const storage = window.localStorage as PersistentStorage<PersistedData<NormalizedCacheObject>>;
+
+export const loadCache = () => persistCache({ cache, storage });
+
+export const apolloClient = new ApolloClient({
+  cache,
   link: ApolloLink.from([retryLink, authLink, splitLink])
 });

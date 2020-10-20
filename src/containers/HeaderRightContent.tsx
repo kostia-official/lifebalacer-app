@@ -2,9 +2,11 @@ import React, { Fragment } from 'react';
 import { useGetBalanceQuery } from '../generated/apollo';
 
 export const HeaderRightContent = () => {
-  const { data: balanceData, loading: isBalanceLoading } = useGetBalanceQuery();
+  const { data: balanceData } = useGetBalanceQuery({
+    fetchPolicy: 'cache-and-network'
+  });
 
-  if (isBalanceLoading || !balanceData?.balance) return <Fragment />;
+  if (!balanceData?.balance) return <Fragment />;
 
   return <Fragment>{`Balance: ${balanceData?.balance}`}</Fragment>;
 };

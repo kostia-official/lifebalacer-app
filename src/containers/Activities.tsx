@@ -16,6 +16,7 @@ import { Button } from '@material-ui/core';
 import { useTodoist } from '../hooks/useTodoist';
 import { useGetTodoistActivity } from '../hooks/useGetTodoistActivity';
 import { useDeviceDetect } from '../hooks/useDeviceDetect';
+import _ from 'lodash';
 
 const AddFabButtonWrapper = styled.div`
   position: fixed;
@@ -36,7 +37,7 @@ export const Activities = () => {
   const { authorizeInTodoist } = useTodoist();
 
   const { todoistActivity } = useGetTodoistActivity({ onError });
-  const { data, loading } = useGetActivitiesQuery({ onError });
+  const { data } = useGetActivitiesQuery({ onError, fetchPolicy: 'cache-and-network' });
   const [deleteActivity] = useDeleteActivityMutation({
     onError,
     refetchQueries: [refetchGetActivitiesQuery(), refetchGetEntriesQuery()]
@@ -55,7 +56,7 @@ export const Activities = () => {
     }) || [];
 
   return (
-    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={loading}>
+    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={_.isEmpty(data)}>
       <Table
         title="Activities"
         columns={[
