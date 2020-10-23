@@ -20,10 +20,12 @@ export const useAuth = (): IUseAuthResult => {
   const savedToken = localStorage.getItem('token');
   const userJSON = localStorage.getItem('user');
   const savedUser: Auth0User = userJSON ? JSON.parse(userJSON) : null;
+  const [isLoading, setIsLoading] = useState(!savedToken);
 
   useEffect(() => {
     (async () => {
       try {
+        setIsLoading(true);
         const accessToken = await getAccessTokenSilently();
         const claims = await getIdTokenClaims();
 
@@ -36,6 +38,8 @@ export const useAuth = (): IUseAuthResult => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         setAccessToken('');
+      } finally {
+        setIsLoading(false);
       }
     })();
   }, [setAccessToken, getAccessTokenSilently, getIdTokenClaims, isAuthenticated]);
@@ -44,6 +48,7 @@ export const useAuth = (): IUseAuthResult => {
     ...auth,
     user: user || savedUser,
     accessToken: accessToken || savedToken,
-    isAuthenticated: !!savedToken
+    isAuthenticated: !!savedToken,
+    isLoading: isLoading || !isAuthenticated
   };
 };

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, Fragment } from 'react';
+import React, { useState, useCallback, Fragment } from 'react';
 import { Header } from '../components/Header';
 import { Navigation } from '../components/Navigation';
 import styled from 'styled-components';
@@ -15,8 +15,7 @@ import { Entries } from './Entries';
 import { EntriesForm } from './EntriesForm';
 import { Calendar } from './Calendar';
 import { TodoistAuth } from './TodoistAuth';
-import { loadCache } from '../apollo';
-import { Spinner } from '../components/Spinner';
+import { useLoadCache } from '../hooks/useLoadCache';
 
 export interface IPage {
   name: string;
@@ -73,14 +72,7 @@ export const App: React.FC = () => {
   const history = useHistory();
   const { isDesktop } = useDeviceDetect();
   const [isExpandedMenu, setIsExpandedMenu] = useState(isDesktop);
-  const [isCacheLoaded, setIsCacheLoaded] = useState(false);
-
-  useEffect(() => {
-    (async () => {
-      await loadCache();
-      setIsCacheLoaded(true);
-    })();
-  }, []);
+  const { isCacheLoading } = useLoadCache();
 
   const swipeHandlers = useSwipeable({
     onSwipedRight: () => setIsExpandedMenu(true),
@@ -103,17 +95,20 @@ export const App: React.FC = () => {
   }, [history]);
 
   if (!isAuthenticated) return <Auth />;
-  if (!isCacheLoaded) return <Fragment />;
+  if (isCacheLoading) return <Fragment />;
 
   return (
     <AppWrapper {...swipeHandlers}>
-      <Persist
-        name="app"
-        data={{ isExpandedMenu }}
-        onMount={({ isExpandedMenu }) => {
-          setIsExpandedMenu(isExpandedMenu);
-        }}
-      />
+      {isDesktop && (
+        <Persist
+          name="app"
+          data={{ isExpandedMenu }}
+          onMount={({ isExpandedMenu }) => {
+            setIsExpandedMenu(isExpandedMenu);
+          }}
+        />
+      )}
+
       <Header
         title="Rewarder"
         onMenuClick={onMenuClick}
