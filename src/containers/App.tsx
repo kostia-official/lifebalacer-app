@@ -16,6 +16,7 @@ import { EntriesForm } from './EntriesForm';
 import { Calendar } from './Calendar';
 import { TodoistAuth } from './TodoistAuth';
 import { useLoadCache } from '../hooks/useLoadCache';
+import { Reminders } from "./Reminders";
 
 export interface IPage {
   name: string;
@@ -42,6 +43,12 @@ const pages: IPage[] = [
     icon: 'assignment_turned_in',
     path: '/activities',
     component: Activities
+  },
+  {
+    name: 'Reminders',
+    icon: 'notifications',
+    path: '/reminders',
+    component: Reminders
   }
 ];
 

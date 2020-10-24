@@ -107,6 +107,14 @@ query GetDaysStatistic {
   }
 }
 
+query GetReminder {
+  reminder {
+    _id
+    remindAt
+    isRepeating
+  }
+}
+
 mutation CreateActivity($data: CreateActivityInput!) {
   createActivity(data: $data) {
     _id
@@ -139,8 +147,18 @@ mutation DeleteEntry($_id: ID!) {
   deleteEntry(_id: $_id)
 }
 
-mutation connectTodoist($authCode: String!) {
+mutation ConnectTodoist($authCode: String!) {
   connectTodoist(authCode: $authCode) {
     _id
+  }
+}
+
+mutation UpsertReminder($data: ReminderInput!) {
+  upsertReminder(data: $data) {
+    _id
+    createdAt
+    remindAt
+    isRepeating
+    userId
   }
 }

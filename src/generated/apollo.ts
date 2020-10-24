@@ -13,6 +13,98 @@ export type Scalars = {
   Date: string;
   /** The `Upload` scalar type represents a file upload. */
   Upload: any;
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
+  DateTime: any;
+};
+
+export type Query = {
+  __typename?: 'Query';
+  entry?: Maybe<Entry>;
+  entries: Array<Entry>;
+  entriesByOneDay?: Maybe<EntriesByDay>;
+  entriesByDay: Array<EntriesByDay>;
+  daysStatistic: DaysStatistic;
+  activity?: Maybe<Activity>;
+  activities: Array<Activity>;
+  balance: Scalars['Int'];
+  reminder: Reminder;
+};
+
+
+export type QueryEntryArgs = {
+  _id: Scalars['ID'];
+};
+
+
+export type QueryEntriesByOneDayArgs = {
+  date: Scalars['Date'];
+  activityId?: Maybe<Scalars['ID']>;
+};
+
+
+export type QueryEntriesByDayArgs = {
+  activityId?: Maybe<Scalars['ID']>;
+  dateAfter?: Maybe<Scalars['Date']>;
+  dateBefore?: Maybe<Scalars['Date']>;
+};
+
+
+export type QueryActivityArgs = {
+  _id: Scalars['ID'];
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createActivity: Activity;
+  updateActivityById: Activity;
+  deleteActivity: Scalars['Boolean'];
+  createEntry: Entry;
+  updateEntryById: Entry;
+  deleteEntry: Scalars['Boolean'];
+  connectTodoist: Activity;
+  upsertReminder: Reminder;
+};
+
+
+export type MutationCreateActivityArgs = {
+  data: CreateActivityInput;
+};
+
+
+export type MutationUpdateActivityByIdArgs = {
+  _id: Scalars['ID'];
+  data: UpdateActivityInput;
+};
+
+
+export type MutationDeleteActivityArgs = {
+  _id: Scalars['ID'];
+};
+
+
+export type MutationCreateEntryArgs = {
+  data: CreateEntryInput;
+};
+
+
+export type MutationUpdateEntryByIdArgs = {
+  _id: Scalars['ID'];
+  data: UpdateEntryInput;
+};
+
+
+export type MutationDeleteEntryArgs = {
+  _id: Scalars['ID'];
+};
+
+
+export type MutationConnectTodoistArgs = {
+  authCode: Scalars['String'];
+};
+
+
+export type MutationUpsertReminderArgs = {
+  data: ReminderInput;
 };
 
 
@@ -95,89 +187,6 @@ export type TodoistMetaInput = {
   todoistUserId: Scalars['String'];
 };
 
-export type Query = {
-  __typename?: 'Query';
-  entry?: Maybe<Entry>;
-  entries: Array<Entry>;
-  entriesByOneDay?: Maybe<EntriesByDay>;
-  entriesByDay: Array<EntriesByDay>;
-  daysStatistic: DaysStatistic;
-  activity?: Maybe<Activity>;
-  activities: Array<Activity>;
-  balance: Scalars['Int'];
-};
-
-
-export type QueryEntryArgs = {
-  _id: Scalars['ID'];
-};
-
-
-export type QueryEntriesByOneDayArgs = {
-  date: Scalars['Date'];
-  activityId?: Maybe<Scalars['ID']>;
-};
-
-
-export type QueryEntriesByDayArgs = {
-  activityId?: Maybe<Scalars['ID']>;
-  dateAfter?: Maybe<Scalars['Date']>;
-  dateBefore?: Maybe<Scalars['Date']>;
-};
-
-
-export type QueryActivityArgs = {
-  _id: Scalars['ID'];
-};
-
-export type Mutation = {
-  __typename?: 'Mutation';
-  createActivity: Activity;
-  updateActivityById: Activity;
-  deleteActivity: Scalars['Boolean'];
-  createEntry: Entry;
-  updateEntryById: Entry;
-  deleteEntry: Scalars['Boolean'];
-  connectTodoist: Activity;
-};
-
-
-export type MutationCreateActivityArgs = {
-  data: CreateActivityInput;
-};
-
-
-export type MutationUpdateActivityByIdArgs = {
-  _id: Scalars['ID'];
-  data: UpdateActivityInput;
-};
-
-
-export type MutationDeleteActivityArgs = {
-  _id: Scalars['ID'];
-};
-
-
-export type MutationCreateEntryArgs = {
-  data: CreateEntryInput;
-};
-
-
-export type MutationUpdateEntryByIdArgs = {
-  _id: Scalars['ID'];
-  data: UpdateEntryInput;
-};
-
-
-export type MutationDeleteEntryArgs = {
-  _id: Scalars['ID'];
-};
-
-
-export type MutationConnectTodoistArgs = {
-  authCode: Scalars['String'];
-};
-
 export type CreateActivityInput = {
   _id?: Maybe<Scalars['ID']>;
   name: Scalars['String'];
@@ -220,6 +229,22 @@ export enum CacheControlScope {
   Private = 'PRIVATE'
 }
 
+
+
+export type Reminder = {
+  __typename?: 'Reminder';
+  _id: Scalars['ID'];
+  createdAt: Scalars['DateTime'];
+  isRepeating: Scalars['Boolean'];
+  remindAt: Scalars['DateTime'];
+  userId: Scalars['String'];
+};
+
+export type ReminderInput = {
+  _id?: Maybe<Scalars['ID']>;
+  isRepeating?: Maybe<Scalars['Boolean']>;
+  remindAt: Scalars['DateTime'];
+};
 
 export type ActivityResultFragment = (
   { __typename?: 'Activity' }
@@ -362,6 +387,17 @@ export type GetDaysStatisticQuery = (
   ) }
 );
 
+export type GetReminderQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetReminderQuery = (
+  { __typename?: 'Query' }
+  & { reminder: (
+    { __typename?: 'Reminder' }
+    & Pick<Reminder, '_id' | 'remindAt' | 'isRepeating'>
+  ) }
+);
+
 export type CreateActivityMutationVariables = Exact<{
   data: CreateActivityInput;
 }>;
@@ -446,6 +482,19 @@ export type ConnectTodoistMutation = (
   & { connectTodoist: (
     { __typename?: 'Activity' }
     & Pick<Activity, '_id'>
+  ) }
+);
+
+export type UpsertReminderMutationVariables = Exact<{
+  data: ReminderInput;
+}>;
+
+
+export type UpsertReminderMutation = (
+  { __typename?: 'Mutation' }
+  & { upsertReminder: (
+    { __typename?: 'Reminder' }
+    & Pick<Reminder, '_id' | 'createdAt' | 'remindAt' | 'isRepeating' | 'userId'>
   ) }
 );
 
@@ -827,6 +876,43 @@ export type GetDaysStatisticQueryResult = Apollo.QueryResult<GetDaysStatisticQue
 export function refetchGetDaysStatisticQuery(variables?: GetDaysStatisticQueryVariables) {
       return { query: GetDaysStatisticDocument, variables: variables }
     }
+export const GetReminderDocument = gql`
+    query GetReminder {
+  reminder {
+    _id
+    remindAt
+    isRepeating
+  }
+}
+    `;
+
+/**
+ * __useGetReminderQuery__
+ *
+ * To run a query within a React component, call `useGetReminderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetReminderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetReminderQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetReminderQuery(baseOptions?: Apollo.QueryHookOptions<GetReminderQuery, GetReminderQueryVariables>) {
+        return Apollo.useQuery<GetReminderQuery, GetReminderQueryVariables>(GetReminderDocument, baseOptions);
+      }
+export function useGetReminderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetReminderQuery, GetReminderQueryVariables>) {
+          return Apollo.useLazyQuery<GetReminderQuery, GetReminderQueryVariables>(GetReminderDocument, baseOptions);
+        }
+export type GetReminderQueryHookResult = ReturnType<typeof useGetReminderQuery>;
+export type GetReminderLazyQueryHookResult = ReturnType<typeof useGetReminderLazyQuery>;
+export type GetReminderQueryResult = Apollo.QueryResult<GetReminderQuery, GetReminderQueryVariables>;
+export function refetchGetReminderQuery(variables?: GetReminderQueryVariables) {
+      return { query: GetReminderDocument, variables: variables }
+    }
 export const CreateActivityDocument = gql`
     mutation CreateActivity($data: CreateActivityInput!) {
   createActivity(data: $data) {
@@ -1018,7 +1104,7 @@ export type DeleteEntryMutationHookResult = ReturnType<typeof useDeleteEntryMuta
 export type DeleteEntryMutationResult = Apollo.MutationResult<DeleteEntryMutation>;
 export type DeleteEntryMutationOptions = Apollo.BaseMutationOptions<DeleteEntryMutation, DeleteEntryMutationVariables>;
 export const ConnectTodoistDocument = gql`
-    mutation connectTodoist($authCode: String!) {
+    mutation ConnectTodoist($authCode: String!) {
   connectTodoist(authCode: $authCode) {
     _id
   }
@@ -1049,3 +1135,39 @@ export function useConnectTodoistMutation(baseOptions?: Apollo.MutationHookOptio
 export type ConnectTodoistMutationHookResult = ReturnType<typeof useConnectTodoistMutation>;
 export type ConnectTodoistMutationResult = Apollo.MutationResult<ConnectTodoistMutation>;
 export type ConnectTodoistMutationOptions = Apollo.BaseMutationOptions<ConnectTodoistMutation, ConnectTodoistMutationVariables>;
+export const UpsertReminderDocument = gql`
+    mutation UpsertReminder($data: ReminderInput!) {
+  upsertReminder(data: $data) {
+    _id
+    createdAt
+    remindAt
+    isRepeating
+    userId
+  }
+}
+    `;
+export type UpsertReminderMutationFn = Apollo.MutationFunction<UpsertReminderMutation, UpsertReminderMutationVariables>;
+
+/**
+ * __useUpsertReminderMutation__
+ *
+ * To run a mutation, you first call `useUpsertReminderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpsertReminderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [upsertReminderMutation, { data, loading, error }] = useUpsertReminderMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpsertReminderMutation(baseOptions?: Apollo.MutationHookOptions<UpsertReminderMutation, UpsertReminderMutationVariables>) {
+        return Apollo.useMutation<UpsertReminderMutation, UpsertReminderMutationVariables>(UpsertReminderDocument, baseOptions);
+      }
+export type UpsertReminderMutationHookResult = ReturnType<typeof useUpsertReminderMutation>;
+export type UpsertReminderMutationResult = Apollo.MutationResult<UpsertReminderMutation>;
+export type UpsertReminderMutationOptions = Apollo.BaseMutationOptions<UpsertReminderMutation, UpsertReminderMutationVariables>;
