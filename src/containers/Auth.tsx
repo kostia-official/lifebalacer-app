@@ -12,11 +12,11 @@ export const Auth = () => {
   const location = useLocation();
   const query = queryString.parse(location.search);
   const error = query?.error_description || '';
-  const { loginWithRedirect, isLoading } = useAuth();
+  const { loginWithRedirect, isLoading, isAuthenticated } = useAuth();
 
   return (
     <AbsoluteCentered>
-      {isLoading ? (
+      {isLoading || isAuthenticated ? (
         <Spinner />
       ) : (
         <Button variant="contained" color="primary" onClick={() => loginWithRedirect(config.auth)}>

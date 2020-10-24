@@ -20,7 +20,7 @@ export const useAuth = (): IUseAuthResult => {
   const savedToken = localStorage.getItem('token');
   const userJSON = localStorage.getItem('user');
   const savedUser: Auth0User = userJSON ? JSON.parse(userJSON) : null;
-  const [isLoading, setIsLoading] = useState(!savedToken);
+  const [isLoading, setIsLoading] = useState(!!savedToken);
 
   useEffect(() => {
     (async () => {
@@ -49,6 +49,6 @@ export const useAuth = (): IUseAuthResult => {
     user: user || savedUser,
     accessToken: accessToken || savedToken,
     isAuthenticated: !!savedToken,
-    isLoading: isLoading || !isAuthenticated
+    isLoading
   };
 };
