@@ -2,9 +2,9 @@ import React, { Fragment } from "react";
 import { useLoadCache } from "../hooks/useLoadCache";
 
 export const ApolloCacheLoader: React.FC = ({children}) => {
-  const { isCacheLoading } = useLoadCache();
+  const { isCacheLoaded } = useLoadCache();
 
-  if (isCacheLoading) return <Fragment />;
+  if (!isCacheLoaded) return <Fragment />;
 
   return <div>{children}</div>
 };

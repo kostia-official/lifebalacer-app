@@ -1,10 +1,4 @@
-import {
-  ApolloClient,
-  InMemoryCache,
-  HttpLink,
-  split,
-  NormalizedCacheObject
-} from '@apollo/client';
+import { ApolloClient, InMemoryCache, HttpLink, split } from '@apollo/client';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { ApolloLink } from '@apollo/client/link/core';
 import { config } from './common/config';
@@ -13,8 +7,7 @@ import { setContext } from '@apollo/client/link/context';
 import { RetryLink } from '@apollo/client/link/retry';
 import _ from 'lodash';
 import { useTimezone } from './hooks/useTimezone';
-import { persistCache, PersistentStorage } from 'apollo3-cache-persist';
-import { PersistedData } from 'apollo3-cache-persist/lib/types';
+import { apolloPersistCache } from "./services/ApolloPersistCache";
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('token');
@@ -63,7 +56,7 @@ const retryLink = new RetryLink({
   }
 });
 
-const cache = new InMemoryCache({
+export const cache = new InMemoryCache({
   typePolicies: {
     EntriesByDay: {
       keyFields: ['date'],
@@ -106,9 +99,7 @@ const cache = new InMemoryCache({
   }
 });
 
-const storage = window.localStorage as PersistentStorage<PersistedData<NormalizedCacheObject>>;
-
-export const loadCache = () => persistCache({ cache, storage });
+apolloPersistCache.load().then();
 
 export const apolloClient = new ApolloClient({
   cache,
