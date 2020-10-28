@@ -1,16 +1,8 @@
-import React, { useState, useEffect, useCallback, SyntheticEvent } from 'react';
-import { CardContent, CardActions, Button } from '@material-ui/core';
-import { TextField } from './TextField';
-import { Entry, ActivityType } from '../generated/apollo';
-import { ActivityResult } from '../common/types';
-import styled from 'styled-components';
-
-export interface EntryValueModalContentProps {
-  onSave: (value: number) => void;
-  onDelete: () => void;
-  value: Entry['value'];
-  activity?: ActivityResult;
-}
+import React, { useState, useEffect, useCallback, SyntheticEvent } from "react";
+import { CardContent, CardActions, Button } from "@material-ui/core";
+import { TextField } from "../TextField";
+import styled from "styled-components";
+import { EntryValueModalContentProps } from "./EntryValueModalContent";
 
 const TextFieldStyled = styled(TextField)`
   width: 200px;
@@ -21,10 +13,9 @@ const CardActionsStyled = styled(CardActions)`
   justify-content: space-between;
 `;
 
-export const EntryValueModalContent: React.FC<EntryValueModalContentProps> = ({
+export const EntryNumberValueModalContent: React.FC<EntryValueModalContentProps> = ({
   onSave,
   onDelete,
-  activity,
   value: valueProp
 }) => {
   const [value, setValue] = useState<string>('');
@@ -50,20 +41,6 @@ export const EntryValueModalContent: React.FC<EntryValueModalContentProps> = ({
     setValue(valueProp ? String(valueProp) : '');
   }, [valueProp]);
 
-  const rangeInputProps =
-    activity?.valueType === ActivityType.Range
-      ? {
-          min: activity.rangeMeta?.from,
-          max: activity.rangeMeta?.to
-        }
-      : {};
-
-  const label = `Value ${
-    activity?.valueType === ActivityType.Range
-      ? `(${activity.rangeMeta?.from} - ${activity.rangeMeta?.to})`
-      : ''
-  }`;
-
   return (
     <form onSubmit={onSubmit}>
       <CardContent>
@@ -71,12 +48,11 @@ export const EntryValueModalContent: React.FC<EntryValueModalContentProps> = ({
           required
           fullWidth
           autoFocus={true}
-          label={label}
+          label="Value"
           type="text"
           value={value}
           InputProps={{
             inputProps: {
-              ...rangeInputProps,
               inputMode: 'numeric'
             }
           }}

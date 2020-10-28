@@ -39,7 +39,7 @@ const SubmitButton: typeof Button = styled(Button)`
 
 export const ActivityForm = () => {
   const history = useHistory();
-  let { _id } = useParams();
+  let { _id } = useParams<{ _id: string }>();
   const isEdit = !!_id;
 
   const { errorMessage, onError, errorTime } = useApolloError();

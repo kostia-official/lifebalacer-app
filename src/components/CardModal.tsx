@@ -8,6 +8,7 @@ import styled from 'styled-components';
 export interface CardModalProps {
   isShow: boolean;
   onClose: () => void;
+  showDelay?: number;
 }
 
 const CardStyled = styled(Card)`
@@ -40,8 +41,8 @@ const Container = styled.div`
   z-index: 300;
 `;
 
-export const CardModal: React.FC<CardModalProps> = ({ isShow, onClose, children }) => (
-  <StyledFadeTransition isShow={isShow}>
+export const CardModal: React.FC<CardModalProps> = ({ isShow, onClose, children, showDelay }) => (
+  <StyledFadeTransition isShow={isShow} delay={showDelay}>
     <Container>
       <Overlay onClick={onClose} />
       <CardStyled>

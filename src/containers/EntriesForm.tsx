@@ -22,7 +22,6 @@ import { Card, CardContent, Typography, Button } from '@material-ui/core';
 import { useParams, useHistory } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { CardModal } from '../components/CardModal';
-import { EntryValueModalContent } from '../components/EntryValueModalContent';
 import { ActivityResult, SelectedEntry } from '../common/types';
 import { ActivityCategoryOrder } from '../common/mappers';
 import { EntryPickButton } from '../components/EntryPickButton';
@@ -30,6 +29,8 @@ import { groupTodoistEntries } from '../helpers/groupTodoistEntries';
 import { useGetTodoistActivity } from '../hooks/useGetTodoistActivity';
 import { DateTime } from 'luxon';
 import { useDeviceDetect } from '../hooks/useDeviceDetect';
+import { EntryValueModalContent } from '../components/EntryValueModalContent/EntryValueModalContent';
+import { isSwipeHandlersEnabledVar } from "../reactiveState";
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
@@ -53,9 +54,23 @@ const DateTitleWrapper = styled.div<{ isCenter: boolean }>`
 export const EntriesForm = () => {
   const { isMobile } = useDeviceDetect();
   const [modalEntry, setModalEntry] = useState<SelectedEntry | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showDelay = 300;
+
+  const closeModal = useCallback(() => {
+    isSwipeHandlersEnabledVar(true);
+    setIsModalOpen(false);
+    setTimeout(() => setModalEntry(null), showDelay);
+  }, []);
+
+  const openModal = useCallback((entry: SelectedEntry) => {
+    isSwipeHandlersEnabledVar(false);
+    setModalEntry(entry);
+    setIsModalOpen(true);
+  }, []);
 
   const history = useHistory();
-  const { date } = useParams();
+  const { date } = useParams<{ date: string }>();
   const completedAt = date || new Date().toISOString();
 
   const { errorMessage, errorTime, onError } = useApolloError();
@@ -130,7 +145,7 @@ export const EntriesForm = () => {
       switch (activity.valueType) {
         case ActivityType.Range:
         case ActivityType.Value: {
-          return setModalEntry({
+          return openModal({
             _id: new ObjectId().toString(),
             completedAt,
             activityId: activity._id
@@ -141,13 +156,13 @@ export const EntriesForm = () => {
         }
       }
     },
-    [completedAt, createEntry]
+    [completedAt, createEntry, openModal]
   );
 
   const unselectEntry = useCallback(
     async (entry: SelectedEntry) => {
       if (entry.value) {
-        return setModalEntry(entry);
+        return openModal(entry);
       }
 
       const { _id } = entry;
@@ -157,12 +172,8 @@ export const EntriesForm = () => {
         return prev.filter((entry) => entry._id !== _id);
       });
     },
-    [deleteEntryMutation]
+    [deleteEntryMutation, openModal]
   );
-
-  const closeModal = useCallback(() => {
-    setModalEntry(null);
-  }, []);
 
   const onValueSave = useCallback(
     async (value: number) => {
@@ -178,7 +189,7 @@ export const EntriesForm = () => {
         });
       }
 
-      setModalEntry(null);
+      closeModal();
       await createEntry(modalEntry.activityId, value);
     },
     [updateEntryMutation, closeModal, selectedEntries, createEntry, modalEntry]
@@ -226,12 +237,12 @@ export const EntriesForm = () => {
         </Typography>
       </DateTitleWrapper>
 
-      <CardModal isShow={!!modalEntry} onClose={closeModal}>
+      <CardModal isShow={isModalOpen} onClose={closeModal} showDelay={showDelay}>
         <EntryValueModalContent
           onDelete={onDeleteFromModal}
           onSave={onValueSave}
           value={modalEntry?.value}
-          activity={modalActivity}
+          activity={modalActivity!}
         />
       </CardModal>
 

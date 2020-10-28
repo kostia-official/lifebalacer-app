@@ -19,6 +19,7 @@ import { Reminders } from './Reminders';
 import { usePushTokenSave } from '../hooks/usePushTokenSave';
 import { useApolloError } from '../hooks/useApolloError';
 import { Loadable } from '../components/Loadable';
+import { isSwipeHandlersEnabledVar } from '../reactiveState';
 
 export interface IPage {
   name: string;
@@ -86,8 +87,16 @@ export const App: React.FC = () => {
   usePushTokenSave({ onError });
 
   const swipeHandlers = useSwipeable({
-    onSwipedRight: () => setIsExpandedMenu(true),
-    onSwipedLeft: () => setIsExpandedMenu(false)
+    onSwipedRight: () => {
+      if (isSwipeHandlersEnabledVar()) {
+        setIsExpandedMenu(true);
+      }
+    },
+    onSwipedLeft: () => {
+      if (isSwipeHandlersEnabledVar()) {
+        setIsExpandedMenu(false);
+      }
+    }
   });
 
   const onMenuClick = useCallback(() => {
