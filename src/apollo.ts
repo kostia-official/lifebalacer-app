@@ -7,7 +7,7 @@ import { setContext } from '@apollo/client/link/context';
 import { RetryLink } from '@apollo/client/link/retry';
 import _ from 'lodash';
 import { useTimezone } from './hooks/useTimezone';
-import { apolloPersistCache } from "./services/ApolloPersistCache";
+import { apolloPersistCache } from './services/ApolloPersistCache';
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('token');
@@ -103,5 +103,10 @@ apolloPersistCache.load().then();
 
 export const apolloClient = new ApolloClient({
   cache,
-  link: ApolloLink.from([retryLink, authLink, splitLink])
+  link: ApolloLink.from([retryLink, authLink, splitLink]),
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: "cache-and-network"
+    }
+  }
 });

@@ -39,14 +39,11 @@ const AddFabButtonWrapper = styled.div`
 export const Entries = () => {
   const history = useHistory();
   const { errorMessage, errorTime, onError } = useApolloError();
-  const { statisticText } = useDaysStatisticText();
+  const { statisticText } = useDaysStatisticText({ onError });
 
   const [isHasMore, setIsHasMore] = useState(true);
 
-  const { data, fetchMore } = useGetEntriesByDayQuery({
-    onError,
-    fetchPolicy: 'cache-and-network'
-  });
+  const { data, fetchMore } = useGetEntriesByDayQuery({ onError });
   const days = data?.entriesByDay;
 
   const { todoistActivity } = useGetTodoistActivity({ onError });

@@ -1,9 +1,10 @@
 import { useGetDaysStatisticQuery } from '../generated/apollo';
 import pluralize from 'pluralize';
+import { OnErrorParams } from './useApolloError';
 
-export const useDaysStatisticText = () => {
+export const useDaysStatisticText = ({ onError }: OnErrorParams = {}) => {
   const { data, loading: isStatisticLoading } = useGetDaysStatisticQuery({
-    fetchPolicy: 'cache-and-network'
+    onError
   });
   const statistic = data?.daysStatistic;
 

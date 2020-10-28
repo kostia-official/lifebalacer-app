@@ -32,10 +32,7 @@ export const Calendar = () => {
     setSelectedActivityId(e.target?.value);
   }, []);
 
-  const { data: activityData } = useGetActivitiesQuery({
-    onError,
-    fetchPolicy: 'cache-and-network'
-  });
+  const { data: activityData } = useGetActivitiesQuery({ onError });
 
   const { renderDay, daysData } = useDatePickerRenderDay({
     onError,

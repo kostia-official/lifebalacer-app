@@ -37,7 +37,7 @@ export const Activities = () => {
   const { authorizeInTodoist } = useTodoist();
 
   const { todoistActivity } = useGetTodoistActivity({ onError });
-  const { data } = useGetActivitiesQuery({ onError, fetchPolicy: 'cache-and-network' });
+  const { data } = useGetActivitiesQuery({ onError });
   const [deleteActivity] = useDeleteActivityMutation({
     onError,
     refetchQueries: [refetchGetActivitiesQuery(), refetchGetEntriesQuery()]

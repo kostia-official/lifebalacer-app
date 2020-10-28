@@ -2,6 +2,10 @@ import { useState, useCallback } from 'react';
 import { ApolloError } from '@apollo/client';
 import _ from 'lodash';
 
+export interface OnErrorParams {
+  onError?: (error: ApolloError) => void;
+}
+
 export const useApolloError = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [errorTime, setErrorTime] = useState<number>();
