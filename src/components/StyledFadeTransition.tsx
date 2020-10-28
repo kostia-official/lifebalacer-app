@@ -9,7 +9,18 @@ const transitionStyles = {
   exited: { opacity: 0 }
 };
 
-const TransitionStyles = styled.div`
+export interface TransitionStylesProps {
+  opacity: number;
+  delay: number;
+}
+
+export interface StyledFadeTransitionProps {
+  isShow: boolean;
+  delay?: number;
+  unmountOnExit?: boolean;
+}
+
+const TransitionStyles = styled.div<TransitionStylesProps>`
   opacity: ${(props) => props.opacity};
   transition: opacity ${(props) => props.delay}ms;
 
@@ -17,10 +28,15 @@ const TransitionStyles = styled.div`
   z-index: 300;
 `;
 
-export function StyledFadeTransition({ isShow, children, delay = 300, unmountOnExit = true }) {
+export const StyledFadeTransition: React.FC<StyledFadeTransitionProps> = ({
+  isShow,
+  children,
+  delay = 300,
+  unmountOnExit = true
+}) => {
   return (
     <Transition in={isShow} timeout={delay} unmountOnExit={unmountOnExit}>
-      {(transitionState) => {
+      {(transitionState: keyof typeof transitionStyles) => {
         const { opacity } = transitionStyles[transitionState];
 
         return (
@@ -31,4 +47,4 @@ export function StyledFadeTransition({ isShow, children, delay = 300, unmountOnE
       }}
     </Transition>
   );
-}
+};

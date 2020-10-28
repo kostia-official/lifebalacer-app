@@ -27,7 +27,8 @@ export type Query = {
   activity?: Maybe<Activity>;
   activities: Array<Activity>;
   balance: Scalars['Int'];
-  reminder: Reminder;
+  pushToken?: Maybe<PushToken>;
+  reminder?: Maybe<Reminder>;
 };
 
 
@@ -62,6 +63,7 @@ export type Mutation = {
   updateEntryById: Entry;
   deleteEntry: Scalars['Boolean'];
   connectTodoist: Activity;
+  upsertPushToken: PushToken;
   upsertReminder: Reminder;
 };
 
@@ -100,6 +102,11 @@ export type MutationDeleteEntryArgs = {
 
 export type MutationConnectTodoistArgs = {
   authCode: Scalars['String'];
+};
+
+
+export type MutationUpsertPushTokenArgs = {
+  data: PushTokenUpsertInput;
 };
 
 
@@ -230,6 +237,17 @@ export enum CacheControlScope {
 }
 
 
+
+export type PushToken = {
+  __typename?: 'PushToken';
+  _id: Scalars['ID'];
+  token: Scalars['String'];
+  userId: Scalars['String'];
+};
+
+export type PushTokenUpsertInput = {
+  token: Scalars['String'];
+};
 
 export type Reminder = {
   __typename?: 'Reminder';
@@ -392,10 +410,21 @@ export type GetReminderQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetReminderQuery = (
   { __typename?: 'Query' }
-  & { reminder: (
+  & { reminder?: Maybe<(
     { __typename?: 'Reminder' }
     & Pick<Reminder, '_id' | 'remindAt' | 'isRepeating'>
-  ) }
+  )> }
+);
+
+export type GetPushTokenQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetPushTokenQuery = (
+  { __typename?: 'Query' }
+  & { pushToken?: Maybe<(
+    { __typename?: 'PushToken' }
+    & Pick<PushToken, '_id' | 'token' | 'userId'>
+  )> }
 );
 
 export type CreateActivityMutationVariables = Exact<{
@@ -495,6 +524,19 @@ export type UpsertReminderMutation = (
   & { upsertReminder: (
     { __typename?: 'Reminder' }
     & Pick<Reminder, '_id' | 'createdAt' | 'remindAt' | 'isRepeating' | 'userId'>
+  ) }
+);
+
+export type UpsertPushTokenMutationVariables = Exact<{
+  data: PushTokenUpsertInput;
+}>;
+
+
+export type UpsertPushTokenMutation = (
+  { __typename?: 'Mutation' }
+  & { upsertPushToken: (
+    { __typename?: 'PushToken' }
+    & Pick<PushToken, '_id' | 'userId' | 'token'>
   ) }
 );
 
@@ -913,6 +955,43 @@ export type GetReminderQueryResult = Apollo.QueryResult<GetReminderQuery, GetRem
 export function refetchGetReminderQuery(variables?: GetReminderQueryVariables) {
       return { query: GetReminderDocument, variables: variables }
     }
+export const GetPushTokenDocument = gql`
+    query GetPushToken {
+  pushToken {
+    _id
+    token
+    userId
+  }
+}
+    `;
+
+/**
+ * __useGetPushTokenQuery__
+ *
+ * To run a query within a React component, call `useGetPushTokenQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPushTokenQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPushTokenQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetPushTokenQuery(baseOptions?: Apollo.QueryHookOptions<GetPushTokenQuery, GetPushTokenQueryVariables>) {
+        return Apollo.useQuery<GetPushTokenQuery, GetPushTokenQueryVariables>(GetPushTokenDocument, baseOptions);
+      }
+export function useGetPushTokenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPushTokenQuery, GetPushTokenQueryVariables>) {
+          return Apollo.useLazyQuery<GetPushTokenQuery, GetPushTokenQueryVariables>(GetPushTokenDocument, baseOptions);
+        }
+export type GetPushTokenQueryHookResult = ReturnType<typeof useGetPushTokenQuery>;
+export type GetPushTokenLazyQueryHookResult = ReturnType<typeof useGetPushTokenLazyQuery>;
+export type GetPushTokenQueryResult = Apollo.QueryResult<GetPushTokenQuery, GetPushTokenQueryVariables>;
+export function refetchGetPushTokenQuery(variables?: GetPushTokenQueryVariables) {
+      return { query: GetPushTokenDocument, variables: variables }
+    }
 export const CreateActivityDocument = gql`
     mutation CreateActivity($data: CreateActivityInput!) {
   createActivity(data: $data) {
@@ -1171,3 +1250,37 @@ export function useUpsertReminderMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpsertReminderMutationHookResult = ReturnType<typeof useUpsertReminderMutation>;
 export type UpsertReminderMutationResult = Apollo.MutationResult<UpsertReminderMutation>;
 export type UpsertReminderMutationOptions = Apollo.BaseMutationOptions<UpsertReminderMutation, UpsertReminderMutationVariables>;
+export const UpsertPushTokenDocument = gql`
+    mutation UpsertPushToken($data: PushTokenUpsertInput!) {
+  upsertPushToken(data: $data) {
+    _id
+    userId
+    token
+  }
+}
+    `;
+export type UpsertPushTokenMutationFn = Apollo.MutationFunction<UpsertPushTokenMutation, UpsertPushTokenMutationVariables>;
+
+/**
+ * __useUpsertPushTokenMutation__
+ *
+ * To run a mutation, you first call `useUpsertPushTokenMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpsertPushTokenMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [upsertPushTokenMutation, { data, loading, error }] = useUpsertPushTokenMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpsertPushTokenMutation(baseOptions?: Apollo.MutationHookOptions<UpsertPushTokenMutation, UpsertPushTokenMutationVariables>) {
+        return Apollo.useMutation<UpsertPushTokenMutation, UpsertPushTokenMutationVariables>(UpsertPushTokenDocument, baseOptions);
+      }
+export type UpsertPushTokenMutationHookResult = ReturnType<typeof useUpsertPushTokenMutation>;
+export type UpsertPushTokenMutationResult = Apollo.MutationResult<UpsertPushTokenMutation>;
+export type UpsertPushTokenMutationOptions = Apollo.BaseMutationOptions<UpsertPushTokenMutation, UpsertPushTokenMutationVariables>;

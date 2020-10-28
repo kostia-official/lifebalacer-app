@@ -6,7 +6,7 @@ import { useDatePickerRenderDay } from '../hooks/useDatePickerRenderDay';
 import { useGetActivitiesQuery } from '../generated/apollo';
 import { useApolloError } from '../hooks/useApolloError';
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
-import { PageWrapper } from '../components/PageWrapper';
+import { Loadable } from '../components/Loadable';
 import { DateTime } from 'luxon';
 
 const CalendarWrapper = styled.div`
@@ -43,7 +43,7 @@ export const Calendar = () => {
   });
 
   return (
-    <PageWrapper
+    <Loadable
       errorMessage={errorMessage}
       errorTime={errorTime}
       isLoading={!activityData || !daysData}
@@ -72,6 +72,6 @@ export const Calendar = () => {
           renderDay={renderDay}
         />
       </CalendarWrapper>
-    </PageWrapper>
+    </Loadable>
   );
 };

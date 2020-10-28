@@ -8,7 +8,7 @@ import { List, ListItem, ListItemText, Typography, ListSubheader } from '@materi
 import { DateTime } from 'luxon';
 import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
-import { PageWrapper } from '../components/PageWrapper';
+import { Loadable } from '../components/Loadable';
 import { useDaysStatisticText } from '../hooks/useDaysStatisticText';
 import { getEntryLabel } from '../helpers/getEntryLabel';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -87,7 +87,7 @@ export const Entries = () => {
   );
 
   return (
-    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!days}>
+    <Loadable errorMessage={errorMessage} errorTime={errorTime} isLoading={!days}>
       {days && days.length === 0 ? (
         <Typography>So far no entries...</Typography>
       ) : (
@@ -135,6 +135,6 @@ export const Entries = () => {
       <AddFabButtonWrapper>
         <AddFabButton onClick={() => onEntryFormOpen()} />
       </AddFabButtonWrapper>
-    </PageWrapper>
+    </Loadable>
   );
 };

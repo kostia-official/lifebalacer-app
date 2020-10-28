@@ -115,6 +115,14 @@ query GetReminder {
   }
 }
 
+query GetPushToken {
+  pushToken {
+    _id
+    token
+    userId
+  }
+}
+
 mutation CreateActivity($data: CreateActivityInput!) {
   createActivity(data: $data) {
     _id
@@ -160,5 +168,13 @@ mutation UpsertReminder($data: ReminderInput!) {
     remindAt
     isRepeating
     userId
+  }
+}
+
+mutation UpsertPushToken($data: PushTokenUpsertInput!) {
+  upsertPushToken(data: $data) {
+    _id
+    userId
+    token
   }
 }

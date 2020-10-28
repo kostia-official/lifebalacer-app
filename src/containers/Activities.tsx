@@ -11,7 +11,7 @@ import { useApolloError } from '../hooks/useApolloError';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { AddFabButton } from '../components/AddFabButton';
-import { PageWrapper } from '../components/PageWrapper';
+import { Loadable } from '../components/Loadable';
 import { Button } from '@material-ui/core';
 import { useTodoist } from '../hooks/useTodoist';
 import { useGetTodoistActivity } from '../hooks/useGetTodoistActivity';
@@ -56,7 +56,7 @@ export const Activities = () => {
     }) || [];
 
   return (
-    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={_.isEmpty(data)}>
+    <Loadable errorMessage={errorMessage} errorTime={errorTime} isLoading={_.isEmpty(data)}>
       <Table
         title="Activities"
         columns={[
@@ -103,6 +103,6 @@ export const Activities = () => {
       <AddFabButtonWrapper>
         <AddFabButton onClick={onActivityCreateClick} />
       </AddFabButtonWrapper>
-    </PageWrapper>
+    </Loadable>
   );
 };

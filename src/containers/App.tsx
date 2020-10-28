@@ -1,4 +1,4 @@
-import React, { useState, useCallback, Fragment } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Header } from '../components/Header';
 import { Navigation } from '../components/Navigation';
 import styled from 'styled-components';
@@ -15,8 +15,10 @@ import { Entries } from './Entries';
 import { EntriesForm } from './EntriesForm';
 import { Calendar } from './Calendar';
 import { TodoistAuth } from './TodoistAuth';
-import { useLoadCache } from '../hooks/useLoadCache';
-import { Reminders } from "./Reminders";
+import { Reminders } from './Reminders';
+import { usePushTokenSave } from '../hooks/usePushTokenSave';
+import { useApolloError } from '../hooks/useApolloError';
+import { Loadable } from '../components/Loadable';
 
 export interface IPage {
   name: string;
@@ -79,7 +81,9 @@ export const App: React.FC = () => {
   const history = useHistory();
   const { isDesktop } = useDeviceDetect();
   const [isExpandedMenu, setIsExpandedMenu] = useState(isDesktop);
-  const { isCacheLoading } = useLoadCache();
+  const { onError, errorTime, errorMessage } = useApolloError();
+
+  usePushTokenSave({ onError });
 
   const swipeHandlers = useSwipeable({
     onSwipedRight: () => setIsExpandedMenu(true),
@@ -102,48 +106,49 @@ export const App: React.FC = () => {
   }, [history]);
 
   if (!isAuthenticated) return <Auth />;
-  if (isCacheLoading) return <Fragment />;
 
   return (
     <AppWrapper {...swipeHandlers}>
-      {isDesktop && (
-        <Persist
-          name="app"
-          data={{ isExpandedMenu }}
-          onMount={({ isExpandedMenu }) => {
-            setIsExpandedMenu(isExpandedMenu);
-          }}
-        />
-      )}
+      <Loadable errorMessage={errorMessage} errorTime={errorTime}>
+        {isDesktop && (
+          <Persist
+            name="app"
+            data={{ isExpandedMenu }}
+            onMount={({ isExpandedMenu }) => {
+              setIsExpandedMenu(!!isExpandedMenu);
+            }}
+          />
+        )}
 
-      <Header
-        title="Rewarder"
-        onMenuClick={onMenuClick}
-        onBackClick={onBackClick}
-        rightContent={<HeaderRightContent />}
-      />
-
-      <ContentWrapper>
-        <Navigation
-          isExpanded={isExpandedMenu}
-          items={pages}
-          onClose={onMenuClick}
-          onItemClick={onNavigationItemClick}
-          user={user && { name: user.given_name, email: user.email, avatar: user.picture }}
+        <Header
+          title="Rewarder"
+          onMenuClick={onMenuClick}
+          onBackClick={onBackClick}
+          rightContent={<HeaderRightContent />}
         />
 
-        <PageWrapper>
-          <Switch>
-            {pages.map((page) => {
-              return <Route key={page.path} path={page.path} exact component={page.component} />;
-            })}
-            <Route path="/activities/create" exact component={ActivityForm} />
-            <Route path="/activities/edit/:_id" exact component={ActivityForm} />
-            <Route path="/entries/:date" exact component={EntriesForm} />
-            <Route path="/todoist/auth" exact component={TodoistAuth} />
-          </Switch>
-        </PageWrapper>
-      </ContentWrapper>
+        <ContentWrapper>
+          <Navigation
+            isExpanded={isExpandedMenu}
+            items={pages}
+            onClose={onMenuClick}
+            onItemClick={onNavigationItemClick}
+            user={user && { name: user.given_name, email: user.email, avatar: user.picture }}
+          />
+
+          <PageWrapper>
+            <Switch>
+              {pages.map((page) => {
+                return <Route key={page.path} path={page.path} exact component={page.component} />;
+              })}
+              <Route path="/activities/create" exact component={ActivityForm} />
+              <Route path="/activities/edit/:_id" exact component={ActivityForm} />
+              <Route path="/entries/:date" exact component={EntriesForm} />
+              <Route path="/todoist/auth" exact component={TodoistAuth} />
+            </Switch>
+          </PageWrapper>
+        </ContentWrapper>
+      </Loadable>
     </AppWrapper>
   );
 };

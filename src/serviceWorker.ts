@@ -1,3 +1,5 @@
+import { history } from './index';
+
 // This optional code is used to register a service worker.
 // register() is not called by default.
 
@@ -11,6 +13,13 @@
 // opt-in, read https://bit.ly/CRA-PWA
 
 const IS_FORCE_ENABLE = false;
+const swFiles = ['service-worker.js'];
+
+navigator.serviceWorker.addEventListener('message', (event) => {
+  if (event.data.url) {
+    history.push(event.data.url);
+  }
+});
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
@@ -40,24 +49,26 @@ export function register(config?: Config) {
     }
 
     window.addEventListener('load', () => {
-      const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
+      swFiles.forEach((swFile) => {
+        const swUrl = `${process.env.PUBLIC_URL}/${swFile}`;
 
-      if (!IS_FORCE_ENABLE && isLocalhost) {
-        // This is running on localhost. Let's check if a service worker still exists or not.
-        checkValidServiceWorker(swUrl, config);
+        if (!IS_FORCE_ENABLE && isLocalhost) {
+          // This is running on localhost. Let's check if a service worker still exists or not.
+          checkValidServiceWorker(swUrl, config);
 
-        // Add some additional logging to localhost, pointing developers to the
-        // service worker/PWA documentation.
-        navigator.serviceWorker.ready.then(() => {
-          console.log(
-            'This web app is being served cache-first by a service ' +
-            'worker. To learn more, visit https://bit.ly/CRA-PWA'
-          );
-        });
-      } else {
-        // Is not localhost. Just register service worker
-        registerValidSW(swUrl, config);
-      }
+          // Add some additional logging to localhost, pointing developers to the
+          // service worker/PWA documentation.
+          navigator.serviceWorker.ready.then(() => {
+            console.log(
+              'This web app is being served cache-first by a service ' +
+                'worker. To learn more, visit https://bit.ly/CRA-PWA'
+            );
+          });
+        } else {
+          // Is not localhost. Just register service worker
+          registerValidSW(swUrl, config);
+        }
+      });
     });
   }
 }

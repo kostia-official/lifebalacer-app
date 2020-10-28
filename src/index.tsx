@@ -12,20 +12,23 @@ import { Auth0Provider } from '@auth0/auth0-react';
 import { config } from './common/config';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import LuxonUtils from '@date-io/luxon';
+import { ApolloCacheLoader } from './containers/ApolloCacheLoader';
 
-const history = createBrowserHistory();
+export const history = createBrowserHistory();
 
 ReactDOM.render(
   <Auth0Provider {...config.auth}>
-    <ApolloProvider client={apolloClient}>
-      <Router history={history}>
-        <ThemeProvider>
-          <MuiPickersUtilsProvider utils={LuxonUtils}>
-            <App />
-          </MuiPickersUtilsProvider>
-        </ThemeProvider>
-      </Router>
-    </ApolloProvider>
+    <Router history={history}>
+      <ThemeProvider>
+        <MuiPickersUtilsProvider utils={LuxonUtils}>
+          <ApolloCacheLoader>
+            <ApolloProvider client={apolloClient}>
+              <App />
+            </ApolloProvider>
+          </ApolloCacheLoader>
+        </MuiPickersUtilsProvider>
+      </ThemeProvider>
+    </Router>
   </Auth0Provider>,
   document.getElementById('root')
 );

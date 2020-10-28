@@ -1,10 +1,14 @@
-import React, { useCallback, useState } from "react";
-import { useApolloError } from "../hooks/useApolloError";
-import { PageWrapper } from "../components/PageWrapper";
-import _ from "lodash";
-import { useGetReminderQuery, useUpsertReminderMutation, refetchGetReminderQuery } from "../generated/apollo";
-import { TimePicker } from "@material-ui/pickers";
-import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import React, { useCallback, useState } from 'react';
+import { useApolloError } from '../hooks/useApolloError';
+import { Loadable } from '../components/Loadable';
+import _ from 'lodash';
+import {
+  useGetReminderQuery,
+  useUpsertReminderMutation,
+  refetchGetReminderQuery
+} from '../generated/apollo';
+import { TimePicker } from '@material-ui/pickers';
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 export const Reminders = () => {
   const { errorMessage, onError, errorTime } = useApolloError();
@@ -35,7 +39,7 @@ export const Reminders = () => {
   );
 
   return (
-    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={_.isEmpty(data)}>
+    <Loadable errorMessage={errorMessage} errorTime={errorTime} isLoading={_.isEmpty(data)}>
       <TimePicker
         label="Remind at"
         value={date}
@@ -43,6 +47,6 @@ export const Reminders = () => {
         onChange={onDateChange}
         ampm={false}
       />
-    </PageWrapper>
+    </Loadable>
   );
 };
