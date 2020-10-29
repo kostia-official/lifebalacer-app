@@ -105,7 +105,7 @@ export const App: React.FC = () => {
 
   const onNavigationItemClick = useCallback(
     (path: string) => {
-      history.push(path);
+      history.replace(path);
     },
     [history]
   );
