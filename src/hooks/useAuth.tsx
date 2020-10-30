@@ -35,8 +35,7 @@ export const useAuth = (): IUseAuthResult => {
         }
         setAccessToken(accessToken);
       } catch (err) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        console.error("useAuth", err);
         setAccessToken('');
       } finally {
         setIsLoading(false);

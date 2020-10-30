@@ -1,8 +1,6 @@
-import { ApolloClient, InMemoryCache, HttpLink, split } from '@apollo/client';
-import { WebSocketLink } from '@apollo/client/link/ws';
+import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 import { ApolloLink } from '@apollo/client/link/core';
 import { config } from './common/config';
-import { getMainDefinition } from '@apollo/client/utilities';
 import { setContext } from '@apollo/client/link/context';
 import { RetryLink } from '@apollo/client/link/retry';
 import _ from 'lodash';
@@ -22,25 +20,9 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
-const wsLink = new WebSocketLink({
-  uri: config.wsUrl,
-  options: {
-    reconnect: true
-  }
-});
-
 const httpLink = new HttpLink({
   uri: config.apiUrl
 });
-
-const splitLink = split(
-  ({ query }) => {
-    const definition = getMainDefinition(query);
-    return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
-  },
-  wsLink,
-  httpLink
-);
 
 const retryLink = new RetryLink({
   delay: {
@@ -103,10 +85,10 @@ apolloPersistCache.load().then();
 
 export const apolloClient = new ApolloClient({
   cache,
-  link: ApolloLink.from([retryLink, authLink, splitLink]),
+  link: ApolloLink.from([retryLink, authLink, httpLink]),
   defaultOptions: {
     watchQuery: {
-      fetchPolicy: "cache-and-network"
+      fetchPolicy: 'cache-and-network'
     }
   }
 });

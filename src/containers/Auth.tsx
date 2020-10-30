@@ -11,8 +11,9 @@ import { AbsoluteCentered } from '../components/AbsoluteCentered';
 export const Auth = () => {
   const location = useLocation();
   const query = queryString.parse(location.search);
-  const error = query?.error_description || '';
-  const { loginWithRedirect, isLoading, isAuthenticated } = useAuth();
+  const { loginWithRedirect, isLoading, isAuthenticated, error } = useAuth();
+
+  const errorMessage = query?.error_description || error?.message || '';
 
   return (
     <AbsoluteCentered>
@@ -23,7 +24,7 @@ export const Auth = () => {
           Login
         </Button>
       )}
-      <ErrorMessage errorMessage={String(error)} />
+      <ErrorMessage errorMessage={String(errorMessage)} />
     </AbsoluteCentered>
   );
 };
