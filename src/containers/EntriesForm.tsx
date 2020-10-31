@@ -84,8 +84,8 @@ export const EntriesForm = () => {
   const getSelectedEntriesFromEntriesByDay = useCallback(() => {
     if (!entriesByDay) return [];
 
-    return entriesByDay.map(({ _id, value, completedAt, activity, description }) => {
-      return { _id, value, completedAt, activityId: activity._id, description };
+    return entriesByDay.map(({ _id, value, completedAt, activityId, description }) => {
+      return { _id, value, completedAt, activityId, description };
     });
   }, [entriesByDay]);
 
@@ -105,7 +105,7 @@ export const EntriesForm = () => {
 
   const getEntriesByActivityId = useCallback(
     (activityId: string) => {
-      return entriesByDay?.filter((entry) => entry.activity._id === activityId);
+      return entriesByDay?.filter((entry) => entry.activityId === activityId);
     },
     [entriesByDay]
   );

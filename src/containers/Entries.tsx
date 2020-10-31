@@ -14,6 +14,7 @@ import { getEntryLabel } from '../helpers/getEntryLabel';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useGetTodoistActivity } from '../hooks/useGetTodoistActivity';
 import { groupTodoistEntries } from '../helpers/groupTodoistEntries';
+import { useActivities } from '../hooks/useActivities';
 
 const StyledList = styled(List)`
   background-color: ${({ theme }) => theme.palette.background.paper};
@@ -40,6 +41,7 @@ export const Entries = () => {
   const history = useHistory();
   const { errorMessage, errorTime, onError } = useApolloError();
   const { statisticText } = useDaysStatisticText({ onError });
+  const { getByActivityId } = useActivities({ onError });
 
   const [isHasMore, setIsHasMore] = useState(true);
 
@@ -109,7 +111,9 @@ export const Entries = () => {
               });
 
               const activitiesText = entriesWithTodoistGroup
-                .map((entry) => getEntryLabel({ entry, activity: entry.activity }))
+                .map((entry) =>
+                  getEntryLabel({ entry, activity: getByActivityId(entry.activityId) })
+                )
                 .join(', ');
 
               return (

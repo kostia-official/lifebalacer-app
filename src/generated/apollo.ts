@@ -320,10 +320,6 @@ export type EntriesByDayResultFragment = (
   & { entries: Array<(
     { __typename?: 'Entry' }
     & Pick<Entry, '_id' | 'description' | 'value' | 'completedAt' | 'activityId'>
-    & { activity: (
-      { __typename?: 'Activity' }
-      & Pick<Activity, '_id' | 'name' | 'emoji'>
-    ) }
   )> }
 );
 
@@ -565,11 +561,6 @@ export const EntriesByDayResultFragmentDoc = gql`
     value
     completedAt
     activityId
-    activity {
-      _id
-      name
-      emoji
-    }
   }
 }
     `;

@@ -48,11 +48,6 @@ fragment EntriesByDayResult on EntriesByDay {
     value
     completedAt
     activityId
-    activity {
-      _id
-      name
-      emoji
-    }
   }
 }
 
