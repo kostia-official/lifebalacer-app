@@ -24,6 +24,7 @@ export const usePushTokenSave = ({ onError }: UseApolloErrorProps) => {
     if (!reminderData.reminder?.remindAt) return;
 
     const token = await pushService.getToken();
+    if (!token) return;
 
     if (pushTokenData.pushToken?.token === token) return;
 

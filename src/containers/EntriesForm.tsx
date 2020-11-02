@@ -17,27 +17,23 @@ import { Spinner } from '../components/Spinner';
 import { ErrorMessage } from '../components/ErrorMessage';
 import * as R from 'remeda';
 import _ from 'lodash';
-import { Card, CardContent, Typography, Button } from '@material-ui/core';
+import { Card, CardContent, Typography } from '@material-ui/core';
 import { useParams, useHistory } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { CardModal } from '../components/CardModal';
 import { ActivityResult, SelectedEntry, EntriesResult } from '../common/types';
-import { ActivityCategoryOrder } from '../common/mappers';
 import { EntryPickButton } from '../components/EntryPickButton';
-import { groupTodoistEntries } from '../helpers/groupTodoistEntries';
 import { useActivities } from '../hooks/useActivities';
 import { DateTime } from 'luxon';
 import { useDeviceDetect } from '../hooks/useDeviceDetect';
 import { EntryValueModalContent } from '../components/EntryValueModalContent/EntryValueModalContent';
 import { isSwipeHandlersEnabledVar } from '../reactiveState';
 import { isToday } from '../helpers/date';
+import { FabButton } from '../components/FabButton';
+import { useActivitiesByCategory } from '../hooks/useActivitiesByCategory';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
-`;
-
-const DoneButton = styled(Button)`
-  width: 100%;
 `;
 
 const DateTitleWrapper = styled.div<{ isCenter: boolean }>`
@@ -98,9 +94,7 @@ export const EntriesForm = () => {
       });
   }, [entriesByDay]);
 
-  const { activities, todoistActivity, getActivityById } = useActivities({
-    onError
-  });
+  const { activities, getActivityById } = useActivities({ onError });
 
   const getEntriesByActivityId = useCallback(
     (activityId: string) => {
@@ -240,15 +234,8 @@ export const EntriesForm = () => {
     history.replace('/');
   }, [history]);
 
-  const activitiesByCategory = useMemo(
-    () =>
-      R.pipe(
-        activities || [],
-        R.sortBy((activity) => ActivityCategoryOrder[activity.category]),
-        R.groupBy((activity) => activity.category)
-      ),
-    [activities]
-  );
+  const { activitiesByCategory } = useActivitiesByCategory({ activities });
+
   const modalActivity = useMemo(
     () => R.find(activities || [], (activity) => activity._id === modalEntry?.activityId),
     [activities, modalEntry]
@@ -275,7 +262,7 @@ export const EntriesForm = () => {
         />
       </CardModal>
 
-      {Object.entries(activitiesByCategory).map(([category, activities]) => {
+      {activitiesByCategory.map(({ category, activities }) => {
         return (
           <CardStyled key={category}>
             <CardContent>
@@ -296,16 +283,7 @@ export const EntriesForm = () => {
                   );
                 }
 
-                let finalEntries = entries;
-                if (activity.valueType === ActivityType.Todoist) {
-                  const { entriesWithTodoistGroup } = groupTodoistEntries({
-                    entries: entries!,
-                    todoistActivityId: todoistActivity?._id
-                  });
-                  finalEntries = entriesWithTodoistGroup;
-                }
-
-                return finalEntries?.map((entry) => {
+                return entries?.map((entry) => {
                   return (
                     <EntryPickButton
                       key={entry._id}
@@ -322,9 +300,7 @@ export const EntriesForm = () => {
         );
       })}
 
-      <DoneButton variant="contained" color="primary" onClick={onDoneClick}>
-        Done
-      </DoneButton>
+      <FabButton onClick={onDoneClick} icon="save" />
     </div>
   );
 };

@@ -10,19 +10,13 @@ import { Table } from '../components/Table';
 import { useApolloError } from '../hooks/useApolloError';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { AddFabButton } from '../components/AddFabButton';
 import { Loadable } from '../components/Loadable';
 import { Button } from '@material-ui/core';
 import { useTodoist } from '../hooks/useTodoist';
 import { useDeviceDetect } from '../hooks/useDeviceDetect';
 import _ from 'lodash';
-import { useActivities } from "../hooks/useActivities";
-
-const AddFabButtonWrapper = styled.div`
-  position: fixed;
-  bottom: 16px;
-  right: 16px;
-`;
+import { useActivities } from '../hooks/useActivities';
+import { FabButton } from "../components/FabButton";
 
 const ConnectTodoistButtonWrapper = styled.div`
   display: flex;
@@ -100,9 +94,7 @@ export const Activities = () => {
         </ConnectTodoistButtonWrapper>
       )}
 
-      <AddFabButtonWrapper>
-        <AddFabButton onClick={onActivityCreateClick} />
-      </AddFabButtonWrapper>
+      <FabButton onClick={onActivityCreateClick} />
     </Loadable>
   );
 };

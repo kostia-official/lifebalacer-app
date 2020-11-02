@@ -1,6 +1,5 @@
 import React, { useCallback, useState, Fragment } from 'react';
 import { DatePickerButton } from './DatePickerButton';
-import { AddFabButton } from '../components/AddFabButton';
 import styled from 'styled-components';
 import { useGetEntriesByDayQuery } from '../generated/apollo';
 import { useApolloError } from '../hooks/useApolloError';
@@ -14,6 +13,7 @@ import { getEntryLabel } from '../helpers/getEntryLabel';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { groupTodoistEntries } from '../helpers/groupTodoistEntries';
 import { useActivities } from '../hooks/useActivities';
+import { FabButton } from '../components/FabButton';
 
 const StyledList = styled(List)`
   background-color: ${({ theme }) => theme.palette.background.paper};
@@ -27,13 +27,8 @@ const PointsText = styled(ListItemText)`
 
 const DatePickerButtonWrapper = styled.div`
   position: fixed;
-  bottom: 90px;
-  right: 16px;
-`;
-const AddFabButtonWrapper = styled.div`
-  position: fixed;
-  bottom: 16px;
-  right: 16px;
+  bottom: 94px;
+  right: 20px;
 `;
 
 export const Entries = () => {
@@ -132,9 +127,7 @@ export const Entries = () => {
       <DatePickerButtonWrapper>
         <DatePickerButton onChange={onEntryFormOpen} />
       </DatePickerButtonWrapper>
-      <AddFabButtonWrapper>
-        <AddFabButton onClick={() => onEntryFormOpen()} />
-      </AddFabButtonWrapper>
+      <FabButton onClick={() => onEntryFormOpen()} />
     </Loadable>
   );
 };

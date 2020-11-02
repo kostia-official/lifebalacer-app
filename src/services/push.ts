@@ -11,8 +11,12 @@ class Push {
     this.messaging = firebase.messaging();
   }
 
-  async getToken(): Promise<string> {
-    return this.messaging.getToken({ vapidKey: config.firebase.vapidKey });
+  async getToken(): Promise<string | null> {
+    try {
+      return await this.messaging.getToken({ vapidKey: config.firebase.vapidKey });
+    } catch (err) {
+      return null;
+    }
   }
 }
 

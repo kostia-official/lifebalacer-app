@@ -23,15 +23,17 @@ export const EntryPickButton: React.FC<EntryPickButtonProps> = ({
   unselectEntry,
   selectEntry
 }) => {
+  const isSelected = !!entry;
+
   return (
     <ButtonStyled
-      variant={entry ? 'contained' : 'outlined'}
+      variant={isSelected ? 'contained' : 'outlined'}
       color="primary"
       size="small"
       onClick={() => {
-        if (activity.valueType === ActivityType.Todoist) return ;
+        if (!isSelected && activity.valueType === ActivityType.Todoist) return;
 
-        return entry ? unselectEntry && unselectEntry(entry) : selectEntry(activity);
+        return isSelected ? unselectEntry && unselectEntry(entry!) : selectEntry(activity);
       }}
       startIcon={<Typography variant="h5">{activity.emoji}</Typography>}
       disableRipple

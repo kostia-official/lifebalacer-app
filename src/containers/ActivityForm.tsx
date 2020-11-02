@@ -1,14 +1,6 @@
 import React, { useState, useCallback, SyntheticEvent, useEffect } from 'react';
 import styled from 'styled-components';
-import {
-  FormControl,
-  FormLabel,
-  Select,
-  MenuItem,
-  InputLabel,
-  Button,
-  TextField
-} from '@material-ui/core';
+import { FormControl, FormLabel, Select, MenuItem, InputLabel, TextField } from '@material-ui/core';
 import {
   ActivityType,
   PointsType,
@@ -27,14 +19,11 @@ import { useApolloError } from '../hooks/useApolloError';
 import { ErrorMessage } from '../components/ErrorMessage';
 import { useHistory, useParams } from 'react-router-dom';
 import { Spinner } from '../components/Spinner';
+import { FabButton } from '../components/FabButton';
 
 const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
-`;
-
-const SubmitButton: typeof Button = styled(Button)`
-  margin-top: 8px;
 `;
 
 export const ActivityForm = () => {
@@ -221,9 +210,7 @@ export const ActivityForm = () => {
         </FormControl>
       )}
 
-      <SubmitButton type="submit" variant="contained" color="primary">
-        {isEdit ? 'Save' : 'Create'}
-      </SubmitButton>
+      <FabButton type="submit" icon="save" />
     </FormContainer>
   );
 };
