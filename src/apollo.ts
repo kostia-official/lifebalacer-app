@@ -6,6 +6,7 @@ import { RetryLink } from '@apollo/client/link/retry';
 import _ from 'lodash';
 import { useTimezone } from './hooks/useTimezone';
 import { apolloPersistCache } from './services/ApolloPersistCache';
+import { DateTime } from 'luxon';
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('token');
@@ -63,18 +64,16 @@ export const cache = new InMemoryCache({
             return incoming;
           }
         },
-        entriesByOneDay(existing, { args, readField }) {
-          if (existing) return existing;
+        entriesByOneDay(_, { args, toReference }) {
+          if (!args?.date) return;
 
-          const entriesByDay = readField('entriesByDay');
+          // Enforce proper datetime format
+          args.date = DateTime.fromISO(args.date).toISODate() + 'T00:00:00.000Z';
 
-          if (_.isArray(entriesByDay)) {
-            return _.find(entriesByDay, (day) => {
-              return day.date === args?.date;
-            });
-          }
-
-          return undefined;
+          return toReference({
+            __typename: 'EntriesByDay',
+            date: args.date
+          });
         }
       }
     }

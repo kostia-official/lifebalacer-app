@@ -30,7 +30,7 @@ import { useGetTodoistActivity } from '../hooks/useGetTodoistActivity';
 import { DateTime } from 'luxon';
 import { useDeviceDetect } from '../hooks/useDeviceDetect';
 import { EntryValueModalContent } from '../components/EntryValueModalContent/EntryValueModalContent';
-import { isSwipeHandlersEnabledVar } from "../reactiveState";
+import { isSwipeHandlersEnabledVar } from '../reactiveState';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
@@ -70,13 +70,14 @@ export const EntriesForm = () => {
   }, []);
 
   const history = useHistory();
-  const { date } = useParams<{ date: string }>();
-  const completedAt = date || new Date().toISOString();
+
+  const params = useParams<{ date: string }>();
+  const dayDate = params.date || DateTime.local().toISODate();
 
   const { errorMessage, errorTime, onError } = useApolloError();
 
   const { data: entriesData } = useGetEntriesByOneDayQuery({
-    variables: { date: completedAt },
+    variables: { date: dayDate },
     onError
   });
   const entriesByDay = entriesData?.entriesByOneDay?.entries;
@@ -97,7 +98,7 @@ export const EntriesForm = () => {
     setSelectedEntries(getSelectedEntriesFromEntriesByDay());
   }, [getSelectedEntriesFromEntriesByDay]);
 
-  const { data: getActivitiesData, loading: activitiesLoading } = useGetActivitiesQuery({
+  const { data: getActivitiesData } = useGetActivitiesQuery({
     onError
   });
   const activities = getActivitiesData?.activities || [];
@@ -115,7 +116,7 @@ export const EntriesForm = () => {
     refetchQueries: [
       refetchGetDaysStatisticQuery(),
       refetchGetEntriesByDayQuery(),
-      refetchGetEntriesByOneDayQuery({ date: completedAt }),
+      refetchGetEntriesByOneDayQuery({ date: dayDate }),
       refetchGetBalanceQuery()
     ]
   };
@@ -130,14 +131,14 @@ export const EntriesForm = () => {
       const entry: SelectedEntry = {
         _id: new ObjectId().toString(),
         activityId,
-        completedAt,
+        completedAt: new Date().toISOString(),
         value
       };
 
       setSelectedEntries((prev) => [...prev, entry]);
       await createEntryMutation({ variables: { data: entry } });
     },
-    [getEntriesByActivityId, completedAt, createEntryMutation]
+    [getEntriesByActivityId, createEntryMutation]
   );
 
   const selectEntry = useCallback(
@@ -147,7 +148,7 @@ export const EntriesForm = () => {
         case ActivityType.Value: {
           return openModal({
             _id: new ObjectId().toString(),
-            completedAt,
+            completedAt: new Date().toISOString(),
             activityId: activity._id
           });
         }
@@ -156,7 +157,7 @@ export const EntriesForm = () => {
         }
       }
     },
-    [completedAt, createEntry, openModal]
+    [createEntry, openModal]
   );
 
   const unselectEntry = useCallback(
@@ -225,7 +226,7 @@ export const EntriesForm = () => {
     [activities, modalEntry]
   );
 
-  if (activitiesLoading) return <Spinner />;
+  if (!getActivitiesData) return <Spinner />;
 
   return (
     <div>
@@ -233,7 +234,7 @@ export const EntriesForm = () => {
 
       <DateTitleWrapper isCenter={isMobile}>
         <Typography color="textSecondary" gutterBottom>
-          {DateTime.fromISO(completedAt).toLocaleString(DateTime.DATE_HUGE)}
+          {DateTime.fromISO(dayDate).toLocaleString(DateTime.DATE_HUGE)}
         </Typography>
       </DateTitleWrapper>
 
