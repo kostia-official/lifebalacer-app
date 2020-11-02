@@ -4,7 +4,7 @@ import queryString from 'query-string';
 import { ErrorMessage } from '../components/ErrorMessage';
 import { useConnectTodoistMutation, refetchGetActivitiesQuery } from '../generated/apollo';
 import { useApolloError } from '../hooks/useApolloError';
-import { useGetTodoistActivity } from '../hooks/useGetTodoistActivity';
+import { useActivities } from "../hooks/useActivities";
 
 export const TodoistAuth = () => {
   const { errorMessage, onError, setErrorMessage } = useApolloError();
@@ -21,7 +21,7 @@ export const TodoistAuth = () => {
     onError,
     refetchQueries: [refetchGetActivitiesQuery()]
   });
-  const { todoistActivity } = useGetTodoistActivity({ onError });
+  const { todoistActivity } = useActivities({ onError });
 
   useEffect(() => {
     connectTodoist({

@@ -12,7 +12,6 @@ import { Loadable } from '../components/Loadable';
 import { useDaysStatisticText } from '../hooks/useDaysStatisticText';
 import { getEntryLabel } from '../helpers/getEntryLabel';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { useGetTodoistActivity } from '../hooks/useGetTodoistActivity';
 import { groupTodoistEntries } from '../helpers/groupTodoistEntries';
 import { useActivities } from '../hooks/useActivities';
 
@@ -41,14 +40,14 @@ export const Entries = () => {
   const history = useHistory();
   const { errorMessage, errorTime, onError } = useApolloError();
   const { statisticText } = useDaysStatisticText({ onError });
-  const { getByActivityId } = useActivities({ onError });
+  const { getActivityById } = useActivities({ onError });
 
   const [isHasMore, setIsHasMore] = useState(true);
 
   const { data, fetchMore } = useGetEntriesByDayQuery({ onError });
   const days = data?.entriesByDay;
 
-  const { todoistActivity } = useGetTodoistActivity({ onError });
+  const { todoistActivity } = useActivities({ onError });
 
   const onLoadMore = useCallback(() => {
     const lastDate: string = _.chain(days)
@@ -112,7 +111,7 @@ export const Entries = () => {
 
               const activitiesText = entriesWithTodoistGroup
                 .map((entry) =>
-                  getEntryLabel({ entry, activity: getByActivityId(entry.activityId) })
+                  getEntryLabel({ entry, activity: getActivityById(entry.activityId) })
                 )
                 .join(', ');
 

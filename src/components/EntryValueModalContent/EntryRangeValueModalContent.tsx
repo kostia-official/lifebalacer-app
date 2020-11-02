@@ -50,7 +50,7 @@ export const EntryRangeValueModalContent: React.FC<EntryValueModalContentProps> 
     return _.range(min, max + 1).map((n) => {
       return {
         value: n,
-        label: n === min || n === max ? n : null
+        label: n
       };
     });
   }, [min, max]);

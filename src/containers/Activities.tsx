@@ -14,9 +14,9 @@ import { AddFabButton } from '../components/AddFabButton';
 import { Loadable } from '../components/Loadable';
 import { Button } from '@material-ui/core';
 import { useTodoist } from '../hooks/useTodoist';
-import { useGetTodoistActivity } from '../hooks/useGetTodoistActivity';
 import { useDeviceDetect } from '../hooks/useDeviceDetect';
 import _ from 'lodash';
+import { useActivities } from "../hooks/useActivities";
 
 const AddFabButtonWrapper = styled.div`
   position: fixed;
@@ -36,7 +36,7 @@ export const Activities = () => {
   const { errorMessage, onError, errorTime } = useApolloError();
   const { authorizeInTodoist } = useTodoist();
 
-  const { todoistActivity } = useGetTodoistActivity({ onError });
+  const { todoistActivity } = useActivities({ onError });
   const { data } = useGetActivitiesQuery({ onError });
   const [deleteActivity] = useDeleteActivityMutation({
     onError,
