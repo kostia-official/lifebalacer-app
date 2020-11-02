@@ -90,7 +90,12 @@ export const EntriesForm = () => {
   const [selectedEntries, setSelectedEntries] = useState<EntriesResult>(entriesByDay || []);
 
   useEffect(() => {
-    if (!_.isEmpty(entriesByDay)) setSelectedEntries(entriesByDay!);
+    if (!_.isEmpty(entriesByDay))
+      setSelectedEntries((prev) => {
+        // save only the first update
+        if (_.isEmpty(prev)) return prev;
+        return entriesByDay!;
+      });
   }, [entriesByDay]);
 
   const { activities, todoistActivity, getActivityById } = useActivities({
