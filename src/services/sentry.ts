@@ -7,7 +7,7 @@ class SentryService {
   constructor() {
     Sentry.init({
       dsn: config.sentry.dsn,
-      // enabled: !config.isDev,
+      enabled: !config.isDev,
       environment: config.stage,
       tracesSampleRate: 1.0,
       logLevel: LogLevel.Verbose,
