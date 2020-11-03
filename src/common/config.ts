@@ -1,4 +1,6 @@
 export const config = {
+  isDev: process.env.NODE_ENV === 'production',
+  stage: process.env.STAGE || 'dev',
   apiUrl: process.env.REACT_APP_API_URL || 'https://rewarder-api-gateway-prod.cycler.cc/graphql',
   wsUrl: process.env.REACT_APP_WS_URL || 'wss://rewarder-staging.herokuapp.com/graphql',
   auth: {
@@ -18,5 +20,8 @@ export const config = {
   firebase: {
     config: process.env.REACT_APP_FIREBASE_CONFIG && JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG),
     vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY
+  },
+  sentry: {
+    dsn: process.env.REACT_APP_SENTRY_DSN || 'https://ec078a8c5b3d4cfebbdce2f162f9066a@o382355.ingest.sentry.io/5502396'
   }
 };

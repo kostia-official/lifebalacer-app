@@ -1,5 +1,7 @@
-import { useAuth0, Auth0ContextInterface } from '@auth0/auth0-react';
-import { useEffect, useState } from 'react';
+import { useAuth0, Auth0ContextInterface } from "@auth0/auth0-react";
+import { useEffect, useState } from "react";
+import { config } from "../common/config";
+import { sentryService } from "../services/sentry";
 
 export interface Auth0User {
   name: string;
@@ -28,14 +30,16 @@ export const useAuth = (): IUseAuthResult => {
         setIsLoading(true);
         const accessToken = await getAccessTokenSilently();
         const claims = await getIdTokenClaims();
+        const userId = claims[`${config.auth.customClaimNamespace}/user_uuid`];
 
         if (accessToken) {
+          sentryService.setUserId(userId);
           localStorage.setItem('token', accessToken);
           localStorage.setItem('user', JSON.stringify(claims));
         }
         setAccessToken(accessToken);
       } catch (err) {
-        console.error("useAuth", err);
+        sentryService.captureException(err);
         setAccessToken('');
       } finally {
         setIsLoading(false);

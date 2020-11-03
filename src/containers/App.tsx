@@ -20,6 +20,7 @@ import { usePushTokenSave } from '../hooks/usePushTokenSave';
 import { useApolloError } from '../hooks/useApolloError';
 import { Loadable } from '../components/Loadable';
 import { isSwipeHandlersEnabledVar } from '../reactiveState';
+import { ErrorCatcher } from '../components/ErrorCatcher';
 
 export interface IPage {
   name: string;
@@ -142,19 +143,23 @@ export const App: React.FC = () => {
             items={pages}
             onClose={onMenuClick}
             onItemClick={onNavigationItemClick}
-            user={user && { name: user.given_name, email: user.email, avatar: user.picture }}
+            user={user && { name: user?.given_name, email: user.email, avatar: user.picture }}
           />
 
           <PageWrapper>
-            <Switch>
-              {pages.map((page) => {
-                return <Route key={page.path} path={page.path} exact component={page.component} />;
-              })}
-              <Route path="/activities/create" exact component={ActivityForm} />
-              <Route path="/activities/edit/:_id" exact component={ActivityForm} />
-              <Route path="/entries/:date" exact component={EntriesForm} />
-              <Route path="/todoist/auth" exact component={TodoistAuth} />
-            </Switch>
+            <ErrorCatcher userEmail={user?.email} userName={user?.name}>
+              <Switch>
+                {pages.map((page) => {
+                  return (
+                    <Route key={page.path} path={page.path} exact component={page.component} />
+                  );
+                })}
+                <Route path="/activities/create" exact component={ActivityForm} />
+                <Route path="/activities/edit/:_id" exact component={ActivityForm} />
+                <Route path="/entries/:date" exact component={EntriesForm} />
+                <Route path="/todoist/auth" exact component={TodoistAuth} />
+              </Switch>
+            </ErrorCatcher>
           </PageWrapper>
         </ContentWrapper>
       </Loadable>
