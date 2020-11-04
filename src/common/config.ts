@@ -1,5 +1,5 @@
 export const config = {
-  isDev: process.env.NODE_ENV === 'production',
+  isDev: process.env.NODE_ENV !== 'production',
   stage: process.env.STAGE || 'dev',
   apiUrl: process.env.REACT_APP_API_URL || 'https://rewarder-api-gateway-prod.cycler.cc/graphql',
   wsUrl: process.env.REACT_APP_WS_URL || 'wss://rewarder-staging.herokuapp.com/graphql',
