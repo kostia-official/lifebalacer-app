@@ -10,7 +10,7 @@ export interface UseDatePickerRenderDayProps {
 }
 
 export interface DaysPayload {
-  [key: string]: { points: number; }
+  [key: string]: { points: number };
 }
 
 export const useDatePickerRenderDay = ({
@@ -26,23 +26,22 @@ export const useDatePickerRenderDay = ({
     fetchPolicy: 'cache-and-network'
   });
 
-  const daysPayload: DaysPayload =
-    useMemo(
-      () =>
-        daysData?.entriesByDay?.reduce<DaysPayload>((acc, day) => {
-          const date = DateTime.fromISO(day.date).toISODate();
+  const daysPayload: DaysPayload = useMemo(
+    () =>
+      daysData?.entriesByDay?.reduce<DaysPayload>((acc, day) => {
+        const date = DateTime.fromISO(day.date).toISODate();
 
-          if (!activityId) {
-            return { ...acc, [date]: { points: day.points } };
-          }
-          if (day.entries.find((entry) => entry.activityId === activityId)) {
-            return { ...acc, [date]: { points: day.points } };
-          }
+        if (!activityId) {
+          return { ...acc, [date]: { points: day.points } };
+        }
+        if (day.entries.find((entry) => entry.activityId === activityId)) {
+          return { ...acc, [date]: { points: day.points } };
+        }
 
-          return acc;
-        }, {}),
-      [daysData, activityId]
-    ) ?? {};
+        return acc;
+      }, {}) || {},
+    [daysData, activityId]
+  );
 
   const renderDay = useCallback(
     (

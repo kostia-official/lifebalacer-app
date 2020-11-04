@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Typography, Button } from '@material-ui/core';
 import { getEntryLabel } from '../helpers/getEntryLabel';
 import styled from 'styled-components';
 import { SelectedEntry, ActivityResult } from '../common/types';
-import { ActivityType } from '../generated/apollo';
 
 const ButtonStyled: typeof Button = styled(Button)`
   height: 40px;
@@ -13,28 +12,26 @@ const ButtonStyled: typeof Button = styled(Button)`
 export interface EntryPickButtonProps {
   entry?: SelectedEntry;
   activity: ActivityResult;
-  unselectEntry?: (entry: SelectedEntry) => void;
-  selectEntry: (activity: ActivityResult) => void;
+  toggleSelection: (activity: ActivityResult, entry?: SelectedEntry) => any;
 }
 
 export const EntryPickButton: React.FC<EntryPickButtonProps> = ({
   entry,
   activity,
-  unselectEntry,
-  selectEntry
+  toggleSelection
 }) => {
   const isSelected = !!entry;
+
+  const onClick = useCallback(() => {
+    toggleSelection(activity, entry);
+  }, [activity, entry, toggleSelection]);
 
   return (
     <ButtonStyled
       variant={isSelected ? 'contained' : 'outlined'}
       color="primary"
       size="small"
-      onClick={() => {
-        if (!isSelected && activity.valueType === ActivityType.Todoist) return;
-
-        return isSelected ? unselectEntry && unselectEntry(entry!) : selectEntry(activity);
-      }}
+      onClick={onClick}
       startIcon={<Typography variant="h5">{activity.emoji}</Typography>}
       disableRipple
       disableElevation

@@ -22,7 +22,10 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const httpLink = new HttpLink({
-  uri: config.apiUrl
+  uri: config.apiUrl,
+  fetchOptions: {
+
+  }
 });
 
 const retryLink = new RetryLink({
