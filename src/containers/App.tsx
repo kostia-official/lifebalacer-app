@@ -21,6 +21,7 @@ import { useApolloError } from '../hooks/useApolloError';
 import { Loadable } from '../components/Loadable';
 import { isSwipeHandlersEnabledVar } from '../reactiveState';
 import { ErrorCatcher } from '../components/ErrorCatcher';
+import { AppUpdateDialog } from './AppUpdateDialog';
 
 export interface IPage {
   name: string;
@@ -129,6 +130,8 @@ export const App: React.FC = () => {
             }}
           />
         )}
+
+        <AppUpdateDialog />
 
         <Header
           title="Rewarder"

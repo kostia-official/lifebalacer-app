@@ -1,8 +1,7 @@
-import React, { Component, ErrorInfo, Fragment } from 'react';
-import * as Sentry from '@sentry/browser';
-import { ReactComponent as ErrorLogo } from '../assets/error.svg';
-import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
+import React, { Component, ErrorInfo } from "react";
+import * as Sentry from "@sentry/browser";
+import { ReactComponent as ErrorLogo } from "../assets/error.svg";
+import { LogoContent } from "./LogoContent";
 
 interface IErrorCatcherState {
   eventId?: string;
@@ -13,23 +12,6 @@ interface IErrorCatcherProps {
   userEmail?: string;
   userName?: string;
 }
-
-const ErrorLogoWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-`;
-
-const ErrorLogoStyled = styled(ErrorLogo)`
-  width: 60vw;
-  height: auto;
-  margin-top: 50px;
-`;
-
-const TypographyStyled = styled(Typography)`
-  margin-top: 20px;
-`;
 
 export class ErrorCatcher extends Component<IErrorCatcherProps, IErrorCatcherState> {
   constructor(props: IErrorCatcherProps) {
@@ -60,15 +42,7 @@ export class ErrorCatcher extends Component<IErrorCatcherProps, IErrorCatcherSta
     const { hasError } = this.state;
 
     if (hasError) {
-      return (
-        <Fragment>
-          <ErrorLogoWrapper>
-            <ErrorLogoStyled />
-
-            <TypographyStyled variant="h6">Unexpected error happened</TypographyStyled>
-          </ErrorLogoWrapper>
-        </Fragment>
-      );
+      return <LogoContent text="Unexpected error happened!" logo={ErrorLogo} />;
     }
 
     // when there's not an error, render children untouched
