@@ -9,6 +9,16 @@ import {
 } from '../generated/apollo';
 import { TimePicker } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { LogoContent } from '../components/LogoContent';
+import { ReactComponent as ReminderLogo } from '../assets/reminder.svg';
+import { css } from "styled-components";
+
+const logoStyles = css`
+  max-width: 300px;
+  width: 60vw;
+  margin-top: 6px;
+  margin-bottom: 10px;
+`
 
 export const Reminders = () => {
   const { errorMessage, onError, errorTime } = useApolloError();
@@ -40,12 +50,15 @@ export const Reminders = () => {
 
   return (
     <Loadable errorMessage={errorMessage} errorTime={errorTime} isLoading={_.isEmpty(data)}>
+      <LogoContent logo={ReminderLogo} logoStyles={logoStyles}/>
+
       <TimePicker
         label="Remind at"
         value={date}
         emptyLabel="Select time..."
         onChange={onDateChange}
         ampm={false}
+        fullWidth
       />
     </Loadable>
   );

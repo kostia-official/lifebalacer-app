@@ -10,7 +10,7 @@ const ContentWrapper = styled.div`
 `;
 
 export interface LogoContentProps {
-  text: string;
+  text?: string;
   logoStyles?: SimpleInterpolation;
   textVariant?: TypographyProps['variant'];
   logo: FunctionComponent;
@@ -22,12 +22,9 @@ const LogoWrapper = styled.div<{ $logoStyles: SimpleInterpolation }>`
 
   height: auto;
   margin-top: 40px;
+  margin-bottom: 40px;
   
   ${props => props.$logoStyles}
-`;
-
-const TypographyStyled = styled(Typography)`
-  margin-top: 40px;
 `;
 
 export const LogoContent: React.FC<LogoContentProps> = ({
@@ -39,7 +36,7 @@ export const LogoContent: React.FC<LogoContentProps> = ({
   return (
     <ContentWrapper>
       <LogoWrapper as={logo} $logoStyles={logoStyles} />
-      <TypographyStyled variant={textVariant}>{text}</TypographyStyled>
+      {text && <Typography variant={textVariant}>{text}</Typography>}
     </ContentWrapper>
   );
 };

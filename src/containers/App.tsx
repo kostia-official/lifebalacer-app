@@ -86,8 +86,6 @@ export const App: React.FC = () => {
   const [isExpandedMenu, setIsExpandedMenu] = useState(isDesktop);
   const { onError, errorTime, errorMessage } = useApolloError();
 
-  usePushTokenSave({ onError });
-
   const swipeHandlers = useSwipeable({
     onSwipedRight: () => {
       if (isSwipeHandlersEnabledVar()) {

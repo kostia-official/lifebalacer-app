@@ -1,12 +1,10 @@
-import React, { useCallback, useState, Fragment } from 'react';
+import React, { useCallback, Fragment } from 'react';
 import { DatePickerButton } from './DatePickerButton';
 import styled from 'styled-components';
-import { useGetEntriesByDayQuery } from '../generated/apollo';
 import { useApolloError } from '../hooks/useApolloError';
-import { List, ListItem, ListItemText, Typography, ListSubheader } from '@material-ui/core';
+import { List, ListItem, ListItemText, ListSubheader } from '@material-ui/core';
 import { DateTime } from 'luxon';
 import { useHistory } from 'react-router-dom';
-import _ from 'lodash';
 import { Loadable } from '../components/Loadable';
 import { useDaysStatisticText } from '../hooks/useDaysStatisticText';
 import { getEntryLabel } from '../helpers/getEntryLabel';
@@ -14,6 +12,9 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { groupTodoistEntries } from '../helpers/groupTodoistEntries';
 import { useActivities } from '../hooks/useActivities';
 import { FabButton } from '../components/FabButton';
+import { usePushTokenSave } from '../hooks/usePushTokenSave';
+import { useInfiniteEntriesByDay } from '../hooks/useInfiniteEntriesByDay';
+import { EmptyState } from '../components/EmptyState';
 
 const StyledList = styled(List)`
   background-color: ${({ theme }) => theme.palette.background.paper};
@@ -34,43 +35,13 @@ const DatePickerButtonWrapper = styled.div`
 export const Entries = () => {
   const history = useHistory();
   const { errorMessage, errorTime, onError } = useApolloError();
+
+  usePushTokenSave({ onError });
+
   const { statisticText } = useDaysStatisticText({ onError });
-  const { getActivityById } = useActivities({ onError });
+  const { getActivityById, todoistActivity } = useActivities({ onError });
 
-  const [isHasMore, setIsHasMore] = useState(true);
-
-  const { data, fetchMore } = useGetEntriesByDayQuery({ onError });
-  const days = data?.entriesByDay;
-
-  const { todoistActivity } = useActivities({ onError });
-
-  const onLoadMore = useCallback(() => {
-    const lastDate: string = _.chain(days)
-      .last()
-      .get('entries')
-      .orderBy(['completedAt'], ['desc'])
-      .last()
-      .get('completedAt')
-      .value();
-
-    if (!lastDate) return;
-
-    fetchMore({
-      variables: {
-        dateAfter: lastDate
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult || _.isEmpty(fetchMoreResult?.entriesByDay)) {
-          setIsHasMore(false);
-          return prev;
-        }
-
-        return Object.assign({}, prev, {
-          entriesByDay: [...prev.entriesByDay, ...fetchMoreResult.entriesByDay]
-        });
-      }
-    }).then();
-  }, [days, fetchMore]);
+  const { entriesByDay, isHasMore, loadMore } = useInfiniteEntriesByDay({ onError });
 
   const onEntryFormOpen = useCallback(
     (date = new Date()) => {
@@ -80,14 +51,14 @@ export const Entries = () => {
   );
 
   return (
-    <Loadable errorMessage={errorMessage} errorTime={errorTime} isLoading={!days}>
-      {days && days.length === 0 ? (
-        <Typography>So far no entries...</Typography>
+    <Loadable errorMessage={errorMessage} errorTime={errorTime} isLoading={!entriesByDay}>
+      { entriesByDay?.length === 0 ? (
+        <EmptyState text="So far no entries..." />
       ) : (
         <InfiniteScroll
           style={{ overflow: 'hidden' }}
-          dataLength={days?.length ?? 0}
-          next={onLoadMore}
+          dataLength={entriesByDay?.length ?? 0}
+          next={loadMore}
           hasMore={isHasMore}
           loader={<Fragment />}
         >
@@ -98,7 +69,7 @@ export const Entries = () => {
               </ListSubheader>
             }
           >
-            {days?.map((day) => {
+            {entriesByDay?.map((day) => {
               const { entriesWithTodoistGroup } = groupTodoistEntries({
                 entries: day.entries,
                 todoistActivityId: todoistActivity?._id
