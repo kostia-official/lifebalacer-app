@@ -31,7 +31,7 @@ export const ActivityForm = () => {
   let { _id } = useParams<{ _id: string }>();
   const isEdit = !!_id;
 
-  const { errorMessage, onError, errorTime } = useApolloError();
+  const { errorMessage, onError, errorTime } = useApolloError({ isForceShowError: true });
 
   const onCompleted = useCallback(() => {
     history.replace('/activities');
@@ -114,7 +114,7 @@ export const ActivityForm = () => {
       <ErrorMessage errorMessage={errorMessage} errorTime={errorTime} />
 
       <TextField
-        required
+        // required
         label="Name"
         value={activity.name}
         onChange={updateActivityField('name')}

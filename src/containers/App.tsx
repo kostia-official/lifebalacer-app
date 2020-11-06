@@ -20,7 +20,7 @@ import { usePushTokenSave } from '../hooks/usePushTokenSave';
 import { useApolloError } from '../hooks/useApolloError';
 import { Loadable } from '../components/Loadable';
 import { isSwipeHandlersEnabledVar } from '../reactiveState';
-import { ErrorCatcher } from '../components/ErrorCatcher';
+import { ErrorCatcher } from './ErrorCatcher';
 import { AppUpdateDialog } from './AppUpdateDialog';
 
 export interface IPage {

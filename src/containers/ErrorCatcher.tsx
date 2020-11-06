@@ -1,7 +1,7 @@
 import React, { Component, ErrorInfo } from "react";
 import * as Sentry from "@sentry/browser";
 import { ReactComponent as ErrorLogo } from "../assets/error.svg";
-import { LogoContent } from "./LogoContent";
+import { LogoContent } from "../components/LogoContent";
 
 interface IErrorCatcherState {
   eventId?: string;

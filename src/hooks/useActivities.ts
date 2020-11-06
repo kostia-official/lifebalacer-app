@@ -6,7 +6,9 @@ import * as R from 'remeda';
 import _ from 'lodash';
 
 export const useActivities = ({ onError }: OnErrorParams = {}) => {
-  const { data, ...other } = useGetActivitiesQuery({ onError });
+  const { data, ...other } = useGetActivitiesQuery({ onError: (error) => {
+
+    } });
   const activitiesNormalized = useMemo(() => {
     if (!data?.activities) return {};
 
