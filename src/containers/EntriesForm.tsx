@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
-import ObjectId from "bson-objectid";
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import ObjectId from 'bson-objectid';
 import {
   ActivityType,
   useCreateEntryMutation,
@@ -11,26 +11,26 @@ import {
   useUpdateEntryMutation,
   refetchGetEntriesByOneDayQuery,
   refetchGetDaysStatisticQuery
-} from "../generated/apollo";
-import { useApolloError } from "../hooks/useApolloError";
-import { Spinner } from "../components/Spinner";
-import { ErrorMessage } from "../components/ErrorMessage";
-import * as R from "remeda";
-import _ from "lodash";
-import { Card, CardContent, Typography } from "@material-ui/core";
-import { useParams, useHistory } from "react-router-dom";
-import styled, { css } from "styled-components";
-import { CardModal } from "../components/CardModal";
-import { ActivityResult, SelectedEntry, EntriesResult } from "../common/types";
-import { EntryPickButton } from "../components/EntryPickButton";
-import { useActivities } from "../hooks/useActivities";
-import { DateTime } from "luxon";
-import { useDeviceDetect } from "../hooks/useDeviceDetect";
-import { EntryValueModalContent } from "../components/EntryValueModalContent/EntryValueModalContent";
-import { isSwipeHandlersEnabledVar } from "../reactiveState";
-import { isToday } from "../helpers/date";
-import { FabButton } from "../components/FabButton";
-import { useActivitiesByCategory } from "../hooks/useActivitiesByCategory";
+} from '../generated/apollo';
+import { useApolloError } from '../hooks/useApolloError';
+import { Spinner } from '../components/Spinner';
+import { ErrorMessage } from '../components/ErrorMessage';
+import * as R from 'remeda';
+import _ from 'lodash';
+import { Card, CardContent, Typography } from '@material-ui/core';
+import { useParams, useHistory } from 'react-router-dom';
+import styled, { css } from 'styled-components';
+import { CardModal } from '../components/CardModal';
+import { ActivityResult, SelectedEntry, EntriesResult } from '../common/types';
+import { EntryPickButton } from '../components/EntryPickButton';
+import { useActivities } from '../hooks/useActivities';
+import { DateTime } from 'luxon';
+import { useDeviceDetect } from '../hooks/useDeviceDetect';
+import { EntryValueModalContent } from '../components/EntryValueModalContent/EntryValueModalContent';
+import { isSwipeHandlersEnabledVar } from '../reactiveState';
+import { isToday } from '../helpers/date';
+import { FabButton } from '../components/FabButton';
+import { useActivitiesByCategory } from '../hooks/useActivitiesByCategory';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
@@ -191,6 +191,7 @@ export const EntriesForm = () => {
   const unselectEntry = useCallback(
     async (entry: SelectedEntry) => {
       const activity = getActivityById(entry.activityId);
+      if (!activity) return;
 
       switch (activity.valueType) {
         case ActivityType.Range:

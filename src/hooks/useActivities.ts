@@ -3,6 +3,7 @@ import { useGetActivitiesQuery, ActivityType } from '../generated/apollo';
 import { useCallback, useMemo } from 'react';
 import { ActivityResult } from '../common/types';
 import * as R from 'remeda';
+import _ from 'lodash';
 
 export const useActivities = ({ onError }: OnErrorParams = {}) => {
   const { data, ...other } = useGetActivitiesQuery({ onError });
@@ -13,8 +14,10 @@ export const useActivities = ({ onError }: OnErrorParams = {}) => {
   }, [data]);
 
   const getActivityById = useCallback(
-    (activityId: string): ActivityResult => {
-      return activitiesNormalized[activityId][0];
+    (activityId: string): ActivityResult | undefined => {
+      const group = activitiesNormalized[activityId];
+
+      return _.first(group);
     },
     [activitiesNormalized]
   );

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { Entry, Activity } from '../generated/apollo';
 
 export interface GetEntryLabelParams {
-  activity: Pick<Activity, 'name' | 'emoji'>;
+  activity?: Pick<Activity, 'name' | 'emoji'>;
   entry?: Pick<Entry, 'description' | 'value'>;
   isWithEmoji?: boolean;
 }
