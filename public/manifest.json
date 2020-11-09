@@ -4,10 +4,10 @@
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
-  "name": "Rewarder",
-  "app_name": "Rewarder",
-  "short_name": "Rewarder",
-  "description": "Achieve points and spend them for useful rewards",
+  "name": "Life Balancer",
+  "app_name": "Life Balancer",
+  "short_name": "Life Balancer",
+  "description": "Track balance in your life.",
   "icons": [
     {
       "src": "/maskable_icon.png",

@@ -16,9 +16,6 @@ import { EntriesForm } from './EntriesForm';
 import { Calendar } from './Calendar';
 import { TodoistAuth } from './TodoistAuth';
 import { Reminders } from './Reminders';
-import { usePushTokenSave } from '../hooks/usePushTokenSave';
-import { useApolloError } from '../hooks/useApolloError';
-import { Loadable } from '../components/Loadable';
 import { isSwipeHandlersEnabledVar } from '../reactiveState';
 import { ErrorCatcher } from './ErrorCatcher';
 import { AppUpdateDialog } from './AppUpdateDialog';
@@ -84,7 +81,6 @@ export const App: React.FC = () => {
   const history = useHistory();
   const { isDesktop } = useDeviceDetect();
   const [isExpandedMenu, setIsExpandedMenu] = useState(isDesktop);
-  const { onError, errorTime, errorMessage } = useApolloError();
 
   const swipeHandlers = useSwipeable({
     onSwipedRight: () => {
@@ -118,52 +114,48 @@ export const App: React.FC = () => {
 
   return (
     <AppWrapper {...swipeHandlers}>
-      <Loadable errorMessage={errorMessage} errorTime={errorTime}>
-        {isDesktop && (
-          <Persist
-            name="app"
-            data={{ isExpandedMenu }}
-            onMount={({ isExpandedMenu }) => {
-              setIsExpandedMenu(!!isExpandedMenu);
-            }}
-          />
-        )}
+      {isDesktop && (
+        <Persist
+          name="app"
+          data={{ isExpandedMenu }}
+          onMount={({ isExpandedMenu }) => {
+            setIsExpandedMenu(!!isExpandedMenu);
+          }}
+        />
+      )}
 
-        <AppUpdateDialog />
+      <AppUpdateDialog />
 
-        <Header
-          title="Rewarder"
-          onMenuClick={onMenuClick}
-          onBackClick={onBackClick}
-          rightContent={<HeaderRightContent />}
+      <Header
+        title="Life Balancer"
+        onMenuClick={onMenuClick}
+        onBackClick={onBackClick}
+        rightContent={<HeaderRightContent />}
+      />
+
+      <ContentWrapper>
+        <Navigation
+          isExpanded={isExpandedMenu}
+          items={pages}
+          onClose={onMenuClick}
+          onItemClick={onNavigationItemClick}
+          user={user && { name: user?.given_name, email: user.email, avatar: user.picture }}
         />
 
-        <ContentWrapper>
-          <Navigation
-            isExpanded={isExpandedMenu}
-            items={pages}
-            onClose={onMenuClick}
-            onItemClick={onNavigationItemClick}
-            user={user && { name: user?.given_name, email: user.email, avatar: user.picture }}
-          />
-
-          <PageWrapper>
-            <ErrorCatcher userEmail={user?.email} userName={user?.name}>
-              <Switch>
-                {pages.map((page) => {
-                  return (
-                    <Route key={page.path} path={page.path} exact component={page.component} />
-                  );
-                })}
-                <Route path="/activities/create" exact component={ActivityForm} />
-                <Route path="/activities/edit/:_id" exact component={ActivityForm} />
-                <Route path="/entries/:date" exact component={EntriesForm} />
-                <Route path="/todoist/auth" exact component={TodoistAuth} />
-              </Switch>
-            </ErrorCatcher>
-          </PageWrapper>
-        </ContentWrapper>
-      </Loadable>
+        <PageWrapper>
+          <ErrorCatcher userEmail={user?.email} userName={user?.name}>
+            <Switch>
+              {pages.map((page) => {
+                return <Route key={page.path} path={page.path} exact component={page.component} />;
+              })}
+              <Route path="/activities/create" exact component={ActivityForm} />
+              <Route path="/activities/edit/:_id" exact component={ActivityForm} />
+              <Route path="/entries/:date" exact component={EntriesForm} />
+              <Route path="/todoist/auth" exact component={TodoistAuth} />
+            </Switch>
+          </ErrorCatcher>
+        </PageWrapper>
+      </ContentWrapper>
     </AppWrapper>
   );
 };

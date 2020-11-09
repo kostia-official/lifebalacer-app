@@ -11,7 +11,6 @@ export interface Auth0User {
 class Auth {
   private auth0: Auth0Client;
 
-  public isAuthError = false;
   private token: string | null = null;
   private user: Auth0User | null = null;
 
@@ -26,17 +25,20 @@ class Auth {
     });
   }
 
+  invalidateToken() {
+    this.token = null;
+    localStorage.removeItem('token');
+  }
+
   async updateToken(): Promise<string | null> {
     try {
       const accessToken = await this.getTokenSilentlyCached();
       localStorage.setItem('token', accessToken);
-      this.isAuthError = false;
       this.token = accessToken;
 
       return accessToken;
     } catch (err) {
-      this.isAuthError = true;
-      this.token = null;
+      this.invalidateToken();
 
       return null;
     }
@@ -78,7 +80,7 @@ class Auth {
   async getToken(): Promise<string | null> {
     const token = this.token || localStorage.getItem('token');
 
-    if (!this.isAuthError && token) return token;
+    if (token) return token;
 
     return this.updateToken();
   }

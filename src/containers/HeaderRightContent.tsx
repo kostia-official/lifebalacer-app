@@ -6,5 +6,5 @@ export const HeaderRightContent = () => {
 
   if (!balanceData?.balance) return <Fragment />;
 
-  return <Fragment>{`Balance: ${balanceData?.balance}`}</Fragment>;
+  return <Fragment>{`Points: ${balanceData?.balance}`}</Fragment>;
 };

@@ -1,7 +1,7 @@
 import { persistCache, PersistentStorage } from 'apollo3-cache-persist';
 import { PersistedData } from 'apollo3-cache-persist/lib/types';
 import { NormalizedCacheObject } from '@apollo/client';
-import { cache } from '../apollo';
+import { cache } from '../apollo/cache';
 
 class ApolloPersistCache {
   private loadCachePromise: Promise<any> | null = null;
