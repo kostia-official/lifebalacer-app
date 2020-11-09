@@ -3,13 +3,14 @@ import { ApolloLink } from '@apollo/client/link/core';
 import { config } from './common/config';
 import { setContext } from '@apollo/client/link/context';
 import { RetryLink } from '@apollo/client/link/retry';
-import _ from 'lodash';
+import { onError } from '@apollo/client/link/error';
 import { useTimezone } from './hooks/useTimezone';
 import { apolloPersistCache } from './services/ApolloPersistCache';
 import { DateTime } from 'luxon';
+import { authService } from './services/auth0';
 
-const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem('token');
+const authLink = setContext(async (_, { headers }) => {
+  const token = await authService.getToken();
   const timezone = useTimezone();
 
   return {
@@ -32,9 +33,22 @@ const retryLink = new RetryLink({
     jitter: true
   },
   attempts: {
-    max: 6,
+    max: 3,
     retryIf: (error, _operation) => {
-      return _.get(error, 'result.errors[0].extensions.code') === 'UNAUTHENTICATED';
+      return error.statusCode > 500;
+    }
+  }
+});
+
+const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
+  if (graphQLErrors) {
+    for (let err of graphQLErrors) {
+      switch (err.extensions?.code) {
+        case 'UNAUTHENTICATED':
+          authService.isAuthError = true;
+
+          return forward(operation);
+      }
     }
   }
 });
@@ -84,7 +98,7 @@ apolloPersistCache.load().then();
 
 export const apolloClient = new ApolloClient({
   cache,
-  link: ApolloLink.from([retryLink, authLink, httpLink]),
+  link: ApolloLink.from([errorLink, retryLink, authLink, httpLink]),
   defaultOptions: {
     watchQuery: {
       fetchPolicy: 'cache-and-network'

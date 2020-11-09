@@ -1,14 +1,8 @@
-import { useAuth0, Auth0ContextInterface } from "@auth0/auth0-react";
-import { useEffect, useState } from "react";
-import { config } from "../common/config";
-import { sentryService } from "../services/sentry";
-
-export interface Auth0User {
-  name: string;
-  given_name: string;
-  email: string;
-  picture: string;
-}
+import { useAuth0, Auth0ContextInterface } from '@auth0/auth0-react';
+import { useEffect, useState } from 'react';
+import { config } from '../common/config';
+import { sentryService } from '../services/sentry';
+import { Auth0User } from '../services/auth0';
 
 export interface IUseAuthResult extends Auth0ContextInterface {
   accessToken?: string | null;
