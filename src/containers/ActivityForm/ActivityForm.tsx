@@ -34,6 +34,7 @@ import { InputProps as StandardInputProps } from '@material-ui/core/Input/Input'
 import { SwitchBaseProps } from '@material-ui/core/internal/SwitchBase';
 import { TooltipCheckbox } from '../../components/TooltipCheckbox';
 import { LinearPointsTooltip } from './LinearPointsTooltip';
+import { useSelectOnInputFocus } from '../../hooks/useSelectOnInputFocus';
 
 const FormContainer = styled.form`
   display: flex;
@@ -166,12 +167,7 @@ export const ActivityForm = () => {
     }));
   }, []);
 
-  const selectAll: StandardInputProps['onFocus'] = useCallback((event) => {
-    event.preventDefault();
-    const { target } = event;
-    target.focus();
-    target.setSelectionRange(0, target.value.length ?? 0);
-  }, []);
+  const { preventMobileSelectionMenu, selectAllOnFocus } = useSelectOnInputFocus();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -194,7 +190,8 @@ export const ActivityForm = () => {
               shrink: 'true'
             }}
             margin="dense"
-            onFocus={selectAll}
+            onFocus={selectAllOnFocus}
+            onSelect={preventMobileSelectionMenu}
           />
         </FormControl>
 
@@ -234,7 +231,8 @@ export const ActivityForm = () => {
         }}
         value={activity.points ?? 0}
         onChange={updateActivityField('points')}
-        onFocus={selectAll}
+        onFocus={selectAllOnFocus}
+        onSelect={preventMobileSelectionMenu}
       />
 
       <TooltipCheckbox
@@ -277,7 +275,8 @@ export const ActivityForm = () => {
             label="From"
             value={rangeMeta.from ?? ''}
             onChange={updateRangeMetaField('from')}
-            onFocus={selectAll}
+            onFocus={selectAllOnFocus}
+            onSelect={preventMobileSelectionMenu}
           />
           <TextField
             required
@@ -290,7 +289,8 @@ export const ActivityForm = () => {
             }}
             value={rangeMeta.to ?? ''}
             onChange={updateRangeMetaField('to')}
-            onFocus={selectAll}
+            onFocus={selectAllOnFocus}
+            onSelect={preventMobileSelectionMenu}
           />
         </FormControl>
       )}

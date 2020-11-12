@@ -194,6 +194,7 @@ export const EntriesForm = () => {
       if (!activity) return;
 
       switch (activity.valueType) {
+        case ActivityType.Todoist:
         case ActivityType.Range:
         case ActivityType.Value: {
           return openModal(entry);
