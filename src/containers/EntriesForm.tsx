@@ -65,7 +65,7 @@ export const EntriesForm = () => {
     setIsModalOpen(true);
   }, []);
 
-  const history = useHistory();
+  const history = useHistory<{ isPush: boolean }>();
 
   const params = useParams<{ date: string }>();
   const dayDate = params.date || DateTime.local().toISODate();
@@ -86,14 +86,20 @@ export const EntriesForm = () => {
   const [selectedEntries, setSelectedEntries] = useState<EntriesResult>(entriesByDay || []);
 
   useEffect(() => {
-    if (!_.isEmpty(entriesByDay))
-      setSelectedEntries((prev) => {
-        // save only the first update
-        if (!_.isEmpty(prev)) return prev;
+    if (!_.isEmpty(entriesByDay)) {
+      const isPush = history.location.state?.isPush;
 
-        return entriesByDay!;
+      setSelectedEntries((prev) => {
+        // if it's push data can be updated
+        if (isPush) return entriesByDay!;
+
+        // set data for the first time
+        if (_.isEmpty(prev)) return entriesByDay!;
+
+        return prev;
       });
-  }, [entriesByDay]);
+    }
+  }, [entriesByDay, history]);
 
   const { activities, getActivityById } = useActivities({ onError });
 

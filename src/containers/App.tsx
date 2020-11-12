@@ -1,24 +1,24 @@
-import React, { useState, useCallback } from 'react';
-import { Header } from '../components/Header';
-import { Navigation } from '../components/Navigation';
-import styled from 'styled-components';
-import { Route, Switch, useHistory } from 'react-router-dom';
-import { HeaderRightContent } from './HeaderRightContent';
-import { Auth } from './Auth';
-import { useAuth } from '../hooks/useAuth';
-import { Persist } from '../components/Persist';
-import { useDeviceDetect } from '../hooks/useDeviceDetect';
-import { useSwipeable } from 'react-swipeable';
-import { ActivityForm } from './ActivityForm/ActivityForm';
-import { Activities } from './Activities';
-import { Entries } from './Entries';
-import { EntriesForm } from './EntriesForm';
-import { Calendar } from './Calendar';
-import { TodoistAuth } from './TodoistAuth';
-import { Reminders } from './Reminders';
-import { isSwipeHandlersEnabledVar } from '../reactiveState';
-import { ErrorCatcher } from './ErrorCatcher';
-import { AppUpdateDialog } from './AppUpdateDialog';
+import React, { useState, useCallback } from "react";
+import { Header } from "../components/Header";
+import { Navigation } from "../components/Navigation";
+import styled from "styled-components";
+import { Route, Switch, useHistory } from "react-router-dom";
+import { HeaderRightContent } from "./HeaderRightContent";
+import { Auth } from "./Auth";
+import { useAuth } from "../hooks/useAuth";
+import { Persist } from "../components/Persist";
+import { useDeviceDetect } from "../hooks/useDeviceDetect";
+import { useSwipeable } from "react-swipeable";
+import { ActivityForm } from "./ActivityForm/ActivityForm";
+import { Activities } from "./Activities";
+import { Entries } from "./Entries";
+import { EntriesForm } from "./EntriesForm";
+import { Calendar } from "./Calendar";
+import { TodoistAuth } from "./TodoistAuth";
+import { Reminders } from "./Reminders";
+import { isSwipeHandlersEnabledVar } from "../reactiveState";
+import { ErrorCatcher } from "./ErrorCatcher";
+import { AppUpdateDialog } from "./AppUpdateDialog";
 
 export interface IPage {
   name: string;
@@ -145,9 +145,9 @@ export const App: React.FC = () => {
         <PageWrapper>
           <ErrorCatcher userEmail={user?.email} userName={user?.name}>
             <Switch>
-              {pages.map((page) => {
-                return <Route key={page.path} path={page.path} exact component={page.component} />;
-              })}
+              {pages.map((page) => (
+                <Route key={page.path} path={page.path} exact component={page.component} />
+              ))}
               <Route path="/activities/create" exact component={ActivityForm} />
               <Route path="/activities/edit/:_id" exact component={ActivityForm} />
               <Route path="/entries/:date" exact component={EntriesForm} />
