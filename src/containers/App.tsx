@@ -9,7 +9,7 @@ import { useAuth } from '../hooks/useAuth';
 import { Persist } from '../components/Persist';
 import { useDeviceDetect } from '../hooks/useDeviceDetect';
 import { useSwipeable } from 'react-swipeable';
-import { ActivityForm } from './ActivityForm';
+import { ActivityForm } from './ActivityForm/ActivityForm';
 import { Activities } from './Activities';
 import { Entries } from './Entries';
 import { EntriesForm } from './EntriesForm';

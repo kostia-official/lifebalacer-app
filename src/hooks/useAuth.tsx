@@ -46,7 +46,7 @@ export const useAuth = (): IUseAuthResult => {
     ...auth,
     user: user || savedUser,
     accessToken: accessToken || savedToken,
-    isAuthenticated,
+    isAuthenticated: !!savedToken,
     isLoading
   };
 };
