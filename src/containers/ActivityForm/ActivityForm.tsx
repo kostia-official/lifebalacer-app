@@ -30,7 +30,6 @@ import { useHistory, useParams } from 'react-router-dom';
 import { Spinner } from '../../components/Spinner';
 import { FabButton } from '../../components/FabButton';
 import { ActivityResult } from '../../common/types';
-import { InputProps as StandardInputProps } from '@material-ui/core/Input/Input';
 import { SwitchBaseProps } from '@material-ui/core/internal/SwitchBase';
 import { TooltipCheckbox } from '../../components/TooltipCheckbox';
 import { LinearPointsTooltip } from './LinearPointsTooltip';

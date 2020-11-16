@@ -19,6 +19,10 @@ const Wrapper = styled.div<IStyleProps>`
   right: ${(props) => props.right || '20px'};
 `;
 
+export const EmptySpaceUnderFab = styled.div`
+  height: 80px;
+`;
+
 export const FabButton: React.FC<PartialBy<ISaveFabButtonProps, 'children'>> = ({
   icon = 'add',
   styles = {},

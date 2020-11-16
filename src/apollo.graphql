@@ -6,6 +6,7 @@ fragment ActivityResult on Activity {
   valueType
   pointsType
   points
+  isArchived
   rangeMeta {
     from
     to
@@ -21,21 +22,6 @@ query GetActivity($_id: ID!) {
 query GetActivities {
   activities {
     ...ActivityResult
-  }
-}
-
-query GetEntry($_id: ID!) {
-  entry(_id: $_id) {
-    _id
-    description
-    points
-    value
-    completedAt
-    activity {
-      name
-      emoji
-      category
-    }
   }
 }
 
@@ -72,21 +58,6 @@ query GetCalendarDays($dateAfter: Date, $dateBefore: Date) {
 query GetEntriesByOneDay($date: Date!) {
   entriesByOneDay(date: $date) {
     ...EntriesByDayResult
-  }
-}
-
-query GetEntries {
-  entries {
-    _id
-    description
-    points
-    value
-    completedAt
-    activity {
-      name
-      emoji
-      category
-    }
   }
 }
 
@@ -130,8 +101,12 @@ mutation UpdateActivity($_id: ID!, $data: UpdateActivityInput!) {
   }
 }
 
-mutation DeleteActivity($_id: ID!) {
-  deleteActivity(_id: $_id)
+mutation ArchiveActivity($_id: ID!) {
+  archiveActivity(_id: $_id)
+}
+
+mutation RestoreActivity($_id: ID!) {
+  restoreActivity(_id: $_id)
 }
 
 mutation CreateEntry($data: CreateEntryInput!) {

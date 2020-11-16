@@ -6,9 +6,8 @@ import * as R from 'remeda';
 import _ from 'lodash';
 
 export const useActivities = ({ onError }: OnErrorParams = {}) => {
-  const { data, ...other } = useGetActivitiesQuery({ onError: (error) => {
+  const { data, ...other } = useGetActivitiesQuery({ onError });
 
-    } });
   const activitiesNormalized = useMemo(() => {
     if (!data?.activities) return {};
 
@@ -29,5 +28,13 @@ export const useActivities = ({ onError }: OnErrorParams = {}) => {
     [data]
   );
 
-  return { getActivityById, activities: data?.activities, todoistActivity, ...other };
+  const activities = useMemo(() => data?.activities.filter((activity) => !activity.isArchived), [
+    data
+  ]);
+  const archivedActivities = useMemo(
+    () => data?.activities.filter((activity) => activity.isArchived),
+    [data]
+  );
+
+  return { getActivityById, activities, archivedActivities, allActivities: data?.activities, todoistActivity, ...other };
 };

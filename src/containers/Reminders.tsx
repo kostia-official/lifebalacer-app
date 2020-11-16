@@ -11,14 +11,14 @@ import { TimePicker } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { LogoContent } from '../components/LogoContent';
 import { ReactComponent as ReminderLogo } from '../assets/reminder.svg';
-import { css } from "styled-components";
+import { css } from 'styled-components';
 
 const logoStyles = css`
   max-width: 300px;
   width: 60vw;
   margin-top: 6px;
   margin-bottom: 10px;
-`
+`;
 
 export const Reminders = () => {
   const { errorMessage, onError, errorTime } = useApolloError();
@@ -43,14 +43,14 @@ export const Reminders = () => {
 
   const onDateChange = useCallback(
     (date: MaterialUiPickersDate) => {
-      date && upsertReminder(date.toISO());
+      date && upsertReminder(date.set({ second: 0, millisecond: 0 }).toISO());
     },
     [upsertReminder]
   );
 
   return (
     <Loadable errorMessage={errorMessage} errorTime={errorTime} isLoading={_.isEmpty(data)}>
-      <LogoContent logo={ReminderLogo} logoStyles={logoStyles}/>
+      <LogoContent logo={ReminderLogo} logoStyles={logoStyles} />
 
       <TimePicker
         label="Remind at"

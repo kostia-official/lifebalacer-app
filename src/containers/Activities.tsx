@@ -1,10 +1,9 @@
 import React, { useCallback } from 'react';
 import {
-  useGetActivitiesQuery,
-  useDeleteActivityMutation,
   refetchGetActivitiesQuery,
-  refetchGetEntriesQuery,
-  Activity
+  Activity,
+  useArchiveActivityMutation,
+  useRestoreActivityMutation
 } from '../generated/apollo';
 import { Table } from '../components/Table';
 import { useApolloError } from '../hooks/useApolloError';
@@ -16,11 +15,16 @@ import { useTodoist } from '../hooks/useTodoist';
 import { useDeviceDetect } from '../hooks/useDeviceDetect';
 import _ from 'lodash';
 import { useActivities } from '../hooks/useActivities';
-import { FabButton } from "../components/FabButton";
+import { EmptySpaceUnderFab, FabButton } from '../components/FabButton';
+import { Greyscale } from '../components/Greyscale';
 
 const ConnectTodoistButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
+  padding-top: 10px;
+`;
+
+const ArchivedActivitiesWrapper = styled.div`
   padding-top: 10px;
 `;
 
@@ -30,33 +34,30 @@ export const Activities = () => {
   const { errorMessage, onError, errorTime } = useApolloError();
   const { authorizeInTodoist } = useTodoist();
 
-  const { todoistActivity } = useActivities({ onError });
-  const { data } = useGetActivitiesQuery({ onError });
-  const [deleteActivity] = useDeleteActivityMutation({
+  const { todoistActivity, activities, archivedActivities, allActivities } = useActivities({
+    onError
+  });
+  const [archiveActivity] = useArchiveActivityMutation({
     onError,
-    refetchQueries: [refetchGetActivitiesQuery(), refetchGetEntriesQuery()]
+    refetchQueries: [refetchGetActivitiesQuery()]
+  });
+  const [restoreActivity] = useRestoreActivityMutation({
+    onError,
+    refetchQueries: [refetchGetActivitiesQuery()]
   });
 
   const onActivityCreateClick = useCallback(() => {
     history.push('/activities/create');
   }, [history]);
 
-  const activities =
-    data?.activities.map((activity) => {
-      return {
-        ...activity,
-        name: `${activity.emoji}  ${activity.name}`
-      };
-    }) || [];
-
   return (
-    <Loadable errorMessage={errorMessage} errorTime={errorTime} isLoading={_.isEmpty(data)}>
+    <Loadable errorMessage={errorMessage} errorTime={errorTime} isLoading={_.isNil(allActivities)}>
       <Table
         title="Activities"
         columns={[
           {
             title: 'Name',
-            field: 'name'
+            render: (rowData) => `${rowData.emoji} ${rowData.name}`
           },
           {
             title: 'Value type',
@@ -69,22 +70,67 @@ export const Activities = () => {
             defaultSort: 'desc'
           }
         ]}
-        data={activities}
+        data={activities!}
         actions={[
           {
             icon: 'edit',
+            tooltip: 'Edit',
             onClick: (event, rowData) => {
               const activity = rowData as Activity;
               history.push(`/activities/edit/${activity._id}`);
             }
+          },
+          {
+            icon: 'delete',
+            tooltip: 'Archive',
+            onClick: (event, rowData) => {
+              const activity = rowData as Activity;
+              return archiveActivity({ variables: { _id: activity._id } });
+            }
           }
         ]}
-        editable={{
-          onRowDelete: async (oldData) => {
-            return deleteActivity({ variables: { _id: oldData._id } });
-          }
-        }}
       />
+
+      <ArchivedActivitiesWrapper>
+        <Table
+          title="Archived activities"
+          columns={[
+            {
+              title: 'Name',
+              render: (rowData) => <Greyscale>{`${rowData.emoji} ${rowData.name}`}</Greyscale>
+            },
+            {
+              title: 'Value type',
+              field: 'valueType',
+              hidden: isMobile
+            },
+            {
+              title: 'Points',
+              field: 'points',
+              defaultSort: 'desc'
+            }
+          ]}
+          data={archivedActivities!}
+          actions={[
+            {
+              icon: 'edit',
+              tooltip: 'Edit',
+              onClick: (event, rowData) => {
+                const activity = rowData as Activity;
+                history.push(`/activities/edit/${activity._id}`);
+              }
+            },
+            {
+              icon: 'restore_from_trash',
+              tooltip: 'Restore',
+              onClick: (event, rowData) => {
+                const activity = rowData as Activity;
+                return restoreActivity({ variables: { _id: activity._id } });
+              }
+            }
+          ]}
+        />
+      </ArchivedActivitiesWrapper>
 
       {!todoistActivity && (
         <ConnectTodoistButtonWrapper>
@@ -93,6 +139,8 @@ export const Activities = () => {
           </Button>
         </ConnectTodoistButtonWrapper>
       )}
+
+      <EmptySpaceUnderFab />
 
       <FabButton onClick={onActivityCreateClick} />
     </Loadable>
