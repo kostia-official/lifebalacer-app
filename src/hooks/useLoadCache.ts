@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
-import { apolloPersistCache } from '../services/ApolloPersistCache';
+import { persistCache } from '../apollo/cache';
 
 export const useLoadCache = () => {
-  const [isCacheLoaded, setIsCacheLoaded] = useState(apolloPersistCache.isLoaded);
+  const [isCacheLoaded, setIsCacheLoaded] = useState(persistCache.isLoaded);
 
   useEffect(() => {
     (async () => {
-      if (apolloPersistCache.isLoaded) {
+      if (persistCache.isLoaded) {
         return setIsCacheLoaded(true);
       }
 
-      await apolloPersistCache.load();
+      await persistCache.load();
       setIsCacheLoaded(true);
     })();
   }, []);

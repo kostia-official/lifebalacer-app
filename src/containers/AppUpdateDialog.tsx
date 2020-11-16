@@ -1,16 +1,11 @@
 import React, { useCallback } from 'react';
 import { useReactiveVar } from '@apollo/client';
-import {
-  DialogActions,
-  Button,
-  DialogContent,
-  DialogTitle,
-  Dialog
-} from '@material-ui/core';
+import { DialogActions, Button, DialogContent, DialogTitle, Dialog } from '@material-ui/core';
 import { isShowAppUpdateDialogVar } from '../reactiveState';
 import styled, { css } from 'styled-components';
 import { LogoContent } from '../components/LogoContent';
 import { ReactComponent as UpdateLogo } from '../assets/update.svg';
+import { persistCache } from '../apollo/cache';
 
 const DialogContentStyled = styled(DialogContent)`
   max-width: 500px;
@@ -25,7 +20,9 @@ const logoStyles = css`
 export const AppUpdateDialog = () => {
   const isShow = useReactiveVar(isShowAppUpdateDialogVar);
 
-  const onClose = useCallback(() => {
+  const onClose = useCallback(async () => {
+    await persistCache.persistor.purge();
+
     window.location.reload();
     isShowAppUpdateDialogVar(false);
   }, []);

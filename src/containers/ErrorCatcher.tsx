@@ -1,7 +1,8 @@
-import React, { Component, ErrorInfo } from "react";
-import * as Sentry from "@sentry/browser";
-import { ReactComponent as ErrorLogo } from "../assets/error.svg";
-import { LogoContent } from "../components/LogoContent";
+import React, { Component, ErrorInfo } from 'react';
+import * as Sentry from '@sentry/browser';
+import { ReactComponent as ErrorLogo } from '../assets/error.svg';
+import { LogoContent } from '../components/LogoContent';
+import { persistCache } from '../apollo/cache';
 
 interface IErrorCatcherState {
   eventId?: string;
@@ -25,6 +26,8 @@ export class ErrorCatcher extends Component<IErrorCatcherProps, IErrorCatcherSta
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     const { userEmail, userName } = this.props;
+
+    persistCache.persistor.purge().then();
 
     Sentry.withScope((scope) => {
       scope.setExtras({ ...errorInfo });

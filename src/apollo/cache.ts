@@ -1,6 +1,6 @@
 import { InMemoryCache } from '@apollo/client';
 import { DateTime } from 'luxon';
-import { apolloPersistCache } from '../services/ApolloPersistCache';
+import { ApolloPersistCache } from '../services/ApolloPersistCache';
 
 export const cache = new InMemoryCache({
   typePolicies: {
@@ -43,4 +43,6 @@ export const cache = new InMemoryCache({
   }
 });
 
-apolloPersistCache.load().then();
+export const persistCache = new ApolloPersistCache(cache);
+
+persistCache.load().then();
