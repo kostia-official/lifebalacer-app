@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { Typography, Button } from '@material-ui/core';
 import styled from 'styled-components';
-import { SelectedEntry, ActivityResult } from '../common/types';
-import { EntryLabel } from './EntryLabel';
+import { SelectedEntry, ActivityResult } from '../../common/types';
+import { EntryLabel } from '../../components/EntryLabel';
 
 const ButtonStyled: typeof Button = styled(Button)`
   height: 40px;

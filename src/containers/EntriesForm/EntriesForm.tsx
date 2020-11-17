@@ -11,26 +11,26 @@ import {
   useUpdateEntryMutation,
   refetchGetEntriesByOneDayQuery,
   refetchGetDaysStatisticQuery
-} from '../generated/apollo';
-import { useApolloError } from '../hooks/useApolloError';
-import { Spinner } from '../components/Spinner';
-import { ErrorMessage } from '../components/ErrorMessage';
+} from '../../generated/apollo';
+import { useApolloError } from '../../hooks/useApolloError';
+import { Spinner } from '../../components/Spinner';
+import { ErrorMessage } from '../../components/ErrorMessage';
 import * as R from 'remeda';
 import _ from 'lodash';
 import { Card, CardContent, Typography } from '@material-ui/core';
 import { useParams, useHistory } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { CardModal } from '../components/CardModal';
-import { ActivityResult, SelectedEntry, EntriesResult, EntryResult } from '../common/types';
-import { EntryPickButton } from '../components/EntryPickButton';
-import { useActivities } from '../hooks/useActivities';
+import { CardModal } from '../../components/CardModal';
+import { ActivityResult, SelectedEntry, EntriesResult, EntryResult } from '../../common/types';
+import { EntryPickButton } from './EntryPickButton';
+import { useActivities } from '../../hooks/useActivities';
 import { DateTime } from 'luxon';
-import { useDeviceDetect } from '../hooks/useDeviceDetect';
-import { EntryValueModalContent } from '../components/EntryValueModalContent';
-import { isSwipeHandlersEnabledVar } from '../reactiveState';
-import { isToday } from '../helpers/date';
-import { FabButton } from '../components/FabButton';
-import { useActivitiesByCategory } from '../hooks/useActivitiesByCategory';
+import { useDeviceDetect } from '../../hooks/useDeviceDetect';
+import { EntryValueModalContent } from './EntryValueModalContent';
+import { isSwipeHandlersEnabledVar } from '../../reactiveState';
+import { isToday } from '../../helpers/date';
+import { FabButton } from '../../components/FabButton';
+import { useActivitiesByCategory } from '../../hooks/useActivitiesByCategory';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;

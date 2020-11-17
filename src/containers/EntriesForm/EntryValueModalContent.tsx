@@ -1,5 +1,5 @@
-import { ActivityType } from '../generated/apollo';
-import { ActivityResult, EntryResult } from '../common/types';
+import { ActivityType } from '../../generated/apollo';
+import { ActivityResult, EntryResult } from '../../common/types';
 import React, {
   useState,
   useCallback,
@@ -10,7 +10,15 @@ import React, {
   Fragment
 } from 'react';
 import styled from 'styled-components';
-import { CardActions, CardContent, Slider, TextField, Button } from '@material-ui/core';
+import {
+  CardActions,
+  CardContent,
+  Slider,
+  TextField,
+  Button,
+  FormLabel,
+  FormControl
+} from '@material-ui/core';
 import { InputProps as StandardInputProps } from '@material-ui/core/Input/Input';
 import _ from 'lodash';
 
@@ -31,6 +39,10 @@ const CardContentStyled = styled(CardContent)`
   flex-direction: column;
   width: 80vw;
   max-width: 500px;
+`;
+
+const SliderLabel = styled(FormLabel)`
+  margin-bottom: 18px;
 `;
 
 export const EntryValueModalContent: React.FC<EntryValueModalContentProps> = ({
@@ -85,6 +97,7 @@ export const EntryValueModalContent: React.FC<EntryValueModalContentProps> = ({
 
   const isWithValue = [ActivityType.Value, ActivityType.Todoist].includes(activity.valueType);
   const isWithDescription = activity.isWithDescription || entry.description;
+  const valueLabel = activity.valueLabel || 'Value';
 
   if (!activity) return <Fragment />;
 
@@ -96,7 +109,7 @@ export const EntryValueModalContent: React.FC<EntryValueModalContentProps> = ({
             required
             fullWidth
             autoFocus={true}
-            label="Value"
+            label={valueLabel}
             type="text"
             value={value || ''}
             InputProps={{
@@ -109,16 +122,19 @@ export const EntryValueModalContent: React.FC<EntryValueModalContentProps> = ({
         )}
 
         {activity.valueType === ActivityType.Range && (
-          <Slider
-            value={value || averageValue}
-            aria-labelledby="discrete-slider"
-            valueLabelDisplay="auto"
-            step={1}
-            marks={marks}
-            onChange={onRangeChange}
-            min={min}
-            max={max}
-          />
+          <FormControl margin="dense">
+            <SliderLabel>{valueLabel}</SliderLabel>
+            <Slider
+              value={value || averageValue}
+              aria-labelledby="discrete-slider"
+              valueLabelDisplay="auto"
+              step={1}
+              marks={marks}
+              onChange={onRangeChange}
+              min={min}
+              max={max}
+            />
+          </FormControl>
         )}
 
         {isWithDescription && (

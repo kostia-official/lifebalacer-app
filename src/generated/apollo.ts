@@ -264,6 +264,7 @@ export type ActivityResultFragment = { __typename?: 'Activity' } & Pick<
   | 'points'
   | 'isArchived'
   | 'isWithDescription'
+  | 'valueLabel'
 > & { rangeMeta?: Maybe<{ __typename?: 'RangeMeta' } & Pick<RangeMeta, 'from' | 'to'>> };
 
 export type GetActivityQueryVariables = Exact<{
@@ -444,6 +445,7 @@ export const ActivityResultFragmentDoc = gql`
     points
     isArchived
     isWithDescription
+    valueLabel
     rangeMeta {
       from
       to

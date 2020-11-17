@@ -8,6 +8,7 @@ fragment ActivityResult on Activity {
   points
   isArchived
   isWithDescription
+  valueLabel
   rangeMeta {
     from
     to
