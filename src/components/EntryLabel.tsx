@@ -20,7 +20,7 @@ export const EntryLabel = ({ entry, activity, isWithEmoji = true }: GetEntryLabe
   const name =
     activity?.isWidget && entry?.description
       ? _.truncate(entry.description, {
-          length: 30,
+          length: 40,
           separator: ' '
         })
       : activity?.name;
