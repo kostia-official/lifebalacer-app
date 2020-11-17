@@ -26,7 +26,7 @@ import { EntryPickButton } from './EntryPickButton';
 import { useActivities } from '../../hooks/useActivities';
 import { DateTime } from 'luxon';
 import { useDeviceDetect } from '../../hooks/useDeviceDetect';
-import { EntryValueModalContent } from './EntryValueModalContent';
+import { EntryModalContent } from './EntryModalContent';
 import { isSwipeHandlersEnabledVar } from '../../reactiveState';
 import { isToday } from '../../helpers/date';
 import { FabButton } from '../../components/FabButton';
@@ -264,7 +264,7 @@ export const EntriesForm = () => {
       </DateTitleWrapper>
 
       <CardModal isShow={isModalOpen} onClose={closeModal} showDelay={showDelay}>
-        <EntryValueModalContent
+        <EntryModalContent
           onDelete={onDeleteFromModal}
           onSave={upsertEntry}
           entry={modalEntry!}

@@ -49,7 +49,7 @@ export const Entries = () => {
   usePushTokenSave({ onError });
 
   const { statisticText } = useDaysStatisticText({ onError });
-  const { getActivityById, todoistActivity } = useActivities({ onError });
+  const { getActivityById, todoistActivity, activities } = useActivities({ onError });
 
   const { entriesByDay, isHasMore, loadMore } = useInfiniteEntriesByDay({ onError });
 
@@ -60,8 +60,10 @@ export const Entries = () => {
     [history]
   );
 
+  const isLoading = !entriesByDay || !activities;
+
   return (
-    <Loadable errorMessage={errorMessage} errorTime={errorTime} isLoading={!entriesByDay}>
+    <Loadable errorMessage={errorMessage} errorTime={errorTime} isLoading={isLoading}>
       {entriesByDay?.length === 0 ? (
         <EmptyState text="So far no entries..." />
       ) : (

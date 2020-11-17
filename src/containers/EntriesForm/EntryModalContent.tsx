@@ -42,10 +42,10 @@ const CardContentStyled = styled(CardContent)`
 `;
 
 const SliderLabel = styled(FormLabel)`
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 `;
 
-export const EntryValueModalContent: React.FC<EntryValueModalContentProps> = ({
+export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   onSave,
   onDelete,
   entry,
