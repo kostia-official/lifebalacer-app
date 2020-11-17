@@ -245,19 +245,21 @@ export const ActivityForm = () => {
         onSelect={preventMobileSelectionMenu}
       />
 
-      <TooltipCheckbox
-        text="With value"
-        tooltipContent={
-          <Typography color="inherit" variant="body2" component="p">
-            Value can be the number of push-ups, how good was your mood, or how many swearing words
-            you said. Track whatever you want
-          </Typography>
-        }
-        onChange={onToggleIsWithValue}
-        checked={isWithValue}
-      />
+      {!activity.isWidget && (
+        <TooltipCheckbox
+          text="With value"
+          tooltipContent={
+            <Typography color="inherit" variant="body2" component="p">
+              Value can be the number of push-ups, how good was your mood, or how many swearing
+              words you said. Track whatever you want
+            </Typography>
+          }
+          onChange={onToggleIsWithValue}
+          checked={isWithValue}
+        />
+      )}
 
-      {isWithValue && (
+      {!activity.isWidget && isWithValue && (
         <TooltipCheckbox
           text="Value has specific range"
           tooltipContent={
@@ -314,12 +316,14 @@ export const ActivityForm = () => {
         />
       )}
 
-      <TooltipCheckbox
-        text="With description"
-        tooltipContent="You can add additional text to the entry. For example, you can describe your day or note what your dream was."
-        onChange={onToggleIsWithDescription}
-        checked={!!activity.isWithDescription}
-      />
+      {!activity.isWidget && (
+        <TooltipCheckbox
+          text="With description"
+          tooltipContent="You can add additional text to the entry. For example, you can describe your day or note what your dream was."
+          onChange={onToggleIsWithDescription}
+          checked={!!activity.isWithDescription}
+        />
+      )}
 
       <FabButton type="submit" icon="save" />
     </FormContainer>

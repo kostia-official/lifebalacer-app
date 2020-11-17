@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComment as commentIcon } from '@fortawesome/free-solid-svg-icons';
 
 export interface GetEntryLabelProps {
-  activity?: Pick<Activity, 'name' | 'emoji' | 'valueType' | 'isWithDescription'>;
+  activity?: Pick<Activity, 'name' | 'emoji' | 'valueType' | 'isWithDescription' | 'isWidget'>;
   entry?: Pick<Entry, 'description' | 'value'>;
   isWithEmoji?: boolean;
 }
@@ -18,7 +18,7 @@ const DescriptionIcon = styled(FontAwesomeIcon)`
 
 export const EntryLabel = ({ entry, activity, isWithEmoji = true }: GetEntryLabelProps) => {
   const name =
-    activity?.valueType === ActivityType.Todoist && entry?.description
+    activity?.isWidget && entry?.description
       ? _.truncate(entry.description, {
           length: 30,
           separator: ' '

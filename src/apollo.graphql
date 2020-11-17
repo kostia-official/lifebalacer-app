@@ -3,12 +3,13 @@ fragment ActivityResult on Activity {
   name
   emoji
   category
+  valueLabel
   valueType
   pointsType
   points
   isArchived
   isWithDescription
-  valueLabel
+  isWidget
   rangeMeta {
     from
     to

@@ -193,7 +193,7 @@ export const EntriesForm = () => {
       if (
         activity.valueType === ActivityType.Range ||
         activity.valueType === ActivityType.Value ||
-        activity.valueType === ActivityType.Todoist ||
+        activity.isWidget ||
         activity.isWithDescription
       ) {
         return openModal(entry);
@@ -241,7 +241,10 @@ export const EntriesForm = () => {
     history.replace('/');
   }, [history]);
 
-  const { activitiesByCategory } = useActivitiesByCategory({ activities });
+  const { activitiesByCategory } = useActivitiesByCategory({
+    activities,
+    entries: selectedEntries
+  });
 
   const modalActivity = useMemo(
     () => R.find(activities || [], (activity) => activity._id === modalEntry?.activityId),

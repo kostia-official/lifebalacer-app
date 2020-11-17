@@ -1,13 +1,14 @@
-import { ActivityResult } from '../common/types';
-import { useMemo } from 'react';
+import { ActivityResult, EntryResult } from '../common/types';
+import { useMemo, useCallback } from 'react';
 import { ActivityType, ActivityCategory } from '../generated/apollo';
 import _ from 'lodash';
 
 export interface HookParams {
   activities?: ActivityResult[];
+  entries?: EntryResult[];
 }
 
-const TODOIST_CATEGORY = 'Todoist items';
+export const TODOIST_CATEGORY = 'Todoist items';
 
 export const ActivityCategoryOrder: {
   [key: string]: number;
@@ -23,17 +24,29 @@ export type ActivityByCategory = {
   activities: ActivityResult[];
 };
 
-export const useActivitiesByCategory = ({ activities = [] }: HookParams) => {
+export const useActivitiesByCategory = ({ activities = [], entries = [] }: HookParams) => {
+  const getIsWithEntries = useCallback(
+    (activityId) => {
+      return !_.isEmpty(_.filter(entries, { activityId }));
+    },
+    [entries]
+  );
+
   const activitiesByCategory: ActivityByCategory[] = useMemo(
     () =>
       _.chain(activities)
+        .filter((activity) => {
+          const isWidgetWithoutEntries = activity.isWidget && !getIsWithEntries(activity._id);
+
+          return !isWidgetWithoutEntries;
+        })
         .groupBy((activity) =>
           activity.valueType === ActivityType.Todoist ? TODOIST_CATEGORY : activity.category
         )
         .map((activities, category) => ({ category, activities }))
         .sortBy(({ category }) => ActivityCategoryOrder[category])
         .value(),
-    [activities]
+    [activities, getIsWithEntries]
   );
 
   return { activitiesByCategory };

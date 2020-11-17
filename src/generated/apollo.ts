@@ -146,6 +146,7 @@ export type Activity = {
   createdAt: Scalars['Date'];
   isArchived: Scalars['Boolean'];
   isWithDescription: Scalars['Boolean'];
+  isWidget: Scalars['Boolean'];
 };
 
 export type Entry = {
@@ -224,6 +225,7 @@ export type CreateActivityInput = {
   rangeMeta?: Maybe<RangeMetaInput>;
   todoistMeta?: Maybe<TodoistMetaInput>;
   isWithDescription?: Maybe<Scalars['Boolean']>;
+  isWidget?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdateActivityInput = {
@@ -237,6 +239,7 @@ export type UpdateActivityInput = {
   rangeMeta?: Maybe<RangeMetaInput>;
   todoistMeta?: Maybe<TodoistMetaInput>;
   isWithDescription?: Maybe<Scalars['Boolean']>;
+  isWidget?: Maybe<Scalars['Boolean']>;
 };
 
 export type CreateEntryInput = {
@@ -259,12 +262,13 @@ export type ActivityResultFragment = { __typename?: 'Activity' } & Pick<
   | 'name'
   | 'emoji'
   | 'category'
+  | 'valueLabel'
   | 'valueType'
   | 'pointsType'
   | 'points'
   | 'isArchived'
   | 'isWithDescription'
-  | 'valueLabel'
+  | 'isWidget'
 > & { rangeMeta?: Maybe<{ __typename?: 'RangeMeta' } & Pick<RangeMeta, 'from' | 'to'>> };
 
 export type GetActivityQueryVariables = Exact<{
@@ -440,12 +444,13 @@ export const ActivityResultFragmentDoc = gql`
     name
     emoji
     category
+    valueLabel
     valueType
     pointsType
     points
     isArchived
     isWithDescription
-    valueLabel
+    isWidget
     rangeMeta {
       from
       to
