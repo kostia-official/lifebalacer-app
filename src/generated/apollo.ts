@@ -29,24 +29,20 @@ export type Query = {
   balance: Scalars['Int'];
 };
 
-
 export type QueryEntryArgs = {
   _id: Scalars['ID'];
 };
-
 
 export type QueryEntriesByOneDayArgs = {
   date: Scalars['Date'];
   activityId?: Maybe<Scalars['ID']>;
 };
 
-
 export type QueryEntriesByDayArgs = {
   activityId?: Maybe<Scalars['ID']>;
   dateAfter?: Maybe<Scalars['Date']>;
   dateBefore?: Maybe<Scalars['Date']>;
 };
-
 
 export type QueryActivityArgs = {
   _id: Scalars['ID'];
@@ -66,58 +62,47 @@ export type Mutation = {
   connectTodoist: Activity;
 };
 
-
 export type MutationUpsertPushTokenArgs = {
   data: PushTokenUpsertInput;
 };
-
 
 export type MutationUpsertReminderArgs = {
   data: ReminderInput;
 };
 
-
 export type MutationCreateActivityArgs = {
   data: CreateActivityInput;
 };
-
 
 export type MutationUpdateActivityByIdArgs = {
   _id: Scalars['ID'];
   data: UpdateActivityInput;
 };
 
-
 export type MutationArchiveActivityArgs = {
   _id: Scalars['ID'];
 };
-
 
 export type MutationRestoreActivityArgs = {
   _id: Scalars['ID'];
 };
 
-
 export type MutationCreateEntryArgs = {
   data: CreateEntryInput;
 };
-
 
 export type MutationUpdateEntryByIdArgs = {
   _id: Scalars['ID'];
   data: UpdateEntryInput;
 };
 
-
 export type MutationDeleteEntryArgs = {
   _id: Scalars['ID'];
 };
 
-
 export type MutationConnectTodoistArgs = {
   authCode: Scalars['String'];
 };
-
 
 export type PushToken = {
   __typename?: 'PushToken';
@@ -145,7 +130,6 @@ export type ReminderInput = {
   remindAt: Scalars['DateTime'];
 };
 
-
 export type Activity = {
   __typename?: 'Activity';
   _id: Scalars['ID'];
@@ -161,6 +145,7 @@ export type Activity = {
   todoistMeta?: Maybe<TodoistMeta>;
   createdAt: Scalars['Date'];
   isArchived: Scalars['Boolean'];
+  isWithDescription: Scalars['Boolean'];
 };
 
 export type Entry = {
@@ -238,6 +223,7 @@ export type CreateActivityInput = {
   points: Scalars['Int'];
   rangeMeta?: Maybe<RangeMetaInput>;
   todoistMeta?: Maybe<TodoistMetaInput>;
+  isWithDescription?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdateActivityInput = {
@@ -250,6 +236,7 @@ export type UpdateActivityInput = {
   points?: Maybe<Scalars['Int']>;
   rangeMeta?: Maybe<RangeMetaInput>;
   todoistMeta?: Maybe<TodoistMetaInput>;
+  isWithDescription?: Maybe<Scalars['Boolean']>;
 };
 
 export type CreateEntryInput = {
@@ -266,292 +253,224 @@ export type UpdateEntryInput = {
   value?: Maybe<Scalars['Int']>;
 };
 
-export type ActivityResultFragment = (
-  { __typename?: 'Activity' }
-  & Pick<Activity, '_id' | 'name' | 'emoji' | 'category' | 'valueType' | 'pointsType' | 'points' | 'isArchived'>
-  & { rangeMeta?: Maybe<(
-    { __typename?: 'RangeMeta' }
-    & Pick<RangeMeta, 'from' | 'to'>
-  )> }
-);
+export type ActivityResultFragment = { __typename?: 'Activity' } & Pick<
+  Activity,
+  | '_id'
+  | 'name'
+  | 'emoji'
+  | 'category'
+  | 'valueType'
+  | 'pointsType'
+  | 'points'
+  | 'isArchived'
+  | 'isWithDescription'
+> & { rangeMeta?: Maybe<{ __typename?: 'RangeMeta' } & Pick<RangeMeta, 'from' | 'to'>> };
 
 export type GetActivityQueryVariables = Exact<{
   _id: Scalars['ID'];
 }>;
 
+export type GetActivityQuery = { __typename?: 'Query' } & {
+  activity?: Maybe<{ __typename?: 'Activity' } & ActivityResultFragment>;
+};
 
-export type GetActivityQuery = (
-  { __typename?: 'Query' }
-  & { activity?: Maybe<(
-    { __typename?: 'Activity' }
-    & ActivityResultFragment
-  )> }
-);
+export type GetActivitiesQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetActivitiesQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetActivitiesQuery = { __typename?: 'Query' } & {
+  activities: Array<{ __typename?: 'Activity' } & ActivityResultFragment>;
+};
 
-
-export type GetActivitiesQuery = (
-  { __typename?: 'Query' }
-  & { activities: Array<(
-    { __typename?: 'Activity' }
-    & ActivityResultFragment
-  )> }
-);
-
-export type EntriesByDayResultFragment = (
-  { __typename?: 'EntriesByDay' }
-  & Pick<EntriesByDay, 'date' | 'points'>
-  & { entries: Array<(
-    { __typename?: 'Entry' }
-    & Pick<Entry, '_id' | 'description' | 'value' | 'completedAt' | 'activityId'>
-  )> }
-);
+export type EntriesByDayResultFragment = { __typename?: 'EntriesByDay' } & Pick<
+  EntriesByDay,
+  'date' | 'points'
+> & {
+    entries: Array<
+      { __typename?: 'Entry' } & Pick<
+        Entry,
+        '_id' | 'description' | 'value' | 'completedAt' | 'activityId'
+      >
+    >;
+  };
 
 export type GetEntriesByDayQueryVariables = Exact<{
   dateAfter?: Maybe<Scalars['Date']>;
 }>;
 
-
-export type GetEntriesByDayQuery = (
-  { __typename?: 'Query' }
-  & { entriesByDay: Array<(
-    { __typename?: 'EntriesByDay' }
-    & EntriesByDayResultFragment
-  )> }
-);
+export type GetEntriesByDayQuery = { __typename?: 'Query' } & {
+  entriesByDay: Array<{ __typename?: 'EntriesByDay' } & EntriesByDayResultFragment>;
+};
 
 export type GetCalendarDaysQueryVariables = Exact<{
   dateAfter?: Maybe<Scalars['Date']>;
   dateBefore?: Maybe<Scalars['Date']>;
 }>;
 
-
-export type GetCalendarDaysQuery = (
-  { __typename?: 'Query' }
-  & { entriesByDay: Array<(
-    { __typename?: 'EntriesByDay' }
-    & Pick<EntriesByDay, 'date' | 'points'>
-    & { entries: Array<(
-      { __typename?: 'Entry' }
-      & Pick<Entry, '_id' | 'value' | 'activityId'>
-    )> }
-  )> }
-);
+export type GetCalendarDaysQuery = { __typename?: 'Query' } & {
+  entriesByDay: Array<
+    { __typename?: 'EntriesByDay' } & Pick<EntriesByDay, 'date' | 'points'> & {
+        entries: Array<{ __typename?: 'Entry' } & Pick<Entry, '_id' | 'value' | 'activityId'>>;
+      }
+  >;
+};
 
 export type GetEntriesByOneDayQueryVariables = Exact<{
   date: Scalars['Date'];
 }>;
 
+export type GetEntriesByOneDayQuery = { __typename?: 'Query' } & {
+  entriesByOneDay?: Maybe<{ __typename?: 'EntriesByDay' } & EntriesByDayResultFragment>;
+};
 
-export type GetEntriesByOneDayQuery = (
-  { __typename?: 'Query' }
-  & { entriesByOneDay?: Maybe<(
-    { __typename?: 'EntriesByDay' }
-    & EntriesByDayResultFragment
-  )> }
-);
+export type GetBalanceQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetBalanceQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetBalanceQuery = { __typename?: 'Query' } & Pick<Query, 'balance'>;
 
+export type GetDaysStatisticQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetBalanceQuery = (
-  { __typename?: 'Query' }
-  & Pick<Query, 'balance'>
-);
+export type GetDaysStatisticQuery = { __typename?: 'Query' } & {
+  daysStatistic: { __typename?: 'DaysStatistic' } & Pick<
+    DaysStatistic,
+    'missing' | 'streak' | 'total'
+  >;
+};
 
-export type GetDaysStatisticQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetReminderQueryVariables = Exact<{ [key: string]: never }>;
 
+export type GetReminderQuery = { __typename?: 'Query' } & {
+  reminder?: Maybe<
+    { __typename?: 'Reminder' } & Pick<Reminder, '_id' | 'remindAt' | 'isRepeating'>
+  >;
+};
 
-export type GetDaysStatisticQuery = (
-  { __typename?: 'Query' }
-  & { daysStatistic: (
-    { __typename?: 'DaysStatistic' }
-    & Pick<DaysStatistic, 'missing' | 'streak' | 'total'>
-  ) }
-);
+export type GetPushTokenQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetReminderQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetReminderQuery = (
-  { __typename?: 'Query' }
-  & { reminder?: Maybe<(
-    { __typename?: 'Reminder' }
-    & Pick<Reminder, '_id' | 'remindAt' | 'isRepeating'>
-  )> }
-);
-
-export type GetPushTokenQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetPushTokenQuery = (
-  { __typename?: 'Query' }
-  & { pushToken?: Maybe<(
-    { __typename?: 'PushToken' }
-    & Pick<PushToken, '_id' | 'token' | 'userId'>
-  )> }
-);
+export type GetPushTokenQuery = { __typename?: 'Query' } & {
+  pushToken?: Maybe<{ __typename?: 'PushToken' } & Pick<PushToken, '_id' | 'token' | 'userId'>>;
+};
 
 export type CreateActivityMutationVariables = Exact<{
   data: CreateActivityInput;
 }>;
 
-
-export type CreateActivityMutation = (
-  { __typename?: 'Mutation' }
-  & { createActivity: (
-    { __typename?: 'Activity' }
-    & Pick<Activity, '_id'>
-  ) }
-);
+export type CreateActivityMutation = { __typename?: 'Mutation' } & {
+  createActivity: { __typename?: 'Activity' } & Pick<Activity, '_id'>;
+};
 
 export type UpdateActivityMutationVariables = Exact<{
   _id: Scalars['ID'];
   data: UpdateActivityInput;
 }>;
 
-
-export type UpdateActivityMutation = (
-  { __typename?: 'Mutation' }
-  & { updateActivityById: (
-    { __typename?: 'Activity' }
-    & Pick<Activity, '_id'>
-  ) }
-);
+export type UpdateActivityMutation = { __typename?: 'Mutation' } & {
+  updateActivityById: { __typename?: 'Activity' } & Pick<Activity, '_id'>;
+};
 
 export type ArchiveActivityMutationVariables = Exact<{
   _id: Scalars['ID'];
 }>;
 
-
-export type ArchiveActivityMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'archiveActivity'>
-);
+export type ArchiveActivityMutation = { __typename?: 'Mutation' } & Pick<
+  Mutation,
+  'archiveActivity'
+>;
 
 export type RestoreActivityMutationVariables = Exact<{
   _id: Scalars['ID'];
 }>;
 
-
-export type RestoreActivityMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'restoreActivity'>
-);
+export type RestoreActivityMutation = { __typename?: 'Mutation' } & Pick<
+  Mutation,
+  'restoreActivity'
+>;
 
 export type CreateEntryMutationVariables = Exact<{
   data: CreateEntryInput;
 }>;
 
-
-export type CreateEntryMutation = (
-  { __typename?: 'Mutation' }
-  & { createEntry: (
-    { __typename?: 'Entry' }
-    & Pick<Entry, '_id'>
-  ) }
-);
+export type CreateEntryMutation = { __typename?: 'Mutation' } & {
+  createEntry: { __typename?: 'Entry' } & Pick<Entry, '_id'>;
+};
 
 export type UpdateEntryMutationVariables = Exact<{
   _id: Scalars['ID'];
   data: UpdateEntryInput;
 }>;
 
-
-export type UpdateEntryMutation = (
-  { __typename?: 'Mutation' }
-  & { updateEntryById: (
-    { __typename?: 'Entry' }
-    & Pick<Entry, '_id'>
-  ) }
-);
+export type UpdateEntryMutation = { __typename?: 'Mutation' } & {
+  updateEntryById: { __typename?: 'Entry' } & Pick<Entry, '_id'>;
+};
 
 export type DeleteEntryMutationVariables = Exact<{
   _id: Scalars['ID'];
 }>;
 
-
-export type DeleteEntryMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'deleteEntry'>
-);
+export type DeleteEntryMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'deleteEntry'>;
 
 export type ConnectTodoistMutationVariables = Exact<{
   authCode: Scalars['String'];
 }>;
 
-
-export type ConnectTodoistMutation = (
-  { __typename?: 'Mutation' }
-  & { connectTodoist: (
-    { __typename?: 'Activity' }
-    & Pick<Activity, '_id'>
-  ) }
-);
+export type ConnectTodoistMutation = { __typename?: 'Mutation' } & {
+  connectTodoist: { __typename?: 'Activity' } & Pick<Activity, '_id'>;
+};
 
 export type UpsertReminderMutationVariables = Exact<{
   data: ReminderInput;
 }>;
 
-
-export type UpsertReminderMutation = (
-  { __typename?: 'Mutation' }
-  & { upsertReminder: (
-    { __typename?: 'Reminder' }
-    & Pick<Reminder, '_id' | 'createdAt' | 'remindAt' | 'isRepeating' | 'userId'>
-  ) }
-);
+export type UpsertReminderMutation = { __typename?: 'Mutation' } & {
+  upsertReminder: { __typename?: 'Reminder' } & Pick<
+    Reminder,
+    '_id' | 'createdAt' | 'remindAt' | 'isRepeating' | 'userId'
+  >;
+};
 
 export type UpsertPushTokenMutationVariables = Exact<{
   data: PushTokenUpsertInput;
 }>;
 
-
-export type UpsertPushTokenMutation = (
-  { __typename?: 'Mutation' }
-  & { upsertPushToken: (
-    { __typename?: 'PushToken' }
-    & Pick<PushToken, '_id' | 'userId' | 'token'>
-  ) }
-);
+export type UpsertPushTokenMutation = { __typename?: 'Mutation' } & {
+  upsertPushToken: { __typename?: 'PushToken' } & Pick<PushToken, '_id' | 'userId' | 'token'>;
+};
 
 export const ActivityResultFragmentDoc = gql`
-    fragment ActivityResult on Activity {
-  _id
-  name
-  emoji
-  category
-  valueType
-  pointsType
-  points
-  isArchived
-  rangeMeta {
-    from
-    to
-  }
-}
-    `;
-export const EntriesByDayResultFragmentDoc = gql`
-    fragment EntriesByDayResult on EntriesByDay {
-  date
-  points
-  entries {
+  fragment ActivityResult on Activity {
     _id
-    description
-    value
-    completedAt
-    activityId
+    name
+    emoji
+    category
+    valueType
+    pointsType
+    points
+    isArchived
+    isWithDescription
+    rangeMeta {
+      from
+      to
+    }
   }
-}
-    `;
+`;
+export const EntriesByDayResultFragmentDoc = gql`
+  fragment EntriesByDayResult on EntriesByDay {
+    date
+    points
+    entries {
+      _id
+      description
+      value
+      completedAt
+      activityId
+    }
+  }
+`;
 export const GetActivityDocument = gql`
-    query GetActivity($_id: ID!) {
-  activity(_id: $_id) {
-    ...ActivityResult
+  query GetActivity($_id: ID!) {
+    activity(_id: $_id) {
+      ...ActivityResult
+    }
   }
-}
-    ${ActivityResultFragmentDoc}`;
+  ${ActivityResultFragmentDoc}
+`;
 
 /**
  * __useGetActivityQuery__
@@ -569,25 +488,39 @@ export const GetActivityDocument = gql`
  *   },
  * });
  */
-export function useGetActivityQuery(baseOptions?: Apollo.QueryHookOptions<GetActivityQuery, GetActivityQueryVariables>) {
-        return Apollo.useQuery<GetActivityQuery, GetActivityQueryVariables>(GetActivityDocument, baseOptions);
-      }
-export function useGetActivityLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetActivityQuery, GetActivityQueryVariables>) {
-          return Apollo.useLazyQuery<GetActivityQuery, GetActivityQueryVariables>(GetActivityDocument, baseOptions);
-        }
+export function useGetActivityQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetActivityQuery, GetActivityQueryVariables>
+) {
+  return Apollo.useQuery<GetActivityQuery, GetActivityQueryVariables>(
+    GetActivityDocument,
+    baseOptions
+  );
+}
+export function useGetActivityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetActivityQuery, GetActivityQueryVariables>
+) {
+  return Apollo.useLazyQuery<GetActivityQuery, GetActivityQueryVariables>(
+    GetActivityDocument,
+    baseOptions
+  );
+}
 export type GetActivityQueryHookResult = ReturnType<typeof useGetActivityQuery>;
 export type GetActivityLazyQueryHookResult = ReturnType<typeof useGetActivityLazyQuery>;
-export type GetActivityQueryResult = Apollo.QueryResult<GetActivityQuery, GetActivityQueryVariables>;
+export type GetActivityQueryResult = Apollo.QueryResult<
+  GetActivityQuery,
+  GetActivityQueryVariables
+>;
 export function refetchGetActivityQuery(variables?: GetActivityQueryVariables) {
-      return { query: GetActivityDocument, variables: variables }
-    }
-export const GetActivitiesDocument = gql`
-    query GetActivities {
-  activities {
-    ...ActivityResult
-  }
+  return { query: GetActivityDocument, variables: variables };
 }
-    ${ActivityResultFragmentDoc}`;
+export const GetActivitiesDocument = gql`
+  query GetActivities {
+    activities {
+      ...ActivityResult
+    }
+  }
+  ${ActivityResultFragmentDoc}
+`;
 
 /**
  * __useGetActivitiesQuery__
@@ -604,25 +537,39 @@ export const GetActivitiesDocument = gql`
  *   },
  * });
  */
-export function useGetActivitiesQuery(baseOptions?: Apollo.QueryHookOptions<GetActivitiesQuery, GetActivitiesQueryVariables>) {
-        return Apollo.useQuery<GetActivitiesQuery, GetActivitiesQueryVariables>(GetActivitiesDocument, baseOptions);
-      }
-export function useGetActivitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetActivitiesQuery, GetActivitiesQueryVariables>) {
-          return Apollo.useLazyQuery<GetActivitiesQuery, GetActivitiesQueryVariables>(GetActivitiesDocument, baseOptions);
-        }
+export function useGetActivitiesQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetActivitiesQuery, GetActivitiesQueryVariables>
+) {
+  return Apollo.useQuery<GetActivitiesQuery, GetActivitiesQueryVariables>(
+    GetActivitiesDocument,
+    baseOptions
+  );
+}
+export function useGetActivitiesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetActivitiesQuery, GetActivitiesQueryVariables>
+) {
+  return Apollo.useLazyQuery<GetActivitiesQuery, GetActivitiesQueryVariables>(
+    GetActivitiesDocument,
+    baseOptions
+  );
+}
 export type GetActivitiesQueryHookResult = ReturnType<typeof useGetActivitiesQuery>;
 export type GetActivitiesLazyQueryHookResult = ReturnType<typeof useGetActivitiesLazyQuery>;
-export type GetActivitiesQueryResult = Apollo.QueryResult<GetActivitiesQuery, GetActivitiesQueryVariables>;
+export type GetActivitiesQueryResult = Apollo.QueryResult<
+  GetActivitiesQuery,
+  GetActivitiesQueryVariables
+>;
 export function refetchGetActivitiesQuery(variables?: GetActivitiesQueryVariables) {
-      return { query: GetActivitiesDocument, variables: variables }
-    }
-export const GetEntriesByDayDocument = gql`
-    query GetEntriesByDay($dateAfter: Date) {
-  entriesByDay(dateAfter: $dateAfter) {
-    ...EntriesByDayResult
-  }
+  return { query: GetActivitiesDocument, variables: variables };
 }
-    ${EntriesByDayResultFragmentDoc}`;
+export const GetEntriesByDayDocument = gql`
+  query GetEntriesByDay($dateAfter: Date) {
+    entriesByDay(dateAfter: $dateAfter) {
+      ...EntriesByDayResult
+    }
+  }
+  ${EntriesByDayResultFragmentDoc}
+`;
 
 /**
  * __useGetEntriesByDayQuery__
@@ -640,31 +587,44 @@ export const GetEntriesByDayDocument = gql`
  *   },
  * });
  */
-export function useGetEntriesByDayQuery(baseOptions?: Apollo.QueryHookOptions<GetEntriesByDayQuery, GetEntriesByDayQueryVariables>) {
-        return Apollo.useQuery<GetEntriesByDayQuery, GetEntriesByDayQueryVariables>(GetEntriesByDayDocument, baseOptions);
-      }
-export function useGetEntriesByDayLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEntriesByDayQuery, GetEntriesByDayQueryVariables>) {
-          return Apollo.useLazyQuery<GetEntriesByDayQuery, GetEntriesByDayQueryVariables>(GetEntriesByDayDocument, baseOptions);
-        }
+export function useGetEntriesByDayQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetEntriesByDayQuery, GetEntriesByDayQueryVariables>
+) {
+  return Apollo.useQuery<GetEntriesByDayQuery, GetEntriesByDayQueryVariables>(
+    GetEntriesByDayDocument,
+    baseOptions
+  );
+}
+export function useGetEntriesByDayLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetEntriesByDayQuery, GetEntriesByDayQueryVariables>
+) {
+  return Apollo.useLazyQuery<GetEntriesByDayQuery, GetEntriesByDayQueryVariables>(
+    GetEntriesByDayDocument,
+    baseOptions
+  );
+}
 export type GetEntriesByDayQueryHookResult = ReturnType<typeof useGetEntriesByDayQuery>;
 export type GetEntriesByDayLazyQueryHookResult = ReturnType<typeof useGetEntriesByDayLazyQuery>;
-export type GetEntriesByDayQueryResult = Apollo.QueryResult<GetEntriesByDayQuery, GetEntriesByDayQueryVariables>;
+export type GetEntriesByDayQueryResult = Apollo.QueryResult<
+  GetEntriesByDayQuery,
+  GetEntriesByDayQueryVariables
+>;
 export function refetchGetEntriesByDayQuery(variables?: GetEntriesByDayQueryVariables) {
-      return { query: GetEntriesByDayDocument, variables: variables }
-    }
+  return { query: GetEntriesByDayDocument, variables: variables };
+}
 export const GetCalendarDaysDocument = gql`
-    query GetCalendarDays($dateAfter: Date, $dateBefore: Date) {
-  entriesByDay(dateAfter: $dateAfter, dateBefore: $dateBefore) {
-    date
-    points
-    entries {
-      _id
-      value
-      activityId
+  query GetCalendarDays($dateAfter: Date, $dateBefore: Date) {
+    entriesByDay(dateAfter: $dateAfter, dateBefore: $dateBefore) {
+      date
+      points
+      entries {
+        _id
+        value
+        activityId
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetCalendarDaysQuery__
@@ -683,25 +643,39 @@ export const GetCalendarDaysDocument = gql`
  *   },
  * });
  */
-export function useGetCalendarDaysQuery(baseOptions?: Apollo.QueryHookOptions<GetCalendarDaysQuery, GetCalendarDaysQueryVariables>) {
-        return Apollo.useQuery<GetCalendarDaysQuery, GetCalendarDaysQueryVariables>(GetCalendarDaysDocument, baseOptions);
-      }
-export function useGetCalendarDaysLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCalendarDaysQuery, GetCalendarDaysQueryVariables>) {
-          return Apollo.useLazyQuery<GetCalendarDaysQuery, GetCalendarDaysQueryVariables>(GetCalendarDaysDocument, baseOptions);
-        }
+export function useGetCalendarDaysQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetCalendarDaysQuery, GetCalendarDaysQueryVariables>
+) {
+  return Apollo.useQuery<GetCalendarDaysQuery, GetCalendarDaysQueryVariables>(
+    GetCalendarDaysDocument,
+    baseOptions
+  );
+}
+export function useGetCalendarDaysLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetCalendarDaysQuery, GetCalendarDaysQueryVariables>
+) {
+  return Apollo.useLazyQuery<GetCalendarDaysQuery, GetCalendarDaysQueryVariables>(
+    GetCalendarDaysDocument,
+    baseOptions
+  );
+}
 export type GetCalendarDaysQueryHookResult = ReturnType<typeof useGetCalendarDaysQuery>;
 export type GetCalendarDaysLazyQueryHookResult = ReturnType<typeof useGetCalendarDaysLazyQuery>;
-export type GetCalendarDaysQueryResult = Apollo.QueryResult<GetCalendarDaysQuery, GetCalendarDaysQueryVariables>;
+export type GetCalendarDaysQueryResult = Apollo.QueryResult<
+  GetCalendarDaysQuery,
+  GetCalendarDaysQueryVariables
+>;
 export function refetchGetCalendarDaysQuery(variables?: GetCalendarDaysQueryVariables) {
-      return { query: GetCalendarDaysDocument, variables: variables }
-    }
-export const GetEntriesByOneDayDocument = gql`
-    query GetEntriesByOneDay($date: Date!) {
-  entriesByOneDay(date: $date) {
-    ...EntriesByDayResult
-  }
+  return { query: GetCalendarDaysDocument, variables: variables };
 }
-    ${EntriesByDayResultFragmentDoc}`;
+export const GetEntriesByOneDayDocument = gql`
+  query GetEntriesByOneDay($date: Date!) {
+    entriesByOneDay(date: $date) {
+      ...EntriesByDayResult
+    }
+  }
+  ${EntriesByDayResultFragmentDoc}
+`;
 
 /**
  * __useGetEntriesByOneDayQuery__
@@ -719,23 +693,41 @@ export const GetEntriesByOneDayDocument = gql`
  *   },
  * });
  */
-export function useGetEntriesByOneDayQuery(baseOptions?: Apollo.QueryHookOptions<GetEntriesByOneDayQuery, GetEntriesByOneDayQueryVariables>) {
-        return Apollo.useQuery<GetEntriesByOneDayQuery, GetEntriesByOneDayQueryVariables>(GetEntriesByOneDayDocument, baseOptions);
-      }
-export function useGetEntriesByOneDayLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEntriesByOneDayQuery, GetEntriesByOneDayQueryVariables>) {
-          return Apollo.useLazyQuery<GetEntriesByOneDayQuery, GetEntriesByOneDayQueryVariables>(GetEntriesByOneDayDocument, baseOptions);
-        }
-export type GetEntriesByOneDayQueryHookResult = ReturnType<typeof useGetEntriesByOneDayQuery>;
-export type GetEntriesByOneDayLazyQueryHookResult = ReturnType<typeof useGetEntriesByOneDayLazyQuery>;
-export type GetEntriesByOneDayQueryResult = Apollo.QueryResult<GetEntriesByOneDayQuery, GetEntriesByOneDayQueryVariables>;
-export function refetchGetEntriesByOneDayQuery(variables?: GetEntriesByOneDayQueryVariables) {
-      return { query: GetEntriesByOneDayDocument, variables: variables }
-    }
-export const GetBalanceDocument = gql`
-    query GetBalance {
-  balance
+export function useGetEntriesByOneDayQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetEntriesByOneDayQuery, GetEntriesByOneDayQueryVariables>
+) {
+  return Apollo.useQuery<GetEntriesByOneDayQuery, GetEntriesByOneDayQueryVariables>(
+    GetEntriesByOneDayDocument,
+    baseOptions
+  );
 }
-    `;
+export function useGetEntriesByOneDayLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetEntriesByOneDayQuery,
+    GetEntriesByOneDayQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<GetEntriesByOneDayQuery, GetEntriesByOneDayQueryVariables>(
+    GetEntriesByOneDayDocument,
+    baseOptions
+  );
+}
+export type GetEntriesByOneDayQueryHookResult = ReturnType<typeof useGetEntriesByOneDayQuery>;
+export type GetEntriesByOneDayLazyQueryHookResult = ReturnType<
+  typeof useGetEntriesByOneDayLazyQuery
+>;
+export type GetEntriesByOneDayQueryResult = Apollo.QueryResult<
+  GetEntriesByOneDayQuery,
+  GetEntriesByOneDayQueryVariables
+>;
+export function refetchGetEntriesByOneDayQuery(variables?: GetEntriesByOneDayQueryVariables) {
+  return { query: GetEntriesByOneDayDocument, variables: variables };
+}
+export const GetBalanceDocument = gql`
+  query GetBalance {
+    balance
+  }
+`;
 
 /**
  * __useGetBalanceQuery__
@@ -752,27 +744,37 @@ export const GetBalanceDocument = gql`
  *   },
  * });
  */
-export function useGetBalanceQuery(baseOptions?: Apollo.QueryHookOptions<GetBalanceQuery, GetBalanceQueryVariables>) {
-        return Apollo.useQuery<GetBalanceQuery, GetBalanceQueryVariables>(GetBalanceDocument, baseOptions);
-      }
-export function useGetBalanceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBalanceQuery, GetBalanceQueryVariables>) {
-          return Apollo.useLazyQuery<GetBalanceQuery, GetBalanceQueryVariables>(GetBalanceDocument, baseOptions);
-        }
+export function useGetBalanceQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetBalanceQuery, GetBalanceQueryVariables>
+) {
+  return Apollo.useQuery<GetBalanceQuery, GetBalanceQueryVariables>(
+    GetBalanceDocument,
+    baseOptions
+  );
+}
+export function useGetBalanceLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetBalanceQuery, GetBalanceQueryVariables>
+) {
+  return Apollo.useLazyQuery<GetBalanceQuery, GetBalanceQueryVariables>(
+    GetBalanceDocument,
+    baseOptions
+  );
+}
 export type GetBalanceQueryHookResult = ReturnType<typeof useGetBalanceQuery>;
 export type GetBalanceLazyQueryHookResult = ReturnType<typeof useGetBalanceLazyQuery>;
 export type GetBalanceQueryResult = Apollo.QueryResult<GetBalanceQuery, GetBalanceQueryVariables>;
 export function refetchGetBalanceQuery(variables?: GetBalanceQueryVariables) {
-      return { query: GetBalanceDocument, variables: variables }
-    }
-export const GetDaysStatisticDocument = gql`
-    query GetDaysStatistic {
-  daysStatistic {
-    missing
-    streak
-    total
-  }
+  return { query: GetBalanceDocument, variables: variables };
 }
-    `;
+export const GetDaysStatisticDocument = gql`
+  query GetDaysStatistic {
+    daysStatistic {
+      missing
+      streak
+      total
+    }
+  }
+`;
 
 /**
  * __useGetDaysStatisticQuery__
@@ -789,27 +791,40 @@ export const GetDaysStatisticDocument = gql`
  *   },
  * });
  */
-export function useGetDaysStatisticQuery(baseOptions?: Apollo.QueryHookOptions<GetDaysStatisticQuery, GetDaysStatisticQueryVariables>) {
-        return Apollo.useQuery<GetDaysStatisticQuery, GetDaysStatisticQueryVariables>(GetDaysStatisticDocument, baseOptions);
-      }
-export function useGetDaysStatisticLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDaysStatisticQuery, GetDaysStatisticQueryVariables>) {
-          return Apollo.useLazyQuery<GetDaysStatisticQuery, GetDaysStatisticQueryVariables>(GetDaysStatisticDocument, baseOptions);
-        }
+export function useGetDaysStatisticQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetDaysStatisticQuery, GetDaysStatisticQueryVariables>
+) {
+  return Apollo.useQuery<GetDaysStatisticQuery, GetDaysStatisticQueryVariables>(
+    GetDaysStatisticDocument,
+    baseOptions
+  );
+}
+export function useGetDaysStatisticLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetDaysStatisticQuery, GetDaysStatisticQueryVariables>
+) {
+  return Apollo.useLazyQuery<GetDaysStatisticQuery, GetDaysStatisticQueryVariables>(
+    GetDaysStatisticDocument,
+    baseOptions
+  );
+}
 export type GetDaysStatisticQueryHookResult = ReturnType<typeof useGetDaysStatisticQuery>;
 export type GetDaysStatisticLazyQueryHookResult = ReturnType<typeof useGetDaysStatisticLazyQuery>;
-export type GetDaysStatisticQueryResult = Apollo.QueryResult<GetDaysStatisticQuery, GetDaysStatisticQueryVariables>;
+export type GetDaysStatisticQueryResult = Apollo.QueryResult<
+  GetDaysStatisticQuery,
+  GetDaysStatisticQueryVariables
+>;
 export function refetchGetDaysStatisticQuery(variables?: GetDaysStatisticQueryVariables) {
-      return { query: GetDaysStatisticDocument, variables: variables }
-    }
-export const GetReminderDocument = gql`
-    query GetReminder {
-  reminder {
-    _id
-    remindAt
-    isRepeating
-  }
+  return { query: GetDaysStatisticDocument, variables: variables };
 }
-    `;
+export const GetReminderDocument = gql`
+  query GetReminder {
+    reminder {
+      _id
+      remindAt
+      isRepeating
+    }
+  }
+`;
 
 /**
  * __useGetReminderQuery__
@@ -826,27 +841,40 @@ export const GetReminderDocument = gql`
  *   },
  * });
  */
-export function useGetReminderQuery(baseOptions?: Apollo.QueryHookOptions<GetReminderQuery, GetReminderQueryVariables>) {
-        return Apollo.useQuery<GetReminderQuery, GetReminderQueryVariables>(GetReminderDocument, baseOptions);
-      }
-export function useGetReminderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetReminderQuery, GetReminderQueryVariables>) {
-          return Apollo.useLazyQuery<GetReminderQuery, GetReminderQueryVariables>(GetReminderDocument, baseOptions);
-        }
+export function useGetReminderQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetReminderQuery, GetReminderQueryVariables>
+) {
+  return Apollo.useQuery<GetReminderQuery, GetReminderQueryVariables>(
+    GetReminderDocument,
+    baseOptions
+  );
+}
+export function useGetReminderLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetReminderQuery, GetReminderQueryVariables>
+) {
+  return Apollo.useLazyQuery<GetReminderQuery, GetReminderQueryVariables>(
+    GetReminderDocument,
+    baseOptions
+  );
+}
 export type GetReminderQueryHookResult = ReturnType<typeof useGetReminderQuery>;
 export type GetReminderLazyQueryHookResult = ReturnType<typeof useGetReminderLazyQuery>;
-export type GetReminderQueryResult = Apollo.QueryResult<GetReminderQuery, GetReminderQueryVariables>;
+export type GetReminderQueryResult = Apollo.QueryResult<
+  GetReminderQuery,
+  GetReminderQueryVariables
+>;
 export function refetchGetReminderQuery(variables?: GetReminderQueryVariables) {
-      return { query: GetReminderDocument, variables: variables }
-    }
-export const GetPushTokenDocument = gql`
-    query GetPushToken {
-  pushToken {
-    _id
-    token
-    userId
-  }
+  return { query: GetReminderDocument, variables: variables };
 }
-    `;
+export const GetPushTokenDocument = gql`
+  query GetPushToken {
+    pushToken {
+      _id
+      token
+      userId
+    }
+  }
+`;
 
 /**
  * __useGetPushTokenQuery__
@@ -863,26 +891,42 @@ export const GetPushTokenDocument = gql`
  *   },
  * });
  */
-export function useGetPushTokenQuery(baseOptions?: Apollo.QueryHookOptions<GetPushTokenQuery, GetPushTokenQueryVariables>) {
-        return Apollo.useQuery<GetPushTokenQuery, GetPushTokenQueryVariables>(GetPushTokenDocument, baseOptions);
-      }
-export function useGetPushTokenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPushTokenQuery, GetPushTokenQueryVariables>) {
-          return Apollo.useLazyQuery<GetPushTokenQuery, GetPushTokenQueryVariables>(GetPushTokenDocument, baseOptions);
-        }
+export function useGetPushTokenQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetPushTokenQuery, GetPushTokenQueryVariables>
+) {
+  return Apollo.useQuery<GetPushTokenQuery, GetPushTokenQueryVariables>(
+    GetPushTokenDocument,
+    baseOptions
+  );
+}
+export function useGetPushTokenLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetPushTokenQuery, GetPushTokenQueryVariables>
+) {
+  return Apollo.useLazyQuery<GetPushTokenQuery, GetPushTokenQueryVariables>(
+    GetPushTokenDocument,
+    baseOptions
+  );
+}
 export type GetPushTokenQueryHookResult = ReturnType<typeof useGetPushTokenQuery>;
 export type GetPushTokenLazyQueryHookResult = ReturnType<typeof useGetPushTokenLazyQuery>;
-export type GetPushTokenQueryResult = Apollo.QueryResult<GetPushTokenQuery, GetPushTokenQueryVariables>;
+export type GetPushTokenQueryResult = Apollo.QueryResult<
+  GetPushTokenQuery,
+  GetPushTokenQueryVariables
+>;
 export function refetchGetPushTokenQuery(variables?: GetPushTokenQueryVariables) {
-      return { query: GetPushTokenDocument, variables: variables }
-    }
-export const CreateActivityDocument = gql`
-    mutation CreateActivity($data: CreateActivityInput!) {
-  createActivity(data: $data) {
-    _id
-  }
+  return { query: GetPushTokenDocument, variables: variables };
 }
-    `;
-export type CreateActivityMutationFn = Apollo.MutationFunction<CreateActivityMutation, CreateActivityMutationVariables>;
+export const CreateActivityDocument = gql`
+  mutation CreateActivity($data: CreateActivityInput!) {
+    createActivity(data: $data) {
+      _id
+    }
+  }
+`;
+export type CreateActivityMutationFn = Apollo.MutationFunction<
+  CreateActivityMutation,
+  CreateActivityMutationVariables
+>;
 
 /**
  * __useCreateActivityMutation__
@@ -901,20 +945,31 @@ export type CreateActivityMutationFn = Apollo.MutationFunction<CreateActivityMut
  *   },
  * });
  */
-export function useCreateActivityMutation(baseOptions?: Apollo.MutationHookOptions<CreateActivityMutation, CreateActivityMutationVariables>) {
-        return Apollo.useMutation<CreateActivityMutation, CreateActivityMutationVariables>(CreateActivityDocument, baseOptions);
-      }
+export function useCreateActivityMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateActivityMutation, CreateActivityMutationVariables>
+) {
+  return Apollo.useMutation<CreateActivityMutation, CreateActivityMutationVariables>(
+    CreateActivityDocument,
+    baseOptions
+  );
+}
 export type CreateActivityMutationHookResult = ReturnType<typeof useCreateActivityMutation>;
 export type CreateActivityMutationResult = Apollo.MutationResult<CreateActivityMutation>;
-export type CreateActivityMutationOptions = Apollo.BaseMutationOptions<CreateActivityMutation, CreateActivityMutationVariables>;
+export type CreateActivityMutationOptions = Apollo.BaseMutationOptions<
+  CreateActivityMutation,
+  CreateActivityMutationVariables
+>;
 export const UpdateActivityDocument = gql`
-    mutation UpdateActivity($_id: ID!, $data: UpdateActivityInput!) {
-  updateActivityById(_id: $_id, data: $data) {
-    _id
+  mutation UpdateActivity($_id: ID!, $data: UpdateActivityInput!) {
+    updateActivityById(_id: $_id, data: $data) {
+      _id
+    }
   }
-}
-    `;
-export type UpdateActivityMutationFn = Apollo.MutationFunction<UpdateActivityMutation, UpdateActivityMutationVariables>;
+`;
+export type UpdateActivityMutationFn = Apollo.MutationFunction<
+  UpdateActivityMutation,
+  UpdateActivityMutationVariables
+>;
 
 /**
  * __useUpdateActivityMutation__
@@ -934,18 +989,29 @@ export type UpdateActivityMutationFn = Apollo.MutationFunction<UpdateActivityMut
  *   },
  * });
  */
-export function useUpdateActivityMutation(baseOptions?: Apollo.MutationHookOptions<UpdateActivityMutation, UpdateActivityMutationVariables>) {
-        return Apollo.useMutation<UpdateActivityMutation, UpdateActivityMutationVariables>(UpdateActivityDocument, baseOptions);
-      }
+export function useUpdateActivityMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateActivityMutation, UpdateActivityMutationVariables>
+) {
+  return Apollo.useMutation<UpdateActivityMutation, UpdateActivityMutationVariables>(
+    UpdateActivityDocument,
+    baseOptions
+  );
+}
 export type UpdateActivityMutationHookResult = ReturnType<typeof useUpdateActivityMutation>;
 export type UpdateActivityMutationResult = Apollo.MutationResult<UpdateActivityMutation>;
-export type UpdateActivityMutationOptions = Apollo.BaseMutationOptions<UpdateActivityMutation, UpdateActivityMutationVariables>;
+export type UpdateActivityMutationOptions = Apollo.BaseMutationOptions<
+  UpdateActivityMutation,
+  UpdateActivityMutationVariables
+>;
 export const ArchiveActivityDocument = gql`
-    mutation ArchiveActivity($_id: ID!) {
-  archiveActivity(_id: $_id)
-}
-    `;
-export type ArchiveActivityMutationFn = Apollo.MutationFunction<ArchiveActivityMutation, ArchiveActivityMutationVariables>;
+  mutation ArchiveActivity($_id: ID!) {
+    archiveActivity(_id: $_id)
+  }
+`;
+export type ArchiveActivityMutationFn = Apollo.MutationFunction<
+  ArchiveActivityMutation,
+  ArchiveActivityMutationVariables
+>;
 
 /**
  * __useArchiveActivityMutation__
@@ -964,18 +1030,32 @@ export type ArchiveActivityMutationFn = Apollo.MutationFunction<ArchiveActivityM
  *   },
  * });
  */
-export function useArchiveActivityMutation(baseOptions?: Apollo.MutationHookOptions<ArchiveActivityMutation, ArchiveActivityMutationVariables>) {
-        return Apollo.useMutation<ArchiveActivityMutation, ArchiveActivityMutationVariables>(ArchiveActivityDocument, baseOptions);
-      }
+export function useArchiveActivityMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    ArchiveActivityMutation,
+    ArchiveActivityMutationVariables
+  >
+) {
+  return Apollo.useMutation<ArchiveActivityMutation, ArchiveActivityMutationVariables>(
+    ArchiveActivityDocument,
+    baseOptions
+  );
+}
 export type ArchiveActivityMutationHookResult = ReturnType<typeof useArchiveActivityMutation>;
 export type ArchiveActivityMutationResult = Apollo.MutationResult<ArchiveActivityMutation>;
-export type ArchiveActivityMutationOptions = Apollo.BaseMutationOptions<ArchiveActivityMutation, ArchiveActivityMutationVariables>;
+export type ArchiveActivityMutationOptions = Apollo.BaseMutationOptions<
+  ArchiveActivityMutation,
+  ArchiveActivityMutationVariables
+>;
 export const RestoreActivityDocument = gql`
-    mutation RestoreActivity($_id: ID!) {
-  restoreActivity(_id: $_id)
-}
-    `;
-export type RestoreActivityMutationFn = Apollo.MutationFunction<RestoreActivityMutation, RestoreActivityMutationVariables>;
+  mutation RestoreActivity($_id: ID!) {
+    restoreActivity(_id: $_id)
+  }
+`;
+export type RestoreActivityMutationFn = Apollo.MutationFunction<
+  RestoreActivityMutation,
+  RestoreActivityMutationVariables
+>;
 
 /**
  * __useRestoreActivityMutation__
@@ -994,20 +1074,34 @@ export type RestoreActivityMutationFn = Apollo.MutationFunction<RestoreActivityM
  *   },
  * });
  */
-export function useRestoreActivityMutation(baseOptions?: Apollo.MutationHookOptions<RestoreActivityMutation, RestoreActivityMutationVariables>) {
-        return Apollo.useMutation<RestoreActivityMutation, RestoreActivityMutationVariables>(RestoreActivityDocument, baseOptions);
-      }
+export function useRestoreActivityMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    RestoreActivityMutation,
+    RestoreActivityMutationVariables
+  >
+) {
+  return Apollo.useMutation<RestoreActivityMutation, RestoreActivityMutationVariables>(
+    RestoreActivityDocument,
+    baseOptions
+  );
+}
 export type RestoreActivityMutationHookResult = ReturnType<typeof useRestoreActivityMutation>;
 export type RestoreActivityMutationResult = Apollo.MutationResult<RestoreActivityMutation>;
-export type RestoreActivityMutationOptions = Apollo.BaseMutationOptions<RestoreActivityMutation, RestoreActivityMutationVariables>;
+export type RestoreActivityMutationOptions = Apollo.BaseMutationOptions<
+  RestoreActivityMutation,
+  RestoreActivityMutationVariables
+>;
 export const CreateEntryDocument = gql`
-    mutation CreateEntry($data: CreateEntryInput!) {
-  createEntry(data: $data) {
-    _id
+  mutation CreateEntry($data: CreateEntryInput!) {
+    createEntry(data: $data) {
+      _id
+    }
   }
-}
-    `;
-export type CreateEntryMutationFn = Apollo.MutationFunction<CreateEntryMutation, CreateEntryMutationVariables>;
+`;
+export type CreateEntryMutationFn = Apollo.MutationFunction<
+  CreateEntryMutation,
+  CreateEntryMutationVariables
+>;
 
 /**
  * __useCreateEntryMutation__
@@ -1026,20 +1120,31 @@ export type CreateEntryMutationFn = Apollo.MutationFunction<CreateEntryMutation,
  *   },
  * });
  */
-export function useCreateEntryMutation(baseOptions?: Apollo.MutationHookOptions<CreateEntryMutation, CreateEntryMutationVariables>) {
-        return Apollo.useMutation<CreateEntryMutation, CreateEntryMutationVariables>(CreateEntryDocument, baseOptions);
-      }
+export function useCreateEntryMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateEntryMutation, CreateEntryMutationVariables>
+) {
+  return Apollo.useMutation<CreateEntryMutation, CreateEntryMutationVariables>(
+    CreateEntryDocument,
+    baseOptions
+  );
+}
 export type CreateEntryMutationHookResult = ReturnType<typeof useCreateEntryMutation>;
 export type CreateEntryMutationResult = Apollo.MutationResult<CreateEntryMutation>;
-export type CreateEntryMutationOptions = Apollo.BaseMutationOptions<CreateEntryMutation, CreateEntryMutationVariables>;
+export type CreateEntryMutationOptions = Apollo.BaseMutationOptions<
+  CreateEntryMutation,
+  CreateEntryMutationVariables
+>;
 export const UpdateEntryDocument = gql`
-    mutation UpdateEntry($_id: ID!, $data: UpdateEntryInput!) {
-  updateEntryById(_id: $_id, data: $data) {
-    _id
+  mutation UpdateEntry($_id: ID!, $data: UpdateEntryInput!) {
+    updateEntryById(_id: $_id, data: $data) {
+      _id
+    }
   }
-}
-    `;
-export type UpdateEntryMutationFn = Apollo.MutationFunction<UpdateEntryMutation, UpdateEntryMutationVariables>;
+`;
+export type UpdateEntryMutationFn = Apollo.MutationFunction<
+  UpdateEntryMutation,
+  UpdateEntryMutationVariables
+>;
 
 /**
  * __useUpdateEntryMutation__
@@ -1059,18 +1164,29 @@ export type UpdateEntryMutationFn = Apollo.MutationFunction<UpdateEntryMutation,
  *   },
  * });
  */
-export function useUpdateEntryMutation(baseOptions?: Apollo.MutationHookOptions<UpdateEntryMutation, UpdateEntryMutationVariables>) {
-        return Apollo.useMutation<UpdateEntryMutation, UpdateEntryMutationVariables>(UpdateEntryDocument, baseOptions);
-      }
+export function useUpdateEntryMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateEntryMutation, UpdateEntryMutationVariables>
+) {
+  return Apollo.useMutation<UpdateEntryMutation, UpdateEntryMutationVariables>(
+    UpdateEntryDocument,
+    baseOptions
+  );
+}
 export type UpdateEntryMutationHookResult = ReturnType<typeof useUpdateEntryMutation>;
 export type UpdateEntryMutationResult = Apollo.MutationResult<UpdateEntryMutation>;
-export type UpdateEntryMutationOptions = Apollo.BaseMutationOptions<UpdateEntryMutation, UpdateEntryMutationVariables>;
+export type UpdateEntryMutationOptions = Apollo.BaseMutationOptions<
+  UpdateEntryMutation,
+  UpdateEntryMutationVariables
+>;
 export const DeleteEntryDocument = gql`
-    mutation DeleteEntry($_id: ID!) {
-  deleteEntry(_id: $_id)
-}
-    `;
-export type DeleteEntryMutationFn = Apollo.MutationFunction<DeleteEntryMutation, DeleteEntryMutationVariables>;
+  mutation DeleteEntry($_id: ID!) {
+    deleteEntry(_id: $_id)
+  }
+`;
+export type DeleteEntryMutationFn = Apollo.MutationFunction<
+  DeleteEntryMutation,
+  DeleteEntryMutationVariables
+>;
 
 /**
  * __useDeleteEntryMutation__
@@ -1089,20 +1205,31 @@ export type DeleteEntryMutationFn = Apollo.MutationFunction<DeleteEntryMutation,
  *   },
  * });
  */
-export function useDeleteEntryMutation(baseOptions?: Apollo.MutationHookOptions<DeleteEntryMutation, DeleteEntryMutationVariables>) {
-        return Apollo.useMutation<DeleteEntryMutation, DeleteEntryMutationVariables>(DeleteEntryDocument, baseOptions);
-      }
+export function useDeleteEntryMutation(
+  baseOptions?: Apollo.MutationHookOptions<DeleteEntryMutation, DeleteEntryMutationVariables>
+) {
+  return Apollo.useMutation<DeleteEntryMutation, DeleteEntryMutationVariables>(
+    DeleteEntryDocument,
+    baseOptions
+  );
+}
 export type DeleteEntryMutationHookResult = ReturnType<typeof useDeleteEntryMutation>;
 export type DeleteEntryMutationResult = Apollo.MutationResult<DeleteEntryMutation>;
-export type DeleteEntryMutationOptions = Apollo.BaseMutationOptions<DeleteEntryMutation, DeleteEntryMutationVariables>;
+export type DeleteEntryMutationOptions = Apollo.BaseMutationOptions<
+  DeleteEntryMutation,
+  DeleteEntryMutationVariables
+>;
 export const ConnectTodoistDocument = gql`
-    mutation ConnectTodoist($authCode: String!) {
-  connectTodoist(authCode: $authCode) {
-    _id
+  mutation ConnectTodoist($authCode: String!) {
+    connectTodoist(authCode: $authCode) {
+      _id
+    }
   }
-}
-    `;
-export type ConnectTodoistMutationFn = Apollo.MutationFunction<ConnectTodoistMutation, ConnectTodoistMutationVariables>;
+`;
+export type ConnectTodoistMutationFn = Apollo.MutationFunction<
+  ConnectTodoistMutation,
+  ConnectTodoistMutationVariables
+>;
 
 /**
  * __useConnectTodoistMutation__
@@ -1121,24 +1248,35 @@ export type ConnectTodoistMutationFn = Apollo.MutationFunction<ConnectTodoistMut
  *   },
  * });
  */
-export function useConnectTodoistMutation(baseOptions?: Apollo.MutationHookOptions<ConnectTodoistMutation, ConnectTodoistMutationVariables>) {
-        return Apollo.useMutation<ConnectTodoistMutation, ConnectTodoistMutationVariables>(ConnectTodoistDocument, baseOptions);
-      }
+export function useConnectTodoistMutation(
+  baseOptions?: Apollo.MutationHookOptions<ConnectTodoistMutation, ConnectTodoistMutationVariables>
+) {
+  return Apollo.useMutation<ConnectTodoistMutation, ConnectTodoistMutationVariables>(
+    ConnectTodoistDocument,
+    baseOptions
+  );
+}
 export type ConnectTodoistMutationHookResult = ReturnType<typeof useConnectTodoistMutation>;
 export type ConnectTodoistMutationResult = Apollo.MutationResult<ConnectTodoistMutation>;
-export type ConnectTodoistMutationOptions = Apollo.BaseMutationOptions<ConnectTodoistMutation, ConnectTodoistMutationVariables>;
+export type ConnectTodoistMutationOptions = Apollo.BaseMutationOptions<
+  ConnectTodoistMutation,
+  ConnectTodoistMutationVariables
+>;
 export const UpsertReminderDocument = gql`
-    mutation UpsertReminder($data: ReminderInput!) {
-  upsertReminder(data: $data) {
-    _id
-    createdAt
-    remindAt
-    isRepeating
-    userId
+  mutation UpsertReminder($data: ReminderInput!) {
+    upsertReminder(data: $data) {
+      _id
+      createdAt
+      remindAt
+      isRepeating
+      userId
+    }
   }
-}
-    `;
-export type UpsertReminderMutationFn = Apollo.MutationFunction<UpsertReminderMutation, UpsertReminderMutationVariables>;
+`;
+export type UpsertReminderMutationFn = Apollo.MutationFunction<
+  UpsertReminderMutation,
+  UpsertReminderMutationVariables
+>;
 
 /**
  * __useUpsertReminderMutation__
@@ -1157,22 +1295,33 @@ export type UpsertReminderMutationFn = Apollo.MutationFunction<UpsertReminderMut
  *   },
  * });
  */
-export function useUpsertReminderMutation(baseOptions?: Apollo.MutationHookOptions<UpsertReminderMutation, UpsertReminderMutationVariables>) {
-        return Apollo.useMutation<UpsertReminderMutation, UpsertReminderMutationVariables>(UpsertReminderDocument, baseOptions);
-      }
+export function useUpsertReminderMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpsertReminderMutation, UpsertReminderMutationVariables>
+) {
+  return Apollo.useMutation<UpsertReminderMutation, UpsertReminderMutationVariables>(
+    UpsertReminderDocument,
+    baseOptions
+  );
+}
 export type UpsertReminderMutationHookResult = ReturnType<typeof useUpsertReminderMutation>;
 export type UpsertReminderMutationResult = Apollo.MutationResult<UpsertReminderMutation>;
-export type UpsertReminderMutationOptions = Apollo.BaseMutationOptions<UpsertReminderMutation, UpsertReminderMutationVariables>;
+export type UpsertReminderMutationOptions = Apollo.BaseMutationOptions<
+  UpsertReminderMutation,
+  UpsertReminderMutationVariables
+>;
 export const UpsertPushTokenDocument = gql`
-    mutation UpsertPushToken($data: PushTokenUpsertInput!) {
-  upsertPushToken(data: $data) {
-    _id
-    userId
-    token
+  mutation UpsertPushToken($data: PushTokenUpsertInput!) {
+    upsertPushToken(data: $data) {
+      _id
+      userId
+      token
+    }
   }
-}
-    `;
-export type UpsertPushTokenMutationFn = Apollo.MutationFunction<UpsertPushTokenMutation, UpsertPushTokenMutationVariables>;
+`;
+export type UpsertPushTokenMutationFn = Apollo.MutationFunction<
+  UpsertPushTokenMutation,
+  UpsertPushTokenMutationVariables
+>;
 
 /**
  * __useUpsertPushTokenMutation__
@@ -1191,9 +1340,20 @@ export type UpsertPushTokenMutationFn = Apollo.MutationFunction<UpsertPushTokenM
  *   },
  * });
  */
-export function useUpsertPushTokenMutation(baseOptions?: Apollo.MutationHookOptions<UpsertPushTokenMutation, UpsertPushTokenMutationVariables>) {
-        return Apollo.useMutation<UpsertPushTokenMutation, UpsertPushTokenMutationVariables>(UpsertPushTokenDocument, baseOptions);
-      }
+export function useUpsertPushTokenMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpsertPushTokenMutation,
+    UpsertPushTokenMutationVariables
+  >
+) {
+  return Apollo.useMutation<UpsertPushTokenMutation, UpsertPushTokenMutationVariables>(
+    UpsertPushTokenDocument,
+    baseOptions
+  );
+}
 export type UpsertPushTokenMutationHookResult = ReturnType<typeof useUpsertPushTokenMutation>;
 export type UpsertPushTokenMutationResult = Apollo.MutationResult<UpsertPushTokenMutation>;
-export type UpsertPushTokenMutationOptions = Apollo.BaseMutationOptions<UpsertPushTokenMutation, UpsertPushTokenMutationVariables>;
+export type UpsertPushTokenMutationOptions = Apollo.BaseMutationOptions<
+  UpsertPushTokenMutation,
+  UpsertPushTokenMutationVariables
+>;

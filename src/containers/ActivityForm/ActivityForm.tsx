@@ -86,6 +86,7 @@ export const ActivityForm = () => {
     pointsType: PointsType.Const,
     category: ActivityCategory.Neutral,
     points: undefined,
+    isWithDescription: false,
     ...existingActivity
   });
   const [rangeMeta, setRangeMeta] = useState<Partial<RangeMeta>>({
@@ -117,6 +118,7 @@ export const ActivityForm = () => {
         pointsType: activity.pointsType!,
         category: activity.category!,
         points: Number(activity.points),
+        isWithDescription: activity.isWithDescription,
         rangeMeta:
           activity.valueType === ActivityType.Range
             ? { from: Number(rangeMetaInput?.from!), to: Number(rangeMetaInput?.to!) }
@@ -163,6 +165,15 @@ export const ActivityForm = () => {
     setActivity((prev) => ({
       ...prev,
       pointsType: isCheck ? PointsType.Linear : PointsType.Const
+    }));
+  }, []);
+
+  const onToggleIsWithDescription: SwitchBaseProps['onChange'] = useCallback((e) => {
+    const isCheck: boolean = e.target.checked;
+
+    setActivity((prev) => ({
+      ...prev,
+      isWithDescription: isCheck
     }));
   }, []);
 
@@ -235,7 +246,7 @@ export const ActivityForm = () => {
       />
 
       <TooltipCheckbox
-        text="Activity with value"
+        text="With value"
         tooltipContent={
           <Typography color="inherit" variant="body2" component="p">
             Value can be the number of push-ups, how good was your mood, or how many swearing words
@@ -302,6 +313,13 @@ export const ActivityForm = () => {
           checked={isLinearPoints}
         />
       )}
+
+      <TooltipCheckbox
+        text="With description"
+        tooltipContent="You can add additional text to the entry. For example, you can describe your day or note what your dream was."
+        onChange={onToggleIsWithDescription}
+        checked={!!activity.isWithDescription}
+      />
 
       <FabButton type="submit" icon="save" />
     </FormContainer>

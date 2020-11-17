@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { Typography, Button } from '@material-ui/core';
-import { getEntryLabel } from '../helpers/getEntryLabel';
 import styled from 'styled-components';
 import { SelectedEntry, ActivityResult } from '../common/types';
+import { EntryLabel } from './EntryLabel';
 
 const ButtonStyled: typeof Button = styled(Button)`
   height: 40px;
@@ -36,7 +36,7 @@ export const EntryPickButton: React.FC<EntryPickButtonProps> = ({
       disableRipple
       disableElevation
     >
-      {getEntryLabel({ entry, activity, isWithEmoji: false })}
+      <EntryLabel entry={entry} activity={activity} isWithEmoji={false} />
     </ButtonStyled>
   );
 };

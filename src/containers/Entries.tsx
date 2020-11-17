@@ -7,7 +7,7 @@ import { DateTime } from 'luxon';
 import { useHistory } from 'react-router-dom';
 import { Loadable } from '../components/Loadable';
 import { useDaysStatisticText } from '../hooks/useDaysStatisticText';
-import { getEntryLabel } from '../helpers/getEntryLabel';
+import { EntryLabel } from '../components/EntryLabel';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { groupTodoistEntries } from '../helpers/groupTodoistEntries';
 import { useActivities } from '../hooks/useActivities';
@@ -32,6 +32,16 @@ const DatePickerButtonWrapper = styled.div`
   right: 20px;
 `;
 
+const ActivitiesLabelsWrapper = styled.span`
+  display: inline-block;
+  margin: 4px 0 0 0;
+  font-size: 14px;
+`;
+
+const EntriesDivider = styled.span`
+  margin-right: 7px;
+`;
+
 export const Entries = () => {
   const history = useHistory();
   const { errorMessage, errorTime, onError } = useApolloError();
@@ -52,7 +62,7 @@ export const Entries = () => {
 
   return (
     <Loadable errorMessage={errorMessage} errorTime={errorTime} isLoading={!entriesByDay}>
-      { entriesByDay?.length === 0 ? (
+      {entriesByDay?.length === 0 ? (
         <EmptyState text="So far no entries..." />
       ) : (
         <InfiniteScroll
@@ -75,17 +85,34 @@ export const Entries = () => {
                 todoistActivityId: todoistActivity?._id
               });
 
-              const activitiesText = entriesWithTodoistGroup
-                .map((entry) =>
-                  getEntryLabel({ entry, activity: getActivityById(entry.activityId) })
-                )
-                .join(', ');
+              const activitiesLabels = entriesWithTodoistGroup.reduce<any[]>(
+                (acc, entry, index, array) => {
+                  const isLast = index === array.length - 1;
+
+                  const dividerOptional = isLast
+                    ? []
+                    : [<EntriesDivider key={entry._id + '-divider'}>,</EntriesDivider>];
+
+                  return [
+                    ...acc,
+                    <EntryLabel
+                      key={entry._id}
+                      entry={entry}
+                      activity={getActivityById(entry.activityId)}
+                    />,
+                    ...dividerOptional
+                  ];
+                },
+                []
+              );
 
               return (
                 <ListItem key={day.date} onClick={() => onEntryFormOpen(day.date)} button>
                   <ListItemText
                     primary={DateTime.fromISO(day.date).toLocaleString(DateTime.DATE_HUGE)}
-                    secondary={activitiesText}
+                    secondary={
+                      <ActivitiesLabelsWrapper>{activitiesLabels}</ActivitiesLabelsWrapper>
+                    }
                   />
                   <PointsText primary={day.points} />
                 </ListItem>

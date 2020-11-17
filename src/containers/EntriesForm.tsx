@@ -21,12 +21,12 @@ import { Card, CardContent, Typography } from '@material-ui/core';
 import { useParams, useHistory } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { CardModal } from '../components/CardModal';
-import { ActivityResult, SelectedEntry, EntriesResult } from '../common/types';
+import { ActivityResult, SelectedEntry, EntriesResult, EntryResult } from '../common/types';
 import { EntryPickButton } from '../components/EntryPickButton';
 import { useActivities } from '../hooks/useActivities';
 import { DateTime } from 'luxon';
 import { useDeviceDetect } from '../hooks/useDeviceDetect';
-import { EntryValueModalContent } from '../components/EntryValueModalContent/EntryValueModalContent';
+import { EntryValueModalContent } from '../components/EntryValueModalContent';
 import { isSwipeHandlersEnabledVar } from '../reactiveState';
 import { isToday } from '../helpers/date';
 import { FabButton } from '../components/FabButton';
@@ -47,16 +47,17 @@ const DateTitleWrapper = styled.div<{ isCenter: boolean }>`
       : ''}
 `;
 
+const showDelay = 300;
+
 export const EntriesForm = () => {
   const { isMobile } = useDeviceDetect();
   const [modalEntry, setModalEntry] = useState<SelectedEntry | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const showDelay = 300;
 
   const closeModal = useCallback(() => {
     isSwipeHandlersEnabledVar(true);
     setIsModalOpen(false);
-    setTimeout(() => setModalEntry(null), showDelay);
+    setTimeout(() => setModalEntry(null), showDelay + 200);
   }, []);
 
   const openModal = useCallback((entry: SelectedEntry) => {
@@ -87,17 +88,7 @@ export const EntriesForm = () => {
 
   useEffect(() => {
     if (!_.isEmpty(entriesByDay)) {
-      const isPush = history.location.state?.isPush;
-
-      setSelectedEntries((prev) => {
-        // if it's push data can be updated
-        if (isPush) return entriesByDay!;
-
-        // set data for the first time
-        if (_.isEmpty(prev)) return entriesByDay!;
-
-        return prev;
-      });
+      setSelectedEntries(entriesByDay!);
     }
   }, [entriesByDay, history]);
 
@@ -131,14 +122,14 @@ export const EntriesForm = () => {
   const [updateEntryMutation] = useUpdateEntryMutation(mutationOptions);
 
   const createEntry = useCallback(
-    async (activityId: string, value?: Entry['value']) => {
+    async (activityId: string, data = {}) => {
       if (!_.isEmpty(getEntriesByActivityId(activityId))) return;
 
       const entry: SelectedEntry = {
         _id: new ObjectId().toString(),
         activityId,
         completedAt: getCompletedAt(),
-        value
+        ...data
       };
 
       setSelectedEntries((prev) => [...prev, entry]);
@@ -177,18 +168,18 @@ export const EntriesForm = () => {
 
   const selectEntry = useCallback(
     async (activity: ActivityResult) => {
-      switch (activity.valueType) {
-        case ActivityType.Range:
-        case ActivityType.Value: {
-          return openModal({
-            _id: new ObjectId().toString(),
-            completedAt: getCompletedAt(),
-            activityId: activity._id
-          });
-        }
-        default: {
-          await createEntry(activity._id);
-        }
+      if (
+        activity.valueType === ActivityType.Range ||
+        activity.valueType === ActivityType.Value ||
+        activity.isWithDescription
+      ) {
+        return openModal({
+          _id: new ObjectId().toString(),
+          completedAt: getCompletedAt(),
+          activityId: activity._id
+        });
+      } else {
+        return createEntry(activity._id);
       }
     },
     [createEntry, openModal, getCompletedAt]
@@ -199,15 +190,15 @@ export const EntriesForm = () => {
       const activity = getActivityById(entry.activityId);
       if (!activity) return;
 
-      switch (activity.valueType) {
-        case ActivityType.Todoist:
-        case ActivityType.Range:
-        case ActivityType.Value: {
-          return openModal(entry);
-        }
-        default: {
-          return deleteEntry(entry._id);
-        }
+      if (
+        activity.valueType === ActivityType.Range ||
+        activity.valueType === ActivityType.Value ||
+        activity.valueType === ActivityType.Todoist ||
+        activity.isWithDescription
+      ) {
+        return openModal(entry);
+      } else {
+        return deleteEntry(entry._id);
       }
     },
     [deleteEntry, getActivityById, openModal]
@@ -220,8 +211,8 @@ export const EntriesForm = () => {
     [unselectEntry, selectEntry]
   );
 
-  const onValueSave = useCallback(
-    async (value: number) => {
+  const upsertEntry = useCallback(
+    async (data: Partial<EntryResult>) => {
       if (!modalEntry) return;
 
       const existingEntry = getEntryById(modalEntry._id);
@@ -229,8 +220,8 @@ export const EntriesForm = () => {
       closeModal();
 
       return existingEntry
-        ? updateEntry(existingEntry._id, { value })
-        : createEntry(modalEntry.activityId, value);
+        ? updateEntry(existingEntry._id, data)
+        : createEntry(modalEntry.activityId, data);
     },
     [updateEntry, closeModal, getEntryById, createEntry, modalEntry]
   );
@@ -272,8 +263,8 @@ export const EntriesForm = () => {
       <CardModal isShow={isModalOpen} onClose={closeModal} showDelay={showDelay}>
         <EntryValueModalContent
           onDelete={onDeleteFromModal}
-          onSave={onValueSave}
-          value={modalEntry?.value}
+          onSave={upsertEntry}
+          entry={modalEntry!}
           activity={modalActivity!}
         />
       </CardModal>
