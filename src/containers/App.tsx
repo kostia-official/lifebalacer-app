@@ -13,7 +13,7 @@ import { ActivityForm } from './ActivityForm/ActivityForm';
 import { Activities } from './Activities';
 import { Entries } from './Entries';
 import { EntriesForm } from './EntriesForm/EntriesForm';
-import { Calendar } from './Calendar';
+import { Calendar } from './Calendar/Calendar';
 import { TodoistAuth } from './TodoistAuth';
 import { Reminders } from './Reminders';
 import { isSwipeHandlersEnabledVar } from '../reactiveState';

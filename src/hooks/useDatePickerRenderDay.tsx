@@ -3,6 +3,8 @@ import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { useGetCalendarDaysQuery } from '../generated/apollo';
 import { DateTime } from 'luxon';
 import { ApolloError } from '@apollo/client/errors';
+import { DayColors } from '../common/colors';
+import styled from 'styled-components';
 
 export interface UseDatePickerRenderDayProps {
   onError?: (error: ApolloError) => void;
@@ -73,8 +75,8 @@ export const useDatePickerRenderDay = ({
 };
 
 function getColorFromPoints(points: number) {
-  if (points > 300) return 'darkgreen';
-  if (points < -300) return 'darkred';
+  if (points > 300) return DayColors.Productive;
+  if (points < -300) return DayColors.Lazy;
 
-  return '#757500';
+  return DayColors.Regular;
 }

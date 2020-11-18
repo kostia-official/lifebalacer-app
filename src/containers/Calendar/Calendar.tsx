@@ -2,15 +2,20 @@ import React, { useState, useCallback, ChangeEvent } from 'react';
 import { Calendar as MaterialCalendar } from '@material-ui/pickers';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { useDatePickerRenderDay } from '../hooks/useDatePickerRenderDay';
-import { useGetActivitiesQuery } from '../generated/apollo';
-import { useApolloError } from '../hooks/useApolloError';
+import { useDatePickerRenderDay } from '../../hooks/useDatePickerRenderDay';
+import { useGetActivitiesQuery } from '../../generated/apollo';
+import { useApolloError } from '../../hooks/useApolloError';
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
-import { Loadable } from '../components/Loadable';
+import { Loadable } from '../../components/Loadable';
 import { DateTime } from 'luxon';
+import { CalendarLegends } from './CalendarLegends';
 
 const CalendarWrapper = styled.div`
   overflow: hidden;
+`;
+
+const CalendarLegendsWrapper = styled.div`
+  margin-top: 20px;
 `;
 
 const FormControlWrapper = styled(FormControl)`
@@ -68,6 +73,10 @@ export const Calendar = () => {
           }}
           renderDay={renderDay}
         />
+
+        <CalendarLegendsWrapper>
+          <CalendarLegends />
+        </CalendarLegendsWrapper>
       </CalendarWrapper>
     </Loadable>
   );
