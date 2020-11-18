@@ -100,9 +100,9 @@ export const Entries = () => {
                     <EntryLabel
                       key={entry._id}
                       entry={entry}
-                      activity={getActivityById(entry.activityId)}
-                    />,
-                    ...dividerOptional
+                      activity={getActivityById(entry.activityId)!}
+                    />
+                    // ...dividerOptional
                   ];
                 },
                 []
