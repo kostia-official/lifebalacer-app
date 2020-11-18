@@ -9,7 +9,9 @@ export const ThemeProvider: React.FC = (props) => {
     palette: {
       type: 'dark',
       primary: teal,
-      secondary: teal
+      secondary: {
+        main: '#FF8385'
+      }
     }
   });
 

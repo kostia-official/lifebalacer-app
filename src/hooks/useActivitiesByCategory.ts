@@ -8,7 +8,7 @@ export interface HookParams {
   entries?: EntryResult[];
 }
 
-export const TODOIST_CATEGORY = 'Todoist items';
+export const TODOIST_CATEGORY = 'Todoist tasks';
 
 export const ActivityCategoryOrder: {
   [key: string]: number;

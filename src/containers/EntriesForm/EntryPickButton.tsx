@@ -1,8 +1,9 @@
 import React, { useCallback } from 'react';
-import { Typography, Button } from '@material-ui/core';
+import { Typography, Button, PropTypes } from '@material-ui/core';
 import styled from 'styled-components';
 import { SelectedEntry, ActivityResult } from '../../common/types';
 import { EntryLabel } from '../../components/EntryLabel';
+import { ActivityCategory, Activity } from '../../generated/apollo';
 
 const ButtonStyled: typeof Button = styled(Button)`
   height: 40px;
@@ -26,10 +27,21 @@ export const EntryPickButton: React.FC<EntryPickButtonProps> = ({
     toggleSelection(activity, entry);
   }, [activity, entry, toggleSelection]);
 
+  const getButtonColor = useCallback((category: Activity['category']): PropTypes.Color => {
+    switch (category) {
+      case ActivityCategory.Negative:
+        return 'secondary';
+      case ActivityCategory.Positive:
+        return 'primary';
+      default:
+        return 'default';
+    }
+  }, []);
+
   return (
     <ButtonStyled
       variant={isSelected ? 'contained' : 'outlined'}
-      color="primary"
+      color={getButtonColor(activity.category)}
       size="small"
       onClick={onClick}
       startIcon={<Typography variant="h5">{activity.emoji}</Typography>}
