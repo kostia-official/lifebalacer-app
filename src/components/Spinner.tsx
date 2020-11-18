@@ -11,7 +11,7 @@ const Container = styled.div`
 export function Spinner() {
   return (
     <Container>
-      <CircularProgress color="secondary" disableShrink />
+      <CircularProgress color="primary" disableShrink />
     </Container>
   );
 }

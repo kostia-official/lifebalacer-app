@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { DayColors } from '../../common/colors';
+import { ProductivityColors } from '../../common/colors';
 import { Typography } from '@material-ui/core';
 
 const Wrapper = styled.div`
@@ -13,7 +13,7 @@ const LegendWrapper = styled.div`
   align-items: center;
 `;
 
-const DayCircle = styled.div<{ color: DayColors }>`
+const DayCircle = styled.div<{ color: string }>`
   display: inline-block;
 
   border: 2px solid ${(props) => props.color};
@@ -32,7 +32,7 @@ const Description = styled(Typography)`
 export const CalendarLegends = () => {
   return (
     <Wrapper>
-      {Object.entries(DayColors).map(([name, color]) => (
+      {Object.entries(ProductivityColors).map(([name, color]) => (
         <LegendWrapper key={name}>
           <DayCircle color={color} />
           <Description>{name}</Description>
