@@ -11,7 +11,7 @@ import { useDeviceDetect } from '../hooks/useDeviceDetect';
 import { useSwipeable } from 'react-swipeable';
 import { ActivityForm } from './ActivityForm/ActivityForm';
 import { Activities } from './Activities';
-import { Entries } from './Entries';
+import { EntriesByDay } from './EntriesByDay/EntriesByDay';
 import { EntriesForm } from './EntriesForm/EntriesForm';
 import { Calendar } from './Calendar/Calendar';
 import { TodoistAuth } from './TodoistAuth';
@@ -32,7 +32,7 @@ const pages: IPage[] = [
     name: 'Entries',
     icon: 'receipt_long',
     path: '/',
-    component: Entries
+    component: EntriesByDay
   },
   {
     name: 'Calendar',

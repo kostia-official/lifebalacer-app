@@ -1,21 +1,19 @@
 import React, { useCallback, Fragment } from 'react';
-import { DatePickerButton } from './DatePickerButton';
+import { DatePickerButton } from '../DatePickerButton';
 import styled from 'styled-components';
-import { useApolloError } from '../hooks/useApolloError';
+import { useApolloError } from '../../hooks/useApolloError';
 import { List, ListItem, ListItemText, ListSubheader } from '@material-ui/core';
 import { DateTime } from 'luxon';
 import { useHistory } from 'react-router-dom';
-import { Loadable } from '../components/Loadable';
-import { useDaysStatisticText } from '../hooks/useDaysStatisticText';
-import { EntryLabel } from '../components/EntryLabel';
+import { Loadable } from '../../components/Loadable';
+import { useDaysStatisticText } from '../../hooks/useDaysStatisticText';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { groupTodoistEntries } from '../helpers/groupTodoistEntries';
-import { useActivities } from '../hooks/useActivities';
-import { FabButton } from '../components/FabButton';
-import { usePushTokenSave } from '../hooks/usePushTokenSave';
-import { useInfiniteEntriesByDay } from '../hooks/useInfiniteEntriesByDay';
-import { EmptyState } from '../components/EmptyState';
-import _ from 'lodash';
+import { useActivities } from '../../hooks/useActivities';
+import { FabButton } from '../../components/FabButton';
+import { usePushTokenSave } from '../../hooks/usePushTokenSave';
+import { useInfiniteEntriesByDay } from '../../hooks/useInfiniteEntriesByDay';
+import { EmptyState } from '../../components/EmptyState';
+import { EntriesLabels } from './EntriesLabels';
 
 const StyledList = styled(List)`
   background-color: ${({ theme }) => theme.palette.background.paper};
@@ -33,20 +31,14 @@ const DatePickerButtonWrapper = styled.div`
   right: 20px;
 `;
 
-const ActivitiesLabelsWrapper = styled.span`
-  display: inline-block;
-  margin: 4px 0 0 0;
-  font-size: 14px;
-`;
-
-export const Entries = () => {
+export const EntriesByDay = () => {
   const history = useHistory();
   const { errorMessage, errorTime, onError } = useApolloError();
 
   usePushTokenSave({ onError });
 
   const { statisticText } = useDaysStatisticText({ onError });
-  const { getActivityById, todoistActivity, activities } = useActivities({ onError });
+  const { activities } = useActivities({ onError });
 
   const { entriesByDay, isHasMore, loadMore } = useInfiniteEntriesByDay({ onError });
 
@@ -79,34 +71,11 @@ export const Entries = () => {
             }
           >
             {entriesByDay?.map((day) => {
-              const entries = _.orderBy(day.entries, ['completedAt'], ['asc']);
-
-              const { entriesWithTodoistGroup } = groupTodoistEntries({
-                entries,
-                todoistActivityId: todoistActivity?._id
-              });
-
-              const activitiesLabels = entriesWithTodoistGroup.map((entry, index, array) => {
-                const isLast = index === array.length - 1;
-                const postfix = isLast ? undefined : ', \u00A0';
-
-                return (
-                  <EntryLabel
-                    key={entry._id}
-                    entry={entry}
-                    activity={getActivityById(entry.activityId)}
-                    postfix={postfix}
-                  />
-                );
-              });
-
               return (
                 <ListItem key={day.date} onClick={() => onEntryFormOpen(day.date)} button>
                   <ListItemText
                     primary={DateTime.fromISO(day.date).toLocaleString(DateTime.DATE_HUGE)}
-                    secondary={
-                      <ActivitiesLabelsWrapper>{activitiesLabels}</ActivitiesLabelsWrapper>
-                    }
+                    secondary={<EntriesLabels entries={day.entries} />}
                   />
                   <PointsText primary={day.points} />
                 </ListItem>
@@ -119,6 +88,7 @@ export const Entries = () => {
       <DatePickerButtonWrapper>
         <DatePickerButton onChange={onEntryFormOpen} />
       </DatePickerButtonWrapper>
+
       <FabButton onClick={() => onEntryFormOpen()} />
     </Loadable>
   );

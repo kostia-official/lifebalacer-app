@@ -9,7 +9,7 @@ export interface GetEntryLabelProps {
   activity?: Pick<Activity, 'name' | 'emoji' | 'valueType' | 'isWithDescription' | 'isWidget'>;
   entry?: Pick<Entry, 'description' | 'value'>;
   isWithEmoji?: boolean;
-  postfix?: string;
+  isAddComa?: boolean;
 }
 
 const Label = styled.span`
@@ -26,7 +26,7 @@ export const EntryLabel = ({
   entry,
   activity,
   isWithEmoji = true,
-  postfix
+  isAddComa = false
 }: GetEntryLabelProps) => {
   const name =
     activity?.isWidget && entry?.description
@@ -45,7 +45,7 @@ export const EntryLabel = ({
     <Fragment>
       <Label>{prefix + name + value}</Label>
       {isWithDescription && <DescriptionIcon icon={commentIcon} />}
-      {postfix && <span>{postfix}</span>}
+      {isAddComa && <span>, </span>}
     </Fragment>
   );
 };
