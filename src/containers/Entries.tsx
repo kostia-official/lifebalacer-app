@@ -39,10 +39,6 @@ const ActivitiesLabelsWrapper = styled.span`
   font-size: 14px;
 `;
 
-const EntriesDivider = styled.span`
-  margin-right: 7px;
-`;
-
 export const Entries = () => {
   const history = useHistory();
   const { errorMessage, errorTime, onError } = useApolloError();
@@ -90,26 +86,19 @@ export const Entries = () => {
                 todoistActivityId: todoistActivity?._id
               });
 
-              const activitiesLabels = entriesWithTodoistGroup.reduce<any[]>(
-                (acc, entry, index, array) => {
-                  const isLast = index === array.length - 1;
+              const activitiesLabels = entriesWithTodoistGroup.map((entry, index, array) => {
+                const isLast = index === array.length - 1;
+                const postfix = isLast ? undefined : ', \u00A0';
 
-                  const dividerOptional = isLast
-                    ? []
-                    : [<EntriesDivider key={entry._id + '-divider'}>,</EntriesDivider>];
-
-                  return [
-                    ...acc,
-                    <EntryLabel
-                      key={entry._id}
-                      entry={entry}
-                      activity={getActivityById(entry.activityId)}
-                    />,
-                    ...dividerOptional
-                  ];
-                },
-                []
-              );
+                return (
+                  <EntryLabel
+                    key={entry._id}
+                    entry={entry}
+                    activity={getActivityById(entry.activityId)}
+                    postfix={postfix}
+                  />
+                );
+              });
 
               return (
                 <ListItem key={day.date} onClick={() => onEntryFormOpen(day.date)} button>

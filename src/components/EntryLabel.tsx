@@ -9,6 +9,7 @@ export interface GetEntryLabelProps {
   activity?: Pick<Activity, 'name' | 'emoji' | 'valueType' | 'isWithDescription' | 'isWidget'>;
   entry?: Pick<Entry, 'description' | 'value'>;
   isWithEmoji?: boolean;
+  postfix?: string;
 }
 
 const Label = styled.span`
@@ -21,7 +22,12 @@ const DescriptionIcon = styled(FontAwesomeIcon)`
   font-size: 14px;
 `;
 
-export const EntryLabel = ({ entry, activity, isWithEmoji = true }: GetEntryLabelProps) => {
+export const EntryLabel = ({
+  entry,
+  activity,
+  isWithEmoji = true,
+  postfix
+}: GetEntryLabelProps) => {
   const name =
     activity?.isWidget && entry?.description
       ? _.truncate(entry.description, {
@@ -39,6 +45,7 @@ export const EntryLabel = ({ entry, activity, isWithEmoji = true }: GetEntryLabe
     <Fragment>
       <Label>{prefix + name + value}</Label>
       {isWithDescription && <DescriptionIcon icon={commentIcon} />}
+      {postfix && <span>{postfix}</span>}
     </Fragment>
   );
 };

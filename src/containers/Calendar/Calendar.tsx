@@ -31,7 +31,7 @@ const FormControlStyled = styled(FormControl)`
 export const Calendar = () => {
   const history = useHistory();
   const { errorMessage, errorTime, onError } = useApolloError();
-  const [selectedActivityId, setSelectedActivityId] = useState<string>();
+  const [selectedActivityId, setSelectedActivityId] = useState<string>('');
 
   const onActivitySelect = useCallback((e: ChangeEvent<{ name?: string; value: any }>) => {
     setSelectedActivityId(e.target?.value);
@@ -53,9 +53,9 @@ export const Calendar = () => {
       <CalendarWrapper>
         <FormControlWrapper>
           <FormControlStyled margin="dense">
-            <InputLabel>Activity</InputLabel>
-            <Select value={selectedActivityId ?? ' '} onChange={onActivitySelect} displayEmpty>
-              <MenuItem value=" ">All</MenuItem>
+            <InputLabel shrink>Activity</InputLabel>
+            <Select value={selectedActivityId} onChange={onActivitySelect} displayEmpty>
+              <MenuItem value="">All</MenuItem>
               {activities?.map((activity) => (
                 <MenuItem key={activity._id} value={activity._id}>
                   {activity.emoji} {activity.name}

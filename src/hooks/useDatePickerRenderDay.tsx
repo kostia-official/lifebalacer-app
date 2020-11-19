@@ -14,6 +14,22 @@ export interface DaysPayload {
   [key: string]: { points: number };
 }
 
+const dayComponentWrapper = (dayComponent: JSX.Element, color = 'transparent') => {
+  const backgroundColorProp = dayComponent.props.current
+    ? { backgroundColor: 'darkslategrey' }
+    : {};
+
+  return React.cloneElement(dayComponent, {
+    style: {
+      border: `2px solid ${color}`,
+      borderRadius: '50%',
+      marginTop: '1px',
+      marginBottom: '1px',
+      ...backgroundColorProp
+    }
+  });
+};
+
 export const useDatePickerRenderDay = ({
   onError,
   activityId
@@ -23,8 +39,7 @@ export const useDatePickerRenderDay = ({
     variables: {
       dateAfter: DateTime.local().endOf('day').toISO(),
       dateBefore: DateTime.fromMillis(0).toISO() // TODO: Add calendar pagination
-    },
-    fetchPolicy: 'cache-and-network'
+    }
   });
 
   const daysPayload: DaysPayload = useMemo(
@@ -51,23 +66,16 @@ export const useDatePickerRenderDay = ({
       dayInCurrentMonth: boolean,
       dayComponent: JSX.Element
     ) => {
-      if (!day) return dayComponent;
+      if (!day) return dayComponentWrapper(dayComponent);
 
       const calendarDate = day.toISODate();
       const dayPayload = daysPayload[calendarDate];
 
-      if (!dayPayload) return dayComponent;
+      if (!dayPayload) return dayComponentWrapper(dayComponent);
 
       const color = getColorFromPoints(dayPayload.points);
 
-      return React.cloneElement(dayComponent, {
-        style: {
-          border: `2px solid ${color}`,
-          borderRadius: '50%',
-          marginTop: '1px',
-          marginBottom: '1px'
-        }
-      });
+      return dayComponentWrapper(dayComponent, color);
     },
     [daysPayload]
   );
