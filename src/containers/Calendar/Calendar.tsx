@@ -3,12 +3,12 @@ import { Calendar as MaterialCalendar } from '@material-ui/pickers';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { useDatePickerRenderDay } from '../../hooks/useDatePickerRenderDay';
-import { useGetActivitiesQuery } from '../../generated/apollo';
 import { useApolloError } from '../../hooks/useApolloError';
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import { Loadable } from '../../components/Loadable';
 import { DateTime } from 'luxon';
 import { CalendarLegends } from './CalendarLegends';
+import { useActivities } from '../../hooks/useActivities';
 
 const CalendarWrapper = styled.div`
   overflow: hidden;
@@ -37,7 +37,7 @@ export const Calendar = () => {
     setSelectedActivityId(e.target?.value);
   }, []);
 
-  const { data: activityData } = useGetActivitiesQuery({ onError });
+  const { activities } = useActivities({ onError });
 
   const { renderDay, daysData } = useDatePickerRenderDay({
     onError,
@@ -48,7 +48,7 @@ export const Calendar = () => {
     <Loadable
       errorMessage={errorMessage}
       errorTime={errorTime}
-      isLoading={!activityData || !daysData}
+      isLoading={!activities || !daysData}
     >
       <CalendarWrapper>
         <FormControlWrapper>
@@ -56,7 +56,7 @@ export const Calendar = () => {
             <InputLabel>Activity</InputLabel>
             <Select value={selectedActivityId ?? ' '} onChange={onActivitySelect} displayEmpty>
               <MenuItem value=" ">All</MenuItem>
-              {activityData?.activities?.map((activity) => (
+              {activities?.map((activity) => (
                 <MenuItem key={activity._id} value={activity._id}>
                   {activity.emoji} {activity.name}
                 </MenuItem>

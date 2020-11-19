@@ -69,11 +69,12 @@ export const EntriesForm = () => {
   const history = useHistory<{ isPush: boolean }>();
 
   const params = useParams<{ date: string }>();
-  const dayDate = params.date || DateTime.local().toISODate();
+  const dayDate = params.date || DateTime.local().toISO();
+  const endOfDay = DateTime.fromISO(dayDate).set({ hour: 23 }).toISO();
 
   const getCompletedAt = useCallback(
-    () => (isToday(DateTime.fromISO(dayDate)) ? DateTime.local().toISO() : dayDate),
-    [dayDate]
+    () => (isToday(DateTime.fromISO(dayDate)) ? DateTime.local().toISO() : endOfDay),
+    [dayDate, endOfDay]
   );
 
   const { errorMessage, errorTime, onError } = useApolloError();

@@ -67,6 +67,7 @@ export const Activities = () => {
           {
             title: 'Points',
             field: 'points',
+            width: 30,
             defaultSort: 'desc'
           }
         ]}

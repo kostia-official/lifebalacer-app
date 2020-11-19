@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Entry, Activity, ActivityType } from '../generated/apollo';
+import { Entry, Activity } from '../generated/apollo';
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,8 +11,13 @@ export interface GetEntryLabelProps {
   isWithEmoji?: boolean;
 }
 
+const Label = styled.span`
+  white-space: nowrap;
+`;
+
 const DescriptionIcon = styled(FontAwesomeIcon)`
-  margin-left: 5px;
+  margin-left: 4px;
+  margin-right: 1px;
   font-size: 14px;
 `;
 
@@ -32,7 +37,7 @@ export const EntryLabel = ({ entry, activity, isWithEmoji = true }: GetEntryLabe
 
   return (
     <Fragment>
-      <span>{prefix + name + value}</span>
+      <Label>{prefix + name + value}</Label>
       {isWithDescription && <DescriptionIcon icon={commentIcon} />}
     </Fragment>
   );

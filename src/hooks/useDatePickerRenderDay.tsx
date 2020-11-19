@@ -3,7 +3,6 @@ import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { useGetCalendarDaysQuery } from '../generated/apollo';
 import { DateTime } from 'luxon';
 import { ApolloError } from '@apollo/client/errors';
-import { ProductivityColors } from '../common/colors';
 import { getColorFromPoints } from '../helpers/color';
 
 export interface UseDatePickerRenderDayProps {

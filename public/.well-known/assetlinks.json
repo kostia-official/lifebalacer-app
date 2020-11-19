@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.kozzztya.lifebalancer",
+      "sha256_cert_fingerprints": [
+        "78:48:9D:84:95:A9:CC:C8:26:FD:D3:B8:0C:B6:67:FB:DB:0F:46:CD:4D:14:3B:C6:DA:B8:E5:1D:91:02:74:DD"
+      ]
+    }
+  }
+]

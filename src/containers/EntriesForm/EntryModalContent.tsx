@@ -97,6 +97,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
 
   const isWithValue = [ActivityType.Value, ActivityType.Todoist].includes(activity.valueType);
   const isWithDescription = activity.isWithDescription || entry.description;
+  const isFocusDescription = activity.valueType === ActivityType.Simple;
   const valueLabel = activity.valueLabel || 'Value';
 
   if (!activity) return <Fragment />;
@@ -108,7 +109,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
           <TextField
             required
             fullWidth
-            autoFocus={true}
+            autoFocus
             label={valueLabel}
             type="text"
             value={value || ''}
@@ -145,15 +146,16 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
             value={description}
             onChange={onDescriptionChange}
             multiline
+            autoFocus={isFocusDescription}
           />
         )}
       </CardContentStyled>
 
       <CardActionsStyled>
+        <Button onClick={onDelete}>Delete</Button>
         <Button type="submit" variant="contained" color="primary">
           Save
         </Button>
-        <Button onClick={onDelete}>Delete</Button>
       </CardActionsStyled>
     </form>
   );

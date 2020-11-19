@@ -43,10 +43,15 @@ const FormContainer = styled.form`
 const NameContainer = styled.div`
   display: flex;
   align-items: center;
+  margin-top: 4px;
+`;
+
+const EmojiLabel = styled(InputLabel)`
+  white-space: nowrap;
 `;
 
 const EmojiInput = styled(Input)`
-  width: 32px;
+  width: 40px;
   margin-right: 10px;
 
   input {
@@ -191,14 +196,13 @@ export const ActivityForm = () => {
 
       <NameContainer>
         <FormControl>
-          <InputLabel>Emoji</InputLabel>
+          <EmojiLabel shrink required>
+            Emoji
+          </EmojiLabel>
           <EmojiInput
             required
             value={activity.emoji}
             onChange={updateActivityField('emoji')}
-            inputProps={{
-              shrink: 'true'
-            }}
             margin="dense"
             onFocus={selectAllOnFocus}
             onSelect={preventMobileSelectionMenu}
@@ -206,7 +210,9 @@ export const ActivityForm = () => {
         </FormControl>
 
         <FormControl fullWidth>
-          <InputLabel>Name *</InputLabel>
+          <InputLabel shrink required>
+            Name
+          </InputLabel>
           <Input
             required
             value={activity.name}
@@ -219,7 +225,7 @@ export const ActivityForm = () => {
         </FormControl>
       </NameContainer>
 
-      <FormControl margin="dense" required>
+      <FormControl margin="normal" required>
         <InputLabel>Category</InputLabel>
         <Select value={activity.category} onChange={updateActivityField('category')} displayEmpty>
           {Object.values(ActivityCategory).map((category) => (
@@ -236,7 +242,6 @@ export const ActivityForm = () => {
         label="Points"
         type="text"
         inputProps={{
-          shrink: 'true',
           inputMode: 'numeric'
         }}
         value={activity.points ?? 0}
@@ -276,34 +281,38 @@ export const ActivityForm = () => {
       {activity.valueType === ActivityType.Range && (
         <FormControl margin="dense">
           <FormLabel>Range</FormLabel>
-          <TextField
-            required
-            type="text"
-            margin="dense"
-            inputProps={{
-              shrink: 'true',
-              inputMode: 'numeric'
-            }}
-            label="From"
-            value={rangeMeta.from ?? ''}
-            onChange={updateRangeMetaField('from')}
-            onFocus={selectAllOnFocus}
-            onSelect={preventMobileSelectionMenu}
-          />
-          <TextField
-            required
-            margin="dense"
-            label="To"
-            type="text"
-            inputProps={{
-              shrink: 'true',
-              inputMode: 'numeric'
-            }}
-            value={rangeMeta.to ?? ''}
-            onChange={updateRangeMetaField('to')}
-            onFocus={selectAllOnFocus}
-            onSelect={preventMobileSelectionMenu}
-          />
+
+          <FormControl margin="normal">
+            <InputLabel shrink required>
+              From
+            </InputLabel>
+            <Input
+              required
+              type="text"
+              margin="dense"
+              inputProps={{ inputMode: 'numeric' }}
+              value={rangeMeta.from ?? ''}
+              onChange={updateRangeMetaField('from')}
+              onFocus={selectAllOnFocus}
+              onSelect={preventMobileSelectionMenu}
+            />
+          </FormControl>
+
+          <FormControl margin="dense">
+            <InputLabel shrink required>
+              To
+            </InputLabel>
+            <Input
+              required
+              margin="dense"
+              type="text"
+              inputProps={{ inputMode: 'numeric' }}
+              value={rangeMeta.to ?? ''}
+              onChange={updateRangeMetaField('to')}
+              onFocus={selectAllOnFocus}
+              onSelect={preventMobileSelectionMenu}
+            />
+          </FormControl>
         </FormControl>
       )}
 

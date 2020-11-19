@@ -15,6 +15,7 @@ import { FabButton } from '../components/FabButton';
 import { usePushTokenSave } from '../hooks/usePushTokenSave';
 import { useInfiniteEntriesByDay } from '../hooks/useInfiniteEntriesByDay';
 import { EmptyState } from '../components/EmptyState';
+import _ from 'lodash';
 
 const StyledList = styled(List)`
   background-color: ${({ theme }) => theme.palette.background.paper};
@@ -82,8 +83,10 @@ export const Entries = () => {
             }
           >
             {entriesByDay?.map((day) => {
+              const entries = _.orderBy(day.entries, ['completedAt'], ['asc']);
+
               const { entriesWithTodoistGroup } = groupTodoistEntries({
-                entries: day.entries,
+                entries,
                 todoistActivityId: todoistActivity?._id
               });
 
