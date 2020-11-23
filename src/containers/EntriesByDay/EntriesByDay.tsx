@@ -1,4 +1,4 @@
-import React, { useCallback, Fragment } from 'react';
+import React, { useCallback, Fragment, useEffect } from 'react';
 import { DatePickerButton } from './DatePickerButton';
 import styled from 'styled-components';
 import { useApolloError } from '../../hooks/useApolloError';
@@ -14,8 +14,7 @@ import { usePushTokenSave } from '../../hooks/usePushTokenSave';
 import { useInfiniteEntriesByDay } from '../../hooks/useInfiniteEntriesByDay';
 import { EmptyState } from '../../components/EmptyState';
 import { EntriesLabels } from './EntriesLabels';
-import { useOnEntryUpdated } from '../../hooks/useOnEntryUpdated';
-import { authService } from '../../services/auth0';
+import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 
 const StyledList = styled(List)`
   background-color: ${({ theme }) => theme.palette.background.paper};
@@ -40,7 +39,8 @@ export const EntriesByDay = () => {
   usePushTokenSave({ onError });
 
   const { statisticText, refetch: refetchStatistic } = useDaysStatisticText({ onError });
-  const { activities } = useActivities({ onError });
+  const { activities, todoistActivity, getActivityById } = useActivities({ onError });
+
   const {
     entriesByDay,
     isHasMore,
@@ -48,15 +48,7 @@ export const EntriesByDay = () => {
     refetch: refetchEntriesByDay
   } = useInfiniteEntriesByDay({ onError });
 
-  const onEntryUpdated = useCallback(() => {
-    refetchEntriesByDay().then();
-    refetchStatistic().then();
-  }, [refetchEntriesByDay, refetchStatistic]);
-
-  useOnEntryUpdated({
-    userId: authService.getUserId()!,
-    onEvent: onEntryUpdated
-  });
+  useOnEntryUpdate([refetchEntriesByDay, refetchStatistic]);
 
   const onEntryFormOpen = useCallback(
     (date = new Date()) => {
@@ -91,7 +83,13 @@ export const EntriesByDay = () => {
                 <ListItem key={day.date} onClick={() => onEntryFormOpen(day.date)} button>
                   <ListItemText
                     primary={DateTime.fromISO(day.date).toLocaleString(DateTime.DATE_HUGE)}
-                    secondary={<EntriesLabels entries={day.entries} />}
+                    secondary={
+                      <EntriesLabels
+                        entries={day.entries}
+                        todoistActivity={todoistActivity}
+                        getActivityById={getActivityById}
+                      />
+                    }
                   />
                   <PointsText primary={day.points} />
                 </ListItem>

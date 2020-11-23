@@ -2,12 +2,13 @@ import React, { useMemo } from 'react';
 import _ from 'lodash';
 import { groupTodoistEntries } from '../../helpers/groupTodoistEntries';
 import { EntryLabel } from '../../components/EntryLabel';
-import { EntryResult } from '../../common/types';
-import { useActivities } from '../../hooks/useActivities';
+import { EntryResult, ActivityResult } from '../../common/types';
 import styled from 'styled-components';
 
 export interface EntriesLabelsProps {
   entries: EntryResult[];
+  todoistActivity?: ActivityResult;
+  getActivityById: (id: string) => ActivityResult | undefined;
 }
 
 const Wrapper = styled.span`
@@ -21,9 +22,11 @@ const EntryLabelWrapper = styled.span`
   margin: 2px 5px 2px 0;
 `;
 
-export const EntriesLabels: React.FC<EntriesLabelsProps> = ({ entries }) => {
-  const { getActivityById, todoistActivity } = useActivities();
-
+export const EntriesLabels: React.FC<EntriesLabelsProps> = ({
+  entries,
+  todoistActivity,
+  getActivityById
+}) => {
   const orderedEntries = useMemo(() => {
     return _.orderBy(entries, ['completedAt'], ['asc']);
   }, [entries]);

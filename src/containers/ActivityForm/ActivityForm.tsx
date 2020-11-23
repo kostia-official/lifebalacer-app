@@ -1,4 +1,4 @@
-import React, { useState, useCallback, SyntheticEvent, useEffect } from 'react';
+import React, { useState, useCallback, SyntheticEvent } from 'react';
 import styled from 'styled-components';
 import {
   FormControl,
@@ -25,9 +25,7 @@ import {
 import _ from 'lodash';
 import { useUpdateInput } from '../../hooks/useUpdateInput';
 import { useApolloError } from '../../hooks/useApolloError';
-import { ErrorMessage } from '../../components/ErrorMessage';
-import { useHistory, useParams } from 'react-router-dom';
-import { Spinner } from '../../components/Spinner';
+import { useParams } from 'react-router-dom';
 import { FabButton } from '../../components/FabButton';
 import { ActivityResult } from '../../common/types';
 import { SwitchBaseProps } from '@material-ui/core/internal/SwitchBase';
@@ -35,6 +33,7 @@ import { TooltipCheckbox } from '../../components/TooltipCheckbox';
 import { LinearPointsTooltip } from './LinearPointsTooltip';
 import { useSelectOnInputFocus } from '../../hooks/useSelectOnInputFocus';
 import { PageWrapper } from '../../components/PageWrapper';
+import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
 
 const FormContainer = styled.form`
   display: flex;
@@ -61,15 +60,13 @@ const EmojiInput = styled(Input)`
 `;
 
 export const ActivityForm = () => {
-  const history = useHistory();
   let { _id } = useParams<{ _id: string }>();
   const isEdit = !!_id;
 
   const { errorMessage, onError, errorTime } = useApolloError({ isForceShowError: true });
 
-  const onCompleted = useCallback(() => {
-    history.replace('/activities');
-  }, [history]);
+  const { goBack } = useHistoryNavigation();
+  const onCompleted = goBack('/activities');
 
   const { data } = useGetActivityQuery({ onError, variables: { _id }, skip: !isEdit });
   const existingActivity: Partial<ActivityResult> = isEdit && data?.activity ? data?.activity : {};

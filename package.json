@@ -45,12 +45,14 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-infinite-scroll-component": "^5.1.0",
+    "react-page-visibility": "^6.2.0",
     "react-router-dom": "^5.2.0",
     "react-scroll-restoration": "^1.0.6",
     "react-swipeable": "^5.5.1",
     "remeda": "0.0.22",
     "styled-components": "^5.2.1",
     "subscriptions-transport-ws": "^0.9.18",
+    "use-page-visibility": "^3.0.2",
     "uuid": "^8.3.0"
   },
   "devDependencies": {

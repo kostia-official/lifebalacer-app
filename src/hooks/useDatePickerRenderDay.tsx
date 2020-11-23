@@ -4,6 +4,8 @@ import { useGetCalendarDaysQuery } from '../generated/apollo';
 import { DateTime } from 'luxon';
 import { ApolloError } from '@apollo/client/errors';
 import { getColorFromPoints } from '../helpers/color';
+import { useOnUpdate } from './useOnUpdate';
+import { useOnEntryUpdate } from './useOnEntryUpdate';
 
 export interface UseDatePickerRenderDayProps {
   onError?: (error: ApolloError) => void;
@@ -34,13 +36,15 @@ export const useDatePickerRenderDay = ({
   onError,
   activityId
 }: UseDatePickerRenderDayProps = {}) => {
-  const { data: daysData } = useGetCalendarDaysQuery({
+  const { data: daysData, refetch } = useGetCalendarDaysQuery({
     onError,
     variables: {
       dateAfter: DateTime.local().endOf('day').toISO(),
       dateBefore: DateTime.fromMillis(0).toISO() // TODO: Add calendar pagination
     }
   });
+
+  useOnEntryUpdate([refetch]);
 
   const daysPayload: DaysPayload = useMemo(
     () =>

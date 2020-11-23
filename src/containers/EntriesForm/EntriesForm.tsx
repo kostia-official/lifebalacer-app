@@ -9,7 +9,6 @@ import {
   refetchGetEntriesByDayQuery,
   useGetEntriesByOneDayQuery,
   useUpdateEntryMutation,
-  refetchGetEntriesByOneDayQuery,
   refetchGetDaysStatisticQuery
 } from '../../generated/apollo';
 import { useApolloError } from '../../hooks/useApolloError';
@@ -30,6 +29,8 @@ import { isToday } from '../../helpers/date';
 import { FabButton } from '../../components/FabButton';
 import { useActivitiesByCategory } from '../../hooks/useActivitiesByCategory';
 import { PageWrapper } from '../../components/PageWrapper';
+import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
+import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
@@ -78,11 +79,13 @@ export const EntriesForm = () => {
 
   const { errorMessage, errorTime, onError } = useApolloError();
 
-  const { data: entriesData } = useGetEntriesByOneDayQuery({
+  const { data: entriesData, refetch } = useGetEntriesByOneDayQuery({
     variables: { date: dayDate },
     onError
   });
   const entriesByDay = entriesData?.entriesByOneDay?.entries;
+
+  useOnEntryUpdate([refetch]);
 
   const [selectedEntries, setSelectedEntries] = useState<EntriesResult>(entriesByDay || []);
 
@@ -113,7 +116,6 @@ export const EntriesForm = () => {
     refetchQueries: [
       refetchGetDaysStatisticQuery(),
       refetchGetEntriesByDayQuery(),
-      refetchGetEntriesByOneDayQuery({ date: dayDate }),
       refetchGetBalanceQuery()
     ]
   };
@@ -237,9 +239,8 @@ export const EntriesForm = () => {
     }
   }, [getEntryById, deleteEntry, modalEntry, closeModal]);
 
-  const onDoneClick = useCallback(async () => {
-    history.length > 2 ? history.goBack() : history.replace('/');
-  }, [history]);
+  const { goBack } = useHistoryNavigation();
+  const onDoneClick = goBack('/');
 
   const { activitiesByCategory } = useActivitiesByCategory({
     activities,

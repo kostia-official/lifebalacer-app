@@ -4,9 +4,12 @@ import { useCallback, useMemo } from 'react';
 import { ActivityResult } from '../common/types';
 import * as R from 'remeda';
 import _ from 'lodash';
+import { useOnActivityUpdate } from './useOnActivityUpdate';
 
 export const useActivities = ({ onError }: OnErrorParams = {}) => {
   const { data, ...other } = useGetActivitiesQuery({ onError });
+
+  useOnActivityUpdate([other.refetch]);
 
   const activitiesNormalized = useMemo(() => {
     if (!data?.activities) return {};
@@ -36,5 +39,12 @@ export const useActivities = ({ onError }: OnErrorParams = {}) => {
     [data]
   );
 
-  return { getActivityById, activities, archivedActivities, allActivities: data?.activities, todoistActivity, ...other };
+  return {
+    getActivityById,
+    activities,
+    archivedActivities,
+    allActivities: data?.activities,
+    todoistActivity,
+    ...other
+  };
 };
