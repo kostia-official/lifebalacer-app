@@ -1,5 +1,5 @@
 import { config } from '../common/config';
-import { Auth0Client, IdToken } from "@auth0/auth0-spa-js";
+import { Auth0Client, IdToken } from '@auth0/auth0-spa-js';
 
 export interface Auth0User {
   name: string;
@@ -11,7 +11,7 @@ export interface Auth0User {
 class Auth {
   private auth0: Auth0Client;
 
-  private token: string | null = null;
+  public token: string | null = null;
   private user: Auth0User | null = null;
 
   private getTokenSilentlyPromise: Promise<string> | null = null;
@@ -44,25 +44,36 @@ class Auth {
     }
   }
 
+  getUserId(): string | null {
+    const userJSON = localStorage.getItem('user');
+    const user: IdToken = userJSON ? JSON.parse(userJSON) : null;
+
+    if (!user) return null;
+
+    const userId: string = user[`${config.auth.customClaimNamespace}/user_uuid`];
+
+    return userId;
+  }
+
   // TOOD: Finish and refactor useAuth
   // async updateUser(): Promise<string | null> {
-    // try {
-    //   const claims = await this.getIdTokenClaimsCached();
-    //   const user: Auth0User = {
-    //     ...claims,
-    //
-    //   }
-    //
-    //   localStorage.setItem('user', JSON.stringify(user));
-    //   this.user = user;
-    //
-    //   return user;
-    // } catch (err) {
-    //   this.isAuthError = true;
-    //   this.token = null;
-    //
-    //   return null;
-    // }
+  // try {
+  //   const claims = await this.getIdTokenClaimsCached();
+  //   const user: Auth0User = {
+  //     ...claims,
+  //
+  //   }
+  //
+  //   localStorage.setItem('user', JSON.stringify(user));
+  //   this.user = user;
+  //
+  //   return user;
+  // } catch (err) {
+  //   this.isAuthError = true;
+  //   this.token = null;
+  //
+  //   return null;
+  // }
   // }
 
   async getTokenSilentlyCached(): Promise<string> {

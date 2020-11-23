@@ -122,7 +122,7 @@ export const ActivityForm = () => {
         valueType: activity.valueType!,
         pointsType: activity.pointsType!,
         category: activity.category!,
-        points: Number(activity.points),
+        points: _.isNil(activity.points) ? 0 : Number(activity.points),
         isWithDescription: activity.isWithDescription,
         rangeMeta:
           activity.valueType === ActivityType.Range

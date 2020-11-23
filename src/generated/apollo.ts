@@ -496,7 +496,7 @@ export const GetActivityDocument = gql`
  * });
  */
 export function useGetActivityQuery(
-  baseOptions?: Apollo.QueryHookOptions<GetActivityQuery, GetActivityQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<GetActivityQuery, GetActivityQueryVariables>
 ) {
   return Apollo.useQuery<GetActivityQuery, GetActivityQueryVariables>(
     GetActivityDocument,
@@ -701,7 +701,7 @@ export const GetEntriesByOneDayDocument = gql`
  * });
  */
 export function useGetEntriesByOneDayQuery(
-  baseOptions?: Apollo.QueryHookOptions<GetEntriesByOneDayQuery, GetEntriesByOneDayQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<GetEntriesByOneDayQuery, GetEntriesByOneDayQueryVariables>
 ) {
   return Apollo.useQuery<GetEntriesByOneDayQuery, GetEntriesByOneDayQueryVariables>(
     GetEntriesByOneDayDocument,

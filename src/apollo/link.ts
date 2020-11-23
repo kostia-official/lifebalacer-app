@@ -51,5 +51,4 @@ const httpLink = new HttpLink({
   uri: config.apiUrl
 });
 
-
 export const link = ApolloLink.from([errorLink, retryLink, authLink, httpLink]);

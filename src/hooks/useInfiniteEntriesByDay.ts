@@ -1,12 +1,12 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState } from 'react';
 import _ from 'lodash';
-import { useGetEntriesByDayQuery } from "../generated/apollo";
-import { UseApolloErrorProps } from "./usePushTokenSave";
+import { useGetEntriesByDayQuery } from '../generated/apollo';
+import { UseApolloErrorProps } from './usePushTokenSave';
 
 export const useInfiniteEntriesByDay = ({ onError }: UseApolloErrorProps) => {
   const [isHasMore, setIsHasMore] = useState(true);
 
-  const { data, fetchMore } = useGetEntriesByDayQuery({ onError });
+  const { data, fetchMore, refetch } = useGetEntriesByDayQuery({ onError });
   const days = data?.entriesByDay;
 
   const loadMore = useCallback(() => {
@@ -37,5 +37,5 @@ export const useInfiniteEntriesByDay = ({ onError }: UseApolloErrorProps) => {
     }).then();
   }, [days, fetchMore]);
 
-  return { loadMore, isHasMore, entriesByDay: data?.entriesByDay };
+  return { loadMore, refetch, isHasMore, entriesByDay: data?.entriesByDay };
 };

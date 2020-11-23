@@ -14,6 +14,8 @@ import { usePushTokenSave } from '../../hooks/usePushTokenSave';
 import { useInfiniteEntriesByDay } from '../../hooks/useInfiniteEntriesByDay';
 import { EmptyState } from '../../components/EmptyState';
 import { EntriesLabels } from './EntriesLabels';
+import { useOnEntryUpdated } from '../../hooks/useOnEntryUpdated';
+import { authService } from '../../services/auth0';
 
 const StyledList = styled(List)`
   background-color: ${({ theme }) => theme.palette.background.paper};
@@ -37,10 +39,25 @@ export const EntriesByDay = () => {
 
   usePushTokenSave({ onError });
 
-  const { statisticText } = useDaysStatisticText({ onError });
+  const { statisticText, refetch: refetchStatistic } = useDaysStatisticText({ onError });
   const { activities } = useActivities({ onError });
+  const {
+    entriesByDay,
+    isHasMore,
+    loadMore,
+    refetch: refetchEntriesByDay
+  } = useInfiniteEntriesByDay({ onError });
 
-  const { entriesByDay, isHasMore, loadMore } = useInfiniteEntriesByDay({ onError });
+  const onEntryUpdated = useCallback(() => {
+    console.log('onEvent');
+    refetchEntriesByDay().then();
+    refetchStatistic().then();
+  }, [refetchEntriesByDay, refetchStatistic]);
+
+  useOnEntryUpdated({
+    userId: authService.getUserId()!,
+    onEvent: onEntryUpdated
+  });
 
   const onEntryFormOpen = useCallback(
     (date = new Date()) => {

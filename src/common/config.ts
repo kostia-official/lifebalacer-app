@@ -25,6 +25,9 @@ class Config {
   sentry = {
     dsn: process.env.REACT_APP_SENTRY_DSN
   };
+  ably = {
+    apiKey: process.env.REACT_APP_ABLY_API_KEY!
+  };
 }
 
 export const config = new Config();
