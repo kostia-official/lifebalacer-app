@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useApolloError } from '../hooks/useApolloError';
-import { Loadable } from '../components/Loadable';
+import { PageWrapper } from '../components/PageWrapper';
 import _ from 'lodash';
 import {
   useGetReminderQuery,
@@ -49,7 +49,7 @@ export const Reminders = () => {
   );
 
   return (
-    <Loadable errorMessage={errorMessage} errorTime={errorTime} isLoading={_.isEmpty(data)}>
+    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={_.isEmpty(data)}>
       <LogoContent logo={ReminderLogo} logoStyles={logoStyles} />
 
       <TimePicker
@@ -60,6 +60,6 @@ export const Reminders = () => {
         ampm={false}
         fullWidth
       />
-    </Loadable>
+    </PageWrapper>
   );
 };

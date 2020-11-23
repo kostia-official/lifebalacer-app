@@ -2,7 +2,7 @@ import React, { useState, Fragment } from 'react';
 import { DatePicker as MaterialDatePicker } from '@material-ui/pickers';
 import EventIcon from '@material-ui/icons/Event';
 import { Fab } from '@material-ui/core';
-import { useDatePickerRenderDay } from '../hooks/useDatePickerRenderDay';
+import { useDatePickerRenderDay } from '../../hooks/useDatePickerRenderDay';
 import { DateTime } from 'luxon';
 
 export interface IDatePickerProps {
@@ -18,6 +18,7 @@ export const DatePickerButton: React.FC<IDatePickerProps> = ({ onChange }) => {
       <Fab color="primary" onClick={() => setIsShowDatePicker(true)}>
         <EventIcon />
       </Fab>
+
       <MaterialDatePicker
         open={isShowDatePicker}
         value={DateTime.local()}

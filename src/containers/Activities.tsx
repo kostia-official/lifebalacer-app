@@ -9,7 +9,7 @@ import { Table } from '../components/Table';
 import { useApolloError } from '../hooks/useApolloError';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { Loadable } from '../components/Loadable';
+import { PageWrapper } from '../components/PageWrapper';
 import { Button } from '@material-ui/core';
 import { useTodoist } from '../hooks/useTodoist';
 import { useDeviceDetect } from '../hooks/useDeviceDetect';
@@ -51,7 +51,11 @@ export const Activities = () => {
   }, [history]);
 
   return (
-    <Loadable errorMessage={errorMessage} errorTime={errorTime} isLoading={_.isNil(allActivities)}>
+    <PageWrapper
+      errorMessage={errorMessage}
+      errorTime={errorTime}
+      isLoading={_.isNil(allActivities)}
+    >
       <Table
         title="Activities"
         columns={[
@@ -144,6 +148,6 @@ export const Activities = () => {
       <EmptySpaceUnderFab />
 
       <FabButton onClick={onActivityCreateClick} />
-    </Loadable>
+    </PageWrapper>
   );
 };

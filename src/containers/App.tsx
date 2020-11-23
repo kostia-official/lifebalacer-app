@@ -22,6 +22,8 @@ import { AppUpdateDialog } from './AppUpdateDialog';
 import { About } from './About/About';
 import { PrivacyPolicy } from './About/PrivacyPolicy';
 import { TermsAndConditions } from './About/TermsAndConditions';
+// @ts-ignore
+import ScrollRestoration from 'react-scroll-restoration';
 
 export interface IPage {
   name: string;
@@ -153,6 +155,7 @@ export const App: React.FC = () => {
 
         <PageWrapper>
           <ErrorCatcher userEmail={user?.email} userName={user?.name}>
+            <ScrollRestoration />
             <Switch>
               {pages.map((page) => (
                 <Route key={page.path} path={page.path} exact component={page.component} />

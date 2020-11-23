@@ -1,11 +1,11 @@
 import React, { useCallback, Fragment } from 'react';
-import { DatePickerButton } from '../DatePickerButton';
+import { DatePickerButton } from './DatePickerButton';
 import styled from 'styled-components';
 import { useApolloError } from '../../hooks/useApolloError';
 import { List, ListItem, ListItemText, ListSubheader } from '@material-ui/core';
 import { DateTime } from 'luxon';
 import { useHistory } from 'react-router-dom';
-import { Loadable } from '../../components/Loadable';
+import { PageWrapper } from '../../components/PageWrapper';
 import { useDaysStatisticText } from '../../hooks/useDaysStatisticText';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useActivities } from '../../hooks/useActivities';
@@ -68,7 +68,7 @@ export const EntriesByDay = () => {
   const isLoading = !entriesByDay || !activities;
 
   return (
-    <Loadable errorMessage={errorMessage} errorTime={errorTime} isLoading={isLoading}>
+    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={isLoading}>
       {entriesByDay?.length === 0 ? (
         <EmptyState text="So far no entries..." />
       ) : (
@@ -106,6 +106,6 @@ export const EntriesByDay = () => {
       </DatePickerButtonWrapper>
 
       <FabButton onClick={() => onEntryFormOpen()} />
-    </Loadable>
+    </PageWrapper>
   );
 };

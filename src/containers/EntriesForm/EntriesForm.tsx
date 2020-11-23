@@ -13,8 +13,6 @@ import {
   refetchGetDaysStatisticQuery
 } from '../../generated/apollo';
 import { useApolloError } from '../../hooks/useApolloError';
-import { Spinner } from '../../components/Spinner';
-import { ErrorMessage } from '../../components/ErrorMessage';
 import * as R from 'remeda';
 import _ from 'lodash';
 import { Card, CardContent, Typography } from '@material-ui/core';
@@ -31,6 +29,7 @@ import { isSwipeHandlersEnabledVar } from '../../reactiveState';
 import { isToday } from '../../helpers/date';
 import { FabButton } from '../../components/FabButton';
 import { useActivitiesByCategory } from '../../hooks/useActivitiesByCategory';
+import { PageWrapper } from '../../components/PageWrapper';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
@@ -239,7 +238,7 @@ export const EntriesForm = () => {
   }, [getEntryById, deleteEntry, modalEntry, closeModal]);
 
   const onDoneClick = useCallback(async () => {
-    history.replace('/');
+    history.length > 2 ? history.goBack() : history.replace('/');
   }, [history]);
 
   const { activitiesByCategory } = useActivitiesByCategory({
@@ -252,12 +251,8 @@ export const EntriesForm = () => {
     [activities, modalEntry]
   );
 
-  if (!activities) return <Spinner />;
-
   return (
-    <div>
-      <ErrorMessage errorMessage={errorMessage} errorTime={errorTime} />
-
+    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!activities}>
       <DateTitleWrapper isCenter={isMobile}>
         <Typography color="textSecondary" gutterBottom>
           {DateTime.fromISO(dayDate).toLocaleString(DateTime.DATE_HUGE)}
@@ -311,6 +306,6 @@ export const EntriesForm = () => {
       })}
 
       <FabButton onClick={onDoneClick} icon="save" />
-    </div>
+    </PageWrapper>
   );
 };

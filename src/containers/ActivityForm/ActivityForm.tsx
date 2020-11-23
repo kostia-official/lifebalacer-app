@@ -34,6 +34,7 @@ import { SwitchBaseProps } from '@material-ui/core/internal/SwitchBase';
 import { TooltipCheckbox } from '../../components/TooltipCheckbox';
 import { LinearPointsTooltip } from './LinearPointsTooltip';
 import { useSelectOnInputFocus } from '../../hooks/useSelectOnInputFocus';
+import { PageWrapper } from '../../components/PageWrapper';
 
 const FormContainer = styled.form`
   display: flex;
@@ -184,157 +185,151 @@ export const ActivityForm = () => {
 
   const { preventMobileSelectionMenu, selectAllOnFocus } = useSelectOnInputFocus();
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  if (!existingActivity) return <Spinner />;
-
   return (
-    <FormContainer onSubmit={onSubmit}>
-      <ErrorMessage errorMessage={errorMessage} errorTime={errorTime} />
-
-      <NameContainer>
-        <FormControl>
-          <EmojiLabel shrink required>
-            Emoji
-          </EmojiLabel>
-          <EmojiInput
-            required
-            value={activity.emoji}
-            onChange={updateActivityField('emoji')}
-            margin="dense"
-            onFocus={selectAllOnFocus}
-            onSelect={preventMobileSelectionMenu}
-          />
-        </FormControl>
-
-        <FormControl fullWidth>
-          <InputLabel shrink required>
-            Name
-          </InputLabel>
-          <Input
-            required
-            value={activity.name}
-            onChange={updateActivityField('name')}
-            inputProps={{
-              shrink: 'true'
-            }}
-            margin="dense"
-          />
-        </FormControl>
-      </NameContainer>
-
-      <FormControl margin="normal" required>
-        <InputLabel>Category</InputLabel>
-        <Select value={activity.category} onChange={updateActivityField('category')} displayEmpty>
-          {Object.values(ActivityCategory).map((category) => (
-            <MenuItem key={category} value={category}>
-              {_.capitalize(category)}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-      <TextField
-        required
-        margin="dense"
-        label="Points"
-        type="text"
-        inputProps={{
-          inputMode: 'numeric'
-        }}
-        value={activity.points ?? 0}
-        onChange={updateActivityField('points')}
-        onFocus={selectAllOnFocus}
-        onSelect={preventMobileSelectionMenu}
-      />
-
-      {!activity.isWidget && (
-        <TooltipCheckbox
-          text="With value"
-          tooltipContent={
-            <Typography color="inherit" variant="body2" component="p">
-              Value can be the number of push-ups, how good was your mood, or how many swearing
-              words you said. Track whatever you want
-            </Typography>
-          }
-          onChange={onToggleIsWithValue}
-          checked={isWithValue}
-        />
-      )}
-
-      {!activity.isWidget && isWithValue && (
-        <TooltipCheckbox
-          text="Value has specific range"
-          tooltipContent={
-            <Typography color="inherit" variant="body2" component="p">
-              If you know the exact range of your value, like rating of your sleep from 1 to 5, you
-              can specify these boundaries
-            </Typography>
-          }
-          onChange={onToggleIsWithRange}
-          checked={isWithRange}
-        />
-      )}
-
-      {activity.valueType === ActivityType.Range && (
-        <FormControl margin="dense">
-          <FormLabel>Range</FormLabel>
-
-          <FormControl margin="normal">
-            <InputLabel shrink required>
-              From
-            </InputLabel>
-            <Input
+    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!existingActivity}>
+      <FormContainer onSubmit={onSubmit}>
+        <NameContainer>
+          <FormControl>
+            <EmojiLabel shrink required>
+              Emoji
+            </EmojiLabel>
+            <EmojiInput
               required
-              type="text"
+              value={activity.emoji}
+              onChange={updateActivityField('emoji')}
               margin="dense"
-              inputProps={{ inputMode: 'numeric' }}
-              value={rangeMeta.from ?? ''}
-              onChange={updateRangeMetaField('from')}
               onFocus={selectAllOnFocus}
               onSelect={preventMobileSelectionMenu}
             />
           </FormControl>
 
+          <FormControl fullWidth>
+            <InputLabel shrink required>
+              Name
+            </InputLabel>
+            <Input
+              required
+              value={activity.name}
+              onChange={updateActivityField('name')}
+              inputProps={{
+                shrink: 'true'
+              }}
+              margin="dense"
+            />
+          </FormControl>
+        </NameContainer>
+
+        <FormControl margin="normal" required>
+          <InputLabel>Category</InputLabel>
+          <Select value={activity.category} onChange={updateActivityField('category')} displayEmpty>
+            {Object.values(ActivityCategory).map((category) => (
+              <MenuItem key={category} value={category}>
+                {_.capitalize(category)}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <TextField
+          required
+          margin="dense"
+          label="Points"
+          type="text"
+          inputProps={{
+            inputMode: 'numeric'
+          }}
+          value={activity.points ?? 0}
+          onChange={updateActivityField('points')}
+          onFocus={selectAllOnFocus}
+          onSelect={preventMobileSelectionMenu}
+        />
+
+        {!activity.isWidget && (
+          <TooltipCheckbox
+            text="With value"
+            tooltipContent={
+              <Typography color="inherit" variant="body2" component="p">
+                Value can be the number of push-ups, how good was your mood, or how many swearing
+                words you said. Track whatever you want
+              </Typography>
+            }
+            onChange={onToggleIsWithValue}
+            checked={isWithValue}
+          />
+        )}
+
+        {!activity.isWidget && isWithValue && (
+          <TooltipCheckbox
+            text="Value has specific range"
+            tooltipContent={
+              <Typography color="inherit" variant="body2" component="p">
+                If you know the exact range of your value, like rating of your sleep from 1 to 5,
+                you can specify these boundaries
+              </Typography>
+            }
+            onChange={onToggleIsWithRange}
+            checked={isWithRange}
+          />
+        )}
+
+        {activity.valueType === ActivityType.Range && (
           <FormControl margin="dense">
-            <InputLabel shrink required>
-              To
-            </InputLabel>
-            <Input
-              required
-              margin="dense"
-              type="text"
-              inputProps={{ inputMode: 'numeric' }}
-              value={rangeMeta.to ?? ''}
-              onChange={updateRangeMetaField('to')}
-              onFocus={selectAllOnFocus}
-              onSelect={preventMobileSelectionMenu}
-            />
+            <FormLabel>Range</FormLabel>
+
+            <FormControl margin="normal">
+              <InputLabel shrink required>
+                From
+              </InputLabel>
+              <Input
+                required
+                type="text"
+                margin="dense"
+                inputProps={{ inputMode: 'numeric' }}
+                value={rangeMeta.from ?? ''}
+                onChange={updateRangeMetaField('from')}
+                onFocus={selectAllOnFocus}
+                onSelect={preventMobileSelectionMenu}
+              />
+            </FormControl>
+
+            <FormControl margin="dense">
+              <InputLabel shrink required>
+                To
+              </InputLabel>
+              <Input
+                required
+                margin="dense"
+                type="text"
+                inputProps={{ inputMode: 'numeric' }}
+                value={rangeMeta.to ?? ''}
+                onChange={updateRangeMetaField('to')}
+                onFocus={selectAllOnFocus}
+                onSelect={preventMobileSelectionMenu}
+              />
+            </FormControl>
           </FormControl>
-        </FormControl>
-      )}
+        )}
 
-      {isWithValue && (
-        <TooltipCheckbox
-          text="Linear points grow"
-          tooltipContent={<LinearPointsTooltip />}
-          onChange={onToggleIsLinearPoints}
-          checked={isLinearPoints}
-        />
-      )}
+        {isWithValue && (
+          <TooltipCheckbox
+            text="Linear points grow"
+            tooltipContent={<LinearPointsTooltip />}
+            onChange={onToggleIsLinearPoints}
+            checked={isLinearPoints}
+          />
+        )}
 
-      {!activity.isWidget && (
-        <TooltipCheckbox
-          text="With description"
-          tooltipContent="You can add additional text to the entry. For example, you can describe your day or note what your dream was."
-          onChange={onToggleIsWithDescription}
-          checked={!!activity.isWithDescription}
-        />
-      )}
+        {!activity.isWidget && (
+          <TooltipCheckbox
+            text="With description"
+            tooltipContent="You can add additional text to the entry. For example, you can describe your day or note what your dream was."
+            onChange={onToggleIsWithDescription}
+            checked={!!activity.isWithDescription}
+          />
+        )}
 
-      <FabButton type="submit" icon="save" />
-    </FormContainer>
+        <FabButton type="submit" icon="save" />
+      </FormContainer>
+    </PageWrapper>
   );
 };

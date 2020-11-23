@@ -9,7 +9,7 @@ export interface PageWrapperProps {
   errorTime?: number;
 }
 
-export const Loadable: React.FC<PageWrapperProps> = ({
+export const PageWrapper: React.FC<PageWrapperProps> = ({
   errorMessage,
   errorTime = Date.now(),
   isLoading = false,
@@ -23,9 +23,7 @@ export const Loadable: React.FC<PageWrapperProps> = ({
         <Spinner />
       </Showable>
 
-      <Showable isShow={!isLoading}>
-        {children}
-      </Showable>
+      <Showable isShow={!isLoading}>{children}</Showable>
     </Fragment>
   );
 };
