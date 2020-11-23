@@ -11,7 +11,6 @@ export const useOnEntryUpdated = ({ onEvent, userId }: HookParams) => {
     if (!userId) return;
 
     const channelName = `ENTRY_UPDATED_${userId}`;
-    console.log('channelName', channelName);
 
     pubsub.subscribe(channelName, onEvent);
 

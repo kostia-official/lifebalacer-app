@@ -19,6 +19,9 @@ import { Reminders } from './Reminders';
 import { isSwipeHandlersEnabledVar } from '../reactiveState';
 import { ErrorCatcher } from './ErrorCatcher';
 import { AppUpdateDialog } from './AppUpdateDialog';
+import { About } from './About/About';
+import { PrivacyPolicy } from './About/PrivacyPolicy';
+import { TermsAndConditions } from './About/TermsAndConditions';
 
 export interface IPage {
   name: string;
@@ -51,6 +54,12 @@ const pages: IPage[] = [
     icon: 'notifications',
     path: '/reminders',
     component: Reminders
+  },
+  {
+    name: 'About',
+    icon: 'info',
+    path: '/about',
+    component: About
   }
 ];
 
@@ -152,6 +161,8 @@ export const App: React.FC = () => {
               <Route path="/activities/edit/:_id" exact component={ActivityForm} />
               <Route path="/entries/:date" exact component={EntriesForm} />
               <Route path="/todoist/auth" exact component={TodoistAuth} />
+              <Route path="/about/privacy-policy" exact component={PrivacyPolicy} />
+              <Route path="/about/terms-and-conditions" exact component={TermsAndConditions} />
             </Switch>
           </ErrorCatcher>
         </PageWrapper>

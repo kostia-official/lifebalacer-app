@@ -49,7 +49,6 @@ export const EntriesByDay = () => {
   } = useInfiniteEntriesByDay({ onError });
 
   const onEntryUpdated = useCallback(() => {
-    console.log('onEvent');
     refetchEntriesByDay().then();
     refetchStatistic().then();
   }, [refetchEntriesByDay, refetchStatistic]);

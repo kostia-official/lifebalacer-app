@@ -1,9 +1,9 @@
-import { Workbox } from "workbox-window";
-import { history } from "./index";
-import { isShowAppUpdateDialogVar } from "./reactiveState";
-import { config } from "./common/config";
+import { Workbox } from 'workbox-window';
+import { history } from './index';
+import { isShowAppUpdateDialogVar } from './reactiveState';
+import { config } from './common/config';
 
-navigator.serviceWorker.addEventListener('message', (event) => {
+navigator?.serviceWorker?.addEventListener('message', (event) => {
   if (event.data.url) {
     history.push(event.data.url, { isPush: true });
   }

@@ -21,6 +21,7 @@ import {
 } from '@material-ui/core';
 import { InputProps as StandardInputProps } from '@material-ui/core/Input/Input';
 import _ from 'lodash';
+import { useDeviceDetect } from '../../hooks/useDeviceDetect';
 
 export interface EntryValueModalContentProps {
   onSave: (toUpdate: Partial<EntryResult>) => void;
@@ -39,6 +40,7 @@ const CardContentStyled = styled(CardContent)`
   flex-direction: column;
   width: 80vw;
   max-width: 500px;
+  padding: 0 16px 16px 16px;
 `;
 
 const SliderLabel = styled(FormLabel)`
@@ -51,6 +53,8 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   entry,
   activity
 }) => {
+  const { isDesktop } = useDeviceDetect();
+
   const min = activity?.rangeMeta?.from!;
   const max = activity?.rangeMeta?.to!;
   const averageValue = Math.ceil((max + min) / 2);
@@ -146,6 +150,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
             value={description}
             onChange={onDescriptionChange}
             multiline
+            rowsMax={isDesktop ? 20 : 10}
             autoFocus={isFocusDescription}
           />
         )}
