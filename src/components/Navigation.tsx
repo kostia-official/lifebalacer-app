@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   divider: {
     marginBottom: '16px',
     [theme.breakpoints.up('sm')]: {
-      marginBottom: theme.spacing(1),
+      marginBottom: theme.spacing(1)
     }
   }
 }));
@@ -99,22 +99,24 @@ export const Navigation: React.FC<INavigationProps> = ({
         open={isExpanded}
       >
         <List className={classes.list}>
-          <Fragment>
-            <ListItem className={classes.userListItem}>
-              <ListItemAvatar>
-                {user?.avatar ? (
-                  <Avatar alt={user?.name} src={user?.avatar} />
-                ) : (
-                  <Avatar>
-                    <Icon>person</Icon>
-                  </Avatar>
-                )}
-              </ListItemAvatar>
-              <ListItemText primary={user?.name} secondary={user?.email} />
-            </ListItem>
+          {user && (
+            <Fragment>
+              <ListItem className={classes.userListItem}>
+                <ListItemAvatar>
+                  {user?.avatar ? (
+                    <Avatar alt={user?.name} src={user?.avatar} />
+                  ) : (
+                    <Avatar>
+                      <Icon>person</Icon>
+                    </Avatar>
+                  )}
+                </ListItemAvatar>
+                <ListItemText primary={user?.name} secondary={user?.email} />
+              </ListItem>
 
-            <Divider className={classes.divider}/>
-          </Fragment>
+              <Divider className={classes.divider} />
+            </Fragment>
+          )}
 
           {_.map(items, ({ icon, name, path }) => (
             <ListItem

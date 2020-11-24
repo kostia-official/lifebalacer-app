@@ -2,9 +2,8 @@ import React, { useState, useCallback } from 'react';
 import { Header } from '../components/Header';
 import { Navigation } from '../components/Navigation';
 import styled from 'styled-components';
-import { Route, Switch, useHistory } from 'react-router-dom';
+import { Switch, useHistory } from 'react-router-dom';
 import { HeaderRightContent } from './HeaderRightContent';
-import { Auth } from './Auth';
 import { useAuth } from '../hooks/useAuth';
 import { Persist } from '../components/Persist';
 import { useDeviceDetect } from '../hooks/useDeviceDetect';
@@ -24,12 +23,15 @@ import { PrivacyPolicy } from './About/PrivacyPolicy';
 import { TermsAndConditions } from './About/TermsAndConditions';
 // @ts-ignore
 import ScrollRestoration from 'react-scroll-restoration';
+import { Button } from '@material-ui/core';
+import { RouteWrapper } from '../components/RouteWrapper';
 
 export interface IPage {
   name: string;
   icon: string;
   path: string;
   component: React.ComponentType<any>;
+  isPublic?: boolean;
 }
 
 const pages: IPage[] = [
@@ -61,7 +63,8 @@ const pages: IPage[] = [
     name: 'About',
     icon: 'info',
     path: '/about',
-    component: About
+    component: About,
+    isPublic: true
   }
 ];
 
@@ -88,7 +91,7 @@ export interface IAppProps {
 }
 
 export const App: React.FC = () => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, login } = useAuth();
   const history = useHistory();
   const { isDesktop } = useDeviceDetect();
   const [isExpandedMenu, setIsExpandedMenu] = useState(isDesktop);
@@ -121,8 +124,6 @@ export const App: React.FC = () => {
     history.goBack();
   }, [history]);
 
-  if (!isAuthenticated) return <Auth />;
-
   return (
     <AppWrapper {...swipeHandlers}>
       {isDesktop && (
@@ -141,13 +142,15 @@ export const App: React.FC = () => {
         title="Life Balancer"
         onMenuClick={onMenuClick}
         onBackClick={onBackClick}
-        rightContent={<HeaderRightContent />}
+        rightContent={
+          isAuthenticated ? <HeaderRightContent /> : <Button onClick={() => login()}>Login</Button>
+        }
       />
 
       <ContentWrapper>
         <Navigation
           isExpanded={isExpandedMenu}
-          items={pages}
+          items={isAuthenticated ? pages : pages.filter(({ isPublic }) => isPublic)}
           onClose={onMenuClick}
           onItemClick={onNavigationItemClick}
           user={user && { name: user?.given_name, email: user.email, avatar: user.picture }}
@@ -158,14 +161,25 @@ export const App: React.FC = () => {
             <ScrollRestoration />
             <Switch>
               {pages.map((page) => (
-                <Route key={page.path} path={page.path} exact component={page.component} />
+                <RouteWrapper
+                  key={page.path}
+                  path={page.path}
+                  isPublic={page.isPublic}
+                  exact
+                  component={page.component}
+                />
               ))}
-              <Route path="/activities/create" exact component={ActivityForm} />
-              <Route path="/activities/edit/:_id" exact component={ActivityForm} />
-              <Route path="/entries/:date" exact component={EntriesForm} />
-              <Route path="/todoist/auth" exact component={TodoistAuth} />
-              <Route path="/about/privacy-policy" exact component={PrivacyPolicy} />
-              <Route path="/about/terms-and-conditions" exact component={TermsAndConditions} />
+              <RouteWrapper path="/activities/create" exact component={ActivityForm} />
+              <RouteWrapper path="/activities/edit/:_id" exact component={ActivityForm} />
+              <RouteWrapper path="/entries/:date" exact component={EntriesForm} />
+              <RouteWrapper path="/todoist/auth" exact component={TodoistAuth} />
+              <RouteWrapper path="/about/privacy-policy" isPublic exact component={PrivacyPolicy} />
+              <RouteWrapper
+                path="/about/terms-and-conditions"
+                isPublic
+                exact
+                component={TermsAndConditions}
+              />
             </Switch>
           </ErrorCatcher>
         </PageWrapper>

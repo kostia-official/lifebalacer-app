@@ -1,5 +1,5 @@
 import { useAuth0, Auth0ContextInterface } from '@auth0/auth0-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { config } from '../common/config';
 import { sentryService } from '../services/sentry';
 import { Auth0User } from '../services/auth0';
@@ -7,16 +7,27 @@ import { Auth0User } from '../services/auth0';
 export interface IUseAuthResult extends Auth0ContextInterface {
   accessToken?: string | null;
   user?: Auth0User;
+  login: Function;
 }
 
 export const useAuth = (): IUseAuthResult => {
   const [accessToken, setAccessToken] = useState('');
   const auth = useAuth0();
-  const { getAccessTokenSilently, isAuthenticated, user, getIdTokenClaims } = auth;
+  const {
+    getAccessTokenSilently,
+    isAuthenticated,
+    user,
+    getIdTokenClaims,
+    loginWithRedirect
+  } = auth;
   const savedToken = localStorage.getItem('token');
   const userJSON = localStorage.getItem('user');
   const savedUser: Auth0User = userJSON ? JSON.parse(userJSON) : null;
   const [isLoading, setIsLoading] = useState(!!savedToken);
+
+  const login = useCallback(() => {
+    loginWithRedirect(config.auth).then();
+  }, [loginWithRedirect]);
 
   useEffect(() => {
     (async () => {
@@ -47,6 +58,7 @@ export const useAuth = (): IUseAuthResult => {
     user: user || savedUser,
     accessToken: accessToken || savedToken,
     isAuthenticated: !!savedToken,
-    isLoading
+    isLoading,
+    login
   };
 };

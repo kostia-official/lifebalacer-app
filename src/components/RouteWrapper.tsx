@@ -1,19 +1,17 @@
 import React from 'react';
-import { Route, useLocation, matchPath } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { RouteProps } from 'react-router';
-import { Showable } from './Showable';
+import { useAuth } from '../hooks/useAuth';
+import { Auth } from '../containers/Auth';
 
-export const RouteWrapper: React.FC<RouteProps> = (props) => {
-  const location = useLocation();
-  const isMatch = !!matchPath(location.pathname, {
-    path: props.path,
-    exact: true,
-    strict: false
-  });
+export interface RouteWrapperProps extends RouteProps {
+  isPublic?: boolean;
+}
 
-  return (
-    <Showable isShow={isMatch}>
-      <Route {...props} />
-    </Showable>
-  );
+export const RouteWrapper: React.FC<RouteWrapperProps> = ({ isPublic, ...props }) => {
+  const { isAuthenticated } = useAuth();
+
+  if (!isPublic && !isAuthenticated) return <Auth />;
+
+  return <Route {...props} />;
 };
