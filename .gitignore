@@ -26,3 +26,4 @@ yarn-error.log*
 .netlify
 
 public/firebase-messaging-sw.js
+.eslintcache

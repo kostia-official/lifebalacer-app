@@ -10,6 +10,7 @@ fragment ActivityResult on Activity {
   isArchived
   isWithDescription
   isWidget
+  isReverseColors
   rangeMeta {
     from
     to
@@ -25,6 +26,15 @@ query GetActivity($_id: ID!) {
 query GetActivities {
   activities {
     ...ActivityResult
+  }
+}
+
+query GetActivitiesExtremes {
+  activitiesExtremes {
+    _id
+    min
+    max
+    valueType
   }
 }
 

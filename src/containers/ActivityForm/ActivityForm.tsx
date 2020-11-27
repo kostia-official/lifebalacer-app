@@ -319,7 +319,12 @@ export const ActivityForm = () => {
         {!activity.isWidget && (
           <TooltipCheckbox
             text="With description"
-            tooltipContent="You can add additional text to the entry. For example, you can describe your day or note what your dream was."
+            tooltipContent={
+              <Typography color="inherit" variant="body2" component="p">
+                You can add additional text to the entry. For example, you can describe your day or
+                note what your dream was.
+              </Typography>
+            }
             onChange={onToggleIsWithDescription}
             checked={!!activity.isWithDescription}
           />

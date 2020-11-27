@@ -1,14 +1,24 @@
-import React, { useState, useCallback, ChangeEvent } from 'react';
+import React, { useCallback, ChangeEvent, useMemo, useState, useEffect } from 'react';
 import { Calendar as MaterialCalendar } from '@material-ui/pickers';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { useDatePickerRenderDay } from '../../hooks/useDatePickerRenderDay';
 import { useApolloError } from '../../hooks/useApolloError';
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import { PageWrapper } from '../../components/PageWrapper';
 import { DateTime } from 'luxon';
 import { CalendarLegends } from './CalendarLegends';
 import { useActivities } from '../../hooks/useActivities';
+import {
+  useGetActivitiesExtremesQuery,
+  ActivityType,
+  useUpdateActivityMutation,
+  refetchGetActivitiesQuery,
+  refetchGetActivitiesExtremesQuery
+} from '../../generated/apollo';
+import { ValueGradient } from './ValueGradient';
+import { useDatePickerRenderDayExtremes } from '../../hooks/useDatePickerRenderDayExtremes';
+import { useReactiveVar } from '@apollo/client';
+import { calendarActivityIdVar } from '../../reactiveState';
 
 const CalendarWrapper = styled.div`
   overflow: hidden;
@@ -16,6 +26,8 @@ const CalendarWrapper = styled.div`
 
 const CalendarLegendsWrapper = styled.div`
   margin-top: 20px;
+  display: flex;
+  justify-content: center;
 `;
 
 const FormControlWrapper = styled(FormControl)`
@@ -31,17 +43,52 @@ const FormControlStyled = styled(FormControl)`
 export const Calendar = () => {
   const history = useHistory();
   const { errorMessage, errorTime, onError } = useApolloError();
-  const [selectedActivityId, setSelectedActivityId] = useState<string>('');
+  const selectedActivityId = useReactiveVar(calendarActivityIdVar);
 
   const onActivitySelect = useCallback((e: ChangeEvent<{ name?: string; value: any }>) => {
-    setSelectedActivityId(e.target?.value);
+    calendarActivityIdVar(e.target?.value);
   }, []);
 
   const { activities } = useActivities({ onError });
+  const { data } = useGetActivitiesExtremesQuery({ onError });
+  const activitiesExtremes = data?.activitiesExtremes;
 
-  const { renderDay, daysData } = useDatePickerRenderDay({
+  const selectedActivity = useMemo(() => {
+    return activities?.find(({ _id }) => _id === selectedActivityId);
+  }, [activities, selectedActivityId]);
+
+  const selectedActivityExtremes = useMemo(() => {
+    return activitiesExtremes?.find(({ _id }) => _id === selectedActivityId);
+  }, [activitiesExtremes, selectedActivityId]);
+
+  const [isReverseColors, setIsReverseColors] = useState(!!selectedActivity?.isReverseColors);
+
+  useEffect(() => {
+    setIsReverseColors(!!selectedActivity?.isReverseColors);
+  }, [selectedActivity]);
+
+  const [updateActivity] = useUpdateActivityMutation({
     onError,
-    activityId: selectedActivityId
+    refetchQueries: [refetchGetActivitiesQuery(), refetchGetActivitiesExtremesQuery()]
+  });
+
+  const reverseColors = useCallback(
+    (newValue) => {
+      setIsReverseColors(newValue);
+
+      if (selectedActivity) {
+        updateActivity({
+          variables: { _id: selectedActivity?._id, data: { isReverseColors: newValue } }
+        }).then();
+      }
+    },
+    [selectedActivity, updateActivity]
+  );
+
+  const { renderDay, daysData } = useDatePickerRenderDayExtremes({
+    onError,
+    selectedActivityExtremes,
+    isReverseColors
   });
 
   return (
@@ -75,7 +122,18 @@ export const Calendar = () => {
         />
 
         <CalendarLegendsWrapper>
-          <CalendarLegends />
+          {!selectedActivity ||
+          selectedActivity.isWidget ||
+          selectedActivity?.valueType === ActivityType.Simple ? (
+            <CalendarLegends />
+          ) : (
+            <ValueGradient
+              isReverseColors={isReverseColors}
+              onReverseColors={reverseColors}
+              min={selectedActivityExtremes?.min!}
+              max={selectedActivityExtremes?.max!}
+            />
+          )}
         </CalendarLegendsWrapper>
       </CalendarWrapper>
     </PageWrapper>

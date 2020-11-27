@@ -1,18 +1,20 @@
 import React, { useCallback, useMemo } from 'react';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { useGetCalendarDaysQuery } from '../generated/apollo';
+import { useGetCalendarDaysQuery, ActivityExtremes, ActivityType } from '../generated/apollo';
 import { DateTime } from 'luxon';
 import { ApolloError } from '@apollo/client/errors';
-import { getColorFromPoints } from '../helpers/color';
+import { getColorFromPoints, getColorInGradient } from '../helpers/color';
 import { useOnEntryUpdate } from './useOnEntryUpdate';
+import _ from 'lodash';
 
 export interface UseDatePickerRenderDayProps {
   onError?: (error: ApolloError) => void;
-  activityId?: string;
+  selectedActivityExtremes?: ActivityExtremes;
+  isReverseColors: boolean;
 }
 
 export interface DaysPayload {
-  [key: string]: { points: number };
+  [key: string]: { color: string };
 }
 
 const dayComponentWrapper = (dayComponent: JSX.Element, color = 'transparent') => {
@@ -31,10 +33,11 @@ const dayComponentWrapper = (dayComponent: JSX.Element, color = 'transparent') =
   });
 };
 
-export const useDatePickerRenderDay = ({
+export const useDatePickerRenderDayExtremes = ({
   onError,
-  activityId
-}: UseDatePickerRenderDayProps = {}) => {
+  selectedActivityExtremes,
+  isReverseColors
+}: UseDatePickerRenderDayProps) => {
   const { data: daysData, refetch } = useGetCalendarDaysQuery({
     onError,
     variables: {
@@ -50,16 +53,35 @@ export const useDatePickerRenderDay = ({
       daysData?.entriesByDay?.reduce<DaysPayload>((acc, day) => {
         const date = DateTime.fromISO(day.date).toISODate();
 
-        if (!activityId) {
-          return { ...acc, [date]: { points: day.points } };
+        if (!selectedActivityExtremes) {
+          const color = getColorFromPoints(day.points);
+          return { ...acc, [date]: { color } };
         }
-        if (day.entries.find((entry) => entry.activityId === activityId)) {
-          return { ...acc, [date]: { points: day.points } };
+
+        const entry = day.entries.find(
+          (entry) => entry.activityId === selectedActivityExtremes._id
+        );
+
+        const isWithExtremes =
+          _.isNumber(selectedActivityExtremes?.min) && _.isNumber(selectedActivityExtremes?.max);
+
+        if (entry) {
+          const color =
+            isWithExtremes && selectedActivityExtremes.valueType !== ActivityType.Todoist
+              ? getColorInGradient(
+                  entry?.value!,
+                  selectedActivityExtremes.min!,
+                  selectedActivityExtremes.max!,
+                  isReverseColors
+                )
+              : getColorFromPoints(day.points);
+
+          return { ...acc, [date]: { color } };
         }
 
         return acc;
       }, {}) || {},
-    [daysData, activityId]
+    [daysData, selectedActivityExtremes, isReverseColors]
   );
 
   const renderDay = useCallback(
@@ -76,9 +98,7 @@ export const useDatePickerRenderDay = ({
 
       if (!dayPayload) return dayComponentWrapper(dayComponent);
 
-      const color = getColorFromPoints(dayPayload.points);
-
-      return dayComponentWrapper(dayComponent, color);
+      return dayComponentWrapper(dayComponent, dayPayload.color);
     },
     [daysPayload]
   );

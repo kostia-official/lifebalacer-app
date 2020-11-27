@@ -26,6 +26,7 @@ export type Query = {
   daysStatistic: DaysStatistic;
   activity?: Maybe<Activity>;
   activities: Array<Activity>;
+  activitiesExtremes: Array<ActivityExtremes>;
   balance: Scalars['Int'];
 };
 
@@ -140,13 +141,22 @@ export type Activity = {
   valueType: ActivityType;
   pointsType: PointsType;
   category: ActivityCategory;
-  points: Scalars['Int'];
+  points: Scalars['Float'];
   rangeMeta?: Maybe<RangeMeta>;
   todoistMeta?: Maybe<TodoistMeta>;
   createdAt: Scalars['Date'];
   isArchived: Scalars['Boolean'];
   isWithDescription: Scalars['Boolean'];
   isWidget: Scalars['Boolean'];
+  isReverseColors: Scalars['Boolean'];
+};
+
+export type ActivityExtremes = {
+  __typename?: 'ActivityExtremes';
+  _id: Scalars['ID'];
+  min?: Maybe<Scalars['Float']>;
+  max?: Maybe<Scalars['Float']>;
+  valueType: ActivityType;
 };
 
 export type Entry = {
@@ -157,14 +167,14 @@ export type Entry = {
   completedAt: Scalars['Date'];
   activityId: Scalars['ID'];
   activity: Activity;
-  points: Scalars['Int'];
-  value?: Maybe<Scalars['Int']>;
+  points: Scalars['Float'];
+  value?: Maybe<Scalars['Float']>;
 };
 
 export type EntriesByDay = {
   __typename?: 'EntriesByDay';
   date: Scalars['Date'];
-  points: Scalars['Int'];
+  points: Scalars['Float'];
   entries: Array<Entry>;
 };
 
@@ -221,11 +231,12 @@ export type CreateActivityInput = {
   valueType: ActivityType;
   pointsType: PointsType;
   category: ActivityCategory;
-  points: Scalars['Int'];
+  points: Scalars['Float'];
   rangeMeta?: Maybe<RangeMetaInput>;
   todoistMeta?: Maybe<TodoistMetaInput>;
   isWithDescription?: Maybe<Scalars['Boolean']>;
   isWidget?: Maybe<Scalars['Boolean']>;
+  isReverseColors?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdateActivityInput = {
@@ -235,11 +246,12 @@ export type UpdateActivityInput = {
   valueType?: Maybe<ActivityType>;
   pointsType?: Maybe<PointsType>;
   category?: Maybe<ActivityCategory>;
-  points?: Maybe<Scalars['Int']>;
+  points?: Maybe<Scalars['Float']>;
   rangeMeta?: Maybe<RangeMetaInput>;
   todoistMeta?: Maybe<TodoistMetaInput>;
   isWithDescription?: Maybe<Scalars['Boolean']>;
   isWidget?: Maybe<Scalars['Boolean']>;
+  isReverseColors?: Maybe<Scalars['Boolean']>;
 };
 
 export type CreateEntryInput = {
@@ -247,13 +259,13 @@ export type CreateEntryInput = {
   description?: Maybe<Scalars['String']>;
   completedAt: Scalars['Date'];
   activityId: Scalars['ID'];
-  value?: Maybe<Scalars['Int']>;
+  value?: Maybe<Scalars['Float']>;
 };
 
 export type UpdateEntryInput = {
   description?: Maybe<Scalars['String']>;
   completedAt?: Maybe<Scalars['Date']>;
-  value?: Maybe<Scalars['Int']>;
+  value?: Maybe<Scalars['Float']>;
 };
 
 export type ActivityResultFragment = { __typename?: 'Activity' } & Pick<
@@ -269,6 +281,7 @@ export type ActivityResultFragment = { __typename?: 'Activity' } & Pick<
   | 'isArchived'
   | 'isWithDescription'
   | 'isWidget'
+  | 'isReverseColors'
 > & { rangeMeta?: Maybe<{ __typename?: 'RangeMeta' } & Pick<RangeMeta, 'from' | 'to'>> };
 
 export type GetActivityQueryVariables = Exact<{
@@ -283,6 +296,17 @@ export type GetActivitiesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetActivitiesQuery = { __typename?: 'Query' } & {
   activities: Array<{ __typename?: 'Activity' } & ActivityResultFragment>;
+};
+
+export type GetActivitiesExtremesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetActivitiesExtremesQuery = { __typename?: 'Query' } & {
+  activitiesExtremes: Array<
+    { __typename?: 'ActivityExtremes' } & Pick<
+      ActivityExtremes,
+      '_id' | 'min' | 'max' | 'valueType'
+    >
+  >;
 };
 
 export type EntriesByDayResultFragment = { __typename?: 'EntriesByDay' } & Pick<
@@ -451,6 +475,7 @@ export const ActivityResultFragmentDoc = gql`
     isArchived
     isWithDescription
     isWidget
+    isReverseColors
     rangeMeta {
       from
       to
@@ -568,6 +593,65 @@ export type GetActivitiesQueryResult = Apollo.QueryResult<
 >;
 export function refetchGetActivitiesQuery(variables?: GetActivitiesQueryVariables) {
   return { query: GetActivitiesDocument, variables: variables };
+}
+export const GetActivitiesExtremesDocument = gql`
+  query GetActivitiesExtremes {
+    activitiesExtremes {
+      _id
+      min
+      max
+      valueType
+    }
+  }
+`;
+
+/**
+ * __useGetActivitiesExtremesQuery__
+ *
+ * To run a query within a React component, call `useGetActivitiesExtremesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetActivitiesExtremesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetActivitiesExtremesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetActivitiesExtremesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetActivitiesExtremesQuery,
+    GetActivitiesExtremesQueryVariables
+  >
+) {
+  return Apollo.useQuery<GetActivitiesExtremesQuery, GetActivitiesExtremesQueryVariables>(
+    GetActivitiesExtremesDocument,
+    baseOptions
+  );
+}
+export function useGetActivitiesExtremesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetActivitiesExtremesQuery,
+    GetActivitiesExtremesQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<GetActivitiesExtremesQuery, GetActivitiesExtremesQueryVariables>(
+    GetActivitiesExtremesDocument,
+    baseOptions
+  );
+}
+export type GetActivitiesExtremesQueryHookResult = ReturnType<typeof useGetActivitiesExtremesQuery>;
+export type GetActivitiesExtremesLazyQueryHookResult = ReturnType<
+  typeof useGetActivitiesExtremesLazyQuery
+>;
+export type GetActivitiesExtremesQueryResult = Apollo.QueryResult<
+  GetActivitiesExtremesQuery,
+  GetActivitiesExtremesQueryVariables
+>;
+export function refetchGetActivitiesExtremesQuery(variables?: GetActivitiesExtremesQueryVariables) {
+  return { query: GetActivitiesExtremesDocument, variables: variables };
 }
 export const GetEntriesByDayDocument = gql`
   query GetEntriesByDay($dateAfter: Date) {

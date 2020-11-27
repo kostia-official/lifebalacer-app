@@ -23,6 +23,10 @@ const CheckboxLabel = styled.div`
   align-items: center;
 `;
 
+const IconStyled = styled(Icon)`
+  color: ${grey[400]};
+`;
+
 export const TooltipCheckbox: React.FC<TooltipCheckboxProps> = ({
   checked,
   onChange,
@@ -49,9 +53,7 @@ export const TooltipCheckbox: React.FC<TooltipCheckboxProps> = ({
             disableHoverListener
           >
             <IconButton edge="end" onClick={showTooltip}>
-              <Icon fontSize="small" style={{ color: grey[400] }}>
-                info
-              </Icon>
+              <IconStyled fontSize="small">info</IconStyled>
             </IconButton>
           </Tooltip>
         </CheckboxLabel>

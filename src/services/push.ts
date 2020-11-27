@@ -5,7 +5,7 @@ import { config } from '../common/config';
 
 class Push {
   private readonly messaging: firebase.messaging.Messaging | undefined;
-  public readonly isSupported;
+  public readonly isSupported: boolean;
 
   constructor(config: object) {
     firebase.initializeApp(config);

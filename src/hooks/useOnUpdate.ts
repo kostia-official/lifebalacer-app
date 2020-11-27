@@ -10,7 +10,7 @@ export const useOnUpdate = (channelPrefix: string, toCall: PromiseFn[] = []) => 
   const userId = authService.getUserId();
 
   const onUpdate = useCallback(() => {
-    toCall?.forEach((fn) => fn && fn().then());
+    toCall?.forEach((fn) => fn && fn());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...toCall]);
 

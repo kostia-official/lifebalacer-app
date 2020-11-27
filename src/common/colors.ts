@@ -8,5 +8,13 @@ export const MainColors = {
 export const ProductivityColors = {
   Productive: MainColors.Primary,
   Lazy: MainColors.Secondary,
-  Regular: '#b28900'
+  Regular: '#bf9e39'
+};
+
+export const ProductivityColorsExtended = {
+  Lazy: ProductivityColors.Lazy,
+  LessLazy: '#c16b29',
+  Regular: ProductivityColors.Regular,
+  LessProductive: '#47995a',
+  Productive: ProductivityColors.Productive
 };

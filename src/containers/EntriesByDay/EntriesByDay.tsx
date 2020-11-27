@@ -1,4 +1,4 @@
-import React, { useCallback, Fragment, useEffect } from 'react';
+import React, { useCallback, Fragment } from 'react';
 import { DatePickerButton } from './DatePickerButton';
 import styled from 'styled-components';
 import { useApolloError } from '../../hooks/useApolloError';
