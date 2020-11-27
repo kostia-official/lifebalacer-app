@@ -20,7 +20,8 @@ import {
   refetchGetActivitiesQuery,
   useUpdateActivityMutation,
   RangeMetaInput,
-  useGetActivityQuery
+  useGetActivityQuery,
+  refetchGetActivitiesExtremesQuery
 } from '../../generated/apollo';
 import _ from 'lodash';
 import { useUpdateInput } from '../../hooks/useUpdateInput';
@@ -71,16 +72,14 @@ export const ActivityForm = () => {
   const { data } = useGetActivityQuery({ onError, variables: { _id }, skip: !isEdit });
   const existingActivity: Partial<ActivityResult> = isEdit && data?.activity ? data?.activity : {};
 
-  const [createActivity] = useCreateActivityMutation({
+  const mutationOptions = {
     onError,
     onCompleted,
-    refetchQueries: [refetchGetActivitiesQuery()]
-  });
-  const [updateActivity] = useUpdateActivityMutation({
-    onError,
-    onCompleted,
-    refetchQueries: [refetchGetActivitiesQuery()]
-  });
+    refetchQueries: [refetchGetActivitiesQuery(), refetchGetActivitiesExtremesQuery()]
+  };
+
+  const [createActivity] = useCreateActivityMutation(mutationOptions);
+  const [updateActivity] = useUpdateActivityMutation(mutationOptions);
 
   const [activity, setActivity] = useState<Partial<CreateActivityInput>>({
     name: '',

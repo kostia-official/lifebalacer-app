@@ -9,7 +9,8 @@ import {
   refetchGetEntriesByDayQuery,
   useGetEntriesByOneDayQuery,
   useUpdateEntryMutation,
-  refetchGetDaysStatisticQuery
+  refetchGetDaysStatisticQuery,
+  refetchGetActivitiesExtremesQuery
 } from '../../generated/apollo';
 import { useApolloError } from '../../hooks/useApolloError';
 import * as R from 'remeda';
@@ -116,7 +117,8 @@ export const EntriesForm = () => {
     refetchQueries: [
       refetchGetDaysStatisticQuery(),
       refetchGetEntriesByDayQuery(),
-      refetchGetBalanceQuery()
+      refetchGetBalanceQuery(),
+      refetchGetActivitiesExtremesQuery()
     ]
   };
   const [createEntryMutation] = useCreateEntryMutation(mutationOptions);

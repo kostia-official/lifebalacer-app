@@ -19,6 +19,8 @@ import { ValueGradient } from './ValueGradient';
 import { useDatePickerRenderDayExtremes } from '../../hooks/useDatePickerRenderDayExtremes';
 import { useReactiveVar } from '@apollo/client';
 import { calendarActivityIdVar } from '../../reactiveState';
+import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
+import { useOnActivityUpdate } from '../../hooks/useOnActivityUpdate';
 
 const CalendarWrapper = styled.div`
   overflow: hidden;
@@ -50,8 +52,11 @@ export const Calendar = () => {
   }, []);
 
   const { activities } = useActivities({ onError });
-  const { data } = useGetActivitiesExtremesQuery({ onError });
+  const { data, refetch: refetchExtremes } = useGetActivitiesExtremesQuery({ onError });
   const activitiesExtremes = data?.activitiesExtremes;
+
+  useOnEntryUpdate([refetchExtremes]);
+  useOnActivityUpdate([refetchExtremes]);
 
   const selectedActivity = useMemo(() => {
     return activities?.find(({ _id }) => _id === selectedActivityId);
