@@ -1,8 +1,12 @@
 import './services/sentry';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import './index.css';
-import { App } from './containers/App';
+import 'onsenui/css/onsenui.css';
+import './styles/onsen-css-components.min.css';
+import './styles/theme.css';
+import './styles/theme.css';
+
+import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorkerRegistration';
 import { ThemeProvider } from './ThemeProvider';
 import { Router } from 'react-router-dom';
@@ -14,6 +18,7 @@ import { config } from './common/config';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import LuxonUtils from '@date-io/luxon';
 import { ApolloCacheLoader } from './containers/ApolloCacheLoader';
+import { AppMobile } from './containers/AppMobile';
 
 export const history = createBrowserHistory();
 
@@ -24,7 +29,7 @@ ReactDOM.render(
         <MuiPickersUtilsProvider utils={LuxonUtils}>
           <ApolloCacheLoader>
             <ApolloProvider client={apolloClient}>
-              <App />
+              <AppMobile />
             </ApolloProvider>
           </ApolloCacheLoader>
         </MuiPickersUtilsProvider>
