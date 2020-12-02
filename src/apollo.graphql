@@ -56,6 +56,19 @@ query GetEntriesByDay($dateAfter: Date) {
   }
 }
 
+query GetJournal($dateAfter: Date, $activities: [String!]) {
+  journal(dateAfter: $dateAfter, activities: $activities) {
+    date
+    points
+    entries {
+      _id
+      completedAt
+      description
+      activityId
+    }
+  }
+}
+
 query GetCalendarDays($dateAfter: Date, $dateBefore: Date) {
   entriesByDay(dateAfter: $dateAfter, dateBefore: $dateBefore) {
     date

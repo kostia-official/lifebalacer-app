@@ -14,6 +14,16 @@ export const cache = new InMemoryCache({
         }
       }
     },
+    Journal: {
+      keyFields: ['date'],
+      fields: {
+        entries: {
+          merge(existing, incoming) {
+            return incoming;
+          }
+        }
+      }
+    },
     Query: {
       fields: {
         activity(_, { args, toReference }) {

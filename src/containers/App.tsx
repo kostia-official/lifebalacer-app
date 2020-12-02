@@ -25,6 +25,7 @@ import { TermsAndConditions } from './About/TermsAndConditions';
 import ScrollRestoration from 'react-scroll-restoration';
 import { Button } from '@material-ui/core';
 import { RouteWrapper } from '../components/RouteWrapper';
+import { Journal } from './Journal/Journal';
 
 export interface IPage {
   name: string;
@@ -46,6 +47,12 @@ const pages: IPage[] = [
     icon: 'date_range',
     path: '/calendar',
     component: Calendar
+  },
+  {
+    name: 'Journal',
+    icon: 'import_contacts',
+    path: '/journal',
+    component: Journal
   },
   {
     name: 'Activities',

@@ -27,6 +27,7 @@ export type Query = {
   activity?: Maybe<Activity>;
   activities: Array<Activity>;
   activitiesExtremes: Array<ActivityExtremes>;
+  journal: Array<Journal>;
   balance: Scalars['Int'];
 };
 
@@ -36,17 +37,20 @@ export type QueryEntryArgs = {
 
 export type QueryEntriesByOneDayArgs = {
   date: Scalars['Date'];
-  activityId?: Maybe<Scalars['ID']>;
 };
 
 export type QueryEntriesByDayArgs = {
-  activityId?: Maybe<Scalars['ID']>;
   dateAfter?: Maybe<Scalars['Date']>;
   dateBefore?: Maybe<Scalars['Date']>;
 };
 
 export type QueryActivityArgs = {
   _id: Scalars['ID'];
+};
+
+export type QueryJournalArgs = {
+  dateAfter?: Maybe<Scalars['Date']>;
+  activities?: Maybe<Array<Scalars['String']>>;
 };
 
 export type Mutation = {
@@ -173,6 +177,13 @@ export type Entry = {
 
 export type EntriesByDay = {
   __typename?: 'EntriesByDay';
+  date: Scalars['Date'];
+  points: Scalars['Float'];
+  entries: Array<Entry>;
+};
+
+export type Journal = {
+  __typename?: 'Journal';
   date: Scalars['Date'];
   points: Scalars['Float'];
   entries: Array<Entry>;
@@ -327,6 +338,24 @@ export type GetEntriesByDayQueryVariables = Exact<{
 
 export type GetEntriesByDayQuery = { __typename?: 'Query' } & {
   entriesByDay: Array<{ __typename?: 'EntriesByDay' } & EntriesByDayResultFragment>;
+};
+
+export type GetJournalQueryVariables = Exact<{
+  dateAfter?: Maybe<Scalars['Date']>;
+  activities?: Maybe<Array<Scalars['String']>>;
+}>;
+
+export type GetJournalQuery = { __typename?: 'Query' } & {
+  journal: Array<
+    { __typename?: 'Journal' } & Pick<Journal, 'date' | 'points'> & {
+        entries: Array<
+          { __typename?: 'Entry' } & Pick<
+            Entry,
+            '_id' | 'completedAt' | 'description' | 'activityId'
+          >
+        >;
+      }
+  >;
 };
 
 export type GetCalendarDaysQueryVariables = Exact<{
@@ -702,6 +731,60 @@ export type GetEntriesByDayQueryResult = Apollo.QueryResult<
 >;
 export function refetchGetEntriesByDayQuery(variables?: GetEntriesByDayQueryVariables) {
   return { query: GetEntriesByDayDocument, variables: variables };
+}
+export const GetJournalDocument = gql`
+  query GetJournal($dateAfter: Date, $activities: [String!]) {
+    journal(dateAfter: $dateAfter, activities: $activities) {
+      date
+      points
+      entries {
+        _id
+        completedAt
+        description
+        activityId
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetJournalQuery__
+ *
+ * To run a query within a React component, call `useGetJournalQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetJournalQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetJournalQuery({
+ *   variables: {
+ *      dateAfter: // value for 'dateAfter'
+ *      activities: // value for 'activities'
+ *   },
+ * });
+ */
+export function useGetJournalQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetJournalQuery, GetJournalQueryVariables>
+) {
+  return Apollo.useQuery<GetJournalQuery, GetJournalQueryVariables>(
+    GetJournalDocument,
+    baseOptions
+  );
+}
+export function useGetJournalLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetJournalQuery, GetJournalQueryVariables>
+) {
+  return Apollo.useLazyQuery<GetJournalQuery, GetJournalQueryVariables>(
+    GetJournalDocument,
+    baseOptions
+  );
+}
+export type GetJournalQueryHookResult = ReturnType<typeof useGetJournalQuery>;
+export type GetJournalLazyQueryHookResult = ReturnType<typeof useGetJournalLazyQuery>;
+export type GetJournalQueryResult = Apollo.QueryResult<GetJournalQuery, GetJournalQueryVariables>;
+export function refetchGetJournalQuery(variables?: GetJournalQueryVariables) {
+  return { query: GetJournalDocument, variables: variables };
 }
 export const GetCalendarDaysDocument = gql`
   query GetCalendarDays($dateAfter: Date, $dateBefore: Date) {

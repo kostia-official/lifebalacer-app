@@ -1,11 +1,10 @@
 import React, { useCallback, ChangeEvent, useMemo, useState, useEffect } from 'react';
-import { Calendar as MaterialCalendar } from '@material-ui/pickers';
+import { Calendar as MaterialCalendar, useStaticState } from '@material-ui/pickers';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { useApolloError } from '../../hooks/useApolloError';
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import { PageWrapper } from '../../components/PageWrapper';
-import { DateTime } from 'luxon';
 import { CalendarLegends } from './CalendarLegends';
 import { useActivities } from '../../hooks/useActivities';
 import {
@@ -96,6 +95,21 @@ export const Calendar = () => {
     isReverseColors
   });
 
+  const onDateChange = useCallback(
+    (date) => {
+      if (!date) return;
+      history.push(`/entries/${date.toISO()}`);
+    },
+    [history]
+  );
+
+  const [date] = useState(new Date());
+
+  const { pickerProps } = useStaticState({
+    value: date,
+    onChange: onDateChange
+  });
+
   return (
     <PageWrapper
       errorMessage={errorMessage}
@@ -117,14 +131,7 @@ export const Calendar = () => {
           </FormControlStyled>
         </FormControlWrapper>
 
-        <MaterialCalendar
-          date={DateTime.local()}
-          onChange={(date) => {
-            if (!date) return;
-            history.push(`/entries/${date.toISO()}`);
-          }}
-          renderDay={renderDay}
-        />
+        <MaterialCalendar {...pickerProps} renderDay={renderDay} />
 
         <CalendarLegendsWrapper>
           {!selectedActivity ||
