@@ -112,7 +112,8 @@ export const Activities = () => {
             {
               title: 'Points',
               field: 'points',
-              defaultSort: 'desc'
+              defaultSort: 'desc',
+              width: 30
             }
           ]}
           data={archivedActivities!}

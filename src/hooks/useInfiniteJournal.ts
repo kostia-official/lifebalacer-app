@@ -14,7 +14,6 @@ export const useInfiniteJournal = ({
   const journal = data?.journal;
 
   const loadMore = useCallback(() => {
-    console.log('loadMore');
     const lastDate: string = _.chain(journal)
       .last()
       .get('entries')
@@ -23,8 +22,6 @@ export const useInfiniteJournal = ({
       .get('completedAt')
       .value();
 
-    console.log('lastDate', lastDate);
-
     if (!lastDate) return;
 
     fetchMore({
@@ -32,7 +29,6 @@ export const useInfiniteJournal = ({
         dateAfter: lastDate
       },
       updateQuery: (prev, { fetchMoreResult }) => {
-        console.log('fetchMoreResult', fetchMoreResult);
         if (!fetchMoreResult || _.isEmpty(fetchMoreResult?.journal)) {
           setIsHasMore(false);
           return prev;

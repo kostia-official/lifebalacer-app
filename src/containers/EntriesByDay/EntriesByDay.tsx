@@ -1,9 +1,8 @@
-import React, { useCallback, Fragment } from 'react';
+import React, { useCallback } from 'react';
 import { DatePickerButton } from './DatePickerButton';
 import styled from 'styled-components';
 import { useApolloError } from '../../hooks/useApolloError';
 import { List, ListItem, ListItemText, ListSubheader } from '@material-ui/core';
-import { DateTime } from 'luxon';
 import { useHistory } from 'react-router-dom';
 import { PageWrapper } from '../../components/PageWrapper';
 import { useDaysStatisticText } from '../../hooks/useDaysStatisticText';
@@ -15,15 +14,12 @@ import { useInfiniteEntriesByDay } from '../../hooks/useInfiniteEntriesByDay';
 import { EmptyState } from '../../components/EmptyState';
 import { EntriesLabels } from './EntriesLabels';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
+import { DayTitle } from '../../components/DayTitle';
+import { Spinner } from '../../components/Spinner';
 
 const StyledList = styled(List)`
   background-color: ${({ theme }) => theme.palette.background.paper};
-`;
-
-const PointsText = styled(ListItemText)`
-  flex-grow: 0;
-  min-width: 30px;
-  margin-left: 10px;
+  margin-bottom: 6px;
 `;
 
 const DatePickerButtonWrapper = styled.div`
@@ -69,7 +65,7 @@ export const EntriesByDay = () => {
           dataLength={entriesByDay?.length ?? 0}
           next={loadMore}
           hasMore={isHasMore}
-          loader={<Fragment />}
+          loader={<Spinner />}
         >
           <StyledList
             subheader={
@@ -82,7 +78,7 @@ export const EntriesByDay = () => {
               return (
                 <ListItem key={day.date} onClick={() => onEntryFormOpen(day.date)} button>
                   <ListItemText
-                    primary={DateTime.fromISO(day.date).toLocaleString(DateTime.DATE_HUGE)}
+                    primary={<DayTitle day={day} />}
                     secondary={
                       <EntriesLabels
                         entries={day.entries}
@@ -91,7 +87,6 @@ export const EntriesByDay = () => {
                       />
                     }
                   />
-                  <PointsText primary={day.points} />
                 </ListItem>
               );
             })}

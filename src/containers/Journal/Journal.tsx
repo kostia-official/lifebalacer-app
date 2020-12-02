@@ -11,11 +11,7 @@ import styled from 'styled-components';
 import { useActivities } from '../../hooks/useActivities';
 import { Spinner } from '../../components/Spinner';
 import { useHistory } from 'react-router-dom';
-
-const TitleWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
+import { DayTitle } from '../../components/DayTitle';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
@@ -68,8 +64,6 @@ export const Journal = () => {
 
   const isLoading = !journal || !activities;
 
-  console.log('isHasMore', isHasMore);
-
   return (
     <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={isLoading}>
       {journal?.length === 0 ? (
@@ -86,16 +80,7 @@ export const Journal = () => {
             return (
               <CardStyled key={day.date} onClick={onDayClick(day.date)}>
                 <CardActionArea>
-                  <CardHeaderStyled
-                    title={
-                      <TitleWrapper>
-                        <Typography>
-                          {DateTime.fromISO(day.date).toLocaleString(DateTime.DATE_HUGE)}
-                        </Typography>
-                        <Typography>{day.points}</Typography>
-                      </TitleWrapper>
-                    }
-                  />
+                  <CardHeaderStyled title={<DayTitle day={day} />} />
                   <CardContentStyled>
                     {day.entries.map((entry) => {
                       const activity = getActivityById(entry.activityId);
