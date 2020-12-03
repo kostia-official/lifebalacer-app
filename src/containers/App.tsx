@@ -166,28 +166,30 @@ export const App: React.FC = () => {
         <PageWrapper>
           <ErrorCatcher userEmail={user?.email} userName={user?.name}>
             <ScrollRestoration />
-            <Switch>
-              {pages.map((page) => (
-                <RouteWrapper
-                  key={page.path}
-                  path={page.path}
-                  isPublic={page.isPublic}
-                  exact
-                  component={page.component}
-                />
-              ))}
-              <RouteWrapper path="/activities/create" exact component={ActivityForm} />
-              <RouteWrapper path="/activities/edit/:_id" exact component={ActivityForm} />
-              <RouteWrapper path="/entries/:date" exact component={EntriesForm} />
-              <RouteWrapper path="/todoist/auth" exact component={TodoistAuth} />
-              <RouteWrapper path="/about/privacy-policy" isPublic exact component={PrivacyPolicy} />
+            {/*<Switch>*/}
+            {pages.map((page) => (
               <RouteWrapper
-                path="/about/terms-and-conditions"
-                isPublic
-                exact
-                component={TermsAndConditions}
+                key={page.path}
+                path={page.path}
+                isPublic={page.isPublic}
+                isMain
+                component={page.component}
               />
-            </Switch>
+            ))}
+            <RouteWrapper path="/activities/create" exact component={ActivityForm} />
+            <RouteWrapper path="/activities/edit/:_id" exact component={ActivityForm} />
+            <RouteWrapper path="/entries/:date" exact component={EntriesForm} />
+            <RouteWrapper path="/calendar/:date" exact component={EntriesForm} />
+            <RouteWrapper path="/journal/:date" exact component={EntriesForm} />
+            <RouteWrapper path="/todoist/auth" exact component={TodoistAuth} />
+            <RouteWrapper path="/about/privacy-policy" isPublic exact component={PrivacyPolicy} />
+            <RouteWrapper
+              path="/about/terms-and-conditions"
+              isPublic
+              exact
+              component={TermsAndConditions}
+            />
+            {/*</Switch>*/}
           </ErrorCatcher>
         </PageWrapper>
       </ContentWrapper>

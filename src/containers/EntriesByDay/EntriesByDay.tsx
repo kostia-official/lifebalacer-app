@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { DatePickerButton } from './DatePickerButton';
 import styled from 'styled-components';
 import { useApolloError } from '../../hooks/useApolloError';
@@ -43,6 +43,17 @@ export const EntriesByDay = () => {
     loadMore,
     refetch: refetchEntriesByDay
   } = useInfiniteEntriesByDay({ onError });
+
+  useEffect(() => {
+    console.log('entriesByDay update');
+  }, [entriesByDay]);
+
+  useEffect(() => {
+    console.log('entriesByDay mount');
+    return () => {
+      console.log('entriesByDay unmount');
+    };
+  }, []);
 
   useOnEntryUpdate([refetchEntriesByDay, refetchStatistic]);
 

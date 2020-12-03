@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback } from 'react';
+import React, { Fragment, useCallback, useEffect } from 'react';
 import { PageWrapper } from '../../components/PageWrapper';
 import { useApolloError } from '../../hooks/useApolloError';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
@@ -48,6 +48,9 @@ export const Journal = () => {
       activities: activities
         ?.filter((activity) => activity._id !== todoistActivity?._id)
         .map((activity) => activity._id)
+    },
+    onCompleted: () => {
+      console.log('onCompleted');
     }
   });
 
@@ -57,12 +60,19 @@ export const Journal = () => {
 
   const onDayClick = useCallback(
     (date = new Date()) => () => {
-      history.push(`/entries/${new Date(date).toISOString()}`);
+      history.push(`/journal/${new Date(date).toISOString()}`);
     },
     [history]
   );
 
   const isLoading = !journal || !activities;
+
+  useEffect(() => {
+    console.log('Journal mount');
+    return () => {
+      console.log('Journal unmount');
+    };
+  }, []);
 
   return (
     <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={isLoading}>

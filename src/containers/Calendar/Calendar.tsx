@@ -46,6 +46,13 @@ export const Calendar = () => {
   const { errorMessage, errorTime, onError } = useApolloError();
   const selectedActivityId = useReactiveVar(calendarActivityIdVar);
 
+  useEffect(() => {
+    console.log('calendar mount');
+    return () => {
+      console.log('calendar unmount');
+    };
+  }, []);
+
   const onActivitySelect = useCallback((e: ChangeEvent<{ name?: string; value: any }>) => {
     calendarActivityIdVar(e.target?.value);
   }, []);
@@ -98,7 +105,7 @@ export const Calendar = () => {
   const onDateChange = useCallback(
     (date) => {
       if (!date) return;
-      history.push(`/entries/${date.toISO()}`);
+      history.push(`/calendar/${date.toISO()}`);
     },
     [history]
   );
