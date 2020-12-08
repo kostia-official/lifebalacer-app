@@ -6,10 +6,12 @@ class LogSender {
     if (config.isDev) return;
 
     LogRocket.init('ofbhya/lifebalancer', {
-      dom: {
-        isEnabled: false
-      }
+      dom: { isEnabled: false }
     });
+  }
+
+  setUserId(userId: string) {
+    LogRocket.identify(userId);
   }
 }
 

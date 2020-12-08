@@ -1,4 +1,4 @@
-import React, { useState, useCallback, Suspense } from 'react';
+import React, { useState, useCallback, Suspense, useEffect } from 'react';
 import { Header } from '../components/Header';
 import { Navigation } from '../components/Navigation';
 import styled from 'styled-components';
@@ -20,14 +20,14 @@ import ScrollRestoration from 'react-scroll-restoration';
 import { Button } from '@material-ui/core';
 import { RouteWrapper } from '../components/RouteWrapper';
 import { Spinner } from '../components/Spinner';
+import EntriesByDay from './EntriesByDay/EntriesByDay';
+import EntriesForm from './EntriesForm/EntriesForm';
+import ActivityForm from './ActivityForm/ActivityForm';
+import Journal from './Journal/Journal';
 
-const EntriesByDay = React.lazy(() => import('./EntriesByDay/EntriesByDay'));
-const EntriesForm = React.lazy(() => import('./EntriesForm/EntriesForm'));
 const Calendar = React.lazy(() => import('./Calendar/Calendar'));
 const Activities = React.lazy(() => import('./Activities'));
-const ActivityForm = React.lazy(() => import('./ActivityForm/ActivityForm'));
 const Reminders = React.lazy(() => import('./Reminders'));
-const Journal = React.lazy(() => import('./Journal/Journal'));
 
 export interface IPage {
   name: string;
