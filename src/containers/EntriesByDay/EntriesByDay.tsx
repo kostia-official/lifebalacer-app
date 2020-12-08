@@ -28,7 +28,7 @@ const DatePickerButtonWrapper = styled.div`
   right: 20px;
 `;
 
-export const EntriesByDay = () => {
+const EntriesByDay = () => {
   const history = useHistory();
   const { errorMessage, errorTime, onError } = useApolloError();
 
@@ -102,3 +102,5 @@ export const EntriesByDay = () => {
     </PageWrapper>
   );
 };
+
+export default EntriesByDay;

@@ -41,7 +41,7 @@ const FormControlStyled = styled(FormControl)`
   width: 200px;
 `;
 
-export const Calendar = () => {
+const Calendar = () => {
   const history = useHistory();
   const { errorMessage, errorTime, onError } = useApolloError();
   const selectedActivityId = useReactiveVar(calendarActivityIdVar);
@@ -151,3 +151,5 @@ export const Calendar = () => {
     </PageWrapper>
   );
 };
+
+export default Calendar;

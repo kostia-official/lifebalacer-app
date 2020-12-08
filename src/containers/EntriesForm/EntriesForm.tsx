@@ -50,7 +50,7 @@ const DateTitleWrapper = styled.div<{ isCenter: boolean }>`
 
 const showDelay = 300;
 
-export const EntriesForm = () => {
+const EntriesForm = () => {
   const { isMobile } = useDeviceDetect();
   const [modalEntry, setModalEntry] = useState<SelectedEntry | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -312,3 +312,5 @@ export const EntriesForm = () => {
     </PageWrapper>
   );
 };
+
+export default EntriesForm;

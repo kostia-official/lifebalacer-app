@@ -28,7 +28,7 @@ const ArchivedActivitiesWrapper = styled.div`
   padding-top: 10px;
 `;
 
-export const Activities = () => {
+const Activities = () => {
   const { isMobile } = useDeviceDetect();
   const history = useHistory();
   const { errorMessage, onError, errorTime } = useApolloError();
@@ -152,3 +152,5 @@ export const Activities = () => {
     </PageWrapper>
   );
 };
+
+export default Activities;

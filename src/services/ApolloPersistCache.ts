@@ -10,7 +10,13 @@ export class ApolloPersistCache {
 
   constructor(cache: InMemoryCache) {
     const storage = window.localStorage as PersistentStorage<PersistedData<NormalizedCacheObject>>;
-    this.persistor = new CachePersistor({ cache, storage: storage });
+    this.persistor = new CachePersistor({
+      cache,
+      storage: storage,
+      debounce: 500,
+      maxSize: false,
+      debug: true
+    });
   }
 
   public async load() {

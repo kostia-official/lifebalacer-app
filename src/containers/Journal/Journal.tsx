@@ -5,7 +5,6 @@ import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { Card, CardActionArea, CardContent, CardHeader, Typography } from '@material-ui/core';
 import { EmptyState } from '../../components/EmptyState';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { DateTime } from 'luxon';
 import { useInfiniteJournal } from '../../hooks/useInfiniteJournal';
 import styled from 'styled-components';
 import { useActivities } from '../../hooks/useActivities';
@@ -37,7 +36,7 @@ const Description = styled(Typography)`
   margin-bottom: 16px;
 `;
 
-export const Journal = () => {
+const Journal = () => {
   const { errorMessage, onError, errorTime } = useApolloError();
 
   const { getActivityById, todoistActivity, activities } = useActivities({ onError });
@@ -104,3 +103,5 @@ export const Journal = () => {
     </PageWrapper>
   );
 };
+
+export default Journal;

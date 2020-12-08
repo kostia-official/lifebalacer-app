@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, Suspense } from 'react';
 import { Header } from '../components/Header';
 import { Navigation } from '../components/Navigation';
 import styled from 'styled-components';
@@ -8,13 +8,7 @@ import { useAuth } from '../hooks/useAuth';
 import { Persist } from '../components/Persist';
 import { useDeviceDetect } from '../hooks/useDeviceDetect';
 import { useSwipeable } from 'react-swipeable';
-import { ActivityForm } from './ActivityForm/ActivityForm';
-import { Activities } from './Activities';
-import { EntriesByDay } from './EntriesByDay/EntriesByDay';
-import { EntriesForm } from './EntriesForm/EntriesForm';
-import { Calendar } from './Calendar/Calendar';
 import { TodoistAuth } from './TodoistAuth';
-import { Reminders } from './Reminders';
 import { isSwipeHandlersEnabledVar } from '../reactiveState';
 import { ErrorCatcher } from './ErrorCatcher';
 import { AppUpdateDialog } from './AppUpdateDialog';
@@ -25,7 +19,15 @@ import { TermsAndConditions } from './About/TermsAndConditions';
 import ScrollRestoration from 'react-scroll-restoration';
 import { Button } from '@material-ui/core';
 import { RouteWrapper } from '../components/RouteWrapper';
-import { Journal } from './Journal/Journal';
+import { Spinner } from '../components/Spinner';
+
+const EntriesByDay = React.lazy(() => import('./EntriesByDay/EntriesByDay'));
+const EntriesForm = React.lazy(() => import('./EntriesForm/EntriesForm'));
+const Calendar = React.lazy(() => import('./Calendar/Calendar'));
+const Activities = React.lazy(() => import('./Activities'));
+const ActivityForm = React.lazy(() => import('./ActivityForm/ActivityForm'));
+const Reminders = React.lazy(() => import('./Reminders'));
+const Journal = React.lazy(() => import('./Journal/Journal'));
 
 export interface IPage {
   name: string;
@@ -166,28 +168,35 @@ export const App: React.FC = () => {
         <PageWrapper>
           <ErrorCatcher userEmail={user?.email} userName={user?.name}>
             <ScrollRestoration />
-            <Switch>
-              {pages.map((page) => (
+            <Suspense fallback={<Spinner />}>
+              <Switch>
+                {pages.map((page) => (
+                  <RouteWrapper
+                    key={page.path}
+                    path={page.path}
+                    isPublic={page.isPublic}
+                    exact
+                    component={page.component}
+                  />
+                ))}
+                <RouteWrapper path="/activities/create" exact component={ActivityForm} />
+                <RouteWrapper path="/activities/edit/:_id" exact component={ActivityForm} />
+                <RouteWrapper path="/entries/:date" exact component={EntriesForm} />
+                <RouteWrapper path="/todoist/auth" exact component={TodoistAuth} />
                 <RouteWrapper
-                  key={page.path}
-                  path={page.path}
-                  isPublic={page.isPublic}
+                  path="/about/privacy-policy"
+                  isPublic
                   exact
-                  component={page.component}
+                  component={PrivacyPolicy}
                 />
-              ))}
-              <RouteWrapper path="/activities/create" exact component={ActivityForm} />
-              <RouteWrapper path="/activities/edit/:_id" exact component={ActivityForm} />
-              <RouteWrapper path="/entries/:date" exact component={EntriesForm} />
-              <RouteWrapper path="/todoist/auth" exact component={TodoistAuth} />
-              <RouteWrapper path="/about/privacy-policy" isPublic exact component={PrivacyPolicy} />
-              <RouteWrapper
-                path="/about/terms-and-conditions"
-                isPublic
-                exact
-                component={TermsAndConditions}
-              />
-            </Switch>
+                <RouteWrapper
+                  path="/about/terms-and-conditions"
+                  isPublic
+                  exact
+                  component={TermsAndConditions}
+                />
+              </Switch>
+            </Suspense>
           </ErrorCatcher>
         </PageWrapper>
       </ContentWrapper>

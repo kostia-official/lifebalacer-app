@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useApolloError } from '../hooks/useApolloError';
 import { PageWrapper } from '../components/PageWrapper';
-import _ from 'lodash';
 import {
   useGetReminderQuery,
   useUpsertReminderMutation,
@@ -20,7 +19,7 @@ const logoStyles = css`
   margin-bottom: 10px;
 `;
 
-export const Reminders = () => {
+const Reminders = () => {
   const { errorMessage, onError, errorTime } = useApolloError();
   const { data } = useGetReminderQuery({ onError });
   const [upsertReminderMutation] = useUpsertReminderMutation({
@@ -49,7 +48,7 @@ export const Reminders = () => {
   );
 
   return (
-    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={_.isEmpty(data)}>
+    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!data}>
       <LogoContent logo={ReminderLogo} logoStyles={logoStyles} />
 
       <TimePicker
@@ -63,3 +62,5 @@ export const Reminders = () => {
     </PageWrapper>
   );
 };
+
+export default Reminders;

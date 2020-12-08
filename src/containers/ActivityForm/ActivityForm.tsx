@@ -60,7 +60,7 @@ const EmojiInput = styled(Input)`
   }
 `;
 
-export const ActivityForm = () => {
+const ActivityForm = () => {
   let { _id } = useParams<{ _id: string }>();
   const isEdit = !!_id;
 
@@ -334,3 +334,5 @@ export const ActivityForm = () => {
     </PageWrapper>
   );
 };
+
+export default ActivityForm;

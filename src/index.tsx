@@ -14,8 +14,11 @@ import { config } from './common/config';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import LuxonUtils from '@date-io/luxon';
 import { ApolloCacheLoader } from './containers/ApolloCacheLoader';
+import { logSender } from './services/logSender';
 
 export const history = createBrowserHistory();
+
+logSender.init();
 
 ReactDOM.render(
   <Auth0Provider {...config.auth}>
