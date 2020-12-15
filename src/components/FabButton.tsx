@@ -17,6 +17,7 @@ const Wrapper = styled.div<IStyleProps>`
   position: fixed;
   bottom: ${(props) => props.bottom || '20px'};
   right: ${(props) => props.right || '20px'};
+  z-index: 200;
 `;
 
 export const EmptySpaceUnderFab = styled.div`

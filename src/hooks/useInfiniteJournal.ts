@@ -9,7 +9,15 @@ export const useInfiniteJournal = ({
 }: Apollo.QueryHookOptions<GetJournalQuery, GetJournalQueryVariables>) => {
   const [isHasMore, setIsHasMore] = useState(true);
 
-  const { data, fetchMore, refetch, loading } = useGetJournalQuery({ onError, variables });
+  const { data, fetchMore, refetch, loading } = useGetJournalQuery({
+    onError,
+    variables,
+    onCompleted: () => {
+      const isCanScroll = document.documentElement.scrollHeight > window.innerHeight;
+
+      if (!isCanScroll) setIsHasMore(false);
+    }
+  });
 
   const journal = data?.journal;
 
@@ -22,7 +30,10 @@ export const useInfiniteJournal = ({
       .get('completedAt')
       .value();
 
-    if (!lastDate) return;
+    if (!lastDate) {
+      setIsHasMore(false);
+      return;
+    }
 
     fetchMore({
       variables: {
@@ -35,7 +46,7 @@ export const useInfiniteJournal = ({
         }
 
         return Object.assign({}, prev, {
-          entriesByDay: [...prev.journal, ...fetchMoreResult.journal]
+          journal: [...prev.journal, ...fetchMoreResult.journal]
         });
       }
     }).then();

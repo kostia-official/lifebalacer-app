@@ -3,7 +3,6 @@ import { DatePickerButton } from './DatePickerButton';
 import styled from 'styled-components';
 import { useApolloError } from '../../hooks/useApolloError';
 import { List, ListItem, ListItemText, ListSubheader } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
 import { PageWrapper } from '../../components/PageWrapper';
 import { useDaysStatisticText } from '../../hooks/useDaysStatisticText';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -16,6 +15,7 @@ import { EntriesLabels } from './EntriesLabels';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { DayTitle } from '../../components/DayTitle';
 import { Spinner } from '../../components/Spinner';
+import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
 
 const StyledList = styled(List)`
   background-color: ${({ theme }) => theme.palette.background.paper};
@@ -29,7 +29,7 @@ const DatePickerButtonWrapper = styled.div`
 `;
 
 const EntriesByDay = () => {
-  const history = useHistory();
+  const { goForwardTo } = useHistoryNavigation();
   const { errorMessage, errorTime, onError } = useApolloError();
 
   usePushTokenSave({ onError });
@@ -48,9 +48,9 @@ const EntriesByDay = () => {
 
   const onEntryFormOpen = useCallback(
     (date = new Date()) => {
-      history.push(`/entries/${new Date(date).toISOString()}`);
+      goForwardTo(`/entries/${new Date(date).toISOString()}`);
     },
-    [history]
+    [goForwardTo]
   );
 
   const isLoading = !entriesByDay || !activities;
@@ -79,9 +79,10 @@ const EntriesByDay = () => {
                 <ListItem key={day.date} onClick={() => onEntryFormOpen(day.date)} button>
                   <ListItemText
                     primary={<DayTitle day={day} />}
+                    secondaryTypographyProps={{ component: 'div' }}
                     secondary={
                       <EntriesLabels
-                        entries={day.entries}
+                        day={day}
                         todoistActivity={todoistActivity}
                         getActivityById={getActivityById}
                       />

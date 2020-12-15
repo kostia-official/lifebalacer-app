@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import {
   refetchGetActivitiesQuery,
   Activity,
@@ -7,7 +7,6 @@ import {
 } from '../generated/apollo';
 import { Table } from '../components/Table';
 import { useApolloError } from '../hooks/useApolloError';
-import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { PageWrapper } from '../components/PageWrapper';
 import { Button } from '@material-ui/core';
@@ -17,6 +16,7 @@ import _ from 'lodash';
 import { useActivities } from '../hooks/useActivities';
 import { EmptySpaceUnderFab, FabButton } from '../components/FabButton';
 import { Greyscale } from '../components/Greyscale';
+import { useHistoryNavigation } from '../hooks/useHistoryNavigation';
 
 const ConnectTodoistButtonWrapper = styled.div`
   display: flex;
@@ -30,7 +30,7 @@ const ArchivedActivitiesWrapper = styled.div`
 
 const Activities = () => {
   const { isMobile } = useDeviceDetect();
-  const history = useHistory();
+  const { goForwardToCb, goForwardTo } = useHistoryNavigation();
   const { errorMessage, onError, errorTime } = useApolloError();
   const { authorizeInTodoist } = useTodoist();
 
@@ -45,10 +45,6 @@ const Activities = () => {
     onError,
     refetchQueries: [refetchGetActivitiesQuery()]
   });
-
-  const onActivityCreateClick = useCallback(() => {
-    history.push('/activities/create');
-  }, [history]);
 
   return (
     <PageWrapper
@@ -82,7 +78,7 @@ const Activities = () => {
             tooltip: 'Edit',
             onClick: (event, rowData) => {
               const activity = rowData as Activity;
-              history.push(`/activities/edit/${activity._id}`);
+              goForwardTo(`/activities/edit/${activity._id}`);
             }
           },
           {
@@ -123,7 +119,7 @@ const Activities = () => {
               tooltip: 'Edit',
               onClick: (event, rowData) => {
                 const activity = rowData as Activity;
-                history.push(`/activities/edit/${activity._id}`);
+                goForwardTo(`/activities/edit/${activity._id}`);
               }
             },
             {
@@ -148,7 +144,7 @@ const Activities = () => {
 
       <EmptySpaceUnderFab />
 
-      <FabButton onClick={onActivityCreateClick} />
+      <FabButton onClick={goForwardToCb('/activities/create')} />
     </PageWrapper>
   );
 };

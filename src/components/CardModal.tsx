@@ -18,7 +18,7 @@ const CardStyled = styled(Card)`
   top: 50%;
   transform: translate(-50%, -50%);
 
-  z-index: 200;
+  z-index: 400;
 `;
 
 const Overlay = styled.div`
@@ -33,7 +33,7 @@ const Overlay = styled.div`
   width: 100vw;
   height: 100vh;
 
-  z-index: 100;
+  z-index: 300;
 `;
 
 const Container = styled.div`

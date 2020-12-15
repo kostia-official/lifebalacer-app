@@ -1,5 +1,16 @@
-import { DateTime } from "luxon";
+import { DateTime } from 'luxon';
 
-export const isToday = (date: DateTime) => {
-  return date.toISODate() === DateTime.local().toISODate()
-}
+export type DateAny = string | Date | DateTime;
+
+export const toLuxon = (date: DateAny) => {
+  if (date instanceof DateTime) return date;
+  return DateTime.fromJSDate(new Date(date));
+};
+
+export const toZeroTimeISO = (date: DateAny) => {
+  return toLuxon(date).toISODate() + 'T00:00:00.000Z';
+};
+
+export const getIsToday = (date: DateAny) => {
+  return toLuxon(date).toISODate() === DateTime.local().toISODate();
+};

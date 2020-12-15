@@ -11,6 +11,7 @@ fragment ActivityResult on Activity {
   isWithDescription
   isWidget
   isReverseColors
+  isRequired
   rangeMeta {
     from
     to
@@ -46,6 +47,9 @@ fragment EntriesByDayResult on EntriesByDay {
     description
     value
     completedAt
+    activityId
+  }
+  missing {
     activityId
   }
 }

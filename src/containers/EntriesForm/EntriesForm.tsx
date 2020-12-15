@@ -15,7 +15,7 @@ import {
 import { useApolloError } from '../../hooks/useApolloError';
 import * as R from 'remeda';
 import _ from 'lodash';
-import { Card, CardContent, Typography } from '@material-ui/core';
+import { Badge, Card, CardContent, Typography } from '@material-ui/core';
 import { useParams, useHistory } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { CardModal } from '../../components/CardModal';
@@ -26,7 +26,7 @@ import { DateTime } from 'luxon';
 import { useDeviceDetect } from '../../hooks/useDeviceDetect';
 import { EntryModalContent } from './EntryModalContent';
 import { isSwipeHandlersEnabledVar } from '../../reactiveState';
-import { isToday } from '../../helpers/date';
+import { getIsToday } from '../../helpers/date';
 import { FabButton } from '../../components/FabButton';
 import { useActivitiesByCategory } from '../../hooks/useActivitiesByCategory';
 import { PageWrapper } from '../../components/PageWrapper';
@@ -74,7 +74,7 @@ const EntriesForm = () => {
   const endOfDay = DateTime.fromISO(dayDate).set({ hour: 23 }).toISO();
 
   const getCompletedAt = useCallback(
-    () => (isToday(DateTime.fromISO(dayDate)) ? DateTime.local().toISO() : endOfDay),
+    () => (getIsToday(DateTime.fromISO(dayDate)) ? DateTime.local().toISO() : endOfDay),
     [dayDate, endOfDay]
   );
 
@@ -85,6 +85,7 @@ const EntriesForm = () => {
     onError
   });
   const entriesByDay = entriesData?.entriesByOneDay?.entries;
+  const missingEntries = entriesData?.entriesByOneDay?.missing;
 
   useOnEntryUpdate([refetch]);
 
@@ -103,6 +104,12 @@ const EntriesForm = () => {
       return selectedEntries?.filter((entry) => entry.activityId === activityId);
     },
     [selectedEntries]
+  );
+  const getMissingByActivityId = useCallback(
+    (activityId: string) => {
+      return missingEntries?.find((entry) => entry.activityId === activityId);
+    },
+    [missingEntries]
   );
 
   const getEntryById = useCallback(
@@ -241,8 +248,7 @@ const EntriesForm = () => {
     }
   }, [getEntryById, deleteEntry, modalEntry, closeModal]);
 
-  const { goBack } = useHistoryNavigation();
-  const onDoneClick = goBack('/');
+  const { goBackCb } = useHistoryNavigation();
 
   const { activitiesByCategory } = useActivitiesByCategory({
     activities,
@@ -281,14 +287,19 @@ const EntriesForm = () => {
 
               {activities.map((activity) => {
                 const entries = getEntriesByActivityId(activity._id);
+                const isMissing = !!getMissingByActivityId(activity._id);
 
                 if (_.isEmpty(entries)) {
                   return (
-                    <EntryPickButton
+                    <Badge
                       key={activity._id}
-                      activity={activity}
-                      toggleSelection={toggleSelection}
-                    />
+                      color="secondary"
+                      variant="dot"
+                      overlap="circle"
+                      invisible={!isMissing}
+                    >
+                      <EntryPickButton activity={activity} toggleSelection={toggleSelection} />
+                    </Badge>
                   );
                 }
 
@@ -308,7 +319,7 @@ const EntriesForm = () => {
         );
       })}
 
-      <FabButton onClick={onDoneClick} icon="save" />
+      <FabButton onClick={goBackCb()} icon="keyboard_return" />
     </PageWrapper>
   );
 };

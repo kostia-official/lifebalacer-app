@@ -1,12 +1,15 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, Fragment } from 'react';
 import _ from 'lodash';
 import { groupTodoistEntries } from '../../helpers/groupTodoistEntries';
 import { EntryLabel } from '../../components/EntryLabel';
-import { EntryResult, ActivityResult } from '../../common/types';
+import { ActivityResult, DayResult } from '../../common/types';
 import styled from 'styled-components';
+import { Typography } from '@material-ui/core';
+import { getIsToday } from '../../helpers/date';
+import { MissingLabel } from './MissingLabel';
 
 export interface EntriesLabelsProps {
-  entries: EntryResult[];
+  day: DayResult;
   todoistActivity?: ActivityResult;
   getActivityById: (id: string) => ActivityResult | undefined;
 }
@@ -23,7 +26,7 @@ const EntryLabelWrapper = styled.span`
 `;
 
 export const EntriesLabels: React.FC<EntriesLabelsProps> = ({
-  entries,
+  day: { entries, missing, date },
   todoistActivity,
   getActivityById
 }) => {
@@ -42,15 +45,31 @@ export const EntriesLabels: React.FC<EntriesLabelsProps> = ({
 
   return (
     <Wrapper>
-      {entriesWithTodoistGroup.map((entry, index, array) => (
-        <EntryLabelWrapper key={entry._id}>
-          <EntryLabel
-            entry={entry}
-            activity={getActivityById(entry.activityId)}
-            isAddComa={index !== array.length - 1}
-          />
-        </EntryLabelWrapper>
-      ))}
+      {entriesWithTodoistGroup.map((entry, index, array) => {
+        const activity = getActivityById(entry.activityId);
+        const isNotLast = index !== array.length - 1;
+
+        return (
+          <EntryLabelWrapper key={entry._id}>
+            <EntryLabel entry={entry} activity={activity} isAddComa={isNotLast} />
+          </EntryLabelWrapper>
+        );
+      })}
+
+      {!_.isEmpty(missing) && (
+        <Fragment>
+          <MissingLabel date={date} />
+          {missing.map(({ activityId }, index, array) => {
+            const activity = getActivityById(activityId);
+
+            return (
+              <EntryLabelWrapper key={activityId}>
+                <EntryLabel activity={activity} isAddComa={index !== array.length - 1} />
+              </EntryLabelWrapper>
+            );
+          })}
+        </Fragment>
+      )}
     </Wrapper>
   );
 };

@@ -10,7 +10,7 @@ export const LinearPointsTooltip = () => {
       </Typography>
 
       <Typography color="inherit" variant="body2" component="p" gutterBottom>
-        For example, we track how much alcohol was drunk. We estimate the amount on the range from {' '}
+        For example, we track how much alcohol was drunk. We estimate the amount on the range from{' '}
         <b>1</b> to <b>5</b>. If we specify here points: <b>-100</b>, then earned points will be
         like this:
       </Typography>

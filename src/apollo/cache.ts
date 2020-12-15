@@ -1,6 +1,6 @@
 import { InMemoryCache } from '@apollo/client';
-import { DateTime } from 'luxon';
 import { ApolloPersistCache } from '../services/ApolloPersistCache';
+import { toZeroTimeISO } from '../helpers/date';
 
 export const cache = new InMemoryCache({
   typePolicies: {
@@ -41,7 +41,7 @@ export const cache = new InMemoryCache({
           if (!args?.date) return;
 
           // Enforce proper datetime format
-          args.date = DateTime.fromISO(args.date).toISODate() + 'T00:00:00.000Z';
+          args.date = toZeroTimeISO(args.date);
 
           return toReference({
             __typename: 'EntriesByDay',

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, Suspense, useEffect } from 'react';
+import React, { useState, useCallback, Suspense } from 'react';
 import { Header } from '../components/Header';
 import { Navigation } from '../components/Navigation';
 import styled from 'styled-components';
@@ -24,6 +24,7 @@ import EntriesByDay from './EntriesByDay/EntriesByDay';
 import EntriesForm from './EntriesForm/EntriesForm';
 import ActivityForm from './ActivityForm/ActivityForm';
 import Journal from './Journal/Journal';
+import { useHistoryNavigation } from '../hooks/useHistoryNavigation';
 
 const Calendar = React.lazy(() => import('./Calendar/Calendar'));
 const Activities = React.lazy(() => import('./Activities'));
@@ -101,7 +102,7 @@ export interface IAppProps {
 
 export const App: React.FC = () => {
   const { isAuthenticated, user, login } = useAuth();
-  const history = useHistory();
+  const { goBackCb, switchTo, depth } = useHistoryNavigation();
   const { isDesktop } = useDeviceDetect();
   const [isExpandedMenu, setIsExpandedMenu] = useState(isDesktop);
 
@@ -122,17 +123,6 @@ export const App: React.FC = () => {
     setIsExpandedMenu((prevValue) => !prevValue);
   }, [setIsExpandedMenu]);
 
-  const onNavigationItemClick = useCallback(
-    (path: string) => {
-      history.replace(path);
-    },
-    [history]
-  );
-
-  const onBackClick = useCallback(() => {
-    history.goBack();
-  }, [history]);
-
   return (
     <AppWrapper {...swipeHandlers}>
       {isDesktop && (
@@ -150,7 +140,8 @@ export const App: React.FC = () => {
       <Header
         title="Life Balancer"
         onMenuClick={onMenuClick}
-        onBackClick={onBackClick}
+        onBackClick={goBackCb('/')}
+        isShowBack={depth > 0}
         rightContent={
           isAuthenticated ? <HeaderRightContent /> : <Button onClick={() => login()}>Login</Button>
         }
@@ -161,7 +152,7 @@ export const App: React.FC = () => {
           isExpanded={isExpandedMenu}
           items={isAuthenticated ? pages : pages.filter(({ isPublic }) => isPublic)}
           onClose={onMenuClick}
-          onItemClick={onNavigationItemClick}
+          onItemClick={switchTo}
           user={user && { name: user?.given_name, email: user.email, avatar: user.picture }}
         />
 

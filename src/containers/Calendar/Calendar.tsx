@@ -1,6 +1,5 @@
 import React, { useCallback, ChangeEvent, useMemo, useState, useEffect } from 'react';
 import { Calendar as MaterialCalendar, useStaticState } from '@material-ui/pickers';
-import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { useApolloError } from '../../hooks/useApolloError';
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
@@ -20,6 +19,7 @@ import { useReactiveVar } from '@apollo/client';
 import { calendarActivityIdVar } from '../../reactiveState';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { useOnActivityUpdate } from '../../hooks/useOnActivityUpdate';
+import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
 
 const CalendarWrapper = styled.div`
   overflow: hidden;
@@ -42,7 +42,7 @@ const FormControlStyled = styled(FormControl)`
 `;
 
 const Calendar = () => {
-  const history = useHistory();
+  const { goForwardTo } = useHistoryNavigation();
   const { errorMessage, errorTime, onError } = useApolloError();
   const selectedActivityId = useReactiveVar(calendarActivityIdVar);
 
@@ -98,9 +98,9 @@ const Calendar = () => {
   const onDateChange = useCallback(
     (date) => {
       if (!date) return;
-      history.push(`/entries/${date.toISO()}`);
+      goForwardTo(`/entries/${date.toISO()}`);
     },
-    [history]
+    [goForwardTo]
   );
 
   const [date] = useState(new Date());

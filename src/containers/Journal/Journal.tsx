@@ -9,8 +9,10 @@ import { useInfiniteJournal } from '../../hooks/useInfiniteJournal';
 import styled from 'styled-components';
 import { useActivities } from '../../hooks/useActivities';
 import { Spinner } from '../../components/Spinner';
-import { useHistory } from 'react-router-dom';
 import { DayTitle } from '../../components/DayTitle';
+import { DatePickerButton } from '../EntriesByDay/DatePickerButton';
+import { FabButton } from '../../components/FabButton';
+import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
@@ -36,7 +38,14 @@ const Description = styled(Typography)`
   margin-bottom: 16px;
 `;
 
+const DatePickerButtonWrapper = styled.div`
+  position: fixed;
+  bottom: 94px;
+  right: 20px;
+`;
+
 const Journal = () => {
+  const { goForwardTo } = useHistoryNavigation();
   const { errorMessage, onError, errorTime } = useApolloError();
 
   const { getActivityById, todoistActivity, activities } = useActivities({ onError });
@@ -52,13 +61,11 @@ const Journal = () => {
 
   useOnEntryUpdate([refetch]);
 
-  const history = useHistory();
-
   const onDayClick = useCallback(
-    (date = new Date()) => () => {
-      history.push(`/entries/${new Date(date).toISOString()}`);
+    (date = new Date()) => {
+      goForwardTo(`/entries/${new Date(date).toISOString()}`);
     },
-    [history]
+    [goForwardTo]
   );
 
   const isLoading = !journal || !activities;
@@ -77,7 +84,7 @@ const Journal = () => {
         >
           {journal?.map((day) => {
             return (
-              <CardStyled key={day.date} onClick={onDayClick(day.date)}>
+              <CardStyled key={day.date} onClick={() => onDayClick(day.date)}>
                 <CardActionArea>
                   <CardHeaderStyled title={<DayTitle day={day} />} />
                   <CardContentStyled>
@@ -100,6 +107,12 @@ const Journal = () => {
           })}
         </InfiniteScroll>
       )}
+
+      <DatePickerButtonWrapper>
+        <DatePickerButton onChange={onDayClick} />
+      </DatePickerButtonWrapper>
+
+      <FabButton onClick={() => onDayClick()} />
     </PageWrapper>
   );
 };

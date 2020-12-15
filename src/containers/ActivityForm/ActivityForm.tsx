@@ -66,15 +66,14 @@ const ActivityForm = () => {
 
   const { errorMessage, onError, errorTime } = useApolloError({ isForceShowError: true });
 
-  const { goBack } = useHistoryNavigation();
-  const onCompleted = goBack('/activities');
+  const { goBackCb } = useHistoryNavigation();
 
   const { data } = useGetActivityQuery({ onError, variables: { _id }, skip: !isEdit });
   const existingActivity: Partial<ActivityResult> = isEdit && data?.activity ? data?.activity : {};
 
   const mutationOptions = {
     onError,
-    onCompleted,
+    onCompleted: goBackCb('/'),
     refetchQueries: [refetchGetActivitiesQuery(), refetchGetActivitiesExtremesQuery()]
   };
 
@@ -121,6 +120,8 @@ const ActivityForm = () => {
         category: activity.category!,
         points: _.isNil(activity.points) ? 0 : Number(activity.points),
         isWithDescription: activity.isWithDescription,
+        isRequired: activity.isRequired,
+        dateIsRequiredSet: activity.dateIsRequiredSet,
         rangeMeta:
           activity.valueType === ActivityType.Range
             ? { from: Number(rangeMetaInput?.from!), to: Number(rangeMetaInput?.to!) }
@@ -173,9 +174,16 @@ const ActivityForm = () => {
   const onToggleIsWithDescription: SwitchBaseProps['onChange'] = useCallback((e) => {
     const isCheck: boolean = e.target.checked;
 
+    setActivity((prev) => ({ ...prev, isWithDescription: isCheck }));
+  }, []);
+
+  const onToggleIsRequired: SwitchBaseProps['onChange'] = useCallback((e) => {
+    const isCheck: boolean = e.target.checked;
+
     setActivity((prev) => ({
       ...prev,
-      isWithDescription: isCheck
+      isRequired: isCheck,
+      dateIsRequiredSet: new Date().toISOString()
     }));
   }, []);
 
@@ -238,6 +246,18 @@ const ActivityForm = () => {
           onChange={updateActivityField('points')}
           onFocus={selectAllOnFocus}
           onSelect={preventMobileSelectionMenu}
+        />
+
+        <TooltipCheckbox
+          text="Required for every day tracking"
+          tooltipContent={
+            <Typography color="inherit" variant="body2" component="p">
+              Good for mood or sleep activities that need to be tracked every day. You will see if
+              you miss to add an entry.
+            </Typography>
+          }
+          onChange={onToggleIsRequired}
+          checked={!!activity.isRequired}
         />
 
         {!activity.isWidget && (
