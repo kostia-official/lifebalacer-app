@@ -3,7 +3,6 @@ import ObjectId from 'bson-objectid';
 import {
   ActivityType,
   useCreateEntryMutation,
-  useDeleteEntryMutation,
   refetchGetBalanceQuery,
   Entry,
   refetchGetEntriesByDayQuery,
@@ -32,6 +31,7 @@ import { useActivitiesByCategory } from '../../hooks/useActivitiesByCategory';
 import { PageWrapper } from '../../components/PageWrapper';
 import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
+import { useDeleteEntry } from '../../hooks/useDeleteEntry';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
@@ -128,8 +128,8 @@ const EntriesForm = () => {
       refetchGetActivitiesExtremesQuery()
     ]
   };
+  const [deleteEntryMutation] = useDeleteEntry(mutationOptions, { date: dayDate });
   const [createEntryMutation] = useCreateEntryMutation(mutationOptions);
-  const [deleteEntryMutation] = useDeleteEntryMutation(mutationOptions);
   const [updateEntryMutation] = useUpdateEntryMutation(mutationOptions);
 
   const createEntry = useCallback(

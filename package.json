@@ -14,7 +14,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@apollo/client": "^3.2.7",
+    "@apollo/client": "^3.3.6",
     "@auth0/auth0-react": "^1.0.0",
     "@auth0/auth0-spa-js": "^1.13.1",
     "@date-io/luxon": "^1.3.13",
@@ -29,7 +29,7 @@
     "@sentry/react": "^5.27.2",
     "@sentry/tracing": "^5.27.2",
     "ably": "^1.2.4",
-    "apollo3-cache-persist": "^0.7.0",
+    "apollo3-cache-persist": "^0.9.1",
     "axios": "^0.20.0",
     "bson-objectid": "^1.3.1",
     "clsx": "^1.1.1",

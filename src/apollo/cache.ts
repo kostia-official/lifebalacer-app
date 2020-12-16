@@ -7,21 +7,14 @@ export const cache = new InMemoryCache({
     EntriesByDay: {
       keyFields: ['date'],
       fields: {
-        entries: {
-          merge(existing, incoming) {
-            return incoming;
-          }
-        }
+        entries: { merge: (_, incoming) => incoming },
+        missing: { merge: (_, incoming) => incoming }
       }
     },
     Journal: {
       keyFields: ['date'],
       fields: {
-        entries: {
-          merge(existing, incoming) {
-            return incoming;
-          }
-        }
+        entries: { merge: (_, incoming) => incoming }
       }
     },
     Query: {
@@ -32,11 +25,7 @@ export const cache = new InMemoryCache({
             _id: args?._id
           });
         },
-        entriesByDay: {
-          merge(existing, incoming) {
-            return incoming;
-          }
-        },
+        entriesByDay: { merge: (_, incoming) => incoming },
         entriesByOneDay(_, { args, toReference }) {
           if (!args?.date) return;
 
