@@ -5,7 +5,6 @@ import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { Card, CardActionArea, CardContent, CardHeader, Typography } from '@material-ui/core';
 import { EmptyState } from '../../components/EmptyState';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { useInfiniteJournal } from '../../hooks/useInfiniteJournal';
 import styled from 'styled-components';
 import { useActivities } from '../../hooks/useActivities';
 import { Spinner } from '../../components/Spinner';
@@ -13,6 +12,12 @@ import { DayTitle } from '../../components/DayTitle';
 import { DatePickerButton } from '../EntriesByDay/DatePickerButton';
 import { FabButton } from '../../components/FabButton';
 import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
+import { useInfiniteQuery } from '../../hooks/useInfiniteQuery';
+import {
+  GetJournalQuery,
+  GetJournalQueryVariables,
+  GetJournalDocument
+} from '../../generated/apollo';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
@@ -50,7 +55,10 @@ const Journal = () => {
 
   const { getActivityById, todoistActivity, activities } = useActivities({ onError });
 
-  const { journal, isHasMore, loadMore, refetch } = useInfiniteJournal({
+  const { data, isHasMore, loadMore, refetch } = useInfiniteQuery<
+    GetJournalQuery,
+    GetJournalQueryVariables
+  >(GetJournalDocument, 'journal', {
     onError,
     variables: {
       activities: activities
@@ -58,6 +66,8 @@ const Journal = () => {
         .map((activity) => activity._id)
     }
   });
+
+  const journal = data?.journal;
 
   useOnEntryUpdate([refetch]);
 

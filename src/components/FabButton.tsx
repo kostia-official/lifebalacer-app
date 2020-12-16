@@ -1,5 +1,5 @@
 import React from 'react';
-import { Fab, Icon, FabProps } from '@material-ui/core';
+import { Fab, Icon, FabProps, Badge } from '@material-ui/core';
 import styled from 'styled-components';
 import { PartialBy } from '../common/typeUtils';
 
@@ -10,6 +10,7 @@ export interface IStyleProps {
 
 export interface ISaveFabButtonProps extends FabProps {
   icon?: string;
+  isShowBadge?: boolean;
   styles?: IStyleProps;
 }
 
@@ -26,14 +27,26 @@ export const EmptySpaceUnderFab = styled.div`
 
 export const FabButton: React.FC<PartialBy<ISaveFabButtonProps, 'children'>> = ({
   icon = 'add',
+  isShowBadge = false,
   styles = {},
   ...fabProps
 }) => {
   return (
     <Wrapper {...styles}>
-      <Fab color="primary" {...fabProps}>
-        <Icon>{icon}</Icon>
-      </Fab>
+      <Badge
+        color="secondary"
+        overlap="circle"
+        variant="dot"
+        invisible={!isShowBadge}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'left'
+        }}
+      >
+        <Fab color="primary" {...fabProps}>
+          <Icon>{icon}</Icon>
+        </Fab>
+      </Badge>
     </Wrapper>
   );
 };

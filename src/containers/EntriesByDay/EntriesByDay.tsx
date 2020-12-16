@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import _ from 'lodash';
 import { DatePickerButton } from './DatePickerButton';
 import styled from 'styled-components';
 import { useApolloError } from '../../hooks/useApolloError';
@@ -9,13 +10,18 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { useActivities } from '../../hooks/useActivities';
 import { FabButton } from '../../components/FabButton';
 import { usePushTokenSave } from '../../hooks/usePushTokenSave';
-import { useInfiniteEntriesByDay } from '../../hooks/useInfiniteEntriesByDay';
 import { EmptyState } from '../../components/EmptyState';
 import { EntriesLabels } from './EntriesLabels';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { DayTitle } from '../../components/DayTitle';
 import { Spinner } from '../../components/Spinner';
 import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
+import { useInfiniteQuery } from '../../hooks/useInfiniteQuery';
+import {
+  GetEntriesByDayDocument,
+  GetEntriesByDayQuery,
+  GetEntriesByDayQueryVariables
+} from '../../generated/apollo';
 
 const StyledList = styled(List)`
   background-color: ${({ theme }) => theme.palette.background.paper};
@@ -37,12 +43,12 @@ const EntriesByDay = () => {
   const { statisticText, refetch: refetchStatistic } = useDaysStatisticText({ onError });
   const { activities, todoistActivity, getActivityById } = useActivities({ onError });
 
-  const {
-    entriesByDay,
-    isHasMore,
-    loadMore,
-    refetch: refetchEntriesByDay
-  } = useInfiniteEntriesByDay({ onError });
+  const { data, isHasMore, loadMore, refetch: refetchEntriesByDay } = useInfiniteQuery<
+    GetEntriesByDayQuery,
+    GetEntriesByDayQueryVariables
+  >(GetEntriesByDayDocument, 'entriesByDay', { onError });
+
+  const entriesByDay = data?.entriesByDay;
 
   useOnEntryUpdate([refetchEntriesByDay, refetchStatistic]);
 
@@ -55,9 +61,11 @@ const EntriesByDay = () => {
 
   const isLoading = !entriesByDay || !activities;
 
+  const isEmptyState = _.isEmpty(entriesByDay);
+
   return (
     <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={isLoading}>
-      {entriesByDay?.length === 0 ? (
+      {isEmptyState ? (
         <EmptyState text="So far no entries..." />
       ) : (
         <InfiniteScroll
@@ -99,7 +107,7 @@ const EntriesByDay = () => {
         <DatePickerButton onChange={onEntryFormOpen} />
       </DatePickerButtonWrapper>
 
-      <FabButton onClick={() => onEntryFormOpen()} />
+      <FabButton onClick={() => onEntryFormOpen()} isShowBadge={isEmptyState} />
     </PageWrapper>
   );
 };
