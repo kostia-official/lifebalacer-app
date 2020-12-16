@@ -22,6 +22,7 @@ import {
   GetEntriesByDayQuery,
   GetEntriesByDayQueryVariables
 } from '../../generated/apollo';
+import { getIsToday } from '../../helpers/date';
 
 const StyledList = styled(List)`
   background-color: ${({ theme }) => theme.palette.background.paper};
@@ -43,12 +44,14 @@ const EntriesByDay = () => {
   const { statisticText, refetch: refetchStatistic } = useDaysStatisticText({ onError });
   const { activities, todoistActivity, getActivityById } = useActivities({ onError });
 
-  const { data, isHasMore, loadMore, refetch: refetchEntriesByDay } = useInfiniteQuery<
+  const { data, isHasMore, loadMore, refetch: refetchEntriesByDay, loading } = useInfiniteQuery<
     GetEntriesByDayQuery,
     GetEntriesByDayQueryVariables
   >(GetEntriesByDayDocument, 'entriesByDay', { onError });
 
   const entriesByDay = data?.entriesByDay;
+
+  const isNewDayLoading = !getIsToday(_.get(entriesByDay, '[0].date') as string) && loading;
 
   useOnEntryUpdate([refetchEntriesByDay, refetchStatistic]);
 
@@ -59,7 +62,7 @@ const EntriesByDay = () => {
     [goForwardTo]
   );
 
-  const isLoading = !entriesByDay || !activities;
+  const isLoading = !entriesByDay || !activities || isNewDayLoading;
 
   const isEmptyState = _.isEmpty(entriesByDay);
 
