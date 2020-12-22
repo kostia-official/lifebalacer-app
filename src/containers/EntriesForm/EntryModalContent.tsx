@@ -22,12 +22,14 @@ import {
 import { InputProps as StandardInputProps } from '@material-ui/core/Input/Input';
 import _ from 'lodash';
 import { useDeviceDetect } from '../../hooks/useDeviceDetect';
+import { useMountTime } from '../../hooks/useMountTime';
 
 export interface EntryValueModalContentProps {
   onSave: (toUpdate: Partial<EntryResult>) => void;
   onDelete: () => void;
   entry: EntryResult;
   activity: ActivityResult;
+  isForceDescription: boolean;
 }
 
 const CardActionsStyled = styled(CardActions)`
@@ -51,7 +53,8 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   onSave,
   onDelete,
   entry,
-  activity
+  activity,
+  isForceDescription
 }) => {
   const { isDesktop } = useDeviceDetect();
 
@@ -59,6 +62,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   const max = activity?.rangeMeta?.to!;
   const averageValue = Math.ceil((max + min) / 2);
 
+  const { mountTime } = useMountTime();
   const [value, setValue] = useState(
     activity.valueType === ActivityType.Range ? entry.value || averageValue : entry.value
   );
@@ -99,8 +103,20 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
     });
   }, [min, max]);
 
+  const onBlur: StandardInputProps['onBlur'] = useCallback(
+    (e) => {
+      console.log('onBlur');
+      if (Date.now() - mountTime < 1000) {
+        console.log('prevent blur');
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    },
+    [mountTime]
+  );
+
   const isWithValue = [ActivityType.Value, ActivityType.Todoist].includes(activity.valueType);
-  const isWithDescription = activity.isWithDescription || entry.description;
+  const isWithDescription = isForceDescription || activity.isWithDescription || entry.description;
   const isFocusDescription = activity.valueType === ActivityType.Simple;
   const valueLabel = activity.valueLabel || 'Value';
 
@@ -152,6 +168,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
             multiline
             rowsMax={isDesktop ? 20 : 10}
             autoFocus={isFocusDescription}
+            onBlur={onBlur}
           />
         )}
       </CardContentStyled>

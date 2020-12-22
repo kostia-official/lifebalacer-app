@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { SelectedEntry, ActivityResult } from '../../common/types';
 import { EntryLabel } from '../../components/EntryLabel';
 import { ActivityCategory, Activity } from '../../generated/apollo';
+import { useLongPress } from 'react-use';
 
 const ButtonStyled: typeof Button = styled(Button)`
   height: 40px;
@@ -14,14 +15,20 @@ export interface EntryPickButtonProps {
   entry?: SelectedEntry;
   activity: ActivityResult;
   toggleSelection: (activity: ActivityResult, entry?: SelectedEntry) => any;
+  onLongPress: (entry?: SelectedEntry) => any;
 }
 
 export const EntryPickButton: React.FC<EntryPickButtonProps> = ({
   entry,
   activity,
-  toggleSelection
+  toggleSelection,
+  onLongPress
 }) => {
   const isSelected = !!entry;
+
+  const longPressEvent = useLongPress(() =>
+    onLongPress(entry || ({ activityId: activity._id } as SelectedEntry))
+  );
 
   const onClick = useCallback(() => {
     toggleSelection(activity, entry);
@@ -47,6 +54,7 @@ export const EntryPickButton: React.FC<EntryPickButtonProps> = ({
       startIcon={<Typography variant="h5">{activity.emoji}</Typography>}
       disableRipple
       disableElevation
+      {...longPressEvent}
     >
       <EntryLabel entry={entry} activity={activity} isWithEmoji={false} />
     </ButtonStyled>

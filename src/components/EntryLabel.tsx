@@ -39,7 +39,7 @@ export const EntryLabel = ({
   const prefix = isWithEmoji ? `${activity?.emoji} ` : '';
 
   const value = _.isNumber(entry?.value) ? `: ${entry?.value}` : '';
-  const isWithDescription = entry?.description && activity?.isWithDescription;
+  const isWithDescription = entry?.description && !activity?.isWidget;
 
   return (
     <Fragment>
