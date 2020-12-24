@@ -69,6 +69,7 @@ query GetJournal($dateAfter: Date, $activities: [String!]) {
       completedAt
       description
       activityId
+      value
     }
   }
 }

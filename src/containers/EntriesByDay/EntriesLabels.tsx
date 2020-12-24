@@ -5,6 +5,7 @@ import { EntryLabel } from '../../components/EntryLabel';
 import { ActivityResult, DayResult } from '../../common/types';
 import styled from 'styled-components';
 import { MissingLabel } from './MissingLabel';
+import { isLastIndex } from '../../helpers/array';
 
 export interface EntriesLabelsProps {
   day: DayResult;
@@ -45,11 +46,10 @@ export const EntriesLabels: React.FC<EntriesLabelsProps> = ({
     <Wrapper>
       {entriesWithTodoistGroup.map((entry, index, array) => {
         const activity = getActivityById(entry.activityId);
-        const isNotLast = index !== array.length - 1;
 
         return (
           <EntryLabelWrapper key={entry._id}>
-            <EntryLabel entry={entry} activity={activity} isAddComa={isNotLast} />
+            <EntryLabel entry={entry} activity={activity} isAddComa={!isLastIndex(array, index)} />
           </EntryLabelWrapper>
         );
       })}
@@ -57,12 +57,12 @@ export const EntriesLabels: React.FC<EntriesLabelsProps> = ({
       {!_.isEmpty(missing) && (
         <Fragment>
           <MissingLabel date={date} />
-          {missing.map(({ activityId }, index, array) => {
+          {missing.map(({ activityId }, index) => {
             const activity = getActivityById(activityId);
 
             return (
               <EntryLabelWrapper key={activityId}>
-                <EntryLabel activity={activity} isAddComa={index !== array.length - 1} />
+                <EntryLabel activity={activity} isAddComa={!isLastIndex(missing, index)} />
               </EntryLabelWrapper>
             );
           })}
