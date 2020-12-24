@@ -10,6 +10,9 @@ export interface GetEntryLabelProps extends GetEntryLabelArgs {
 
 const Label = styled.span`
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 75vw;
 `;
 
 const DescriptionIcon = styled(FontAwesomeIcon)`

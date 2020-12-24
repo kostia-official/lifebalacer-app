@@ -8,13 +8,7 @@ export interface GetEntryLabelArgs {
 }
 
 export const getEntryLabel = ({ entry, activity, isWithEmoji = true }: GetEntryLabelArgs) => {
-  const name =
-    activity?.isWidget && entry?.description
-      ? _.truncate(entry.description, {
-          length: 40,
-          separator: ' '
-        })
-      : activity?.name;
+  const name = activity?.isWidget && entry?.description ? entry.description : activity?.name;
 
   const prefix = isWithEmoji ? `${activity?.emoji} ` : '';
 

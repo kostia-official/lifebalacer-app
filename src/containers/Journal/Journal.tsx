@@ -36,11 +36,6 @@ const CardContentStyled = styled(CardContent)`
   }
 `;
 
-const Emoji = styled.span`
-  font-size: 16px;
-  margin-right: 1px;
-`;
-
 const ActivityTitle = styled(Typography)`
   font-size: 15px;
   margin-bottom: 8px;
@@ -111,10 +106,7 @@ const Journal = () => {
 
                       return (
                         <Fragment key={entry._id}>
-                          <ActivityTitle>
-                            <Emoji>{activity?.emoji}</Emoji>
-                            {getEntryLabel({ entry, activity, isWithEmoji: false })}
-                          </ActivityTitle>
+                          <ActivityTitle>{getEntryLabel({ entry, activity })}</ActivityTitle>
                           <Description variant="body2">{entry.description}</Description>
                         </Fragment>
                       );
