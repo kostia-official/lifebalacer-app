@@ -4,8 +4,6 @@ import { groupTodoistEntries } from '../../helpers/groupTodoistEntries';
 import { EntryLabel } from '../../components/EntryLabel';
 import { ActivityResult, DayResult } from '../../common/types';
 import styled from 'styled-components';
-import { Typography } from '@material-ui/core';
-import { getIsToday } from '../../helpers/date';
 import { MissingLabel } from './MissingLabel';
 
 export interface EntriesLabelsProps {

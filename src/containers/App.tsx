@@ -2,7 +2,7 @@ import React, { useState, useCallback, Suspense } from 'react';
 import { Header } from '../components/Header';
 import { Navigation } from '../components/Navigation';
 import styled from 'styled-components';
-import { Switch, useHistory } from 'react-router-dom';
+import { Switch } from 'react-router-dom';
 import { HeaderRightContent } from './HeaderRightContent';
 import { useAuth } from '../hooks/useAuth';
 import { Persist } from '../components/Persist';
