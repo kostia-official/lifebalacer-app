@@ -12,6 +12,7 @@ import Icon from '@material-ui/core/Icon';
 import { IPage } from '../containers/App';
 import { useDeviceDetect } from '../hooks/useDeviceDetect';
 import { ListItemAvatar, Avatar, Divider } from '@material-ui/core';
+import styled from 'styled-components';
 
 export const drawerWidth = '240px';
 
@@ -71,6 +72,15 @@ export interface INavigationProps {
   };
 }
 
+const Email = styled.span`
+  display: inline-block;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+`;
+
 export const Navigation: React.FC<INavigationProps> = ({
   isExpanded,
   items,
@@ -111,7 +121,7 @@ export const Navigation: React.FC<INavigationProps> = ({
                     </Avatar>
                   )}
                 </ListItemAvatar>
-                <ListItemText primary={user?.name} secondary={user?.email} />
+                <ListItemText primary={user?.name} secondary={<Email>{user.email}</Email>} />
               </ListItem>
 
               <Divider className={classes.divider} />
