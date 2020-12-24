@@ -12,7 +12,7 @@ const Label = styled.span`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 75vw;
+  max-width: 70vw;
 `;
 
 const DescriptionIcon = styled(FontAwesomeIcon)`
