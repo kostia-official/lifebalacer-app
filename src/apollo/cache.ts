@@ -26,6 +26,7 @@ export const cache = new InMemoryCache({
           });
         },
         entriesByDay: { merge: (_, incoming) => incoming },
+        journal: { merge: (_, incoming) => incoming },
         entriesByOneDay(_, { args, toReference }) {
           if (!args?.date) return;
 

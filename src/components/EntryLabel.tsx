@@ -1,14 +1,10 @@
-import _ from 'lodash';
-import { Entry, Activity } from '../generated/apollo';
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComment as commentIcon } from '@fortawesome/free-solid-svg-icons';
+import { GetEntryLabelArgs, getEntryLabel } from '../helpers/entryLabel';
 
-export interface GetEntryLabelProps {
-  activity?: Pick<Activity, 'name' | 'emoji' | 'valueType' | 'isWithDescription' | 'isWidget'>;
-  entry?: Pick<Entry, 'description' | 'value'>;
-  isWithEmoji?: boolean;
+export interface GetEntryLabelProps extends GetEntryLabelArgs {
   isAddComa?: boolean;
 }
 
@@ -28,22 +24,11 @@ export const EntryLabel = ({
   isWithEmoji = true,
   isAddComa = false
 }: GetEntryLabelProps) => {
-  const name =
-    activity?.isWidget && entry?.description
-      ? _.truncate(entry.description, {
-          length: 40,
-          separator: ' '
-        })
-      : activity?.name;
-
-  const prefix = isWithEmoji ? `${activity?.emoji} ` : '';
-
-  const value = _.isNumber(entry?.value) ? `: ${entry?.value}` : '';
   const isWithDescription = entry?.description && activity?.isWithDescription;
 
   return (
     <Fragment>
-      <Label>{prefix + name + value}</Label>
+      <Label>{getEntryLabel({ entry, activity, isWithEmoji })}</Label>
       {isWithDescription && <DescriptionIcon icon={commentIcon} />}
       {isAddComa && <span>, </span>}
     </Fragment>

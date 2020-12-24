@@ -18,6 +18,7 @@ import {
   GetJournalQueryVariables,
   GetJournalDocument
 } from '../../generated/apollo';
+import { getEntryLabel } from '../../helpers/entryLabel';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
@@ -35,12 +36,19 @@ const CardContentStyled = styled(CardContent)`
   }
 `;
 
+const Emoji = styled.span`
+  font-size: 16px;
+  margin-right: 1px;
+`;
+
 const ActivityTitle = styled(Typography)`
+  font-size: 15px;
   margin-bottom: 8px;
 `;
 
 const Description = styled(Typography)`
   margin-bottom: 16px;
+  white-space: pre-line;
 `;
 
 const DatePickerButtonWrapper = styled.div`
@@ -103,8 +111,9 @@ const Journal = () => {
 
                       return (
                         <Fragment key={entry._id}>
-                          <ActivityTitle variant="body1">
-                            {activity?.emoji} {activity?.name}
+                          <ActivityTitle>
+                            <Emoji>{activity?.emoji}</Emoji>
+                            {getEntryLabel({ entry, activity, isWithEmoji: false })}
                           </ActivityTitle>
                           <Description variant="body2">{entry.description}</Description>
                         </Fragment>

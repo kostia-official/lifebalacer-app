@@ -365,7 +365,7 @@ export type GetJournalQuery = { __typename?: 'Query' } & {
         entries: Array<
           { __typename?: 'Entry' } & Pick<
             Entry,
-            '_id' | 'completedAt' | 'description' | 'activityId'
+            '_id' | 'completedAt' | 'description' | 'activityId' | 'value'
           >
         >;
       }
@@ -760,6 +760,7 @@ export const GetJournalDocument = gql`
         completedAt
         description
         activityId
+        value
       }
     }
   }
