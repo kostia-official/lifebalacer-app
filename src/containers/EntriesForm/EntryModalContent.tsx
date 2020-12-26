@@ -7,7 +7,8 @@ import React, {
   ChangeEvent,
   useEffect,
   useMemo,
-  Fragment
+  Fragment,
+  useRef
 } from 'react';
 import styled from 'styled-components';
 import {
@@ -22,7 +23,8 @@ import {
 import { InputProps as StandardInputProps } from '@material-ui/core/Input/Input';
 import _ from 'lodash';
 import { useDeviceDetect } from '../../hooks/useDeviceDetect';
-import { useMountTime } from '../../hooks/useMountTime';
+import { usePreventBlur } from '../../hooks/usePreventBlur';
+import { useFocusOnTheEnd } from '../../hooks/useFocusOnTheEnd';
 
 export interface EntryValueModalContentProps {
   onSave: (toUpdate: Partial<EntryResult>) => void;
@@ -62,7 +64,9 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   const max = activity?.rangeMeta?.to!;
   const averageValue = Math.ceil((max + min) / 2);
 
-  const { mountTime } = useMountTime();
+  const { onBlur, inputRef } = usePreventBlur({ preventTime: 1000 });
+  const { onFocus } = useFocusOnTheEnd();
+
   const [value, setValue] = useState(
     activity.valueType === ActivityType.Range ? entry.value || averageValue : entry.value
   );
@@ -102,18 +106,6 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
       };
     });
   }, [min, max]);
-
-  const onBlur: StandardInputProps['onBlur'] = useCallback(
-    (e) => {
-      console.log('onBlur');
-      if (Date.now() - mountTime < 1000) {
-        console.log('prevent blur');
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    },
-    [mountTime]
-  );
 
   const isWithValue = [ActivityType.Value, ActivityType.Todoist].includes(activity.valueType);
   const isWithDescription = isForceDescription || activity.isWithDescription || entry.description;
@@ -160,6 +152,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
 
         {isWithDescription && (
           <TextField
+            inputRef={inputRef}
             margin="normal"
             label="Description"
             type="text"
@@ -169,6 +162,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
             rowsMax={isDesktop ? 20 : 10}
             autoFocus={isFocusDescription}
             onBlur={onBlur}
+            onFocus={onFocus}
           />
         )}
       </CardContentStyled>

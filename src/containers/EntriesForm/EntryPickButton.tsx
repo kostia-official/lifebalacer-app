@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { SelectedEntry, ActivityResult } from '../../common/types';
 import { EntryLabel } from '../../components/EntryLabel';
 import { ActivityCategory, Activity } from '../../generated/apollo';
-import { useLongPress } from 'react-use';
+import { useLongPress } from 'use-long-press';
 
 const ButtonStyled: typeof Button = styled(Button)`
   height: 40px;
