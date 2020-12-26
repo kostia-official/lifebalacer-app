@@ -15,7 +15,7 @@ import { useApolloError } from '../../hooks/useApolloError';
 import * as R from 'remeda';
 import _ from 'lodash';
 import { Badge, Card, CardContent, Typography } from '@material-ui/core';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { CardModal } from '../../components/CardModal';
 import { ActivityResult, SelectedEntry, EntriesResult, EntryResult } from '../../common/types';
@@ -54,10 +54,12 @@ const EntriesForm = () => {
   const { isMobile } = useDeviceDetect();
   const [modalEntry, setModalEntry] = useState<SelectedEntry | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isForceDescription, setIsForceDescription] = useState(false);
 
   const closeModal = useCallback(() => {
     isSwipeHandlersEnabledVar(true);
     setIsModalOpen(false);
+    setIsForceDescription(false);
     setTimeout(() => setModalEntry(null), showDelay + 200);
   }, []);
 
@@ -66,8 +68,6 @@ const EntriesForm = () => {
     setModalEntry(entry);
     setIsModalOpen(true);
   }, []);
-
-  const history = useHistory<{ isPush: boolean }>();
 
   const params = useParams<{ date: string }>();
   const dayDate = params.date || DateTime.local().toISO();
@@ -95,7 +95,7 @@ const EntriesForm = () => {
     if (!_.isEmpty(entriesByDay)) {
       setSelectedEntries(entriesByDay!);
     }
-  }, [entriesByDay, history]);
+  }, [entriesByDay]);
 
   const { activities, getActivityById } = useActivities({ onError });
 
@@ -205,7 +205,8 @@ const EntriesForm = () => {
         activity.valueType === ActivityType.Range ||
         activity.valueType === ActivityType.Value ||
         activity.isWidget ||
-        activity.isWithDescription
+        activity.isWithDescription ||
+        entry.description
       ) {
         return openModal(entry);
       } else {
@@ -220,6 +221,14 @@ const EntriesForm = () => {
       return entry ? unselectEntry(entry) : selectEntry(activity);
     },
     [unselectEntry, selectEntry]
+  );
+
+  const onLongPress = useCallback(
+    (entry?) => {
+      setIsForceDescription(true);
+      openModal(entry);
+    },
+    [openModal]
   );
 
   const upsertEntry = useCallback(
@@ -274,6 +283,7 @@ const EntriesForm = () => {
           onSave={upsertEntry}
           entry={modalEntry!}
           activity={modalActivity!}
+          isForceDescription={isForceDescription}
         />
       </CardModal>
 
@@ -298,7 +308,11 @@ const EntriesForm = () => {
                       overlap="circle"
                       invisible={!isMissing}
                     >
-                      <EntryPickButton activity={activity} toggleSelection={toggleSelection} />
+                      <EntryPickButton
+                        activity={activity}
+                        toggleSelection={toggleSelection}
+                        onLongPress={onLongPress}
+                      />
                     </Badge>
                   );
                 }
@@ -310,6 +324,7 @@ const EntriesForm = () => {
                       entry={entry}
                       activity={activity}
                       toggleSelection={toggleSelection}
+                      onLongPress={onLongPress}
                     />
                   );
                 });

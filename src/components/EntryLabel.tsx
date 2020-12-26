@@ -27,7 +27,7 @@ export const EntryLabel = ({
   isWithEmoji = true,
   isAddComa = false
 }: GetEntryLabelProps) => {
-  const isWithDescription = entry?.description && activity?.isWithDescription;
+  const isWithDescription = entry?.description && !activity?.isWidget;
 
   return (
     <Fragment>

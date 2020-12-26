@@ -7,7 +7,8 @@ import React, {
   ChangeEvent,
   useEffect,
   useMemo,
-  Fragment
+  Fragment,
+  useRef
 } from 'react';
 import styled from 'styled-components';
 import {
@@ -22,12 +23,15 @@ import {
 import { InputProps as StandardInputProps } from '@material-ui/core/Input/Input';
 import _ from 'lodash';
 import { useDeviceDetect } from '../../hooks/useDeviceDetect';
+import { usePreventBlur } from '../../hooks/usePreventBlur';
+import { useFocusOnTheEnd } from '../../hooks/useFocusOnTheEnd';
 
 export interface EntryValueModalContentProps {
   onSave: (toUpdate: Partial<EntryResult>) => void;
   onDelete: () => void;
   entry: EntryResult;
   activity: ActivityResult;
+  isForceDescription: boolean;
 }
 
 const CardActionsStyled = styled(CardActions)`
@@ -51,13 +55,17 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   onSave,
   onDelete,
   entry,
-  activity
+  activity,
+  isForceDescription
 }) => {
   const { isDesktop } = useDeviceDetect();
 
   const min = activity?.rangeMeta?.from!;
   const max = activity?.rangeMeta?.to!;
   const averageValue = Math.ceil((max + min) / 2);
+
+  const { onBlur, inputRef } = usePreventBlur({ preventTime: 1000 });
+  const { onFocus } = useFocusOnTheEnd();
 
   const [value, setValue] = useState(
     activity.valueType === ActivityType.Range ? entry.value || averageValue : entry.value
@@ -100,7 +108,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   }, [min, max]);
 
   const isWithValue = [ActivityType.Value, ActivityType.Todoist].includes(activity.valueType);
-  const isWithDescription = activity.isWithDescription || entry.description;
+  const isWithDescription = isForceDescription || activity.isWithDescription || entry.description;
   const isFocusDescription = activity.valueType === ActivityType.Simple;
   const valueLabel = activity.valueLabel || 'Value';
 
@@ -144,6 +152,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
 
         {isWithDescription && (
           <TextField
+            inputRef={inputRef}
             margin="normal"
             label="Description"
             type="text"
@@ -152,6 +161,8 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
             multiline
             rowsMax={isDesktop ? 20 : 10}
             autoFocus={isFocusDescription}
+            onBlur={onBlur}
+            onFocus={onFocus}
           />
         )}
       </CardContentStyled>
