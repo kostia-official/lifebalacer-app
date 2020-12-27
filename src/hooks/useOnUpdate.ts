@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { pubsub } from '../services/pubsub';
 import { authService } from '../services/auth0';
 // @ts-ignore
@@ -8,13 +8,20 @@ export type PromiseFn = () => Promise<unknown>;
 
 export const useOnUpdate = (channelPrefix: string, toCall: PromiseFn[] = []) => {
   const userId = authService.getUserId();
+  const [isRefetching, setIsRefetching] = useState(false);
 
-  const onUpdate = useCallback(() => {
-    toCall?.forEach((fn) => fn && fn());
+  const onUpdate = useCallback(async () => {
+    setIsRefetching(true);
+
+    await Promise.all(toCall.map(async (fn) => await fn()));
+
+    setIsRefetching(false);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...toCall]);
 
   const isVisible = usePageVisibility();
+
   useEffect(() => {
     if (isVisible) onUpdate();
   }, [isVisible, onUpdate]);
@@ -24,10 +31,12 @@ export const useOnUpdate = (channelPrefix: string, toCall: PromiseFn[] = []) => 
 
     const channelName = `${channelPrefix}_${userId}`;
 
-    pubsub.subscribe(channelName, onUpdate);
+    pubsub.subscribe(channelName, () => onUpdate());
 
     return () => {
       pubsub.unsubscribe(channelName);
     };
   }, [channelPrefix, onUpdate, userId]);
+
+  return { isRefetching };
 };

@@ -51,9 +51,9 @@ const EntriesByDay = () => {
 
   const entriesByDay = data?.entriesByDay;
 
-  const isNewDayLoading = !getIsToday(_.get(entriesByDay, '[0].date') as string) && loading;
+  const { isRefetching } = useOnEntryUpdate([refetchEntriesByDay, refetchStatistic]);
 
-  useOnEntryUpdate([refetchEntriesByDay, refetchStatistic]);
+  const isNewDayLoading = !getIsToday(_.get(entriesByDay, '[0].date')) && (loading || isRefetching);
 
   const onEntryFormOpen = useCallback(
     (date = new Date()) => {
