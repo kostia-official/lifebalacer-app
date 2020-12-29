@@ -7,8 +7,7 @@ import React, {
   ChangeEvent,
   useEffect,
   useMemo,
-  Fragment,
-  useRef
+  Fragment
 } from 'react';
 import styled from 'styled-components';
 import {

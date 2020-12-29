@@ -14,7 +14,7 @@ import { useDeviceDetect } from '../hooks/useDeviceDetect';
 import { ListItemAvatar, Avatar, Divider } from '@material-ui/core';
 import styled from 'styled-components';
 
-export const drawerWidth = '240px';
+export const drawerWidth = '250px';
 
 const useStyles = makeStyles((theme) => ({
   drawerPaper: {

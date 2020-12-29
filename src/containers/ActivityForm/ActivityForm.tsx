@@ -35,6 +35,7 @@ import { LinearPointsTooltip } from './LinearPointsTooltip';
 import { useSelectOnInputFocus } from '../../hooks/useSelectOnInputFocus';
 import { PageWrapper } from '../../components/PageWrapper';
 import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
+import { EmojiPicker } from './EmojiPicker';
 
 const FormContainer = styled.form`
   display: flex;
@@ -189,12 +190,22 @@ const ActivityForm = () => {
 
   const { preventMobileSelectionMenu, selectAllOnFocus } = useSelectOnInputFocus();
 
+  const [isShowEmojiPicker, setIsShowEmojiPicker] = useState(false);
+  const onEmojiClick = useCallback((e) => {
+    setIsShowEmojiPicker((prev) => !prev);
+    e.stopPropagation();
+  }, []);
+  const onEmojiSelect = useCallback((emoji) => {
+    setActivity((prev) => ({ ...prev, emoji }));
+    setIsShowEmojiPicker(false);
+  }, []);
+
   return (
     <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!existingActivity}>
       <FormContainer onSubmit={onSubmit}>
         <NameContainer>
           <FormControl>
-            <EmojiLabel shrink required>
+            <EmojiLabel shrink required onClick={onEmojiClick}>
               Emoji
             </EmojiLabel>
             <EmojiInput
@@ -202,9 +213,16 @@ const ActivityForm = () => {
               value={activity.emoji}
               onChange={updateActivityField('emoji')}
               margin="dense"
-              onFocus={selectAllOnFocus}
-              onSelect={preventMobileSelectionMenu}
+              onClickCapture={onEmojiClick}
+              readOnly
             />
+            {isShowEmojiPicker && (
+              <EmojiPicker
+                setIsShow={setIsShowEmojiPicker}
+                onSelect={onEmojiSelect}
+                ignoreClassClickOutside="MuiFormControl-root"
+              />
+            )}
           </FormControl>
 
           <FormControl fullWidth>
