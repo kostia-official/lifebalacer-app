@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { Fragment, useCallback } from 'react';
 import { MainColors } from '../../common/colors';
 import 'emoji-mart/css/emoji-mart.css';
 import { Picker } from 'emoji-mart';
@@ -13,12 +13,14 @@ export interface EmojiPickerProps {
   onSelect: (emoji: string) => void;
   setIsShow: (isShow: boolean) => void;
   ignoreClassClickOutside?: string;
+  isShow: boolean;
 }
 
 export const EmojiPicker: React.FC<EmojiPickerProps> = ({
   onSelect,
   setIsShow,
-  ignoreClassClickOutside
+  ignoreClassClickOutside,
+  isShow
 }) => {
   const ref = useOnclickOutside(
     (e) => {
@@ -39,15 +41,21 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
   );
 
   return (
-    <EmojiPickerWrapper ref={ref}>
-      <Picker
-        title=""
-        color={MainColors.Primary}
-        theme="dark"
-        useButton={false}
-        onSelect={onPick}
-        style={{ position: 'absolute' }}
-      />
-    </EmojiPickerWrapper>
+    <Fragment>
+      {/* Render extra invisible picker for preload of emojis */}
+      <Picker style={{ position: 'fixed', top: -10000, left: -10000 }} />
+      {isShow && (
+        <EmojiPickerWrapper ref={ref}>
+          <Picker
+            title=""
+            color={MainColors.Primary}
+            theme="dark"
+            useButton={false}
+            onSelect={onPick}
+            style={{ position: 'absolute' }}
+          />
+        </EmojiPickerWrapper>
+      )}
+    </Fragment>
   );
 };

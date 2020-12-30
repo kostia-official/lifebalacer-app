@@ -32,6 +32,7 @@ import { PageWrapper } from '../../components/PageWrapper';
 import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { useDeleteEntry } from '../../hooks/useDeleteEntry';
+import { useOnActivityUpdate } from '../../hooks/useOnActivityUpdate';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
@@ -88,6 +89,7 @@ const EntriesForm = () => {
   const missingEntries = entriesData?.entriesByOneDay?.missing;
 
   useOnEntryUpdate([refetch]);
+  useOnActivityUpdate([refetch]);
 
   const [selectedEntries, setSelectedEntries] = useState<EntriesResult>(entriesByDay || []);
 

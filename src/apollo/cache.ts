@@ -26,18 +26,22 @@ export const cache = new InMemoryCache({
           });
         },
         entriesByDay: { merge: (_, incoming) => incoming },
-        journal: { merge: (_, incoming) => incoming },
-        entriesByOneDay(_, { args, toReference }) {
-          if (!args?.date) return;
+        entriesByOneDay: {
+          merge: (_, incoming) => incoming,
+          read: (existing, { args, toReference, ...other }) => {
+            if (!existing) return existing;
+            if (!args?.date) return;
 
-          // Enforce proper datetime format
-          args.date = toZeroTimeISO(args.date);
+            // Enforce proper datetime format
+            args.date = toZeroTimeISO(args.date);
 
-          return toReference({
-            __typename: 'EntriesByDay',
-            date: args.date
-          });
-        }
+            return toReference({
+              __typename: 'EntriesByDay',
+              date: args.date
+            });
+          }
+        },
+        journal: { merge: (_, incoming) => incoming }
       }
     }
   }

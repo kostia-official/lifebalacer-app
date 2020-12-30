@@ -47,7 +47,7 @@ export const useAuth = (): IUseAuthResult => {
         }
         setAccessToken(accessToken);
       } catch (err) {
-        sentryService.captureException(err);
+        // sentryService.captureException(err);
         setAccessToken('');
       } finally {
         setIsLoading(false);

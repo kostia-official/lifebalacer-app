@@ -216,13 +216,12 @@ const ActivityForm = () => {
               onClickCapture={onEmojiClick}
               readOnly
             />
-            {isShowEmojiPicker && (
-              <EmojiPicker
-                setIsShow={setIsShowEmojiPicker}
-                onSelect={onEmojiSelect}
-                ignoreClassClickOutside="MuiFormControl-root"
-              />
-            )}
+            <EmojiPicker
+              isShow={isShowEmojiPicker}
+              setIsShow={setIsShowEmojiPicker}
+              onSelect={onEmojiSelect}
+              ignoreClassClickOutside="MuiFormControl-root"
+            />
           </FormControl>
 
           <FormControl fullWidth>

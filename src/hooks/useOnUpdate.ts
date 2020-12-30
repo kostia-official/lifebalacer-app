@@ -11,12 +11,13 @@ export const useOnUpdate = (channelPrefix: string, toCall: PromiseFn[] = []) => 
   const [isRefetching, setIsRefetching] = useState(false);
 
   const onUpdate = useCallback(async () => {
-    setIsRefetching(true);
+    try {
+      setIsRefetching(true);
 
-    await Promise.all(toCall.map(async (fn) => await fn()));
-
-    setIsRefetching(false);
-
+      await Promise.all(toCall.map(async (fn) => await fn()));
+    } finally {
+      setIsRefetching(false);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...toCall]);
 

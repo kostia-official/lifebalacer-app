@@ -18,6 +18,10 @@ export interface TooltipCheckboxProps {
   tooltipContent: NonNullable<React.ReactNode>;
 }
 
+const Wrapper = styled.div`
+  align-self: flex-start;
+`;
+
 const CheckboxLabel = styled.div`
   display: flex;
   align-items: center;
@@ -39,25 +43,27 @@ export const TooltipCheckbox: React.FC<TooltipCheckboxProps> = ({
   const hideTooltip = useCallback(() => setIsShowTooltip(false), []);
 
   return (
-    <FormControlLabel
-      control={<Checkbox checked={checked} color="primary" onChange={onChange} />}
-      label={
-        <CheckboxLabel>
-          <Typography>{text}</Typography>
-          <Tooltip
-            title={tooltipContent}
-            placement="right"
-            onClose={hideTooltip}
-            open={isShowTooltip}
-            disableTouchListener
-            disableHoverListener
-          >
-            <IconButton edge="end" onClick={showTooltip}>
-              <IconStyled fontSize="small">info</IconStyled>
-            </IconButton>
-          </Tooltip>
-        </CheckboxLabel>
-      }
-    />
+    <Wrapper>
+      <FormControlLabel
+        control={<Checkbox checked={checked} color="primary" onChange={onChange} />}
+        label={
+          <CheckboxLabel>
+            <Typography>{text}</Typography>
+            <Tooltip
+              title={tooltipContent}
+              placement="right"
+              onClose={hideTooltip}
+              open={isShowTooltip}
+              disableTouchListener
+              disableHoverListener
+            >
+              <IconButton edge="end" onClick={showTooltip}>
+                <IconStyled fontSize="small">info</IconStyled>
+              </IconButton>
+            </Tooltip>
+          </CheckboxLabel>
+        }
+      />
+    </Wrapper>
   );
 };
