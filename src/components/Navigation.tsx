@@ -9,7 +9,7 @@ import clsx from 'clsx';
 import _ from 'lodash';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Icon from '@material-ui/core/Icon';
-import { IPage } from '../containers/App';
+import { IRoute } from '../containers/Router';
 import { useDeviceDetect } from '../hooks/useDeviceDetect';
 import { ListItemAvatar, Avatar, Divider } from '@material-ui/core';
 import styled from 'styled-components';
@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
 
 export interface INavigationProps {
   isExpanded: boolean;
-  items: IPage[];
+  items: IRoute[];
   onClose: () => void;
   onItemClick: (path: string) => void;
   user?: {
