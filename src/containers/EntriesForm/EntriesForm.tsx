@@ -239,13 +239,11 @@ const EntriesForm = () => {
 
       const existingEntry = getEntryById(modalEntry._id);
 
-      closeModal();
-
       return existingEntry
         ? updateEntry(existingEntry._id, data)
         : createEntry(modalEntry.activityId, data);
     },
-    [updateEntry, closeModal, getEntryById, createEntry, modalEntry]
+    [updateEntry, getEntryById, createEntry, modalEntry]
   );
 
   const onDeleteFromModal = useCallback(() => {
@@ -282,7 +280,8 @@ const EntriesForm = () => {
       <CardModal isShow={isModalOpen} onClose={closeModal} showDelay={showDelay}>
         <EntryModalContent
           onDelete={onDeleteFromModal}
-          onSave={upsertEntry}
+          onDone={closeModal}
+          onUpdate={upsertEntry}
           entry={modalEntry!}
           activity={modalActivity!}
           isForceDescription={isForceDescription}

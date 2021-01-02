@@ -17,16 +17,20 @@ import {
   TextField,
   Button,
   FormLabel,
-  FormControl
+  FormControl,
+  CircularProgress
 } from '@material-ui/core';
 import { InputProps as StandardInputProps } from '@material-ui/core/Input/Input';
 import _ from 'lodash';
 import { useDeviceDetect } from '../../hooks/useDeviceDetect';
 import { usePreventBlur } from '../../hooks/usePreventBlur';
 import { useFocusOnTheEnd } from '../../hooks/useFocusOnTheEnd';
+import { useDebouncedCallback } from 'use-debounce';
+import pMinDelay from 'p-min-delay';
 
 export interface EntryValueModalContentProps {
-  onSave: (toUpdate: Partial<EntryResult>) => void;
+  onUpdate: (toUpdate: Partial<EntryResult>) => Promise<void>;
+  onDone: () => void;
   onDelete: () => void;
   entry: EntryResult;
   activity: ActivityResult;
@@ -50,8 +54,15 @@ const SliderLabel = styled(FormLabel)`
   margin-bottom: 16px;
 `;
 
+const AutoSaveWrapper = styled.div<{ isShow: boolean }>`
+  align-self: flex-end;
+  margin: 0 0 0 -12px;
+  visibility: ${(props) => (props.isShow ? 'visible' : 'hidden')};
+`;
+
 export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
-  onSave,
+  onDone,
+  onUpdate,
   onDelete,
   entry,
   activity,
@@ -70,15 +81,18 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
     activity.valueType === ActivityType.Range ? entry.value || averageValue : entry.value
   );
   const [description, setDescription] = useState<string>(entry.description || '');
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = useCallback(
     (e: SyntheticEvent) => {
       const valueProperty = _.isNil(value) ? {} : { value: Number(value) };
-      onSave({ ...valueProperty, description });
+
+      onUpdate({ ...valueProperty, description });
+      onDone();
 
       e.preventDefault();
     },
-    [value, description, onSave]
+    [value, description, onUpdate, onDone]
   );
 
   const onValueChange: StandardInputProps['onChange'] = useCallback((e) => {
@@ -89,9 +103,25 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
     setValue(Array.isArray(value) ? value[0] : value);
   }, []);
 
-  const onDescriptionChange: StandardInputProps['onChange'] = useCallback((event) => {
-    setDescription(event.target.value);
-  }, []);
+  const debouncedDescriptionSave = useDebouncedCallback(async (description: string) => {
+    try {
+      setIsLoading(true);
+
+      await pMinDelay(onUpdate({ description }), 500);
+    } finally {
+      setIsLoading(false);
+    }
+  }, 1000);
+
+  const onDescriptionChange: StandardInputProps['onChange'] = useCallback(
+    (event) => {
+      const description = event.target.value;
+
+      setDescription(description);
+      debouncedDescriptionSave.callback(description);
+    },
+    [debouncedDescriptionSave]
+  );
 
   useEffect(() => {
     if (entry.value) setValue(entry.value);
@@ -162,6 +192,13 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
             autoFocus={isFocusDescription}
             onBlur={onBlur}
             onFocus={onFocus}
+            InputProps={{
+              endAdornment: (
+                <AutoSaveWrapper isShow={isLoading}>
+                  <CircularProgress size={8} disableShrink />
+                </AutoSaveWrapper>
+              )
+            }}
           />
         )}
       </CardContentStyled>
@@ -169,7 +206,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
       <CardActionsStyled>
         <Button onClick={onDelete}>Delete</Button>
         <Button type="submit" variant="contained" color="primary">
-          Save
+          Done
         </Button>
       </CardActionsStyled>
     </form>
