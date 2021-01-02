@@ -1,42 +1,26 @@
 import React, { useCallback, useMemo } from 'react';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { useGetCalendarDaysQuery, ActivityExtremes, ActivityType } from '../generated/apollo';
 import { DateTime } from 'luxon';
 import { ApolloError } from '@apollo/client/errors';
 import { getColorFromPoints, getColorInGradient } from '../helpers/color';
 import { useOnEntryUpdate } from './useOnEntryUpdate';
 import _ from 'lodash';
+import { useDatePickerRenderDay } from './useDatePickerRenderDay';
 
 export interface UseDatePickerRenderDayProps {
   onError?: (error: ApolloError) => void;
   selectedActivityExtremes?: ActivityExtremes;
-  isReverseColors: boolean;
+  isReverseColors?: boolean;
 }
 
 export interface DaysPayload {
   [key: string]: { color: string };
 }
 
-const dayComponentWrapper = (dayComponent: JSX.Element, color = 'transparent') => {
-  const backgroundColorProp = dayComponent.props.current
-    ? { backgroundColor: 'darkslategrey' }
-    : {};
-
-  return React.cloneElement(dayComponent, {
-    style: {
-      border: `2px solid ${color}`,
-      borderRadius: '50%',
-      marginTop: '1px',
-      marginBottom: '1px',
-      ...backgroundColorProp
-    }
-  });
-};
-
 export const useDatePickerRenderDayExtremes = ({
   onError,
   selectedActivityExtremes,
-  isReverseColors
+  isReverseColors = false
 }: UseDatePickerRenderDayProps) => {
   const { data: daysData, refetch } = useGetCalendarDaysQuery({
     onError,
@@ -84,24 +68,19 @@ export const useDatePickerRenderDayExtremes = ({
     [daysData, selectedActivityExtremes, isReverseColors]
   );
 
-  const renderDay = useCallback(
-    (
-      day: MaterialUiPickersDate,
-      selectedDate: MaterialUiPickersDate,
-      dayInCurrentMonth: boolean,
-      dayComponent: JSX.Element
-    ) => {
-      if (!day) return dayComponentWrapper(dayComponent);
-
+  const onRenderDay = useCallback(
+    (day: DateTime) => {
       const calendarDate = day.toISODate();
       const dayPayload = daysPayload[calendarDate];
 
-      if (!dayPayload) return dayComponentWrapper(dayComponent);
+      if (!dayPayload) return {};
 
-      return dayComponentWrapper(dayComponent, dayPayload.color);
+      return { markColor: dayPayload.color };
     },
     [daysPayload]
   );
+
+  const { renderDay } = useDatePickerRenderDay({ onRenderDay });
 
   return { renderDay, daysData };
 };

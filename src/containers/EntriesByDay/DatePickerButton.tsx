@@ -2,8 +2,8 @@ import React, { useState, Fragment } from 'react';
 import { DatePicker as MaterialDatePicker } from '@material-ui/pickers';
 import EventIcon from '@material-ui/icons/Event';
 import { Fab } from '@material-ui/core';
-import { useDatePickerRenderDay } from '../../hooks/useDatePickerRenderDay';
 import { DateTime } from 'luxon';
+import { useDatePickerRenderDayExtremes } from '../../hooks/useDatePickerRenderDayExtremes';
 
 export interface IDatePickerProps {
   onChange: (date: Date) => void;
@@ -11,7 +11,7 @@ export interface IDatePickerProps {
 
 export const DatePickerButton: React.FC<IDatePickerProps> = ({ onChange }) => {
   const [isShowDatePicker, setIsShowDatePicker] = useState(false);
-  const { renderDay } = useDatePickerRenderDay();
+  const { renderDay } = useDatePickerRenderDayExtremes({});
 
   return (
     <Fragment>
