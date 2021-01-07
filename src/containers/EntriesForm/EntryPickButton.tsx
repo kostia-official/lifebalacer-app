@@ -5,6 +5,7 @@ import { SelectedEntry, ActivityResult } from '../../common/types';
 import { EntryLabel } from '../../components/EntryLabel';
 import { ActivityCategory, Activity } from '../../generated/apollo';
 import { useLongPress } from 'use-long-press';
+import { EntryLabelTruncate } from '../../components/EntryLabelTruncate';
 
 const ButtonStyled: typeof Button = styled(Button)`
   height: 40px;
@@ -51,12 +52,11 @@ export const EntryPickButton: React.FC<EntryPickButtonProps> = ({
       color={getButtonColor(activity.category)}
       size="small"
       onClick={onClick}
-      startIcon={<Typography variant="h5">{activity.emoji}</Typography>}
       disableRipple
       disableElevation
       {...longPressEvent}
     >
-      <EntryLabel entry={entry} activity={activity} isWithEmoji={false} />
+      <EntryLabelTruncate entry={entry} activity={activity} />
     </ButtonStyled>
   );
 };

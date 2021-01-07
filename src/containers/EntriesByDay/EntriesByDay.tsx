@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { DatePickerButton } from './DatePickerButton';
 import styled from 'styled-components';
 import { useApolloError } from '../../hooks/useApolloError';
-import { List, ListItem, ListItemText, ListSubheader } from '@material-ui/core';
+import { Card, Typography } from '@material-ui/core';
 import { PageWrapper } from '../../components/PageWrapper';
 import { useDaysStatisticText } from '../../hooks/useDaysStatisticText';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -13,7 +13,6 @@ import { usePushTokenSave } from '../../hooks/usePushTokenSave';
 import { EmptyState } from '../../components/EmptyState';
 import { EntriesLabels } from './EntriesLabels';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
-import { DayTitle } from '../../components/DayTitle';
 import { Spinner } from '../../components/Spinner';
 import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
 import { useInfiniteQuery } from '../../hooks/useInfiniteQuery';
@@ -23,10 +22,19 @@ import {
   GetEntriesByDayQueryVariables
 } from '../../generated/apollo';
 import { getIsToday } from '../../helpers/date';
+import { DayCard } from '../../components/DayCard';
 
-const StyledList = styled(List)`
-  background-color: ${({ theme }) => theme.palette.background.paper};
-  margin-bottom: 6px;
+const HeaderCard = styled(Card)`
+  margin-bottom: 10px;
+`;
+
+const HeaderContent = styled(Typography)`
+  margin: 10px 16px;
+  color: ${(props) => props.theme.palette.text.secondary};
+`;
+
+const EntriesLabelsWrapper = styled.div`
+  margin: 6px 16px 14px 16px;
 `;
 
 const DatePickerButtonWrapper = styled.div`
@@ -78,31 +86,23 @@ const EntriesByDay = () => {
           hasMore={isHasMore}
           loader={<Spinner />}
         >
-          <StyledList
-            subheader={
-              <ListSubheader component="div" id="nested-list-subheader">
-                {statisticText}
-              </ListSubheader>
-            }
-          >
-            {entriesByDay?.map((day) => {
-              return (
-                <ListItem key={day.date} onClick={() => onEntryFormOpen(day.date)} button>
-                  <ListItemText
-                    primary={<DayTitle day={day} />}
-                    secondaryTypographyProps={{ component: 'div' }}
-                    secondary={
-                      <EntriesLabels
-                        day={day}
-                        todoistActivity={todoistActivity}
-                        getActivityById={getActivityById}
-                      />
-                    }
+          <HeaderCard key="stats">
+            <HeaderContent variant="subtitle2">{statisticText}</HeaderContent>
+          </HeaderCard>
+
+          {entriesByDay?.map((day) => {
+            return (
+              <DayCard key={day.date} onClick={onEntryFormOpen} day={day}>
+                <EntriesLabelsWrapper>
+                  <EntriesLabels
+                    day={day}
+                    todoistActivity={todoistActivity}
+                    getActivityById={getActivityById}
                   />
-                </ListItem>
-              );
-            })}
-          </StyledList>
+                </EntriesLabelsWrapper>
+              </DayCard>
+            );
+          })}
         </InfiniteScroll>
       )}
 

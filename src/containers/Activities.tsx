@@ -17,6 +17,8 @@ import { useActivities } from '../hooks/useActivities';
 import { EmptySpaceUnderFab, FabButton } from '../components/FabButton';
 import { Greyscale } from '../components/Greyscale';
 import { useHistoryNavigation } from '../hooks/useHistoryNavigation';
+import { Emoji } from '../components/Emoji';
+import { Fragment } from 'react';
 
 const ConnectTodoistButtonWrapper = styled.div`
   display: flex;
@@ -57,7 +59,11 @@ const Activities = () => {
         columns={[
           {
             title: 'Name',
-            render: (rowData) => `${rowData.emoji} ${rowData.name}`
+            render: (rowData) => (
+              <Fragment>
+                <Emoji>{rowData?.emoji}</Emoji> {rowData.name}
+              </Fragment>
+            )
           },
           {
             title: 'Value type',

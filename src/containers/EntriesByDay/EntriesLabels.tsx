@@ -15,13 +15,12 @@ export interface EntriesLabelsProps {
 
 const Wrapper = styled.span`
   display: inline-block;
-  margin: 4px 0 0 0;
   font-size: 14px;
+  color: ${(props) => props.theme.palette.text.secondary};
 `;
 
 const EntryLabelWrapper = styled.span`
   display: inline-block;
-  margin: 2px 5px 2px 0;
 `;
 
 export const EntriesLabels: React.FC<EntriesLabelsProps> = ({

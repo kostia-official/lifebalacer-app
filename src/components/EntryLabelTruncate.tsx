@@ -5,25 +5,25 @@ import _ from 'lodash';
 import { Activity, Entry } from '../generated/apollo';
 import { DescriptionIcon } from './DescriptionIcon';
 
-export interface EntryLabelProps {
+export interface GetEntryLabelProps {
   activity?: Pick<Activity, 'name' | 'emoji' | 'valueType' | 'isWithDescription' | 'isWidget'>;
   entry?: Pick<Entry, 'description' | 'value'>;
-  isAddComa?: boolean;
 }
 
 const Label = styled.div`
   white-space: nowrap;
+  display: flex;
+  align-items: center;
 `;
 
 const TextWrapper = styled.div`
   display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 72vw;
 `;
 
-const Coma = styled.span`
-  margin-right: 5px;
-`;
-
-export const EntryLabel = ({ entry, activity, isAddComa = false }: EntryLabelProps) => {
+export const EntryLabelTruncate = ({ entry, activity }: GetEntryLabelProps) => {
   const text = activity?.isWidget && entry?.description ? entry.description : activity?.name;
   const value = _.isNumber(entry?.value) ? `: ${entry?.value}` : '';
 
@@ -33,7 +33,6 @@ export const EntryLabel = ({ entry, activity, isAddComa = false }: EntryLabelPro
       <TextWrapper>{text}</TextWrapper>
       {value}
       <DescriptionIcon entry={entry} activity={activity} />
-      {isAddComa && <Coma>, </Coma>}
     </Label>
   );
 };

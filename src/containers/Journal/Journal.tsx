@@ -2,13 +2,12 @@ import React, { Fragment, useCallback } from 'react';
 import { PageWrapper } from '../../components/PageWrapper';
 import { useApolloError } from '../../hooks/useApolloError';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
-import { Card, CardActionArea, CardContent, CardHeader, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { EmptyState } from '../../components/EmptyState';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import styled from 'styled-components';
 import { useActivities } from '../../hooks/useActivities';
 import { Spinner } from '../../components/Spinner';
-import { DayTitle } from '../../components/DayTitle';
 import { DatePickerButton } from '../EntriesByDay/DatePickerButton';
 import { FabButton } from '../../components/FabButton';
 import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
@@ -19,22 +18,8 @@ import {
   GetJournalDocument
 } from '../../generated/apollo';
 import { getEntryLabel } from '../../helpers/entryLabel';
-
-const CardStyled = styled(Card)`
-  margin-bottom: 10px;
-`;
-
-const CardHeaderStyled = styled(CardHeader)`
-  padding: 16px 16px 6px 16px;
-`;
-
-const CardContentStyled = styled(CardContent)`
-  padding: 10px 16px 0 16px;
-
-  :last-child {
-    padding-bottom: 0;
-  }
-`;
+import { DayCard } from '../../components/DayCard';
+import { Emoji } from '../../components/Emoji';
 
 const ActivityTitle = styled(Typography)`
   font-size: 15px;
@@ -44,12 +29,20 @@ const ActivityTitle = styled(Typography)`
 const Description = styled(Typography)`
   margin-bottom: 16px;
   white-space: pre-line;
+
+  :last-child {
+    margin-bottom: 0;
+  }
 `;
 
 const DatePickerButtonWrapper = styled.div`
   position: fixed;
   bottom: 94px;
   right: 20px;
+`;
+
+const DayContent = styled.div`
+  padding: 16px;
 `;
 
 const Journal = () => {
@@ -97,23 +90,23 @@ const Journal = () => {
         >
           {journal?.map((day) => {
             return (
-              <CardStyled key={day.date} onClick={() => onDayClick(day.date)}>
-                <CardActionArea>
-                  <CardHeaderStyled title={<DayTitle day={day} />} />
-                  <CardContentStyled>
-                    {day.entries.map((entry) => {
-                      const activity = getActivityById(entry.activityId);
+              <DayCard key={day.date} day={day} onClick={onDayClick}>
+                <DayContent>
+                  {day.entries.map((entry) => {
+                    const activity = getActivityById(entry.activityId);
 
-                      return (
-                        <Fragment key={entry._id}>
-                          <ActivityTitle>{getEntryLabel({ entry, activity })}</ActivityTitle>
-                          <Description variant="body2">{entry.description}</Description>
-                        </Fragment>
-                      );
-                    })}
-                  </CardContentStyled>
-                </CardActionArea>
-              </CardStyled>
+                    return (
+                      <Fragment key={entry._id}>
+                        <ActivityTitle>
+                          <Emoji>{activity?.emoji}</Emoji>
+                          {getEntryLabel({ entry, activity })}
+                        </ActivityTitle>
+                        <Description variant="body2">{entry.description}</Description>
+                      </Fragment>
+                    );
+                  })}
+                </DayContent>
+              </DayCard>
             );
           })}
         </InfiniteScroll>
