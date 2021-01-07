@@ -6,7 +6,7 @@ const isApple = isIOS || isMacOs;
 
 // Try make emojis look the same on all devices
 const Wrapper = styled.div`
-  margin: ${isApple ? '0' : '2px'} ${isMacOs ? '0' : '4px'} ${isApple ? '0' : '2px'} 0;
+  margin: ${isApple ? '0' : '4px'} ${isMacOs ? '0' : '4px'} ${isApple ? '0' : '4px'} 0;
   display: inline-block;
 `;
 

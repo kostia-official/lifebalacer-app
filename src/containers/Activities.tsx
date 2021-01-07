@@ -18,7 +18,6 @@ import { EmptySpaceUnderFab, FabButton } from '../components/FabButton';
 import { Greyscale } from '../components/Greyscale';
 import { useHistoryNavigation } from '../hooks/useHistoryNavigation';
 import { Emoji } from '../components/Emoji';
-import { Fragment } from 'react';
 
 const ConnectTodoistButtonWrapper = styled.div`
   display: flex;
@@ -28,6 +27,11 @@ const ConnectTodoistButtonWrapper = styled.div`
 
 const ArchivedActivitiesWrapper = styled.div`
   padding-top: 10px;
+`;
+
+const TitleWrapper = styled.div`
+  margin-top: -2px;
+  margin-bottom: -2px;
 `;
 
 const Activities = () => {
@@ -60,9 +64,9 @@ const Activities = () => {
           {
             title: 'Name',
             render: (rowData) => (
-              <Fragment>
+              <TitleWrapper>
                 <Emoji>{rowData?.emoji}</Emoji> {rowData.name}
-              </Fragment>
+              </TitleWrapper>
             )
           },
           {
@@ -104,7 +108,13 @@ const Activities = () => {
           columns={[
             {
               title: 'Name',
-              render: (rowData) => <Greyscale>{`${rowData.emoji} ${rowData.name}`}</Greyscale>
+              render: (rowData) => (
+                <Greyscale>
+                  <TitleWrapper>
+                    <Emoji>{rowData?.emoji}</Emoji> {rowData.name}
+                  </TitleWrapper>
+                </Greyscale>
+              )
             },
             {
               title: 'Value type',

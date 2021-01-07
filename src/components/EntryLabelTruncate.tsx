@@ -20,7 +20,7 @@ const TextWrapper = styled.div`
   display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 72vw;
+  max-width: 70vw;
 `;
 
 export const EntryLabelTruncate = ({ entry, activity }: GetEntryLabelProps) => {
