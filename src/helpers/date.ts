@@ -14,3 +14,8 @@ export const toZeroTimeISO = (date: DateAny) => {
 export const getIsToday = (date: DateAny) => {
   return toLuxon(date).toISODate() === DateTime.local().toISODate();
 };
+
+export const getDateTitle = (date: DateAny) => {
+  const headerDate = toLuxon(date).toLocaleString(DateTime.DATE_HUGE);
+  return getIsToday(date) ? `Today, ${headerDate}` : headerDate;
+};

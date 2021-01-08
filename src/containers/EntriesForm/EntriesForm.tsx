@@ -16,16 +16,15 @@ import * as R from 'remeda';
 import _ from 'lodash';
 import { Badge, Card, CardContent, Typography } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { CardModal } from '../../components/CardModal';
 import { ActivityResult, SelectedEntry, EntriesResult, EntryResult } from '../../common/types';
 import { EntryPickButton } from './EntryPickButton';
 import { useActivities } from '../../hooks/useActivities';
 import { DateTime } from 'luxon';
-import { useDeviceDetect } from '../../hooks/useDeviceDetect';
 import { EntryModalContent } from './EntryModalContent';
 import { isSwipeHandlersEnabledVar } from '../../reactiveState';
-import { getIsToday } from '../../helpers/date';
+import { getIsToday, getDateTitle } from '../../helpers/date';
 import { FabButton } from '../../components/FabButton';
 import { useActivitiesByCategory } from '../../hooks/useActivitiesByCategory';
 import { PageWrapper } from '../../components/PageWrapper';
@@ -33,26 +32,16 @@ import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { useDeleteEntry } from '../../hooks/useDeleteEntry';
 import { useOnActivityUpdate } from '../../hooks/useOnActivityUpdate';
+import { HeaderCard } from '../../components/HeaderCard';
+import { Points } from '../../components/Points';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
 `;
 
-const DateTitleWrapper = styled.div<{ isCenter: boolean }>`
-  ${(props) =>
-    props.isCenter
-      ? css`
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        `
-      : ''}
-`;
-
 const showDelay = 300;
 
 const EntriesForm = () => {
-  const { isMobile } = useDeviceDetect();
   const [modalEntry, setModalEntry] = useState<SelectedEntry | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isForceDescription, setIsForceDescription] = useState(false);
@@ -271,11 +260,10 @@ const EntriesForm = () => {
 
   return (
     <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!activities}>
-      <DateTitleWrapper isCenter={isMobile}>
-        <Typography color="textSecondary" gutterBottom>
-          {DateTime.fromISO(dayDate).toLocaleString(DateTime.DATE_HUGE)}
-        </Typography>
-      </DateTitleWrapper>
+      <HeaderCard
+        text={getDateTitle(dayDate)}
+        rightContent={<Points points={entriesData?.entriesByOneDay?.points} coinSize={15} />}
+      />
 
       <CardModal isShow={isModalOpen} onClose={closeModal} showDelay={showDelay}>
         <EntryModalContent

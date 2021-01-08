@@ -23,15 +23,7 @@ import {
 } from '../../generated/apollo';
 import { getIsToday } from '../../helpers/date';
 import { DayCard } from '../../components/DayCard';
-
-const HeaderCard = styled(Card)`
-  margin-bottom: 10px;
-`;
-
-const HeaderContent = styled(Typography)`
-  margin: 10px 16px;
-  color: ${(props) => props.theme.palette.text.secondary};
-`;
+import { HeaderCard } from '../../components/HeaderCard';
 
 const EntriesLabelsWrapper = styled.div`
   margin: 6px 16px 14px 16px;
@@ -86,9 +78,7 @@ const EntriesByDay = () => {
           hasMore={isHasMore}
           loader={<Spinner />}
         >
-          <HeaderCard key="stats">
-            <HeaderContent variant="subtitle2">{statisticText}</HeaderContent>
-          </HeaderCard>
+          <HeaderCard text={statisticText} />
 
           {entriesByDay?.map((day) => {
             return (
