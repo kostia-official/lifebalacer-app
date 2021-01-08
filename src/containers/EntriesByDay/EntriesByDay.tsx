@@ -3,7 +3,6 @@ import _ from 'lodash';
 import { DatePickerButton } from './DatePickerButton';
 import styled from 'styled-components';
 import { useApolloError } from '../../hooks/useApolloError';
-import { Card, Typography } from '@material-ui/core';
 import { PageWrapper } from '../../components/PageWrapper';
 import { useDaysStatisticText } from '../../hooks/useDaysStatisticText';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -21,7 +20,7 @@ import {
   GetEntriesByDayQuery,
   GetEntriesByDayQueryVariables
 } from '../../generated/apollo';
-import { getIsToday } from '../../helpers/date';
+import { getIsToday, toLuxon } from '../../helpers/date';
 import { DayCard } from '../../components/DayCard';
 import { HeaderCard } from '../../components/HeaderCard';
 
@@ -47,7 +46,16 @@ const EntriesByDay = () => {
   const { data, isHasMore, loadMore, refetch: refetchEntriesByDay, loading } = useInfiniteQuery<
     GetEntriesByDayQuery,
     GetEntriesByDayQueryVariables
-  >(GetEntriesByDayDocument, 'entriesByDay', { onError });
+  >(GetEntriesByDayDocument, {
+    onError,
+    field: 'entriesByDay',
+    fetchMoreVariables: (data) => {
+      const lastDate = _.last(data.entriesByDay)?.date;
+      if (!lastDate) return null;
+
+      return { dateAfter: toLuxon(lastDate).minus({ day: 1 }).toISO() };
+    }
+  });
 
   const entriesByDay = data?.entriesByDay;
 

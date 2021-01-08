@@ -20,6 +20,8 @@ import {
 import { getEntryLabel } from '../../helpers/entryLabel';
 import { DayCard } from '../../components/DayCard';
 import { Emoji } from '../../components/Emoji';
+import _ from 'lodash';
+import { toLuxon } from '../../helpers/date';
 
 const ActivityTitle = styled(Typography)`
   font-size: 15px;
@@ -54,12 +56,19 @@ const Journal = () => {
   const { data, isHasMore, loadMore, refetch } = useInfiniteQuery<
     GetJournalQuery,
     GetJournalQueryVariables
-  >(GetJournalDocument, 'journal', {
+  >(GetJournalDocument, {
     onError,
+    field: 'journal',
     variables: {
       activities: activities
         ?.filter((activity) => activity._id !== todoistActivity?._id)
         .map((activity) => activity._id)
+    },
+    fetchMoreVariables: (data) => {
+      const lastDate = _.last(data.journal)?.date;
+      if (!lastDate) return null;
+
+      return { dateAfter: toLuxon(lastDate).minus({ day: 1 }).toISO() };
     }
   });
 

@@ -4,9 +4,9 @@ import { HeaderCard } from '../../components/HeaderCard';
 import { DayResult } from '../../common/types';
 
 export interface DayHeaderProps {
-  day: Pick<DayResult, 'date' | 'points'>;
+  day?: Pick<DayResult, 'date' | 'points'> | null;
 }
 
 export const DayHeader: React.FC<DayHeaderProps> = ({ day }) => {
-  return <HeaderCard text={getDateTitle(day.date)} />;
+  return <HeaderCard text={getDateTitle(day?.date ?? '')} />;
 };

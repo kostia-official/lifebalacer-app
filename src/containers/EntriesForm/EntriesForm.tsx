@@ -24,7 +24,7 @@ import { useActivities } from '../../hooks/useActivities';
 import { DateTime } from 'luxon';
 import { EntryModalContent } from './EntryModalContent';
 import { isSwipeHandlersEnabledVar } from '../../reactiveState';
-import { getIsToday, getDateTitle } from '../../helpers/date';
+import { getIsToday } from '../../helpers/date';
 import { FabButton } from '../../components/FabButton';
 import { useActivitiesByCategory } from '../../hooks/useActivitiesByCategory';
 import { PageWrapper } from '../../components/PageWrapper';
@@ -32,8 +32,6 @@ import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { useDeleteEntry } from '../../hooks/useDeleteEntry';
 import { useOnActivityUpdate } from '../../hooks/useOnActivityUpdate';
-import { HeaderCard } from '../../components/HeaderCard';
-import { Points } from '../../components/Points';
 import { DayHeader } from './DayHeader';
 
 const CardStyled = styled(Card)`
@@ -261,7 +259,7 @@ const EntriesForm = () => {
 
   return (
     <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!activities}>
-      <DayHeader day={entriesData?.entriesByOneDay!} />
+      <DayHeader day={entriesData?.entriesByOneDay} />
 
       <CardModal isShow={isModalOpen} onClose={closeModal} showDelay={showDelay}>
         <EntryModalContent

@@ -2,7 +2,7 @@ class Config {
   host = process.env.REACT_APP_HOST || 'http://localhost:3000';
   isDev = process.env.NODE_ENV !== 'production';
   stage = process.env.STAGE || 'dev';
-  apiUrl = process.env.REACT_APP_API_URL || 'https://rewarder-api-gateway-prod.cycler.cc/graphql';
+  apiUrl = 'http://localhost:5000/graphql';
   wsUrl = process.env.REACT_APP_WS_URL || 'wss://rewarder-staging.herokuapp.com/graphql';
   auth = {
     domain: 'rewarder.eu.auth0.com',

@@ -28,17 +28,13 @@ export const EntriesLabels: React.FC<EntriesLabelsProps> = ({
   todoistActivity,
   getActivityById
 }) => {
-  const orderedEntries = useMemo(() => {
-    return _.orderBy(entries, ['completedAt'], ['asc']);
-  }, [entries]);
-
   const { entriesWithTodoistGroup } = useMemo(
     () =>
       groupTodoistEntries({
-        entries: orderedEntries,
+        entries,
         todoistActivityId: todoistActivity?._id
       }),
-    [orderedEntries, todoistActivity?._id]
+    [entries, todoistActivity?._id]
   );
 
   return (

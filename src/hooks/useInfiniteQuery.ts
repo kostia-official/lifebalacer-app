@@ -7,10 +7,14 @@ import { DocumentNode } from 'graphql';
 import { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import { QueryHookOptions } from '@apollo/client/react/types/types';
 
+export interface Options<TData, TVariables> extends QueryHookOptions<TData, TVariables> {
+  field: string;
+  fetchMoreVariables: (data: TData) => TVariables | null;
+}
+
 export const useInfiniteQuery = <TData = any, TVariables = OperationVariables>(
   query: DocumentNode | TypedDocumentNode<TData, TVariables>,
-  field: string,
-  options?: QueryHookOptions<TData, TVariables>
+  { field, fetchMoreVariables, ...apolloOptions }: Options<TData, TVariables>
 ) => {
   const [isHasMore, setIsHasMore] = useState(true);
 
@@ -19,35 +23,24 @@ export const useInfiniteQuery = <TData = any, TVariables = OperationVariables>(
   }, []);
 
   const queryResult = useQuery(query, {
-    ...options,
+    ...apolloOptions,
     onCompleted: () => {
-      if (!getIsCanScroll()) setIsHasMore(false);
+      setIsHasMore(getIsCanScroll());
     }
   });
 
   const { data, fetchMore } = queryResult;
 
-  const items = _.get(data, `[${field}]`);
-
   const loadMore = useCallback(() => {
-    const lastDate: string = _.chain(items)
-      .last()
-      // @ts-ignore
-      .get('entries')
-      .orderBy(['completedAt'], ['desc'])
-      .last()
-      .get('completedAt')
-      .value();
+    const variables = fetchMoreVariables(data!);
 
-    if (!lastDate) {
+    if (!variables) {
       setIsHasMore(false);
       return;
     }
 
     fetchMore({
-      variables: {
-        dateAfter: lastDate
-      },
+      variables,
       updateQuery: (prev, { fetchMoreResult }) => {
         const fetchedItems = _.get(fetchMoreResult, `[${field}]`);
         const prevItems = _.get(prev, `[${field}]`);
@@ -62,7 +55,7 @@ export const useInfiniteQuery = <TData = any, TVariables = OperationVariables>(
         });
       }
     }).then();
-  }, [items, fetchMore, field]);
+  }, [fetchMoreVariables, data, fetchMore, field]);
 
   return { ...queryResult, isHasMore, loadMore };
 };
