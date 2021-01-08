@@ -34,6 +34,7 @@ import { useDeleteEntry } from '../../hooks/useDeleteEntry';
 import { useOnActivityUpdate } from '../../hooks/useOnActivityUpdate';
 import { HeaderCard } from '../../components/HeaderCard';
 import { Points } from '../../components/Points';
+import { DayHeader } from './DayHeader';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
@@ -260,10 +261,7 @@ const EntriesForm = () => {
 
   return (
     <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!activities}>
-      <HeaderCard
-        text={getDateTitle(dayDate)}
-        rightContent={<Points points={entriesData?.entriesByOneDay?.points} coinSize={15} />}
-      />
+      <DayHeader day={entriesData?.entriesByOneDay!} />
 
       <CardModal isShow={isModalOpen} onClose={closeModal} showDelay={showDelay}>
         <EntryModalContent

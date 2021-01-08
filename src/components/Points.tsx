@@ -16,10 +16,10 @@ const Wrapper = styled.div`
 `;
 
 const PointsWrapper = styled.span<{ $pointsSize: number }>`
-  margin-right: 5px;
+  margin-right: 4px;
   font-size: ${(props) => props.$pointsSize}px;
   display: inline-block;
-  vertical-align: center;
+  vertical-align: -2px;
 `;
 
 export const Points: React.FC<PointsProps> = ({

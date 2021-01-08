@@ -11,5 +11,5 @@ export const HeaderRightContent = () => {
 
   if (_.isNil(balanceData?.balance)) return <Fragment />;
 
-  return <Points points={balanceData?.balance} pointsSize={20} coinSize={20} />;
+  return <Points points={balanceData?.balance} pointsSize={20} coinSize={22} />;
 };

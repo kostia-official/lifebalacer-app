@@ -1,6 +1,7 @@
 import React from 'react';
 import { Typography, Card } from '@material-ui/core';
 import styled from 'styled-components';
+import { Fragment } from 'react';
 
 export interface PageStartSectionProps {
   text: string;
@@ -25,7 +26,7 @@ export const HeaderCard: React.FC<PageStartSectionProps> = ({ text, rightContent
     <Wrapper key="stats">
       <HeaderContent>
         <Typography variant="subtitle2">{text}</Typography>
-        {rightContent && <Typography variant="subtitle2">{rightContent}</Typography>}
+        {rightContent || <Fragment />}
       </HeaderContent>
     </Wrapper>
   );

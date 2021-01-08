@@ -7,6 +7,10 @@ import React, { MouseEvent } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
+  toolbarGutters: {
+    paddingLeft: '23px',
+    paddingRight: '23px'
+  },
   appBar: { zIndex: 1000 },
   menuButton: {
     marginRight: theme.spacing(2)
@@ -37,7 +41,11 @@ export const Header: React.FC<IHeaderProps> = ({
   return (
     <div>
       <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar>
+        <Toolbar
+          classes={{
+            gutters: classes.toolbarGutters
+          }}
+        >
           <IconButton
             edge="start"
             className={classes.menuButton}
