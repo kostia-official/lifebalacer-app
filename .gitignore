@@ -27,3 +27,6 @@ yarn-error.log*
 
 public/firebase-messaging-sw.js
 .eslintcache
+
+# Intermediate generated data
+scripts/generateIcons/iconsData.json

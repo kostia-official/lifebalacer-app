@@ -1,0 +1,73 @@
+{
+  "masterPicture": "./public/seed.svg",
+  "iconsPath": "%PUBLIC_URL%",
+  "design": {
+    "ios": {
+      "pictureAspect": "backgroundAndMargin",
+      "backgroundColor": "#303030",
+      "margin": "20%",
+      "assets": {
+        "ios6AndPriorIcons": true,
+        "ios7AndLaterIcons": true,
+        "precomposedIcons": true,
+        "declareOnlyDefaultIcon": true
+      }
+    },
+    "desktopBrowser": {
+      "design": "raw"
+    },
+    "windows": {
+      "pictureAspect": "noChange",
+      "backgroundColor": "#303030",
+      "onConflict": "override",
+      "assets": {
+        "windows80Ie10Tile": true,
+        "windows10Ie11EdgeTiles": {
+          "small": true,
+          "medium": true,
+          "big": true,
+          "rectangle": true
+        }
+      }
+    },
+    "androidChrome": {
+      "pictureAspect": "backgroundAndMargin",
+      "margin": "0%",
+      "backgroundColor": "#303030",
+      "themeColor": "#009688",
+      "manifest": {
+        "name": "Life Balancer",
+        "display": "standalone",
+        "orientation": "portrait",
+        "onConflict": "override",
+        "declared": true
+      },
+      "assets": {
+        "legacyIcon": true,
+        "lowResolutionIcons": true
+      }
+    },
+    "safariPinnedTab": {
+      "pictureAspect": "silhouette",
+      "themeColor": "#303030"
+    }
+  },
+  "settings": {
+    "scalingAlgorithm": "Mitchell",
+    "errorOnImageTooSmall": false,
+    "readmeFile": false,
+    "htmlCodeFile": false,
+    "usePathAsIs": false
+  },
+  "pwaManifest": {
+    "theme_color": "#009688",
+    "background_color": "#303030",
+    "display": "standalone",
+    "scope": "/",
+    "start_url": "/",
+    "name": "Life Balancer",
+    "app_name": "Life Balancer",
+    "short_name": "Life Balancer",
+    "description": "Track balance in your life."
+  }
+}
