@@ -31,9 +31,7 @@
       }
     },
     "androidChrome": {
-      "pictureAspect": "backgroundAndMargin",
-      "margin": "0%",
-      "backgroundColor": "#303030",
+      "pictureAspect": "noChange",
       "themeColor": "#009688",
       "manifest": {
         "name": "Life Balancer",
