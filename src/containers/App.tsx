@@ -55,7 +55,7 @@ export const App: React.FC = () => {
         setIsExpandedMenu(false);
       }
     },
-    delta: 100
+    delta: 80
   });
 
   const onMenuClick = useCallback(() => {

@@ -23,7 +23,6 @@ import { EntryPickButton } from './EntryPickButton';
 import { useActivities } from '../../hooks/useActivities';
 import { DateTime } from 'luxon';
 import { EntryModalContent } from './EntryModalContent';
-import { isSwipeHandlersEnabledVar } from '../../reactiveState';
 import { getIsToday } from '../../helpers/date';
 import { FabButton } from '../../components/FabButton';
 import { useActivitiesByCategory } from '../../hooks/useActivitiesByCategory';
@@ -46,14 +45,12 @@ const EntriesForm = () => {
   const [isForceDescription, setIsForceDescription] = useState(false);
 
   const closeModal = useCallback(() => {
-    isSwipeHandlersEnabledVar(true);
     setIsModalOpen(false);
     setIsForceDescription(false);
     setTimeout(() => setModalEntry(null), showDelay + 200);
   }, []);
 
   const openModal = useCallback((entry: SelectedEntry) => {
-    isSwipeHandlersEnabledVar(false);
     setModalEntry(entry);
     setIsModalOpen(true);
   }, []);

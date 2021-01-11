@@ -27,6 +27,7 @@ import { usePreventBlur } from '../../hooks/usePreventBlur';
 import { useFocusOnTheEnd } from '../../hooks/useFocusOnTheEnd';
 import { useDebouncedCallback } from 'use-debounce';
 import pMinDelay from 'p-min-delay';
+import { useDisableMenuSwapOpen } from '../../hooks/useDisableMenuSwapOpen';
 
 export interface EntryValueModalContentProps {
   onUpdate: (toUpdate: Partial<EntryResult>) => Promise<void>;
@@ -76,6 +77,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
 
   const { onBlur, inputRef } = usePreventBlur({ preventTime: 1000 });
   const { onFocus } = useFocusOnTheEnd();
+  useDisableMenuSwapOpen();
 
   const [value, setValue] = useState(
     activity.valueType === ActivityType.Range ? entry.value || averageValue : entry.value
@@ -87,7 +89,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
     (e: SyntheticEvent) => {
       const valueProperty = _.isNil(value) ? {} : { value: Number(value) };
 
-      onUpdate({ ...valueProperty, description });
+      onUpdate({ ...valueProperty, description }).then();
       onDone();
 
       e.preventDefault();
