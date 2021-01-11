@@ -101,10 +101,7 @@
     "workbox-window": "^5.1.4"
   },
   "eslintConfig": {
-    "extends": "react-app",
-    "rules": {
-      "@typescript-eslint/no-unused-vars": "error"
-    }
+    "extends": "react-app"
   },
   "browserslist": {
     "production": [
@@ -121,7 +118,7 @@
   "lint-staged": {
     "**/*.ts?(x)": [
       "npx prettier --write",
-      "eslint --fix"
+      "eslint --fix --max-warnings=0"
     ]
   },
   "husky": {

@@ -18,7 +18,8 @@ import {
   Button,
   FormLabel,
   FormControl,
-  CircularProgress
+  CircularProgress,
+  Fade
 } from '@material-ui/core';
 import { InputProps as StandardInputProps } from '@material-ui/core/Input/Input';
 import _ from 'lodash';
@@ -26,7 +27,6 @@ import { useDeviceDetect } from '../../hooks/useDeviceDetect';
 import { usePreventBlur } from '../../hooks/usePreventBlur';
 import { useFocusOnTheEnd } from '../../hooks/useFocusOnTheEnd';
 import { useDebouncedCallback } from 'use-debounce';
-import pMinDelay from 'p-min-delay';
 import { useDisableMenuSwapOpen } from '../../hooks/useDisableMenuSwapOpen';
 
 export interface EntryValueModalContentProps {
@@ -55,10 +55,10 @@ const SliderLabel = styled(FormLabel)`
   margin-bottom: 16px;
 `;
 
-const AutoSaveWrapper = styled.div<{ isShow: boolean }>`
+const AutoSaveWrapper = styled.div`
   align-self: flex-end;
   margin: 0 0 0 -12px;
-  visibility: ${(props) => (props.isShow ? 'visible' : 'hidden')};
+  opacity: 0.6;
 `;
 
 export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
@@ -109,7 +109,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
     try {
       setIsLoading(true);
 
-      await pMinDelay(onUpdate({ description }), 500);
+      await onUpdate({ description });
     } finally {
       setIsLoading(false);
     }
@@ -196,8 +196,10 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
             onFocus={onFocus}
             InputProps={{
               endAdornment: (
-                <AutoSaveWrapper isShow={isLoading}>
-                  <CircularProgress size={8} disableShrink />
+                <AutoSaveWrapper>
+                  <Fade in={isLoading} timeout={300}>
+                    <CircularProgress size={8} disableShrink />
+                  </Fade>
                 </AutoSaveWrapper>
               )
             }}
