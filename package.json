@@ -101,7 +101,10 @@
     "workbox-window": "^5.1.4"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "rules": {
+      "@typescript-eslint/no-unused-vars": "error"
+    }
   },
   "browserslist": {
     "production": [

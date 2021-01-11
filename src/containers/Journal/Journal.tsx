@@ -21,7 +21,7 @@ import { getEntryLabel } from '../../helpers/entryLabel';
 import { DayCard } from '../../components/DayCard';
 import { Emoji } from '../../components/Emoji';
 import _ from 'lodash';
-import { toLuxon } from '../../helpers/date';
+import { getDayQueryVariables } from '../../helpers/getDayQueryVariables';
 
 const ActivityTitle = styled(Typography)`
   font-size: 15px;
@@ -64,12 +64,7 @@ const Journal = () => {
         ?.filter((activity) => activity._id !== todoistActivity?._id)
         .map((activity) => activity._id)
     },
-    fetchMoreVariables: (data) => {
-      const lastDate = _.last(data.journal)?.date;
-      if (!lastDate) return null;
-
-      return { dateAfter: toLuxon(lastDate).minus({ day: 1 }).toISO() };
-    }
+    fetchMoreVariables: (data) => getDayQueryVariables(_.last(data.journal)?.date)
   });
 
   const journal = data?.journal;

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useGetCalendarDaysQuery, ActivityExtremes, ActivityType } from '../generated/apollo';
 import { DateTime } from 'luxon';
 import { ApolloError } from '@apollo/client/errors';

@@ -1,8 +1,7 @@
 import React, { useCallback } from 'react';
-import { Typography, Button, PropTypes } from '@material-ui/core';
+import { Button, PropTypes } from '@material-ui/core';
 import styled from 'styled-components';
 import { SelectedEntry, ActivityResult } from '../../common/types';
-import { EntryLabel } from '../../components/EntryLabel';
 import { ActivityCategory, Activity } from '../../generated/apollo';
 import { useLongPress } from 'use-long-press';
 import { EntryLabelTruncate } from '../../components/EntryLabelTruncate';

@@ -20,9 +20,10 @@ import {
   GetEntriesByDayQuery,
   GetEntriesByDayQueryVariables
 } from '../../generated/apollo';
-import { getIsToday, toLuxon } from '../../helpers/date';
+import { getIsToday } from '../../helpers/date';
 import { DayCard } from '../../components/DayCard';
 import { HeaderCard } from '../../components/HeaderCard';
+import { getDayQueryVariables } from '../../helpers/getDayQueryVariables';
 
 const EntriesLabelsWrapper = styled.div`
   margin: 6px 16px 14px 16px;
@@ -49,12 +50,7 @@ const EntriesByDay = () => {
   >(GetEntriesByDayDocument, {
     onError,
     field: 'entriesByDay',
-    fetchMoreVariables: (data) => {
-      const lastDate = _.last(data.entriesByDay)?.date;
-      if (!lastDate) return null;
-
-      return { dateAfter: toLuxon(lastDate).minus({ day: 1 }).toISO() };
-    }
+    fetchMoreVariables: (data) => getDayQueryVariables(_.last(data.entriesByDay)?.date)
   });
 
   const entriesByDay = data?.entriesByDay;
