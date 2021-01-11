@@ -5,6 +5,7 @@ import { Menu, ChevronLeft } from '@material-ui/icons';
 import Typography from '@material-ui/core/Typography';
 import React, { MouseEvent } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { SpeedDialIcon } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme) => ({
   toolbarGutters: {
@@ -53,7 +54,7 @@ export const Header: React.FC<IHeaderProps> = ({
             aria-label="menu"
             onClick={isShowBack ? onBackClick : onMenuClick}
           >
-            {isShowBack ? <ChevronLeft /> : <Menu />}
+            <SpeedDialIcon icon={<Menu />} openIcon={<ChevronLeft />} open={isShowBack} />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
             {title}
