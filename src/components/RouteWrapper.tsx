@@ -1,6 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
-import { RouteProps } from 'react-router';
+import { Route, RouteProps } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Auth } from '../containers/Auth';
 import { RouteState } from '../containers/Router';

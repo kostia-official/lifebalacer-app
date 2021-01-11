@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React, { Fragment } from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import ListItem from '@material-ui/core/ListItem';
@@ -147,8 +146,4 @@ export const Navigation: React.FC<INavigationProps> = ({
       </Drawer>
     </>
   );
-};
-
-Navigation.propTypes = {
-  isExpanded: PropTypes.bool.isRequired
 };
