@@ -3,9 +3,9 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.kozzztya.lifebalancer",
+      "package_name": "app.lifebalancer.web.twa",
       "sha256_cert_fingerprints": [
-        "78:48:9D:84:95:A9:CC:C8:26:FD:D3:B8:0C:B6:67:FB:DB:0F:46:CD:4D:14:3B:C6:DA:B8:E5:1D:91:02:74:DD"
+        "BE:D5:97:CB:92:F2:4F:65:19:30:EB:71:8A:A2:DF:B0:E8:8D:20:E5:D6:AA:7F:72:75:1E:18:4C:4F:5E:39:91"
       ]
     }
   }
