@@ -29,7 +29,7 @@ const retryLink = new RetryLink({
   attempts: {
     max: 3,
     retryIf: (error, _operation) => {
-      return error.statusCode > 500;
+      return error.statusCode >= 500;
     }
   }
 });
