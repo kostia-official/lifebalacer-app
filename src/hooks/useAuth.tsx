@@ -3,7 +3,6 @@ import { useEffect, useState, useCallback } from 'react';
 import { config } from '../common/config';
 import { sentryService } from '../services/sentry';
 import { Auth0User } from '../services/auth0';
-import { logSender } from '../services/logSender';
 
 export interface IUseAuthResult extends Auth0ContextInterface {
   accessToken?: string | null;
@@ -40,7 +39,6 @@ export const useAuth = (): IUseAuthResult => {
 
         if (accessToken) {
           sentryService.setUserId(userId);
-          logSender.setUserId(userId);
 
           localStorage.setItem('token', accessToken);
           localStorage.setItem('user', JSON.stringify(claims));
