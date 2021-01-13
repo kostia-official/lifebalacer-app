@@ -57,7 +57,11 @@ const EntriesByDay = () => {
 
   const { isRefetching } = useOnEntryUpdate([refetchEntriesByDay, refetchStatistic]);
 
-  const isNewDayLoading = !getIsToday(_.get(entriesByDay, '[0].date')) && (loading || isRefetching);
+  const lastDayDate = _.get(entriesByDay, '[0].date');
+  const isLastDayToday = getIsToday(lastDayDate);
+  const isNewDayLoading = !isLastDayToday && (loading || isRefetching);
+
+  if (isNewDayLoading) console.info({ lastDayDate, isLastDayToday, loading, isRefetching });
 
   const onEntryFormOpen = useCallback(
     (date = new Date()) => {

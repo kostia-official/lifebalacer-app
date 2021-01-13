@@ -10,6 +10,7 @@ import { TermsAndConditions } from './About/TermsAndConditions';
 import EntriesByDay from './EntriesByDay/EntriesByDay';
 import Journal from './Journal/Journal';
 import { About } from './About/About';
+import { DevTools } from './About/DevTools';
 
 const Calendar = React.lazy(() => import('./Calendar/Calendar'));
 const Activities = React.lazy(() => import('./Activities'));
@@ -98,6 +99,7 @@ export const Router = () => {
           exact
           component={TermsAndConditions}
         />
+        <RouteWrapper path="/about/dev-tools" isPublic isNested exact component={DevTools} />
       </Switch>
     </Suspense>
   );
