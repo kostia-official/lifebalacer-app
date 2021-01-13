@@ -3,7 +3,7 @@ import { Auth0Client, IdToken } from '@auth0/auth0-spa-js';
 
 export interface Auth0User {
   name: string;
-  given_name: string;
+  username: string;
   email: string;
   picture: string;
 }

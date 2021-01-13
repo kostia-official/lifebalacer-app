@@ -16,9 +16,9 @@ export const useAuth = (): IUseAuthResult => {
   const {
     getAccessTokenSilently,
     isAuthenticated,
-    user,
     getIdTokenClaims,
-    loginWithRedirect
+    loginWithRedirect,
+    logout: logoutDefault
   } = auth;
   const savedToken = localStorage.getItem('token');
   const userJSON = localStorage.getItem('user');
@@ -29,19 +29,27 @@ export const useAuth = (): IUseAuthResult => {
     loginWithRedirect(config.auth).then();
   }, [loginWithRedirect]);
 
+  const logout = useCallback(() => {
+    logoutDefault({ returnTo: window.location.origin });
+    localStorage.clear();
+  }, [logoutDefault]);
+
   useEffect(() => {
     (async () => {
       try {
         setIsLoading(true);
         const accessToken = await getAccessTokenSilently();
+
         const claims = await getIdTokenClaims();
         const userId = claims[`${config.auth.customClaimNamespace}/user_uuid`];
+        const username = claims[`${config.auth.customClaimNamespace}/username`];
+        const user = { ...claims, userId, username };
 
         if (accessToken) {
           sentryService.setUserId(userId);
 
           localStorage.setItem('token', accessToken);
-          localStorage.setItem('user', JSON.stringify(claims));
+          localStorage.setItem('user', JSON.stringify(user));
         }
         setAccessToken(accessToken);
       } catch (err) {
@@ -55,10 +63,11 @@ export const useAuth = (): IUseAuthResult => {
 
   return {
     ...auth,
-    user: user || savedUser,
+    user: savedUser,
     accessToken: accessToken || savedToken,
     isAuthenticated: !!savedToken,
     isLoading,
-    login
+    login,
+    logout
   };
 };

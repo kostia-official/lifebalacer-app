@@ -10,8 +10,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Icon from '@material-ui/core/Icon';
 import { IRoute } from '../containers/Router';
 import { useDeviceDetect } from '../hooks/useDeviceDetect';
-import { ListItemAvatar, Avatar, Divider } from '@material-ui/core';
-import styled from 'styled-components';
+import { Divider } from '@material-ui/core';
+import { User, UserListItem } from './UserListItem';
 
 export const drawerWidth = '250px';
 
@@ -64,27 +64,16 @@ export interface INavigationProps {
   items: IRoute[];
   onClose: () => void;
   onItemClick: (path: string) => void;
-  user?: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
+  user?: User;
+  onLogout: () => void;
 }
-
-const Email = styled.span`
-  display: inline-block;
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 160px;
-`;
 
 export const Navigation: React.FC<INavigationProps> = ({
   isExpanded,
   items,
   onClose,
   onItemClick,
+  onLogout,
   user
 }) => {
   const classes = useStyles();
@@ -110,18 +99,9 @@ export const Navigation: React.FC<INavigationProps> = ({
         <List className={classes.list}>
           {user && (
             <Fragment>
-              <ListItem className={classes.userListItem}>
-                <ListItemAvatar>
-                  {user?.avatar ? (
-                    <Avatar alt={user?.name} src={user?.avatar} />
-                  ) : (
-                    <Avatar>
-                      <Icon>person</Icon>
-                    </Avatar>
-                  )}
-                </ListItemAvatar>
-                <ListItemText primary={user?.name} secondary={<Email>{user.email}</Email>} />
-              </ListItem>
+              <div className={classes.userListItem}>
+                <UserListItem user={user} onLogout={onLogout} />
+              </div>
 
               <Divider className={classes.divider} />
             </Fragment>

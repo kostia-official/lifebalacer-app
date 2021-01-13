@@ -39,7 +39,7 @@ export interface IAppProps {
 }
 
 export const App: React.FC = () => {
-  const { isAuthenticated, user, login } = useAuth();
+  const { isAuthenticated, user, login, logout } = useAuth();
   const { goBackCb, switchTo, isNested } = useHistoryNavigation();
   const { isDesktop } = useDeviceDetect();
   const [isExpandedMenu, setIsExpandedMenu] = useState(isDesktop);
@@ -92,7 +92,8 @@ export const App: React.FC = () => {
           items={isAuthenticated ? routes : routes.filter(({ isPublic }) => isPublic)}
           onClose={onMenuClick}
           onItemClick={switchTo}
-          user={user && { name: user?.given_name, email: user.email, avatar: user.picture }}
+          onLogout={logout}
+          user={user && { name: user?.username, email: user.email, avatar: user.picture }}
         />
 
         <PageWrapper>
