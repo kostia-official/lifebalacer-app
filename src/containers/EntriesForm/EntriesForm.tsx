@@ -130,10 +130,12 @@ const EntriesForm = () => {
         ...data
       };
 
+      if (modalEntry) setModalEntry(entry);
       setSelectedEntries((prev) => [...prev, entry]);
+
       await createEntryMutation({ variables: { data: entry } });
     },
-    [getEntriesByActivityId, createEntryMutation, getCompletedAt]
+    [getEntriesByActivityId, getCompletedAt, modalEntry, createEntryMutation]
   );
 
   const updateEntry = useCallback(

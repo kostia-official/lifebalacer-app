@@ -82,19 +82,21 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   const [value, setValue] = useState(
     activity.valueType === ActivityType.Range ? entry.value || averageValue : entry.value
   );
+  const getValueOptional = useCallback(() => {
+    return _.isNil(value) ? {} : { value: Number(value) };
+  }, [value]);
+
   const [description, setDescription] = useState<string>(entry.description || '');
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = useCallback(
     (e: SyntheticEvent) => {
-      const valueProperty = _.isNil(value) ? {} : { value: Number(value) };
-
-      onUpdate({ ...valueProperty, description }).then();
+      onUpdate({ ...getValueOptional(), description }).then();
       onDone();
 
       e.preventDefault();
     },
-    [value, description, onUpdate, onDone]
+    [onUpdate, getValueOptional, description, onDone]
   );
 
   const onValueChange: StandardInputProps['onChange'] = useCallback((e) => {
@@ -105,24 +107,30 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
     setValue(Array.isArray(value) ? value[0] : value);
   }, []);
 
-  const debouncedDescriptionSave = useDebouncedCallback(async (description: string) => {
-    try {
-      setIsLoading(true);
+  const debouncedAutoSave = useDebouncedCallback(
+    useCallback(
+      async (description: string) => {
+        try {
+          setIsLoading(true);
 
-      await onUpdate({ description });
-    } finally {
-      setIsLoading(false);
-    }
-  }, 1000);
+          await onUpdate({ ...getValueOptional(), description });
+        } finally {
+          setIsLoading(false);
+        }
+      },
+      [getValueOptional, onUpdate]
+    ),
+    1000
+  );
 
   const onDescriptionChange: StandardInputProps['onChange'] = useCallback(
     (event) => {
       const description = event.target.value;
 
       setDescription(description);
-      debouncedDescriptionSave.callback(description);
+      debouncedAutoSave.callback(description);
     },
-    [debouncedDescriptionSave]
+    [debouncedAutoSave]
   );
 
   useEffect(() => {
