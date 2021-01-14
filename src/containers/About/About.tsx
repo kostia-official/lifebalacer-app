@@ -2,6 +2,8 @@ import React from 'react';
 import { List, ListItem, ListItemText } from '@material-ui/core';
 import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
 import { useAuth } from '../../hooks/useAuth';
+import { LastUpdatedAt } from './LastUpdatedAt';
+import { Center } from '../../components/Center';
 
 export const About = () => {
   const { goForwardToCb } = useHistoryNavigation();
@@ -23,6 +25,10 @@ export const About = () => {
             <ListItemText primary="Dev Tools" />
           </ListItem>
         )}
+
+        <Center margin="4px 0">
+          <LastUpdatedAt />
+        </Center>
       </List>
     </div>
   );

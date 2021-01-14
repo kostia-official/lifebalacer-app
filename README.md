@@ -8,6 +8,6 @@
 1. Edit PWA manifest config in `pwaManifest` section of `scripts/generateIcons/iconsConfig.json`.
 1. Run `npm run icons:gen`.
 
-### Android App
+## App screenshots
 
-Generate android icons in Android Studio: File -> New -> Image Asset. Background color #353535.
+Android - Pixel 3a.

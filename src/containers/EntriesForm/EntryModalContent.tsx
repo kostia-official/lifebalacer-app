@@ -149,7 +149,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   const isWithValue = [ActivityType.Value, ActivityType.Todoist].includes(activity.valueType);
   const isWithDescription = isForceDescription || activity.isWithDescription || entry.description;
   const isFocusDescription = activity.valueType === ActivityType.Simple;
-  const valueLabel = activity.valueLabel || 'Value';
+  const valueLabel = activity.valueLabel || activity.name;
 
   if (!activity) return <Fragment />;
 

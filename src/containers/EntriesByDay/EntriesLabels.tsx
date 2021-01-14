@@ -28,13 +28,23 @@ export const EntriesLabels: React.FC<EntriesLabelsProps> = ({
   todoistActivity,
   getActivityById
 }) => {
+  const activeEntries: typeof entries = useMemo(
+    () =>
+      entries.filter((entry) => {
+        const activity = getActivityById(entry.activityId);
+
+        return !activity?.isArchived;
+      }),
+    [entries, getActivityById]
+  );
+
   const { entriesWithTodoistGroup } = useMemo(
     () =>
       groupTodoistEntries({
-        entries,
+        entries: activeEntries,
         todoistActivityId: todoistActivity?._id
       }),
-    [entries, todoistActivity?._id]
+    [activeEntries, todoistActivity?._id]
   );
 
   return (
