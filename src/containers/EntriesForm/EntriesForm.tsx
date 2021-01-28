@@ -14,7 +14,7 @@ import {
 import { useApolloError } from '../../hooks/useApolloError';
 import * as R from 'remeda';
 import _ from 'lodash';
-import { Badge, Card, CardContent, Typography } from '@material-ui/core';
+import { Card, CardContent, Typography } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { CardModal } from '../../components/CardModal';
@@ -285,19 +285,13 @@ const EntriesForm = () => {
 
                 if (_.isEmpty(entries)) {
                   return (
-                    <Badge
-                      key={activity._id}
-                      color="secondary"
-                      variant="dot"
-                      overlap="circle"
-                      invisible={!isMissing}
-                    >
-                      <EntryPickButton
-                        activity={activity}
-                        toggleSelection={toggleSelection}
-                        onLongPress={onLongPress}
-                      />
-                    </Badge>
+                    <EntryPickButton
+                      activity={activity}
+                      toggleSelection={toggleSelection}
+                      onLongPress={onLongPress}
+                      isShowBadge={isMissing}
+                      badgeColor={getIsToday(dayDate) ? 'primary' : 'secondary'}
+                    />
                   );
                 }
 
