@@ -21,7 +21,7 @@ const TextWrapper = styled.div`
   display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 70vw;
+  max-width: 55vw; // TODO: Tech debt: It's suggestion how much percent of screen a text will take
 `;
 
 const PointsWrapper = styled.div`
