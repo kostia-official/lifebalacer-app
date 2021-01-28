@@ -44,6 +44,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
     <Fragment>
       {/* Render extra invisible picker for preload of emojis */}
       <Picker style={{ position: 'fixed', top: -10000, left: -10000 }} />
+
       {isShow && (
         <EmojiPickerWrapper ref={ref}>
           <Picker

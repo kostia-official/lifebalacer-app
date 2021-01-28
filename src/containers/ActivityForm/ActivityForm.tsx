@@ -61,6 +61,8 @@ const EmojiInput = styled(Input)`
   }
 `;
 
+const EMOJI_PICKER_CLASS_NAME = 'emoji-picker-' + Date.now();
+
 const ActivityForm = () => {
   let { _id } = useParams<{ _id: string }>();
   const isEdit = !!_id;
@@ -191,10 +193,12 @@ const ActivityForm = () => {
   const { preventMobileSelectionMenu, selectAllOnFocus } = useSelectOnInputFocus();
 
   const [isShowEmojiPicker, setIsShowEmojiPicker] = useState(false);
+
   const onEmojiClick = useCallback((e) => {
     setIsShowEmojiPicker((prev) => !prev);
     e.stopPropagation();
   }, []);
+
   const onEmojiSelect = useCallback((emoji) => {
     setActivity((prev) => ({ ...prev, emoji }));
     setIsShowEmojiPicker(false);
@@ -213,14 +217,15 @@ const ActivityForm = () => {
               value={activity.emoji}
               onChange={updateActivityField('emoji')}
               margin="dense"
-              onClickCapture={onEmojiClick}
+              onClick={onEmojiClick}
               readOnly
+              className={EMOJI_PICKER_CLASS_NAME}
             />
             <EmojiPicker
               isShow={isShowEmojiPicker}
               setIsShow={setIsShowEmojiPicker}
               onSelect={onEmojiSelect}
-              ignoreClassClickOutside="MuiFormControl-root"
+              ignoreClassClickOutside={EMOJI_PICKER_CLASS_NAME}
             />
           </FormControl>
 
