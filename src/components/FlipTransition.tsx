@@ -28,7 +28,7 @@ const TransitionStyles = styled.div<TransitionStylesProps>`
   z-index: 300;
 `;
 
-export const StyledFadeTransition: React.FC<StyledFadeTransitionProps> = ({
+export const FlipTransition: React.FC<StyledFadeTransitionProps> = ({
   isShow,
   children,
   delay = 300,

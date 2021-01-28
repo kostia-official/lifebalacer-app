@@ -11,7 +11,7 @@ export interface IDatePickerProps {
 
 export const DatePickerButton: React.FC<IDatePickerProps> = ({ onChange }) => {
   const [isShowDatePicker, setIsShowDatePicker] = useState(false);
-  const { renderDay } = useDatePickerRenderDayExtremes({});
+  const { renderDay } = useDatePickerRenderDayExtremes();
 
   return (
     <Fragment>

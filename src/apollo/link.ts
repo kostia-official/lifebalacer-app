@@ -1,11 +1,12 @@
 import { setContext } from '@apollo/client/link/context';
 import { authService } from '../services/auth0';
 import { useTimezone } from '../hooks/useTimezone';
-import { HttpLink } from '@apollo/client';
 import { config } from '../common/config';
 import { RetryLink } from '@apollo/client/link/retry';
 import { onError } from '@apollo/client/link/error';
 import { ApolloLink } from '@apollo/client/link/core';
+import { split, HttpLink } from '@apollo/client';
+import { getMainDefinition } from '@apollo/client/utilities';
 
 const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
   if (graphQLErrors) {
@@ -47,8 +48,23 @@ const authLink = setContext(async (_, { headers }) => {
   };
 });
 
-const httpLink = new HttpLink({
+const baseApiLink = new HttpLink({
   uri: config.apiUrl
 });
 
-export const link = ApolloLink.from([errorLink, retryLink, authLink, httpLink]);
+const warmApiLink = new HttpLink({
+  uri: config.warmApiUrl
+});
+
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+
+    // Run GetEntriesByDay query only on warmer lambda
+    return definition.name?.value === 'GetEntriesByDay';
+  },
+  warmApiLink,
+  baseApiLink
+);
+
+export const link = ApolloLink.from([errorLink, retryLink, authLink, splitLink]);

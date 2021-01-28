@@ -21,7 +21,7 @@ export const useDatePickerRenderDayExtremes = ({
   onError,
   selectedActivityExtremes,
   isReverseColors = false
-}: UseDatePickerRenderDayProps) => {
+}: UseDatePickerRenderDayProps = {}) => {
   const { data: daysData, refetch } = useGetCalendarDaysQuery({
     onError,
     variables: {

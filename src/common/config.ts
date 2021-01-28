@@ -2,11 +2,11 @@ class Config {
   host = process.env.REACT_APP_HOST || 'http://localhost:3000';
   isDev = process.env.NODE_ENV !== 'production';
   stage = process.env.STAGE || 'dev';
-  apiUrl = process.env.REACT_APP_API_URL || 'https://rewarder-api-gateway-prod.cycler.cc/graphql';
-  wsUrl = process.env.REACT_APP_WS_URL || 'wss://rewarder-staging.herokuapp.com/graphql';
+  apiUrl = process.env.REACT_APP_API_URL;
+  warmApiUrl = process.env.REACT_APP_WARM_API_URL;
   auth = {
     domain: 'rewarder.eu.auth0.com',
-    clientId: process.env.REACT_APP_AUTH0_CLIENT_ID || 'BDNB7kOtnhg1cnOTukKWuyZl4kksS1eP',
+    clientId: process.env.REACT_APP_AUTH0_CLIENT_ID!,
     redirectUri: this.host,
     responseType: 'token id_token',
     scope: 'openid email profile',
@@ -15,7 +15,7 @@ class Config {
     customClaimNamespace: 'https://custom-claims.cycler.cc'
   };
   todoist = {
-    clientId: process.env.REACT_APP_TODOIST_CLIENT_ID || 'c2620bca88914009852a7efa297317e8',
+    clientId: process.env.REACT_APP_TODOIST_CLIENT_ID,
     scope: 'data:read'
   };
   firebase = {

@@ -31,6 +31,14 @@ const IconStyled = styled(Icon)`
   color: ${grey[400]};
 `;
 
+const FormControlLabelStyled = styled(FormControlLabel)`
+  margin-right: 0;
+`;
+
+const IconButtonStyled = styled(IconButton)`
+  padding: 10px;
+`;
+
 export const TooltipCheckbox: React.FC<TooltipCheckboxProps> = ({
   checked,
   onChange,
@@ -44,7 +52,7 @@ export const TooltipCheckbox: React.FC<TooltipCheckboxProps> = ({
 
   return (
     <Wrapper>
-      <FormControlLabel
+      <FormControlLabelStyled
         control={<Checkbox checked={checked} color="primary" onChange={onChange} />}
         label={
           <CheckboxLabel>
@@ -57,9 +65,9 @@ export const TooltipCheckbox: React.FC<TooltipCheckboxProps> = ({
               disableTouchListener
               disableHoverListener
             >
-              <IconButton edge="end" onClick={showTooltip}>
+              <IconButtonStyled edge="end" onClick={showTooltip}>
                 <IconStyled fontSize="small">info</IconStyled>
-              </IconButton>
+              </IconButtonStyled>
             </Tooltip>
           </CheckboxLabel>
         }

@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { Header } from '../components/Header';
 import { Navigation } from '../components/Navigation';
 import styled from 'styled-components';
-import { HeaderRightContent } from './HeaderRightContent';
+import { Balance } from './Balance/Balance';
 import { useAuth } from '../hooks/useAuth';
 import { Persist } from '../components/Persist';
 import { useDeviceDetect } from '../hooks/useDeviceDetect';
@@ -82,7 +82,7 @@ export const App: React.FC = () => {
         onBackClick={goBackCb('/')}
         isShowBack={isNested}
         rightContent={
-          isAuthenticated ? <HeaderRightContent /> : <Button onClick={() => login()}>Login</Button>
+          isAuthenticated ? <Balance /> : <Button onClick={() => login()}>Login</Button>
         }
       />
 

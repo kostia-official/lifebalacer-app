@@ -92,8 +92,13 @@ query GetEntriesByOneDay($date: Date!) {
   }
 }
 
-query GetBalance {
-  balance
+query GetBalance($dateAfter: Date) {
+  balance(dateAfter: $dateAfter) {
+    total
+    year
+    month
+    week
+  }
 }
 
 query GetDaysStatistic {

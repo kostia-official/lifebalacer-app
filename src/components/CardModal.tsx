@@ -2,7 +2,7 @@ import React from 'react';
 import Card from '@material-ui/core/Card';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import { StyledFadeTransition } from './StyledFadeTransition';
+import { FadeTransition } from './FadeTransition';
 import styled from 'styled-components';
 
 export interface CardModalProps {
@@ -42,7 +42,7 @@ const Container = styled.div`
 `;
 
 export const CardModal: React.FC<CardModalProps> = ({ isShow, onClose, children, showDelay }) => (
-  <StyledFadeTransition isShow={isShow} delay={showDelay}>
+  <FadeTransition isShow={isShow} delay={showDelay}>
     <Container>
       <Overlay onClick={onClose} />
       <CardStyled>
@@ -52,5 +52,5 @@ export const CardModal: React.FC<CardModalProps> = ({ isShow, onClose, children,
         {children}
       </CardStyled>
     </Container>
-  </StyledFadeTransition>
+  </FadeTransition>
 );

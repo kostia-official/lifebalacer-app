@@ -2,6 +2,8 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -28,7 +30,7 @@ export type Query = {
   activities: Array<Activity>;
   activitiesExtremes: Array<ActivityExtremes>;
   journal: Array<Journal>;
-  balance: Scalars['Int'];
+  balance: Balance;
 };
 
 export type QueryEntryArgs = {
@@ -51,6 +53,10 @@ export type QueryActivityArgs = {
 export type QueryJournalArgs = {
   dateAfter?: Maybe<Scalars['Date']>;
   activities?: Maybe<Array<Scalars['String']>>;
+};
+
+export type QueryBalanceArgs = {
+  dateAfter?: Maybe<Scalars['Date']>;
 };
 
 export type Mutation = {
@@ -277,6 +283,14 @@ export type TodoistMetaInput = {
   todoistUserId: Scalars['String'];
 };
 
+export type Balance = {
+  __typename?: 'Balance';
+  total: Scalars['Int'];
+  year: Scalars['Int'];
+  month: Scalars['Int'];
+  week: Scalars['Int'];
+};
+
 export type CreateEntryInput = {
   _id?: Maybe<Scalars['ID']>;
   description?: Maybe<Scalars['String']>;
@@ -393,9 +407,13 @@ export type GetEntriesByOneDayQuery = { __typename?: 'Query' } & {
   entriesByOneDay?: Maybe<{ __typename?: 'EntriesByDay' } & EntriesByDayResultFragment>;
 };
 
-export type GetBalanceQueryVariables = Exact<{ [key: string]: never }>;
+export type GetBalanceQueryVariables = Exact<{
+  dateAfter?: Maybe<Scalars['Date']>;
+}>;
 
-export type GetBalanceQuery = { __typename?: 'Query' } & Pick<Query, 'balance'>;
+export type GetBalanceQuery = { __typename?: 'Query' } & {
+  balance: { __typename?: 'Balance' } & Pick<Balance, 'total' | 'year' | 'month' | 'week'>;
+};
 
 export type GetDaysStatisticQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -917,8 +935,13 @@ export function refetchGetEntriesByOneDayQuery(variables?: GetEntriesByOneDayQue
   return { query: GetEntriesByOneDayDocument, variables: variables };
 }
 export const GetBalanceDocument = gql`
-  query GetBalance {
-    balance
+  query GetBalance($dateAfter: Date) {
+    balance(dateAfter: $dateAfter) {
+      total
+      year
+      month
+      week
+    }
   }
 `;
 
@@ -934,6 +957,7 @@ export const GetBalanceDocument = gql`
  * @example
  * const { data, loading, error } = useGetBalanceQuery({
  *   variables: {
+ *      dateAfter: // value for 'dateAfter'
  *   },
  * });
  */

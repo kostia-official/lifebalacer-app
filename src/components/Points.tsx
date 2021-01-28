@@ -1,13 +1,17 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { Coin } from './Coin';
 import styled from 'styled-components';
 import _ from 'lodash';
+import { Fade } from '@material-ui/core';
 
 export interface PointsProps {
+  label?: string;
   points?: string | number;
   coinSize?: number;
   pointsSize?: number;
   size?: number;
+  transitionTimeout?: number;
+  transition?: boolean;
 }
 
 const Wrapper = styled.div`
@@ -24,15 +28,20 @@ const PointsWrapper = styled.span<{ $pointsSize: number }>`
 
 export const Points: React.FC<PointsProps> = ({
   points,
+  label,
   size = 18,
   coinSize = size,
-  pointsSize = size - 2
+  pointsSize = size - 2,
+  transition = false,
+  transitionTimeout = transition ? 300 : 0
 }) => {
-  if (_.isNil(points)) return <Fragment />;
+  const text = label ? `${label} ${points}` : points;
 
   return (
-    <Wrapper>
-      <PointsWrapper $pointsSize={pointsSize}>{points}</PointsWrapper> <Coin size={coinSize} />
-    </Wrapper>
+    <Fade in={!_.isNil(points)} timeout={transitionTimeout}>
+      <Wrapper>
+        <PointsWrapper $pointsSize={pointsSize}>{text}</PointsWrapper> <Coin size={coinSize} />
+      </Wrapper>
+    </Fade>
   );
 };
