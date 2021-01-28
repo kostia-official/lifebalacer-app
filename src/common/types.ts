@@ -12,5 +12,5 @@ export interface RenderDayResult {
 
 export type SelectedEntry = Pick<
   Entry,
-  '_id' | 'activityId' | 'completedAt' | 'value' | 'description'
+  '_id' | 'activityId' | 'completedAt' | 'value' | 'description' | 'points'
 >;

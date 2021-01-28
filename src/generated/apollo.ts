@@ -354,7 +354,7 @@ export type EntriesByDayResultFragment = { __typename?: 'EntriesByDay' } & Pick<
     entries: Array<
       { __typename?: 'Entry' } & Pick<
         Entry,
-        '_id' | 'description' | 'value' | 'completedAt' | 'activityId'
+        '_id' | 'description' | 'value' | 'completedAt' | 'activityId' | 'points'
       >
     >;
     missing: Array<{ __typename?: 'EntryMissing' } & Pick<EntryMissing, 'activityId'>>;
@@ -554,6 +554,7 @@ export const EntriesByDayResultFragmentDoc = gql`
       value
       completedAt
       activityId
+      points
     }
     missing {
       activityId

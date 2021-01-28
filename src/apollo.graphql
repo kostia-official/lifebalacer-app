@@ -48,6 +48,7 @@ fragment EntriesByDayResult on EntriesByDay {
     value
     completedAt
     activityId
+    points
   }
   missing {
     activityId

@@ -32,6 +32,7 @@ import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { useDeleteEntry } from '../../hooks/useDeleteEntry';
 import { useOnActivityUpdate } from '../../hooks/useOnActivityUpdate';
 import { DayHeader } from './DayHeader';
+import { calcPoints } from '../../helpers/calcPoints';
 
 const CardStyled = styled(Card)`
   margin-bottom: 10px;
@@ -123,6 +124,8 @@ const EntriesForm = () => {
     async (activityId: string, data = {}) => {
       if (!_.isEmpty(getEntriesByActivityId(activityId))) return;
 
+      const activity = getActivityById(activityId)!;
+
       const entry: SelectedEntry = {
         _id: new ObjectId().toString(),
         activityId,
@@ -130,28 +133,34 @@ const EntriesForm = () => {
         ...data
       };
 
+      const points = calcPoints(activity, data.value);
+
       if (modalEntry) setModalEntry(entry);
-      setSelectedEntries((prev) => [...prev, entry]);
+      setSelectedEntries((prev) => [...prev, { ...entry, points }]);
 
       await createEntryMutation({ variables: { data: entry } });
     },
-    [getEntriesByActivityId, getCompletedAt, modalEntry, createEntryMutation]
+    [getEntriesByActivityId, getActivityById, getCompletedAt, modalEntry, createEntryMutation]
   );
 
   const updateEntry = useCallback(
     async (entryId: string, toUpdate: Partial<Entry>) => {
-      if (!getEntryById(entryId)) return;
+      const entry = getEntryById(entryId);
+      if (!entry) return;
+
+      const activity = getActivityById(entry.activityId)!;
+      const points = calcPoints(activity, toUpdate?.value);
 
       setSelectedEntries((prev) =>
         prev.map((entry) => {
           if (entry._id !== entryId) return entry;
 
-          return { ...entry, ...toUpdate };
+          return { ...entry, ...toUpdate, points };
         })
       );
       await updateEntryMutation({ variables: { _id: entryId, data: toUpdate } });
     },
-    [updateEntryMutation, getEntryById]
+    [getEntryById, getActivityById, updateEntryMutation]
   );
 
   const deleteEntry = useCallback(
@@ -176,7 +185,8 @@ const EntriesForm = () => {
         return openModal({
           _id: new ObjectId().toString(),
           completedAt: getCompletedAt(),
-          activityId: activity._id
+          activityId: activity._id,
+          points: activity.points
         });
       } else {
         return createEntry(activity._id);
@@ -286,6 +296,7 @@ const EntriesForm = () => {
                 if (_.isEmpty(entries)) {
                   return (
                     <EntryPickButton
+                      key={activity._id}
                       activity={activity}
                       toggleSelection={toggleSelection}
                       onLongPress={onLongPress}
