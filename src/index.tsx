@@ -1,6 +1,6 @@
 import './services/sentry';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { AppRegistry } from 'react-native';
 import './index.css';
 import { App } from './containers/App';
 import * as serviceWorker from './serviceWorkerRegistration';
@@ -15,26 +15,16 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import LuxonUtils from '@date-io/luxon';
 import { ApolloCacheLoader } from './containers/ApolloCacheLoader';
 import { LogsProvider } from './components/LogsProvider';
+import AppNew from './containers/AppNew';
 
 export const history = createBrowserHistory();
 
-ReactDOM.render(
-  <LogsProvider>
-    <Auth0Provider {...config.auth}>
-      <Router history={history}>
-        <ThemeProvider>
-          <MuiPickersUtilsProvider utils={LuxonUtils}>
-            <ApolloCacheLoader>
-              <ApolloProvider client={apolloClient}>
-                <App />
-              </ApolloProvider>
-            </ApolloCacheLoader>
-          </MuiPickersUtilsProvider>
-        </ThemeProvider>
-      </Router>
-    </Auth0Provider>
-  </LogsProvider>,
-  document.getElementById('root')
-);
+const Index = () => <AppNew />;
+
+AppRegistry.registerComponent('Index', () => Index);
+
+AppRegistry.runApplication('Index', {
+  rootTag: document.getElementById('root')
+});
 
 serviceWorker.register();

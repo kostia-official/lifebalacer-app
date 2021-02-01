@@ -6,7 +6,7 @@ import { LastUpdatedAt } from './LastUpdatedAt';
 import { Center } from '../../components/Center';
 
 export const About = () => {
-  const { goForwardToCb } = useHistoryNavigation();
+  // const { goForwardToCb } = useHistoryNavigation();
   const { user } = useAuth();
 
   const isEnableDevTools = user?.email === 'kozzztya@gmail.com';
@@ -14,17 +14,12 @@ export const About = () => {
   return (
     <div>
       <List component="nav" aria-label="main mailbox folders">
-        <ListItem button onClick={goForwardToCb('/about/privacy-policy')}>
+        <ListItem button>
           <ListItemText primary="Privacy Policy" />
         </ListItem>
-        <ListItem button onClick={goForwardToCb('/about/terms-and-conditions')}>
+        <ListItem button>
           <ListItemText primary="Terms and Conditions" />
         </ListItem>
-        {isEnableDevTools && (
-          <ListItem button onClick={goForwardToCb('/about/dev-tools')}>
-            <ListItemText primary="Dev Tools" />
-          </ListItem>
-        )}
 
         <Center margin="4px 0">
           <LastUpdatedAt />

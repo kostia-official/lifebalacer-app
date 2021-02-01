@@ -42,7 +42,7 @@ const FormControlStyled = styled(FormControl)`
 `;
 
 const Calendar = () => {
-  const { goForwardTo } = useHistoryNavigation();
+  // const { goForwardTo } = useHistoryNavigation();
   const { errorMessage, errorTime, onError } = useApolloError();
   const selectedActivityId = useReactiveVar(calendarActivityIdVar);
 
@@ -95,13 +95,10 @@ const Calendar = () => {
     isReverseColors
   });
 
-  const onDateChange = useCallback(
-    (date) => {
-      if (!date) return;
-      goForwardTo(`/entries/${date.toISO()}`);
-    },
-    [goForwardTo]
-  );
+  const onDateChange = useCallback((date) => {
+    if (!date) return;
+    // goForwardTo(`/entries/${date.toISO()}`);
+  }, []);
 
   const [date] = useState(new Date());
 

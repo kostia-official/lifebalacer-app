@@ -36,7 +36,7 @@ const DatePickerButtonWrapper = styled.div`
 `;
 
 const EntriesByDay = () => {
-  const { goForwardTo } = useHistoryNavigation();
+  // const { goForwardTo } = useHistoryNavigation();
   const { errorMessage, errorTime, onError } = useApolloError();
 
   usePushTokenSave({ onError });
@@ -63,19 +63,16 @@ const EntriesByDay = () => {
 
   if (isNewDayLoading) console.info({ lastDayDate, isLastDayToday, loading, isRefetching });
 
-  const onEntryFormOpen = useCallback(
-    (date = new Date()) => {
-      goForwardTo(`/entries/${new Date(date).toISOString()}`);
-    },
-    [goForwardTo]
-  );
+  const onEntryFormOpen = useCallback((date = new Date()) => {
+    // goForwardTo(`/entries/${new Date(date).toISOString()}`);
+  }, []);
 
   const isLoading = !entriesByDay || !activities || isNewDayLoading;
 
   const isEmptyState = _.isEmpty(entriesByDay);
 
   return (
-    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={isLoading}>
+    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={false}>
       {isEmptyState ? (
         <EmptyState text="So far no entries..." />
       ) : (
