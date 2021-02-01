@@ -29,6 +29,7 @@ export type Query = {
   activity?: Maybe<Activity>;
   activities: Array<Activity>;
   activitiesExtremes: Array<ActivityExtremes>;
+  activitiesStatistic: Array<ActivityStatistic>;
   journal: Array<Journal>;
   balance: Balance;
 };
@@ -204,6 +205,22 @@ export type ActivityExtremes = {
   min?: Maybe<Scalars['Float']>;
   max?: Maybe<Scalars['Float']>;
   valueType: ActivityType;
+};
+
+export type Streak = {
+  __typename?: 'Streak';
+  count: Scalars['Int'];
+  from?: Maybe<Scalars['String']>;
+  to?: Maybe<Scalars['String']>;
+};
+
+export type ActivityStatistic = {
+  __typename?: 'ActivityStatistic';
+  _id: Scalars['ID'];
+  perWeek: Scalars['Float'];
+  total: Scalars['Int'];
+  streakWithout: Streak;
+  streakWith: Streak;
 };
 
 export type Entry = {
@@ -421,6 +438,17 @@ export type GetDaysStatisticQuery = { __typename?: 'Query' } & {
   daysStatistic: { __typename?: 'DaysStatistic' } & Pick<
     DaysStatistic,
     'missing' | 'streak' | 'total'
+  >;
+};
+
+export type GetActivitiesStatisticQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetActivitiesStatisticQuery = { __typename?: 'Query' } & {
+  activitiesStatistic: Array<
+    { __typename?: 'ActivityStatistic' } & Pick<ActivityStatistic, '_id' | 'total' | 'perWeek'> & {
+        streakWith: { __typename?: 'Streak' } & Pick<Streak, 'count' | 'from' | 'to'>;
+        streakWithout: { __typename?: 'Streak' } & Pick<Streak, 'count' | 'from' | 'to'>;
+      }
   >;
 };
 
@@ -1033,6 +1061,78 @@ export type GetDaysStatisticQueryResult = Apollo.QueryResult<
 >;
 export function refetchGetDaysStatisticQuery(variables?: GetDaysStatisticQueryVariables) {
   return { query: GetDaysStatisticDocument, variables: variables };
+}
+export const GetActivitiesStatisticDocument = gql`
+  query GetActivitiesStatistic {
+    activitiesStatistic {
+      _id
+      total
+      perWeek
+      streakWith {
+        count
+        from
+        to
+      }
+      streakWithout {
+        count
+        from
+        to
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetActivitiesStatisticQuery__
+ *
+ * To run a query within a React component, call `useGetActivitiesStatisticQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetActivitiesStatisticQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetActivitiesStatisticQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetActivitiesStatisticQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetActivitiesStatisticQuery,
+    GetActivitiesStatisticQueryVariables
+  >
+) {
+  return Apollo.useQuery<GetActivitiesStatisticQuery, GetActivitiesStatisticQueryVariables>(
+    GetActivitiesStatisticDocument,
+    baseOptions
+  );
+}
+export function useGetActivitiesStatisticLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetActivitiesStatisticQuery,
+    GetActivitiesStatisticQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<GetActivitiesStatisticQuery, GetActivitiesStatisticQueryVariables>(
+    GetActivitiesStatisticDocument,
+    baseOptions
+  );
+}
+export type GetActivitiesStatisticQueryHookResult = ReturnType<
+  typeof useGetActivitiesStatisticQuery
+>;
+export type GetActivitiesStatisticLazyQueryHookResult = ReturnType<
+  typeof useGetActivitiesStatisticLazyQuery
+>;
+export type GetActivitiesStatisticQueryResult = Apollo.QueryResult<
+  GetActivitiesStatisticQuery,
+  GetActivitiesStatisticQueryVariables
+>;
+export function refetchGetActivitiesStatisticQuery(
+  variables?: GetActivitiesStatisticQueryVariables
+) {
+  return { query: GetActivitiesStatisticDocument, variables: variables };
 }
 export const GetReminderDocument = gql`
   query GetReminder {

@@ -110,6 +110,24 @@ query GetDaysStatistic {
   }
 }
 
+query GetActivitiesStatistic {
+  activitiesStatistic {
+    _id
+    total
+    perWeek
+    streakWith {
+      count
+      from
+      to
+    }
+    streakWithout {
+      count
+      from
+      to
+    }
+  }
+}
+
 query GetReminder {
   reminder {
     _id

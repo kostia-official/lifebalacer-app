@@ -5,7 +5,7 @@ import { isIOS, isMacOs } from 'react-device-detect';
 const isApple = isIOS || isMacOs;
 
 // Try make emojis look the same on all devices
-const Wrapper = styled.div`
+const Wrapper = styled.span`
   margin: ${isApple ? '0' : '4px'} ${isMacOs ? '0' : '4px'} ${isApple ? '0' : '4px'} 0;
   display: inline-block;
 `;

@@ -11,6 +11,8 @@ import EntriesByDay from './EntriesByDay/EntriesByDay';
 import Journal from './Journal/Journal';
 import { About } from './About/About';
 import { DevTools } from './About/DevTools';
+import { ActivitiesStatistic } from './Statistic/ActivitiesStatistic';
+import { ActivityStatistic } from './Statistic/ActivityStatistic';
 
 const Calendar = React.lazy(() => import('./Calendar/Calendar'));
 const Activities = React.lazy(() => import('./Activities'));
@@ -54,6 +56,12 @@ export const routes: IRoute[] = [
     component: Activities
   },
   {
+    name: 'Statistic',
+    icon: 'insights',
+    path: '/statistic',
+    component: ActivitiesStatistic
+  },
+  {
     name: 'Reminders',
     icon: 'notifications',
     path: '/reminders',
@@ -83,6 +91,12 @@ export const Router = () => {
         ))}
         <RouteWrapper path="/activities/create" isNested exact component={ActivityForm} />
         <RouteWrapper path="/activities/edit/:_id" isNested exact component={ActivityForm} />
+        <RouteWrapper
+          path="/statistic/activity/:_id"
+          isNested
+          exact
+          component={ActivityStatistic}
+        />
         <RouteWrapper path="/entries/:date" isNested exact component={EntriesForm} />
         <RouteWrapper path="/todoist/auth" isNested exact component={TodoistAuth} />
         <RouteWrapper
