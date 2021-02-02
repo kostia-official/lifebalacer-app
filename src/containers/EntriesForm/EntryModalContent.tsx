@@ -76,7 +76,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   const averageValue = Math.ceil((max + min) / 2);
 
   const { onBlur, inputRef } = usePreventBlur({ preventTime: 1000 });
-  const { onFocus } = useFocusOnTheEnd();
+
   useDisableMenuSwapOpen();
 
   const [value, setValue] = useState(
@@ -150,6 +150,8 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   const isWithDescription = isForceDescription || activity.isWithDescription || entry.description;
   const isFocusDescription = activity.valueType === ActivityType.Simple;
   const valueLabel = activity.valueLabel || activity.name;
+
+  const { onFocus } = useFocusOnTheEnd({ isAutoFocus: isFocusDescription });
 
   if (!activity) return <Fragment />;
 
