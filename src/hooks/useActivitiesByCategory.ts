@@ -9,6 +9,7 @@ export interface HookParams {
 }
 
 export const TODOIST_CATEGORY = 'Todoist tasks';
+export const ARCHIVED_CATEGORY = 'Archived';
 
 export const ActivityCategoryOrder: {
   [key: string]: number;
@@ -16,7 +17,8 @@ export const ActivityCategoryOrder: {
   [ActivityCategory.Neutral]: 1,
   [ActivityCategory.Positive]: 2,
   [ActivityCategory.Negative]: 3,
-  [TODOIST_CATEGORY]: 4
+  [TODOIST_CATEGORY]: 4,
+  [ARCHIVED_CATEGORY]: 5
 };
 
 export type ActivityByCategory = {
@@ -40,9 +42,12 @@ export const useActivitiesByCategory = ({ activities = [], entries = [] }: HookP
 
           return !isWidgetWithoutEntries;
         })
-        .groupBy((activity) =>
-          activity.valueType === ActivityType.Todoist ? TODOIST_CATEGORY : activity.category
-        )
+        .groupBy((activity) => {
+          if (activity.isArchived) return ARCHIVED_CATEGORY;
+          if (activity.valueType === ActivityType.Todoist) return TODOIST_CATEGORY;
+
+          return activity.category;
+        })
         .map((activities, category) => ({ category, activities }))
         .sortBy(({ category }) => ActivityCategoryOrder[category])
         .value(),

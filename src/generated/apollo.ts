@@ -214,6 +214,13 @@ export type Streak = {
   to?: Maybe<Scalars['String']>;
 };
 
+export type Weekday = {
+  __typename?: 'Weekday';
+  weekday: Scalars['Int'];
+  count: Scalars['Int'];
+  valueSum: Scalars['Float'];
+};
+
 export type ActivityStatistic = {
   __typename?: 'ActivityStatistic';
   _id: Scalars['ID'];
@@ -221,6 +228,7 @@ export type ActivityStatistic = {
   total: Scalars['Int'];
   streakWithout: Streak;
   streakWith: Streak;
+  weekdays: Array<Weekday>;
 };
 
 export type Entry = {
@@ -448,6 +456,9 @@ export type GetActivitiesStatisticQuery = { __typename?: 'Query' } & {
     { __typename?: 'ActivityStatistic' } & Pick<ActivityStatistic, '_id' | 'total' | 'perWeek'> & {
         streakWith: { __typename?: 'Streak' } & Pick<Streak, 'count' | 'from' | 'to'>;
         streakWithout: { __typename?: 'Streak' } & Pick<Streak, 'count' | 'from' | 'to'>;
+        weekdays: Array<
+          { __typename?: 'Weekday' } & Pick<Weekday, 'weekday' | 'count' | 'valueSum'>
+        >;
       }
   >;
 };
@@ -1077,6 +1088,11 @@ export const GetActivitiesStatisticDocument = gql`
         count
         from
         to
+      }
+      weekdays {
+        weekday
+        count
+        valueSum
       }
     }
   }

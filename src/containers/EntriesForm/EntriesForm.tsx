@@ -14,7 +14,7 @@ import {
 import { useApolloError } from '../../hooks/useApolloError';
 import * as R from 'remeda';
 import _ from 'lodash';
-import { Card, CardContent, Typography } from '@material-ui/core';
+import { Card } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { CardModal } from '../../components/CardModal';
@@ -25,7 +25,7 @@ import { DateTime } from 'luxon';
 import { EntryModalContent } from './EntryModalContent';
 import { getIsToday } from '../../helpers/date';
 import { FabButton } from '../../components/FabButton';
-import { useActivitiesByCategory } from '../../hooks/useActivitiesByCategory';
+import { useActivitiesByCategory, ARCHIVED_CATEGORY } from '../../hooks/useActivitiesByCategory';
 import { PageWrapper } from '../../components/PageWrapper';
 import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
@@ -33,8 +33,9 @@ import { useDeleteEntry } from '../../hooks/useDeleteEntry';
 import { useOnActivityUpdate } from '../../hooks/useOnActivityUpdate';
 import { DayHeader } from './DayHeader';
 import { calcPoints } from '../../helpers/calcPoints';
+import { ExpandableCard } from '../../components/ExpandableCard';
 
-const CardStyled = styled(Card)`
+const CategoryWrapper = styled(Card)`
   margin-bottom: 10px;
 `;
 
@@ -85,7 +86,12 @@ const EntriesForm = () => {
     }
   }, [entriesByDay]);
 
-  const { activities, getActivityById } = useActivities({ onError });
+  const { allActivities, getActivityById } = useActivities({ onError });
+
+  const { activitiesByCategory } = useActivitiesByCategory({
+    activities: allActivities,
+    entries: selectedEntries
+  });
 
   const getEntriesByActivityId = useCallback(
     (activityId: string) => {
@@ -256,18 +262,13 @@ const EntriesForm = () => {
 
   const { goBackCb } = useHistoryNavigation();
 
-  const { activitiesByCategory } = useActivitiesByCategory({
-    activities,
-    entries: selectedEntries
-  });
-
   const modalActivity = useMemo(
-    () => R.find(activities || [], (activity) => activity._id === modalEntry?.activityId),
-    [activities, modalEntry]
+    () => R.find(allActivities || [], (activity) => activity._id === modalEntry?.activityId),
+    [allActivities, modalEntry]
   );
 
   return (
-    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!activities}>
+    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!allActivities}>
       <DayHeader day={entriesData?.entriesByOneDay} />
 
       <CardModal isShow={isModalOpen} onClose={closeModal} showDelay={showDelay}>
@@ -283,12 +284,8 @@ const EntriesForm = () => {
 
       {activitiesByCategory.map(({ category, activities }) => {
         return (
-          <CardStyled key={category}>
-            <CardContent>
-              <Typography color="textSecondary" gutterBottom>
-                {category}
-              </Typography>
-
+          <CategoryWrapper key={category}>
+            <ExpandableCard title={category} defaultExpanded={category !== ARCHIVED_CATEGORY}>
               {activities.map((activity) => {
                 const entries = getEntriesByActivityId(activity._id);
                 const isMissing = !!getMissingByActivityId(activity._id);
@@ -318,8 +315,8 @@ const EntriesForm = () => {
                   );
                 });
               })}
-            </CardContent>
-          </CardStyled>
+            </ExpandableCard>
+          </CategoryWrapper>
         );
       })}
 

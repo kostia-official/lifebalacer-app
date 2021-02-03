@@ -38,12 +38,16 @@ export const useActivities = ({ onError }: OnErrorParams = {}) => {
     () => data?.activities.filter((activity) => activity.isArchived),
     [data]
   );
+  const allActivities: typeof activities = useMemo(
+    () => _.orderBy(data?.activities, ['isArchived'], ['asc']),
+    [data]
+  );
 
   return {
     getActivityById,
     activities,
     archivedActivities,
-    allActivities: data?.activities,
+    allActivities,
     todoistActivity,
     ...other
   };

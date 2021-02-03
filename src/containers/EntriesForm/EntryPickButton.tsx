@@ -8,7 +8,7 @@ import { EntryLabelTruncate } from '../../components/EntryLabelTruncate';
 
 const ButtonWrapper = styled.div`
   display: inline-block;
-  margin: 8px 8px 0 0;
+  margin: 4px 8px 4px 0;
 `;
 
 const BadgeStyled: typeof Badge = styled(Badge)`

@@ -20,6 +20,7 @@ import { calendarActivityIdVar } from '../../reactiveState';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { useOnActivityUpdate } from '../../hooks/useOnActivityUpdate';
 import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
+import { Greyscale } from '../../components/Greyscale';
 
 const CalendarWrapper = styled.div`
   overflow: hidden;
@@ -50,7 +51,7 @@ const Calendar = () => {
     calendarActivityIdVar(e.target?.value);
   }, []);
 
-  const { activities } = useActivities({ onError });
+  const { allActivities } = useActivities({ onError });
   const { data, refetch: refetchExtremes } = useGetActivitiesExtremesQuery({ onError });
   const activitiesExtremes = data?.activitiesExtremes;
 
@@ -58,8 +59,8 @@ const Calendar = () => {
   useOnActivityUpdate([refetchExtremes]);
 
   const selectedActivity = useMemo(() => {
-    return activities?.find(({ _id }) => _id === selectedActivityId);
-  }, [activities, selectedActivityId]);
+    return allActivities?.find(({ _id }) => _id === selectedActivityId);
+  }, [allActivities, selectedActivityId]);
 
   const selectedActivityExtremes = useMemo(() => {
     return activitiesExtremes?.find(({ _id }) => _id === selectedActivityId);
@@ -114,7 +115,7 @@ const Calendar = () => {
     <PageWrapper
       errorMessage={errorMessage}
       errorTime={errorTime}
-      isLoading={!activities || !daysData}
+      isLoading={!allActivities || !daysData}
     >
       <CalendarWrapper>
         <FormControlWrapper>
@@ -122,9 +123,11 @@ const Calendar = () => {
             <InputLabel shrink>Activity</InputLabel>
             <Select value={selectedActivityId} onChange={onActivitySelect} displayEmpty>
               <MenuItem value="">All</MenuItem>
-              {activities?.map((activity) => (
+              {allActivities?.map((activity) => (
                 <MenuItem key={activity._id} value={activity._id}>
-                  {activity.emoji} {activity.name}
+                  <Greyscale isEnable={activity.isArchived}>
+                    {activity.emoji} {activity.name}
+                  </Greyscale>
                 </MenuItem>
               ))}
             </Select>
