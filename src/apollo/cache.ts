@@ -4,6 +4,20 @@ import { toZeroTimeISO } from '../helpers/date';
 
 export const cache = new InMemoryCache({
   typePolicies: {
+    ActivityStatistic: {
+      fields: {
+        activity: {
+          read: (stat, { toReference, readField }) => {
+            const activityId = readField('_id');
+
+            return toReference({
+              __typename: 'Activity',
+              _id: activityId
+            });
+          }
+        }
+      }
+    },
     EntriesByDay: {
       keyFields: ['date'],
       fields: {

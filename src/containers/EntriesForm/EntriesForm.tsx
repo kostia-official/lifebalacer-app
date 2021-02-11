@@ -36,7 +36,7 @@ import { calcPoints } from '../../helpers/calcPoints';
 import { ExpandableCard } from '../../components/ExpandableCard';
 
 const CategoryWrapper = styled(Card)`
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 `;
 
 const showDelay = 300;

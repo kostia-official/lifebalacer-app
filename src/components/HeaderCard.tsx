@@ -9,7 +9,7 @@ export interface PageStartSectionProps {
 }
 
 const Wrapper = styled(Card)`
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 `;
 
 const HeaderContent = styled.div`

@@ -298,7 +298,7 @@ const ActivityForm = () => {
 
         {!activity.isWidget && isWithValue && (
           <TooltipCheckbox
-            text="Value has specific range"
+            text="Value has a specific range"
             tooltipContent={
               <Typography color="inherit" variant="body2" component="p">
                 If you know the exact range of your value, like rating of your sleep from 1 to 5,

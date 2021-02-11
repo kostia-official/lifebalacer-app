@@ -1,3 +1,5 @@
+import 'devextreme/dist/css/dx.material.teal.dark.compact.css';
+
 import './services/sentry';
 import React from 'react';
 import ReactDOM from 'react-dom';

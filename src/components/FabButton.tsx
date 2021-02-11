@@ -17,12 +17,12 @@ export interface ISaveFabButtonProps extends FabProps {
 const Wrapper = styled.div<IStyleProps>`
   position: fixed;
   bottom: ${(props) => props.bottom || '20px'};
-  right: ${(props) => props.right || '20px'};
+  right: ${(props) => props.right || '26px'};
   z-index: 200;
 `;
 
 export const EmptySpaceUnderFab = styled.div`
-  height: 80px;
+  height: 86px;
 `;
 
 export const FabButton: React.FC<PartialBy<ISaveFabButtonProps, 'children'>> = ({

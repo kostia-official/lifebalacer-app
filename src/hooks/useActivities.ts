@@ -1,13 +1,20 @@
-import { OnErrorParams } from './useApolloError';
-import { useGetActivitiesQuery, ActivityType } from '../generated/apollo';
+import {
+  useGetActivitiesQuery,
+  ActivityType,
+  GetActivitiesQuery,
+  GetActivitiesQueryVariables
+} from '../generated/apollo';
 import { useCallback, useMemo } from 'react';
 import { ActivityResult } from '../common/types';
 import * as R from 'remeda';
 import _ from 'lodash';
 import { useOnActivityUpdate } from './useOnActivityUpdate';
+import * as Apollo from '@apollo/client';
 
-export const useActivities = ({ onError }: OnErrorParams = {}) => {
-  const { data, ...other } = useGetActivitiesQuery({ onError });
+export const useActivities = (
+  queryHookOptions: Apollo.QueryHookOptions<GetActivitiesQuery, GetActivitiesQueryVariables> = {}
+) => {
+  const { data, ...other } = useGetActivitiesQuery(queryHookOptions);
 
   useOnActivityUpdate([other.refetch]);
 

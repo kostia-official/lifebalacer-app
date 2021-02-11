@@ -110,11 +110,27 @@ query GetDaysStatistic {
   }
 }
 
+fragment EntryPerDateFragment on EntryPerDate {
+  averageValue
+  completedAt
+  count
+  valueSum
+}
+
 query GetActivitiesStatistic {
   activitiesStatistic {
     _id
+    activity @client {
+      name
+      emoji
+      valueType
+      isRequired
+      isReverseColors
+    }
     total
     perWeek
+    medianValue
+    averageValue
     streakWith {
       count
       from
@@ -124,6 +140,24 @@ query GetActivitiesStatistic {
       count
       from
       to
+    }
+    weekdays {
+      weekday
+      count
+      valueSum
+      averageValue
+    }
+    countPerValue {
+      count
+      value
+    }
+    entriesPerDateGroup {
+      week {
+        ...EntryPerDateFragment
+      }
+      month {
+        ...EntryPerDateFragment
+      }
     }
   }
 }

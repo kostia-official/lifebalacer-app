@@ -51,7 +51,7 @@ const Journal = () => {
   const { goForwardTo } = useHistoryNavigation();
   const { errorMessage, onError, errorTime } = useApolloError();
 
-  const { getActivityById, todoistActivity, activities } = useActivities({ onError });
+  const { getActivityById, todoistActivity, allActivities } = useActivities({ onError });
 
   const { data, isHasMore, loadMore, refetch } = useInfiniteQuery<
     GetJournalQuery,
@@ -60,7 +60,7 @@ const Journal = () => {
     onError,
     field: 'journal',
     variables: {
-      activities: activities
+      activities: allActivities
         ?.filter((activity) => activity._id !== todoistActivity?._id)
         .map((activity) => activity._id)
     },
@@ -78,7 +78,7 @@ const Journal = () => {
     [goForwardTo]
   );
 
-  const isLoading = !journal || !activities;
+  const isLoading = !journal || !allActivities;
 
   return (
     <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={isLoading}>

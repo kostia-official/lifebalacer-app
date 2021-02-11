@@ -32,7 +32,7 @@ const EntriesLabelsWrapper = styled.div`
 const DatePickerButtonWrapper = styled.div`
   position: fixed;
   bottom: 94px;
-  right: 20px;
+  right: 26px;
 `;
 
 const EntriesByDay = () => {

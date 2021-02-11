@@ -214,21 +214,47 @@ export type Streak = {
   to?: Maybe<Scalars['String']>;
 };
 
-export type Weekday = {
-  __typename?: 'Weekday';
+export type WeekdayStatistic = {
+  __typename?: 'WeekdayStatistic';
   weekday: Scalars['Int'];
   count: Scalars['Int'];
   valueSum: Scalars['Float'];
+  averageValue?: Maybe<Scalars['Float']>;
+};
+
+export type CountPerValue = {
+  __typename?: 'CountPerValue';
+  value: Scalars['Int'];
+  count: Scalars['Int'];
+};
+
+export type EntryPerDate = {
+  __typename?: 'EntryPerDate';
+  valueSum?: Maybe<Scalars['Float']>;
+  averageValue?: Maybe<Scalars['Float']>;
+  count: Scalars['Int'];
+  completedAt: Scalars['String'];
+};
+
+export type EntriesPerDateGroup = {
+  __typename?: 'EntriesPerDateGroup';
+  week: Array<EntryPerDate>;
+  month: Array<EntryPerDate>;
 };
 
 export type ActivityStatistic = {
   __typename?: 'ActivityStatistic';
   _id: Scalars['ID'];
+  activity: Activity;
+  averageValue?: Maybe<Scalars['Float']>;
+  countPerValue?: Maybe<Array<CountPerValue>>;
+  entriesPerDateGroup: EntriesPerDateGroup;
+  medianValue?: Maybe<Scalars['Float']>;
   perWeek: Scalars['Float'];
-  total: Scalars['Int'];
-  streakWithout: Streak;
   streakWith: Streak;
-  weekdays: Array<Weekday>;
+  streakWithout: Streak;
+  total: Scalars['Int'];
+  weekdays: Array<WeekdayStatistic>;
 };
 
 export type Entry = {
@@ -449,16 +475,38 @@ export type GetDaysStatisticQuery = { __typename?: 'Query' } & {
   >;
 };
 
+export type EntryPerDateFragmentFragment = { __typename?: 'EntryPerDate' } & Pick<
+  EntryPerDate,
+  'averageValue' | 'completedAt' | 'count' | 'valueSum'
+>;
+
 export type GetActivitiesStatisticQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetActivitiesStatisticQuery = { __typename?: 'Query' } & {
   activitiesStatistic: Array<
-    { __typename?: 'ActivityStatistic' } & Pick<ActivityStatistic, '_id' | 'total' | 'perWeek'> & {
+    { __typename?: 'ActivityStatistic' } & Pick<
+      ActivityStatistic,
+      '_id' | 'total' | 'perWeek' | 'medianValue' | 'averageValue'
+    > & {
+        activity: { __typename?: 'Activity' } & Pick<
+          Activity,
+          'name' | 'emoji' | 'valueType' | 'isRequired' | 'isReverseColors'
+        >;
         streakWith: { __typename?: 'Streak' } & Pick<Streak, 'count' | 'from' | 'to'>;
         streakWithout: { __typename?: 'Streak' } & Pick<Streak, 'count' | 'from' | 'to'>;
         weekdays: Array<
-          { __typename?: 'Weekday' } & Pick<Weekday, 'weekday' | 'count' | 'valueSum'>
+          { __typename?: 'WeekdayStatistic' } & Pick<
+            WeekdayStatistic,
+            'weekday' | 'count' | 'valueSum' | 'averageValue'
+          >
         >;
+        countPerValue?: Maybe<
+          Array<{ __typename?: 'CountPerValue' } & Pick<CountPerValue, 'count' | 'value'>>
+        >;
+        entriesPerDateGroup: { __typename?: 'EntriesPerDateGroup' } & {
+          week: Array<{ __typename?: 'EntryPerDate' } & EntryPerDateFragmentFragment>;
+          month: Array<{ __typename?: 'EntryPerDate' } & EntryPerDateFragmentFragment>;
+        };
       }
   >;
 };
@@ -598,6 +646,14 @@ export const EntriesByDayResultFragmentDoc = gql`
     missing {
       activityId
     }
+  }
+`;
+export const EntryPerDateFragmentFragmentDoc = gql`
+  fragment EntryPerDateFragment on EntryPerDate {
+    averageValue
+    completedAt
+    count
+    valueSum
   }
 `;
 export const GetActivityDocument = gql`
@@ -1077,8 +1133,17 @@ export const GetActivitiesStatisticDocument = gql`
   query GetActivitiesStatistic {
     activitiesStatistic {
       _id
+      activity @client {
+        name
+        emoji
+        valueType
+        isRequired
+        isReverseColors
+      }
       total
       perWeek
+      medianValue
+      averageValue
       streakWith {
         count
         from
@@ -1093,9 +1158,23 @@ export const GetActivitiesStatisticDocument = gql`
         weekday
         count
         valueSum
+        averageValue
+      }
+      countPerValue {
+        count
+        value
+      }
+      entriesPerDateGroup {
+        week {
+          ...EntryPerDateFragment
+        }
+        month {
+          ...EntryPerDateFragment
+        }
       }
     }
   }
+  ${EntryPerDateFragmentFragmentDoc}
 `;
 
 /**

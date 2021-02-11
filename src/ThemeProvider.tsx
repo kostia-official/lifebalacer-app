@@ -15,6 +15,7 @@ declare module '@material-ui/core/styles/overrides' {
 
 export const ThemeProvider: React.FC = (props) => {
   const theme = createMuiTheme({
+    // spacing: 4,
     palette: {
       type: 'dark',
       primary: {

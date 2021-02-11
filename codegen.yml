@@ -1,4 +1,6 @@
-schema: http://localhost:5000/graphql?codegen=1
+schema:
+  - http://localhost:5000/graphql?codegen=1
+  - ./src/clientSchema.graphql
 generates:
   ./src/generated/apollo.ts:
     documents: './src/**/*.graphql'

@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { Balance } from './Balance/Balance';
 import { useAuth } from '../hooks/useAuth';
 import { Persist } from '../components/Persist';
-import { useDeviceDetect } from '../hooks/useDeviceDetect';
 import { useSwipeable } from 'react-swipeable';
 import { isSwipeHandlersEnabledVar } from '../reactiveState';
 import { ErrorCatcher } from './ErrorCatcher';
@@ -15,6 +14,7 @@ import ScrollRestoration from 'react-scroll-restoration';
 import { Button } from '@material-ui/core';
 import { useHistoryNavigation } from '../hooks/useHistoryNavigation';
 import { Router, routes } from './Router';
+import { isMobile } from 'react-device-detect';
 
 const AppWrapper = styled.div`
   height: 100vh;
@@ -26,7 +26,7 @@ const ContentWrapper = styled.div`
 
 const PageWrapper = styled.div`
   flex-grow: 1;
-  margin: 10px;
+  margin: 8px;
   position: relative;
 `;
 
@@ -41,8 +41,7 @@ export interface IAppProps {
 export const App: React.FC = () => {
   const { isAuthenticated, user, login, logout } = useAuth();
   const { goBackCb, switchTo, isNested } = useHistoryNavigation();
-  const { isDesktop } = useDeviceDetect();
-  const [isExpandedMenu, setIsExpandedMenu] = useState(isDesktop);
+  const [isExpandedMenu, setIsExpandedMenu] = useState(!isMobile);
 
   const swipeHandlers = useSwipeable({
     onSwipedRight: () => {
@@ -64,7 +63,7 @@ export const App: React.FC = () => {
 
   return (
     <AppWrapper {...swipeHandlers}>
-      {isDesktop && (
+      {!isMobile && (
         <Persist
           name="app"
           data={{ isExpandedMenu }}

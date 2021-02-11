@@ -106,7 +106,7 @@ export const BalanceModalContent: React.FC<BalanceModalProps> = () => {
           text="Sum up for today"
           tooltipContent={
             <Typography color="inherit" variant="body2" component="p">
-              You can calculate your month/week/etc. balance points for another date.
+              You can calculate your balance points for another date.
             </Typography>
           }
           onChange={onIsTodayCheck}
@@ -118,7 +118,7 @@ export const BalanceModalContent: React.FC<BalanceModalProps> = () => {
         <Fragment />
       ) : (
         <DatePicker
-          label="Sum up for specific date"
+          label="Sum up for a specific date"
           value={date}
           onChange={changeDate}
           fullWidth

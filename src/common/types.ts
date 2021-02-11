@@ -14,3 +14,13 @@ export type SelectedEntry = Pick<
   Entry,
   '_id' | 'activityId' | 'completedAt' | 'value' | 'description' | 'points'
 >;
+
+export interface ChartData {
+  xValue: number | string;
+  yValue: number;
+}
+
+export interface Extremes {
+  min: number;
+  max: number;
+}
