@@ -40,7 +40,7 @@ const Description = styled(Typography)`
 const DatePickerButtonWrapper = styled.div`
   position: fixed;
   bottom: 94px;
-  right: 20px;
+  right: 27px;
 `;
 
 const DayContent = styled.div`
