@@ -266,62 +266,83 @@ const EntriesForm = () => {
     [allActivities, modalEntry]
   );
 
-  return (
-    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!allActivities}>
-      <DayHeader day={entriesData?.entriesByOneDay} />
+  return useMemo(() => {
+    return (
+      <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!allActivities}>
+        <DayHeader day={entriesData?.entriesByOneDay} />
 
-      <CardModal isShow={isModalOpen} onClose={closeModal} showDelay={showDelay}>
-        <EntryModalContent
-          onDelete={onDeleteFromModal}
-          onDone={closeModal}
-          onUpdate={upsertEntry}
-          entry={modalEntry!}
-          activity={modalActivity!}
-          isForceDescription={isForceDescription}
-        />
-      </CardModal>
+        <CardModal isShow={isModalOpen} onClose={closeModal} showDelay={showDelay}>
+          <EntryModalContent
+            onDelete={onDeleteFromModal}
+            onDone={closeModal}
+            onUpdate={upsertEntry}
+            entry={modalEntry!}
+            activity={modalActivity!}
+            isForceDescription={isForceDescription}
+          />
+        </CardModal>
 
-      {activitiesByCategory.map(({ category, activities }) => {
-        return (
-          <CategoryWrapper key={category}>
-            <ExpandableCard title={category} defaultExpanded={category !== ARCHIVED_CATEGORY}>
-              {activities.map((activity) => {
-                const entries = getEntriesByActivityId(activity._id);
-                const isMissing = !!getMissingByActivityId(activity._id);
+        {activitiesByCategory.map(({ category, activities }) => {
+          return (
+            <CategoryWrapper key={category}>
+              <ExpandableCard title={category} defaultExpanded={category !== ARCHIVED_CATEGORY}>
+                {activities.map((activity) => {
+                  const entries = getEntriesByActivityId(activity._id);
+                  const isMissing = !!getMissingByActivityId(activity._id);
 
-                if (_.isEmpty(entries)) {
-                  return (
-                    <EntryPickButton
-                      key={activity._id}
-                      activity={activity}
-                      toggleSelection={toggleSelection}
-                      onLongPress={onLongPress}
-                      isShowBadge={isMissing}
-                      badgeColor={getIsToday(dayDate) ? 'primary' : 'secondary'}
-                    />
-                  );
-                }
+                  if (_.isEmpty(entries)) {
+                    return (
+                      <EntryPickButton
+                        key={activity._id}
+                        activity={activity}
+                        toggleSelection={toggleSelection}
+                        onLongPress={onLongPress}
+                        isShowBadge={isMissing}
+                        badgeColor={getIsToday(dayDate) ? 'primary' : 'secondary'}
+                      />
+                    );
+                  }
 
-                return entries?.map((entry) => {
-                  return (
-                    <EntryPickButton
-                      key={entry._id}
-                      entry={entry}
-                      activity={activity}
-                      toggleSelection={toggleSelection}
-                      onLongPress={onLongPress}
-                    />
-                  );
-                });
-              })}
-            </ExpandableCard>
-          </CategoryWrapper>
-        );
-      })}
+                  return entries?.map((entry) => {
+                    return (
+                      <EntryPickButton
+                        key={entry._id}
+                        entry={entry}
+                        activity={activity}
+                        toggleSelection={toggleSelection}
+                        onLongPress={onLongPress}
+                      />
+                    );
+                  });
+                })}
+              </ExpandableCard>
+            </CategoryWrapper>
+          );
+        })}
 
-      <FabButton onClick={goBackCb()} icon="keyboard_return" />
-    </PageWrapper>
-  );
+        <FabButton onClick={goBackCb()} icon="keyboard_return" />
+      </PageWrapper>
+    );
+  }, [
+    activitiesByCategory,
+    allActivities,
+    closeModal,
+    dayDate,
+    entriesData?.entriesByOneDay,
+    errorMessage,
+    errorTime,
+    getEntriesByActivityId,
+    getMissingByActivityId,
+    goBackCb,
+    isForceDescription,
+    isModalOpen,
+    modalActivity,
+    modalEntry,
+    onDeleteFromModal,
+    onLongPress,
+    toggleSelection,
+    upsertEntry
+  ]);
 };
 
 export default EntriesForm;

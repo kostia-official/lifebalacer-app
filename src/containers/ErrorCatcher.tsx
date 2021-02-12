@@ -1,8 +1,9 @@
 import React, { Component, ErrorInfo } from 'react';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/react';
 import { ReactComponent as ErrorLogo } from '../assets/error.svg';
 import { LogoContent } from '../components/LogoContent';
 import { persistCache } from '../apollo/cache';
+import _ from 'lodash';
 
 interface IErrorCatcherState {
   eventId?: string;
@@ -35,7 +36,19 @@ export class ErrorCatcher extends Component<IErrorCatcherProps, IErrorCatcherSta
 
       Sentry.showReportDialog({
         user: { email: userEmail, name: userName },
-        eventId
+        eventId,
+        onLoad() {
+          // Since there is no onClose callback need to use this for redirecting to root
+          const interval = setInterval(() => {
+            const sentryWindow = document.getElementsByClassName('sentry-error-embed');
+
+            if (_.isEmpty(sentryWindow)) {
+              clearInterval(interval);
+
+              window.location.replace('/');
+            }
+          }, 500);
+        }
       });
     });
   }
