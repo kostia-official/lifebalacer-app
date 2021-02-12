@@ -80,7 +80,7 @@ export const useDatePickerRenderDayExtremes = ({
     [daysPayload]
   );
 
-  const { renderDay } = useDatePickerRenderDay({ onRenderDay });
+  const { renderDay } = useDatePickerRenderDay({ onRenderDay, isLoading: !daysData });
 
   return { renderDay, daysData };
 };

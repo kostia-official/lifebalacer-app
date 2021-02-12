@@ -6,6 +6,7 @@ import { ExtendButtonBase } from '@material-ui/core/ButtonBase';
 import { IconButtonTypeMap } from '@material-ui/core/IconButton/IconButton';
 import { DateTime } from 'luxon';
 import { transparentize } from 'polished';
+import { Spinner } from '../components/Spinner';
 
 export interface UseDatePickerRenderDayProps {
   onRenderDay: (
@@ -16,6 +17,7 @@ export interface UseDatePickerRenderDayProps {
   ) => {
     markColor?: string;
   };
+  isLoading: boolean;
 }
 
 interface DayButtonProps extends ExtendButtonBase<IconButtonTypeMap> {
@@ -42,7 +44,16 @@ const DayText = styled(Typography)`
   font-weight: 400;
 `;
 
-export const useDatePickerRenderDay = ({ onRenderDay }: UseDatePickerRenderDayProps) => {
+const SpinnerWrapper = styled.div`
+  position: absolute;
+
+  top: 100px;
+
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
+export const useDatePickerRenderDay = ({ onRenderDay, isLoading }: UseDatePickerRenderDayProps) => {
   const renderDay = useCallback(
     (
       date: MaterialUiPickersDate,
@@ -50,6 +61,14 @@ export const useDatePickerRenderDay = ({ onRenderDay }: UseDatePickerRenderDayPr
       dayInCurrentMonth: boolean,
       dayComponent: JSX.Element
     ) => {
+      if (isLoading) {
+        return (
+          <SpinnerWrapper>
+            <Spinner />
+          </SpinnerWrapper>
+        );
+      }
+
       if (!date) return dayComponent;
 
       const { markColor } = onRenderDay(date, selectedDate, dayInCurrentMonth, dayComponent);
@@ -65,7 +84,7 @@ export const useDatePickerRenderDay = ({ onRenderDay }: UseDatePickerRenderDayPr
         </DayButton>
       );
     },
-    [onRenderDay]
+    [isLoading, onRenderDay]
   );
 
   return { renderDay };
