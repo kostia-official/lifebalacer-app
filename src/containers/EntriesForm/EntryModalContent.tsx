@@ -1,5 +1,5 @@
 import { ActivityType } from '../../generated/apollo';
-import { ActivityResult, EntryResult } from '../../common/types';
+import { ActivityResult, EntryResult, SelectedEntry } from '../../common/types';
 import React, {
   useState,
   useCallback,
@@ -33,7 +33,7 @@ export interface EntryValueModalContentProps {
   onUpdate: (toUpdate: Partial<EntryResult>) => Promise<void>;
   onDone: () => void;
   onDelete: () => void;
-  entry: EntryResult;
+  entry: SelectedEntry;
   activity: ActivityResult;
   isForceDescription: boolean;
 }

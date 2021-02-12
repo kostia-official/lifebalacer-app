@@ -1,11 +1,11 @@
-import { ActivityResult, EntryResult } from '../common/types';
+import { ActivityResult, SelectedEntry } from '../common/types';
 import { useMemo, useCallback } from 'react';
 import { ActivityType, ActivityCategory } from '../generated/apollo';
 import _ from 'lodash';
 
 export interface HookParams {
   activities?: ActivityResult[];
-  entries?: EntryResult[];
+  entries?: SelectedEntry[];
 }
 
 export const TODOIST_CATEGORY = 'Todoist tasks';

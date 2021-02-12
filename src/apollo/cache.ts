@@ -1,23 +1,10 @@
-import { InMemoryCache } from '@apollo/client';
+import { InMemoryCache, Reference } from '@apollo/client';
 import { ApolloPersistCache } from '../services/ApolloPersistCache';
 import { toZeroTimeISO } from '../helpers/date';
+import { ActivityType } from '../generated/apollo';
 
 export const cache = new InMemoryCache({
   typePolicies: {
-    ActivityStatistic: {
-      fields: {
-        activity: {
-          read: (stat, { toReference, readField }) => {
-            const activityId = readField('_id');
-
-            return toReference({
-              __typename: 'Activity',
-              _id: activityId
-            });
-          }
-        }
-      }
-    },
     EntriesByDay: {
       keyFields: ['date'],
       fields: {
@@ -33,13 +20,25 @@ export const cache = new InMemoryCache({
     },
     Query: {
       fields: {
+        todoistActivity: {
+          read(_, { readField }) {
+            const activities = readField<Reference[]>('activities');
+
+            return activities?.find((activityRef: Reference) => {
+              const valueType = readField('valueType', activityRef);
+              return valueType === ActivityType.Todoist;
+            });
+          }
+        },
         activity(_, { args, toReference }) {
           return toReference({
             __typename: 'Activity',
             _id: args?._id
           });
         },
-        entriesByDay: { merge: (_, incoming) => incoming },
+        entriesByDay: {
+          merge: (_, incoming) => incoming
+        },
         entriesByOneDay: {
           merge: (_, incoming) => incoming,
           read: (existing, { args, toReference, ...other }) => {

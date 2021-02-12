@@ -1,3 +1,15 @@
 type ActivityStatistic {
     activity: Activity!
 }
+
+type Entry {
+    activity: Activity!
+}
+
+type EntryMissing {
+    activity: Activity!
+}
+
+type Query {
+    todoistActivity: Activity!
+}

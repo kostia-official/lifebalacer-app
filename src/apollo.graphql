@@ -48,10 +48,48 @@ fragment EntriesByDayResult on EntriesByDay {
     value
     completedAt
     activityId
+    activity @client {
+      _id
+      name
+      emoji
+      category
+      valueLabel
+      valueType
+      pointsType
+      points
+      isArchived
+      isWithDescription
+      isWidget
+      isReverseColors
+      isRequired
+      rangeMeta {
+        from
+        to
+      }
+    }
     points
   }
   missing {
     activityId
+    activity @client {
+      _id
+      name
+      emoji
+      category
+      valueLabel
+      valueType
+      pointsType
+      points
+      isArchived
+      isWithDescription
+      isWidget
+      isReverseColors
+      isRequired
+      rangeMeta {
+        from
+        to
+      }
+    }
   }
 }
 
@@ -235,5 +273,11 @@ mutation UpsertPushToken($data: PushTokenUpsertInput!) {
     _id
     userId
     token
+  }
+}
+
+query GetTodoistActivity  {
+  todoistActivity @client {
+    ...ActivityResult
   }
 }

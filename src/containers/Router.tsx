@@ -15,23 +15,18 @@ const SpinnerWrapper = styled.div`
   align-items: center;
 `;
 
-const LoadingComponent = (props: { pastDelay: boolean }) => {
-  if (props.pastDelay) {
-    return (
-      <SpinnerWrapper>
-        <Spinner />
-      </SpinnerWrapper>
-    );
-  }
-
-  return null;
+const LoadingComponent = () => {
+  return (
+    <SpinnerWrapper>
+      <Spinner />
+    </SpinnerWrapper>
+  );
 };
 
 const LoadableCommon = (loader: any) =>
   Loadable({
     loader,
-    loading: LoadingComponent,
-    delay: 100
+    loading: LoadingComponent
   });
 
 const EntriesForm = LoadableCommon(() => import('./EntriesForm/EntriesForm'));

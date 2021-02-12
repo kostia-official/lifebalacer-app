@@ -10,7 +10,6 @@ import { isLastIndex } from '../../helpers/array';
 export interface EntriesLabelsProps {
   day: DayResult;
   todoistActivity?: ActivityResult;
-  getActivityById: (id: string) => ActivityResult | undefined;
 }
 
 const Wrapper = styled.span`
@@ -25,8 +24,7 @@ const EntryLabelWrapper = styled.span`
 
 export const EntriesLabels: React.FC<EntriesLabelsProps> = ({
   day: { entries, missing, date },
-  todoistActivity,
-  getActivityById
+  todoistActivity
 }) => {
   const { entriesWithTodoistGroup } = useMemo(
     () =>
@@ -40,11 +38,13 @@ export const EntriesLabels: React.FC<EntriesLabelsProps> = ({
   return (
     <Wrapper>
       {entriesWithTodoistGroup.map((entry, index, array) => {
-        const activity = getActivityById(entry.activityId);
-
         return (
           <EntryLabelWrapper key={entry._id}>
-            <EntryLabel entry={entry} activity={activity} isAddComa={!isLastIndex(array, index)} />
+            <EntryLabel
+              entry={entry}
+              activity={entry.activity}
+              isAddComa={!isLastIndex(array, index)}
+            />
           </EntryLabelWrapper>
         );
       })}
@@ -52,9 +52,7 @@ export const EntriesLabels: React.FC<EntriesLabelsProps> = ({
       {!_.isEmpty(missing) && (
         <Fragment>
           <MissingLabel date={date} />
-          {missing.map(({ activityId }, index) => {
-            const activity = getActivityById(activityId);
-
+          {missing.map(({ activityId, activity }, index) => {
             return (
               <EntryLabelWrapper key={activityId}>
                 <EntryLabel activity={activity} isAddComa={!isLastIndex(missing, index)} />

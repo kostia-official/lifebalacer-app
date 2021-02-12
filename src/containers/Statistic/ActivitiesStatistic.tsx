@@ -20,6 +20,7 @@ const ActivitiesStatistic: React.FC = React.memo(() => {
 
   const { getActivityById, activities } = useActivities({ onError, fetchPolicy: 'cache-first' });
   const { data: statisticData } = useGetActivitiesStatisticQuery({ onError });
+
   const statistic = statisticData?.activitiesStatistic;
 
   return useMemo(

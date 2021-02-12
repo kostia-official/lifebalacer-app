@@ -19,27 +19,28 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  pushToken?: Maybe<PushToken>;
-  reminder?: Maybe<Reminder>;
-  entry?: Maybe<Entry>;
-  entries: Array<Entry>;
-  entriesByOneDay?: Maybe<EntriesByDay>;
-  entriesByDay: Array<EntriesByDay>;
-  daysStatistic: DaysStatistic;
-  activity?: Maybe<Activity>;
   activities: Array<Activity>;
   activitiesExtremes: Array<ActivityExtremes>;
   activitiesStatistic: Array<ActivityStatistic>;
-  journal: Array<Journal>;
+  activity?: Maybe<Activity>;
   balance: Balance;
+  daysStatistic: DaysStatistic;
+  entries: Array<Entry>;
+  entriesByDay: Array<EntriesByDay>;
+  entriesByOneDay?: Maybe<EntriesByDay>;
+  entry?: Maybe<Entry>;
+  journal: Array<Journal>;
+  pushToken?: Maybe<PushToken>;
+  reminder?: Maybe<Reminder>;
+  todoistActivity: Activity;
 };
 
-export type QueryEntryArgs = {
+export type QueryActivityArgs = {
   _id: Scalars['ID'];
 };
 
-export type QueryEntriesByOneDayArgs = {
-  date: Scalars['Date'];
+export type QueryBalanceArgs = {
+  dateAfter?: Maybe<Scalars['Date']>;
 };
 
 export type QueryEntriesByDayArgs = {
@@ -47,17 +48,17 @@ export type QueryEntriesByDayArgs = {
   dateBefore?: Maybe<Scalars['Date']>;
 };
 
-export type QueryActivityArgs = {
+export type QueryEntriesByOneDayArgs = {
+  date: Scalars['Date'];
+};
+
+export type QueryEntryArgs = {
   _id: Scalars['ID'];
 };
 
 export type QueryJournalArgs = {
   dateAfter?: Maybe<Scalars['Date']>;
   activities?: Maybe<Array<Scalars['String']>>;
-};
-
-export type QueryBalanceArgs = {
-  dateAfter?: Maybe<Scalars['Date']>;
 };
 
 export type Mutation = {
@@ -260,17 +261,18 @@ export type ActivityStatistic = {
 export type Entry = {
   __typename?: 'Entry';
   _id: Scalars['ID'];
-  userId: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  completedAt: Scalars['Date'];
-  activityId: Scalars['ID'];
   activity: Activity;
+  activityId: Scalars['ID'];
+  completedAt: Scalars['Date'];
+  description?: Maybe<Scalars['String']>;
   points: Scalars['Float'];
+  userId: Scalars['String'];
   value?: Maybe<Scalars['Float']>;
 };
 
 export type EntryMissing = {
   __typename?: 'EntryMissing';
+  activity: Activity;
   activityId: Scalars['ID'];
 };
 
@@ -406,9 +408,45 @@ export type EntriesByDayResultFragment = { __typename?: 'EntriesByDay' } & Pick<
       { __typename?: 'Entry' } & Pick<
         Entry,
         '_id' | 'description' | 'value' | 'completedAt' | 'activityId' | 'points'
-      >
+      > & {
+          activity: { __typename?: 'Activity' } & Pick<
+            Activity,
+            | '_id'
+            | 'name'
+            | 'emoji'
+            | 'category'
+            | 'valueLabel'
+            | 'valueType'
+            | 'pointsType'
+            | 'points'
+            | 'isArchived'
+            | 'isWithDescription'
+            | 'isWidget'
+            | 'isReverseColors'
+            | 'isRequired'
+          > & { rangeMeta?: Maybe<{ __typename?: 'RangeMeta' } & Pick<RangeMeta, 'from' | 'to'>> };
+        }
     >;
-    missing: Array<{ __typename?: 'EntryMissing' } & Pick<EntryMissing, 'activityId'>>;
+    missing: Array<
+      { __typename?: 'EntryMissing' } & Pick<EntryMissing, 'activityId'> & {
+          activity: { __typename?: 'Activity' } & Pick<
+            Activity,
+            | '_id'
+            | 'name'
+            | 'emoji'
+            | 'category'
+            | 'valueLabel'
+            | 'valueType'
+            | 'pointsType'
+            | 'points'
+            | 'isArchived'
+            | 'isWithDescription'
+            | 'isWidget'
+            | 'isReverseColors'
+            | 'isRequired'
+          > & { rangeMeta?: Maybe<{ __typename?: 'RangeMeta' } & Pick<RangeMeta, 'from' | 'to'>> };
+        }
+    >;
   };
 
 export type GetEntriesByDayQueryVariables = Exact<{
@@ -610,6 +648,12 @@ export type UpsertPushTokenMutation = { __typename?: 'Mutation' } & {
   upsertPushToken: { __typename?: 'PushToken' } & Pick<PushToken, '_id' | 'userId' | 'token'>;
 };
 
+export type GetTodoistActivityQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetTodoistActivityQuery = { __typename?: 'Query' } & {
+  todoistActivity: { __typename?: 'Activity' } & ActivityResultFragment;
+};
+
 export const ActivityResultFragmentDoc = gql`
   fragment ActivityResult on Activity {
     _id
@@ -641,10 +685,48 @@ export const EntriesByDayResultFragmentDoc = gql`
       value
       completedAt
       activityId
+      activity @client {
+        _id
+        name
+        emoji
+        category
+        valueLabel
+        valueType
+        pointsType
+        points
+        isArchived
+        isWithDescription
+        isWidget
+        isReverseColors
+        isRequired
+        rangeMeta {
+          from
+          to
+        }
+      }
       points
     }
     missing {
       activityId
+      activity @client {
+        _id
+        name
+        emoji
+        category
+        valueLabel
+        valueType
+        pointsType
+        points
+        isArchived
+        isWithDescription
+        isWidget
+        isReverseColors
+        isRequired
+        rangeMeta {
+          from
+          to
+        }
+      }
     }
   }
 `;
@@ -1770,3 +1852,57 @@ export type UpsertPushTokenMutationOptions = Apollo.BaseMutationOptions<
   UpsertPushTokenMutation,
   UpsertPushTokenMutationVariables
 >;
+export const GetTodoistActivityDocument = gql`
+  query GetTodoistActivity {
+    todoistActivity @client {
+      ...ActivityResult
+    }
+  }
+  ${ActivityResultFragmentDoc}
+`;
+
+/**
+ * __useGetTodoistActivityQuery__
+ *
+ * To run a query within a React component, call `useGetTodoistActivityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTodoistActivityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTodoistActivityQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetTodoistActivityQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetTodoistActivityQuery, GetTodoistActivityQueryVariables>
+) {
+  return Apollo.useQuery<GetTodoistActivityQuery, GetTodoistActivityQueryVariables>(
+    GetTodoistActivityDocument,
+    baseOptions
+  );
+}
+export function useGetTodoistActivityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetTodoistActivityQuery,
+    GetTodoistActivityQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<GetTodoistActivityQuery, GetTodoistActivityQueryVariables>(
+    GetTodoistActivityDocument,
+    baseOptions
+  );
+}
+export type GetTodoistActivityQueryHookResult = ReturnType<typeof useGetTodoistActivityQuery>;
+export type GetTodoistActivityLazyQueryHookResult = ReturnType<
+  typeof useGetTodoistActivityLazyQuery
+>;
+export type GetTodoistActivityQueryResult = Apollo.QueryResult<
+  GetTodoistActivityQuery,
+  GetTodoistActivityQueryVariables
+>;
+export function refetchGetTodoistActivityQuery(variables?: GetTodoistActivityQueryVariables) {
+  return { query: GetTodoistActivityDocument, variables: variables };
+}

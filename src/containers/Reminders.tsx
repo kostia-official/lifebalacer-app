@@ -11,6 +11,7 @@ import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { LogoContent } from '../components/LogoContent';
 import { ReactComponent as ReminderLogo } from '../assets/reminder.svg';
 import { css } from 'styled-components';
+import { usePushTokenSave } from '../hooks/usePushTokenSave';
 
 const logoStyles = css`
   max-width: 300px;
@@ -22,6 +23,9 @@ const logoStyles = css`
 const Reminders = () => {
   const { errorMessage, onError, errorTime } = useApolloError();
   const { data } = useGetReminderQuery({ onError });
+
+  usePushTokenSave({ onError });
+
   const [upsertReminderMutation] = useUpsertReminderMutation({
     onError,
     refetchQueries: [refetchGetReminderQuery()]

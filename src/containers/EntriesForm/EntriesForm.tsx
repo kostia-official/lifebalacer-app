@@ -4,7 +4,6 @@ import {
   ActivityType,
   useCreateEntryMutation,
   refetchGetBalanceQuery,
-  Entry,
   refetchGetEntriesByDayQuery,
   useGetEntriesByOneDayQuery,
   useUpdateEntryMutation,
@@ -18,7 +17,7 @@ import { Card } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { CardModal } from '../../components/CardModal';
-import { ActivityResult, SelectedEntry, EntriesResult, EntryResult } from '../../common/types';
+import { ActivityResult, SelectedEntry, EntryResult } from '../../common/types';
 import { EntryPickButton } from './EntryPickButton';
 import { useActivities } from '../../hooks/useActivities';
 import { DateTime } from 'luxon';
@@ -78,7 +77,7 @@ const EntriesForm = () => {
   useOnEntryUpdate([refetch]);
   useOnActivityUpdate([refetch]);
 
-  const [selectedEntries, setSelectedEntries] = useState<EntriesResult>(entriesByDay || []);
+  const [selectedEntries, setSelectedEntries] = useState<SelectedEntry[]>(entriesByDay || []);
 
   useEffect(() => {
     if (!_.isEmpty(entriesByDay)) {
@@ -150,7 +149,7 @@ const EntriesForm = () => {
   );
 
   const updateEntry = useCallback(
-    async (entryId: string, toUpdate: Partial<Entry>) => {
+    async (entryId: string, toUpdate: Partial<SelectedEntry>) => {
       const entry = getEntryById(entryId);
       if (!entry) return;
 
