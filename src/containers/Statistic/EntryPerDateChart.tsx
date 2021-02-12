@@ -6,8 +6,8 @@ import { SelectInline } from '../../components/SelectInline';
 import styled from 'styled-components';
 import { ChartData } from '../../common/types';
 import { KeyOf } from '../../common/typeUtils';
-import { DateChartLoadable } from '../../components/chart/DateChartLoadable';
 import { EmptyStateWrapper } from '../../components/EmptyStateWrapper';
+import DateChart from '../../components/chart/DateChart';
 
 export interface EntryPerDateChartProps {
   data: EntriesPerDateGroup;
@@ -86,7 +86,7 @@ export const EntryPerDateChart: React.FC<EntryPerDateChartProps> = ({ data, isWi
       </TitleWrapper>
 
       {finalData && (
-        <DateChartLoadable
+        <DateChart
           data={finalData}
           dateGroup={dateGroup}
           yValueLabel={ValueFieldMapper[valueField]}

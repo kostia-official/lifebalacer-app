@@ -14,7 +14,7 @@ const PrimaryText = styled.span`
   align-items: center;
 `;
 
-export const ActivitiesStatistic: React.FC = React.memo(() => {
+const ActivitiesStatistic: React.FC = React.memo(() => {
   const { errorMessage, onError, errorTime } = useApolloError();
   const { goForwardToCb } = useHistoryNavigation();
 
@@ -64,3 +64,5 @@ export const ActivitiesStatistic: React.FC = React.memo(() => {
     [activities, errorMessage, errorTime, getActivityById, goForwardToCb, statistic, statisticData]
   );
 });
+
+export default ActivitiesStatistic;

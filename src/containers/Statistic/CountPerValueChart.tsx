@@ -2,8 +2,7 @@ import React, { useMemo, useCallback } from 'react';
 import { CountPerValue } from '../../generated/apollo';
 import { ChartData } from '../../common/types';
 import { getColorsOfRange } from '../../helpers/color';
-import { BarChartProps } from '../../components/chart/BarChart';
-import { BarChartLoadable } from '../../components/chart/BarChartLoadable';
+import BarChart, { BarChartProps } from '../../components/chart/BarChart';
 import styled from 'styled-components';
 import { Center } from '../../components/Center';
 import { Typography } from '@material-ui/core';
@@ -48,7 +47,7 @@ export const CountPerValueChart: React.FC<CountPerValueChartProps> = ({
         </ChartTitle>
       </Center>
 
-      <BarChartLoadable data={countPerValueChartData} customizePoint={customizePoints} />
+      <BarChart data={countPerValueChartData} customizePoint={customizePoints} />
     </EmptyStateWrapper>
   );
 };

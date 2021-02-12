@@ -11,7 +11,8 @@
     "deploy": "REACT_APP_UPDATED_AT=$(date +%FT%T%z) npm run build && netlify deploy --prod",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "icons:gen": "sh ./scripts/generateIcons/generateIcons.sh"
+    "icons:gen": "sh ./scripts/generateIcons/generateIcons.sh",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "dependencies": {
     "@apollo/client": "^3.3.6",
@@ -98,6 +99,7 @@
     "pwa-asset-generator": "^4.1.0",
     "react-scripts": "^4.0.1",
     "serve": "^11.3.2",
+    "source-map-explorer": "^2.5.2",
     "typescript": "^4.0.5",
     "workbox-plugin-firebase-auth": "^1.1.0",
     "workbox-window": "^5.1.4"

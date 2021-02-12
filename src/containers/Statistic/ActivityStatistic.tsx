@@ -39,7 +39,7 @@ const MedianSvgIconStyled = styled(SvgIcon)`
   font-size: 26px;
 `;
 
-export const ActivityStatistic: React.FC = React.memo(() => {
+const ActivityStatistic: React.FC = React.memo(() => {
   useDisableMenuSwapOpen();
 
   const { errorMessage, onError, errorTime } = useApolloError();
@@ -161,3 +161,5 @@ export const ActivityStatistic: React.FC = React.memo(() => {
     </PageWrapper>
   );
 });
+
+export default ActivityStatistic;

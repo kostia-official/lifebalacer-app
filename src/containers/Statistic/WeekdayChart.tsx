@@ -5,9 +5,8 @@ import Typography from '@material-ui/core/Typography';
 import { MenuItem, SelectProps } from '@material-ui/core';
 import { ChartData } from '../../common/types';
 import { SelectInline } from '../../components/SelectInline';
-import { BarChartLoadable } from '../../components/chart/BarChartLoadable';
 import _ from 'lodash';
-import { BarChartProps } from '../../components/chart/BarChart';
+import BarChart, { BarChartProps } from '../../components/chart/BarChart';
 // @ts-ignore
 import generateGradient from 'gradient-color';
 import { teal } from '@material-ui/core/colors';
@@ -102,7 +101,7 @@ export const WeekdayChart: React.FC<WeekdayChartProps> = ({ data, isWithValue })
         <Typography variant="body1">&nbsp;per weekday</Typography>
       </TitleWrapper>
 
-      <BarChartLoadable data={finalData} customizePoint={customizePoint} />
+      <BarChart data={finalData} customizePoint={customizePoint} />
     </EmptyStateWrapper>
   );
 };

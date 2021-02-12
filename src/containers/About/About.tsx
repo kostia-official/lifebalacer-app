@@ -5,7 +5,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { LastUpdatedAt } from './LastUpdatedAt';
 import { Center } from '../../components/Center';
 
-export const About = () => {
+const About = () => {
   const { goForwardToCb } = useHistoryNavigation();
   const { user } = useAuth();
 
@@ -33,3 +33,5 @@ export const About = () => {
     </div>
   );
 };
+
+export default About;

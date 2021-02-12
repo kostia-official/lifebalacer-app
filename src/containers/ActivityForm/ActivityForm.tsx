@@ -46,19 +46,34 @@ const NameContainer = styled.div`
   display: flex;
   align-items: center;
   margin-top: 4px;
+
+  justify-content: flex-end;
+`;
+
+const EmojiFormControl = styled(FormControl)`
+  max-width: 54px;
+  min-width: 54px;
 `;
 
 const EmojiLabel = styled(InputLabel)`
   white-space: nowrap;
+  margin-left: 8px;
 `;
 
 const EmojiInput = styled(Input)`
-  width: 40px;
-  margin-right: 10px;
+  font-size: 20px;
+
+  & .MuiInputBase-input {
+    padding: 2px 0 3px 0;
+  }
 
   input {
     text-align: center;
   }
+`;
+
+const NameFormControl = styled(FormControl)`
+  margin-right: 5px;
 `;
 
 const EMOJI_PICKER_CLASS_NAME = 'emoji-picker-' + Date.now();
@@ -208,7 +223,22 @@ const ActivityForm = () => {
     <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!existingActivity}>
       <FormContainer onSubmit={onSubmit}>
         <NameContainer>
-          <FormControl>
+          <NameFormControl fullWidth>
+            <InputLabel shrink required>
+              Name
+            </InputLabel>
+            <Input
+              required
+              value={activity.name}
+              onChange={updateActivityField('name')}
+              inputProps={{
+                shrink: 'true'
+              }}
+              margin="dense"
+            />
+          </NameFormControl>
+
+          <EmojiFormControl>
             <EmojiLabel shrink required onClick={onEmojiClick}>
               Emoji
             </EmojiLabel>
@@ -227,22 +257,7 @@ const ActivityForm = () => {
               onSelect={onEmojiSelect}
               ignoreClassClickOutside={EMOJI_PICKER_CLASS_NAME}
             />
-          </FormControl>
-
-          <FormControl fullWidth>
-            <InputLabel shrink required>
-              Name
-            </InputLabel>
-            <Input
-              required
-              value={activity.name}
-              onChange={updateActivityField('name')}
-              inputProps={{
-                shrink: 'true'
-              }}
-              margin="dense"
-            />
-          </FormControl>
+          </EmojiFormControl>
         </NameContainer>
 
         <FormControl margin="normal" required>
