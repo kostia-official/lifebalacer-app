@@ -32,7 +32,8 @@ const ActivitiesStatistic: React.FC = React.memo(() => {
       >
         <Paper>
           <List disablePadding>
-            {statistic?.map((stat) => {
+            {statistic?.map((stat, index) => {
+              const isLast = index === statistic?.length - 1;
               const activity = getActivityById(stat._id);
 
               const secondaryText = `Streak with activity: ${stat.streakWith.count}. Streak without: ${stat.streakWithout.count}`;
@@ -42,7 +43,7 @@ const ActivitiesStatistic: React.FC = React.memo(() => {
                   key={stat._id}
                   onClick={goForwardToCb(`/statistic/activity/${stat._id}`)}
                   button
-                  divider
+                  divider={!isLast}
                 >
                   <ListItemText
                     primary={
