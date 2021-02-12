@@ -1,9 +1,10 @@
-import React, { Fragment, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { MainColors } from '../../common/colors';
 import 'emoji-mart/css/emoji-mart.css';
 import { Picker } from 'emoji-mart';
 import styled from 'styled-components';
 import useOnclickOutside from 'react-cool-onclickoutside';
+import { Showable } from '../../components/Showable';
 
 const EmojiPickerWrapper = styled.div`
   z-index: 500;
@@ -38,20 +39,18 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = React.memo(
 
     return useMemo(() => {
       return (
-        <Fragment>
-          {isShow && (
-            <EmojiPickerWrapper ref={ref}>
-              <Picker
-                color={MainColors.Primary}
-                theme="dark"
-                useButton={false}
-                onSelect={onPick}
-                style={{ position: 'absolute', right: 0 }}
-                native={true}
-              />
-            </EmojiPickerWrapper>
-          )}
-        </Fragment>
+        <Showable isShow={isShow}>
+          <EmojiPickerWrapper ref={ref}>
+            <Picker
+              color={MainColors.Primary}
+              theme="dark"
+              useButton={false}
+              onSelect={onPick}
+              style={{ position: 'absolute', right: 0 }}
+              native={true}
+            />
+          </EmojiPickerWrapper>
+        </Showable>
       );
     }, [isShow, onPick, ref]);
   }
