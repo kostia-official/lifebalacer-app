@@ -5,6 +5,9 @@ import { ActivityType } from '../generated/apollo';
 
 export const cache = new InMemoryCache({
   typePolicies: {
+    ActivityAdvancedStatistic: {
+      keyFields: ['dateAfter', '_id']
+    },
     EntriesByDay: {
       keyFields: ['date'],
       fields: {

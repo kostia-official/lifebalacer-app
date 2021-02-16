@@ -1,8 +1,10 @@
-import React, { Fragment, useMemo } from 'react';
+import 'devextreme/dist/css/dx.material.teal.dark.css';
+
+import React, { Fragment, useCallback, useState, useMemo } from 'react';
 import { PageWrapper } from '../../components/PageWrapper';
 import { useApolloError } from '../../hooks/useApolloError';
 import { Grid, Paper, Typography, SvgIcon, Icon } from '@material-ui/core';
-import { useGetActivitiesStatisticQuery, ActivityType } from '../../generated/apollo';
+import { ActivityType } from '../../generated/apollo';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Emoji } from '../../components/Emoji';
@@ -16,10 +18,16 @@ import { useDisableMenuSwapOpen } from '../../hooks/useDisableMenuSwapOpen';
 import { EmptyBlock } from '../../components/EmptyBlock';
 import { EntryPerDateChart } from './EntryPerDateChart';
 import { CountPerValueChart } from './CountPerValueChart';
+import { RangeDatePicker, RangeDatePickerProps } from '../../components/RangeDatePicker';
+import { useActivityAdvancedStatistic } from '../../hooks/useActivityAdvancedStatistic';
 
 const TitlePaper = styled(Paper)`
-  padding: 7px 15px;
+  padding: 7px 6px 7px 15px;
   margin-bottom: 8px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const StatBlockPaper = styled(Paper)`
@@ -39,18 +47,19 @@ const MedianSvgIconStyled = styled(SvgIcon)`
   font-size: 26px;
 `;
 
-const ActivityStatistic: React.FC = React.memo(() => {
+const ActivityStatistic: React.FC = () => {
   useDisableMenuSwapOpen();
 
   const { errorMessage, onError, errorTime } = useApolloError();
 
   let { _id } = useParams<{ _id: string }>();
+  const [dateAfter, setDateAfter] = useState<string | undefined>();
+  const [dateBefore, setDateBefore] = useState<string | undefined>();
 
-  const { data } = useGetActivitiesStatisticQuery({ onError, fetchPolicy: 'cache-first' });
-
-  const statistic = useMemo(() => {
-    return data?.activitiesStatistic.find((stat) => stat._id === _id);
-  }, [_id, data?.activitiesStatistic]);
+  const { statistic, isUpdating } = useActivityAdvancedStatistic({
+    onError,
+    variables: { activityId: _id, dateAfter, dateBefore }
+  });
 
   const isWithValue = statistic?.activity?.valueType !== ActivityType.Simple;
 
@@ -60,106 +69,124 @@ const ActivityStatistic: React.FC = React.memo(() => {
   const chartsGridXs = 12;
   const chartsGridSm = isWithValue ? 6 : 12;
 
-  return (
-    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!statistic}>
-      <TitlePaper>
-        <Typography variant="subtitle1">
-          <Emoji>{statistic?.activity?.emoji}</Emoji> {statistic?.activity?.name}
-        </Typography>
-      </TitlePaper>
+  const onDateRangeChange: RangeDatePickerProps['onChange'] = useCallback(async (dateRange) => {
+    setDateAfter(dateRange.dateAfter?.toISO());
+    setDateBefore(dateRange.dateBefore?.toISO());
+  }, []);
 
-      <StatBlockPaper>
-        <Grid container spacing={1} justify="space-around">
-          <Grid item xs={valueBlockGridXs} sm={valueBlockGridSm}>
-            <ValueBlock
-              value={statistic?.total}
-              text="Total entries"
-              icon={<Icon>receipt_long</Icon>}
-            />
-          </Grid>
+  return useMemo(() => {
+    return (
+      <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!statistic}>
+        <TitlePaper>
+          <Typography variant="subtitle1">
+            <Emoji>{statistic?.activity?.emoji}</Emoji>
+            {statistic?.activity?.name}
+          </Typography>
 
-          <Grid item xs={valueBlockGridXs} sm={valueBlockGridSm}>
-            <ValueBlock value={`x${statistic?.perWeek}`} text="Per week" icon={<DateRange />} />
-          </Grid>
+          <RangeDatePicker onChange={onDateRangeChange} isLoading={isUpdating} />
+        </TitlePaper>
 
-          {isWithValue && (
-            <Fragment>
-              <Grid item xs={valueBlockGridXs} sm={valueBlockGridSm}>
-                <ValueBlock
-                  value={statistic?.averageValue}
-                  text="Average value"
-                  icon={<AverageSvgIconStyled>{<AverageIcon />}</AverageSvgIconStyled>}
-                />
-              </Grid>
+        <StatBlockPaper>
+          <Grid container spacing={1} justify="space-around">
+            <Grid item xs={valueBlockGridXs} sm={valueBlockGridSm}>
+              <ValueBlock
+                value={statistic?.total}
+                text="Total entries"
+                icon={<Icon>receipt_long</Icon>}
+              />
+            </Grid>
 
-              <Grid item xs={valueBlockGridXs} sm={valueBlockGridSm}>
-                <ValueBlock
-                  value={statistic?.medianValue}
-                  text="Median value"
-                  icon={
-                    <MedianSvgIconStyled>
-                      <MedianIcon />
-                    </MedianSvgIconStyled>
-                  }
-                />
-              </Grid>
-            </Fragment>
-          )}
-        </Grid>
-      </StatBlockPaper>
+            <Grid item xs={valueBlockGridXs} sm={valueBlockGridSm}>
+              <ValueBlock value={`x${statistic?.perWeek}`} text="Per week" icon={<DateRange />} />
+            </Grid>
 
-      <StatBlockPaper>
-        <Grid container spacing={1}>
-          <Grid item xs={6}>
-            <StreakBlock
-              text={`Streak with activity`}
-              streak={statistic?.streakWith!}
-              isWithActivity={true}
-            />
-          </Grid>
+            {isWithValue && (
+              <Fragment>
+                <Grid item xs={valueBlockGridXs} sm={valueBlockGridSm}>
+                  <ValueBlock
+                    value={statistic?.averageValue}
+                    text="Average value"
+                    icon={<AverageSvgIconStyled>{<AverageIcon />}</AverageSvgIconStyled>}
+                  />
+                </Grid>
 
-          <Grid item xs={6}>
-            <StreakBlock
-              text={`Streak without activity`}
-              streak={statistic?.streakWithout!}
-              isWithActivity={false}
-            />
-          </Grid>
-        </Grid>
-      </StatBlockPaper>
-
-      <ChartPaper>
-        {statistic?.entriesPerDateGroup && (
-          <EntryPerDateChart data={statistic?.entriesPerDateGroup} isWithValue={isWithValue} />
-        )}
-      </ChartPaper>
-
-      <EmptyBlock height={8} />
-
-      <Grid container spacing={1}>
-        <Grid item xs={chartsGridXs} sm={chartsGridSm}>
-          <ChartPaper>
-            {statistic?.weekdays && (
-              <WeekdayChart data={statistic.weekdays} isWithValue={isWithValue} />
+                <Grid item xs={valueBlockGridXs} sm={valueBlockGridSm}>
+                  <ValueBlock
+                    value={statistic?.medianValue}
+                    text="Median value"
+                    icon={
+                      <MedianSvgIconStyled>
+                        <MedianIcon />
+                      </MedianSvgIconStyled>
+                    }
+                  />
+                </Grid>
+              </Fragment>
             )}
-          </ChartPaper>
-        </Grid>
+          </Grid>
+        </StatBlockPaper>
 
-        {isWithValue && (
+        <StatBlockPaper>
+          <Grid container spacing={1}>
+            <Grid item xs={6}>
+              <StreakBlock
+                text={`Streak with activity`}
+                streak={statistic?.streakWith!}
+                isWithActivity={true}
+              />
+            </Grid>
+
+            <Grid item xs={6}>
+              <StreakBlock
+                text={`Streak without activity`}
+                streak={statistic?.streakWithout!}
+                isWithActivity={false}
+              />
+            </Grid>
+          </Grid>
+        </StatBlockPaper>
+
+        <ChartPaper>
+          {statistic?.entriesPerDateGroup && (
+            <EntryPerDateChart data={statistic?.entriesPerDateGroup} isWithValue={isWithValue} />
+          )}
+        </ChartPaper>
+
+        <EmptyBlock height={8} />
+
+        <Grid container spacing={1}>
           <Grid item xs={chartsGridXs} sm={chartsGridSm}>
             <ChartPaper>
-              {statistic?.countPerValue && (
-                <CountPerValueChart
-                  data={statistic.countPerValue}
-                  isReverseColors={statistic.activity.isReverseColors}
-                />
+              {statistic?.weekdays && (
+                <WeekdayChart data={statistic.weekdays} isWithValue={isWithValue} />
               )}
             </ChartPaper>
           </Grid>
-        )}
-      </Grid>
-    </PageWrapper>
-  );
-});
+
+          {isWithValue && (
+            <Grid item xs={chartsGridXs} sm={chartsGridSm}>
+              <ChartPaper>
+                {statistic?.countPerValue && (
+                  <CountPerValueChart
+                    data={statistic.countPerValue}
+                    isReverseColors={statistic.activity.isReverseColors}
+                  />
+                )}
+              </ChartPaper>
+            </Grid>
+          )}
+        </Grid>
+      </PageWrapper>
+    );
+  }, [
+    chartsGridSm,
+    errorMessage,
+    errorTime,
+    isUpdating,
+    isWithValue,
+    onDateRangeChange,
+    statistic
+  ]);
+};
 
 export default ActivityStatistic;

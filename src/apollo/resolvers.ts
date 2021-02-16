@@ -16,6 +16,11 @@ export const resolvers: Resolvers = {
       return activityResolver(client, _id);
     }
   },
+  ActivityAdvancedStatistic: {
+    activity: async ({ _id }, _args, { client }) => {
+      return activityResolver(client, _id);
+    }
+  },
   Entry: {
     activity: async ({ activityId }, _args, { client }) => {
       return activityResolver(client, activityId);

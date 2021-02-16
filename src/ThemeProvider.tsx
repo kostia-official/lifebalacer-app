@@ -15,7 +15,19 @@ declare module '@material-ui/core/styles/overrides' {
 
 export const ThemeProvider: React.FC = (props) => {
   const theme = createMuiTheme({
-    // spacing: 4,
+    overrides: {
+      MuiSlider: {
+        thumb: {
+          height: 20,
+          width: 20,
+          marginTop: -10,
+          marginLeft: -10
+        },
+        valueLabel: {
+          left: 'calc(-50% + 4px)'
+        }
+      }
+    },
     palette: {
       type: 'dark',
       primary: {

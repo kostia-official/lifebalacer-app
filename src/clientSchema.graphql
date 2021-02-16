@@ -1,4 +1,12 @@
+interface BasicStatistic {
+    activity: Activity!
+}
+
 type ActivityStatistic {
+    activity: Activity!
+}
+
+type ActivityAdvancedStatistic {
     activity: Activity!
 }
 

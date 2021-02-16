@@ -3,7 +3,6 @@ import { PageWrapper } from '../../components/PageWrapper';
 import { useApolloError } from '../../hooks/useApolloError';
 import { List, Paper, ListItem, ListItemText, Typography } from '@material-ui/core';
 import { useGetActivitiesStatisticQuery } from '../../generated/apollo';
-import { useActivities } from '../../hooks/useActivities';
 import { Emoji } from '../../components/Emoji';
 import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
 import styled from 'styled-components';
@@ -18,23 +17,17 @@ const ActivitiesStatistic: React.FC = React.memo(() => {
   const { errorMessage, onError, errorTime } = useApolloError();
   const { goForwardToCb } = useHistoryNavigation();
 
-  const { getActivityById, activities } = useActivities({ onError, fetchPolicy: 'cache-first' });
   const { data: statisticData } = useGetActivitiesStatisticQuery({ onError });
 
   const statistic = statisticData?.activitiesStatistic;
 
   return useMemo(
     () => (
-      <PageWrapper
-        errorMessage={errorMessage}
-        errorTime={errorTime}
-        isLoading={!statisticData || !activities}
-      >
+      <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!statisticData}>
         <Paper>
           <List disablePadding>
             {statistic?.map((stat, index) => {
               const isLast = index === statistic?.length - 1;
-              const activity = getActivityById(stat._id);
 
               const secondaryText = `Streak with activity: ${stat.streakWith.count}. Streak without: ${stat.streakWithout.count}`;
 
@@ -49,7 +42,7 @@ const ActivitiesStatistic: React.FC = React.memo(() => {
                     primary={
                       <PrimaryText>
                         <Typography variant="subtitle1">
-                          <Emoji>{activity?.emoji}</Emoji> {activity?.name}
+                          <Emoji>{stat.activity?.emoji}</Emoji> {stat.activity?.name}
                         </Typography>
                         <Typography>x{stat.perWeek} per week</Typography>
                       </PrimaryText>
@@ -63,7 +56,7 @@ const ActivitiesStatistic: React.FC = React.memo(() => {
         </Paper>
       </PageWrapper>
     ),
-    [activities, errorMessage, errorTime, getActivityById, goForwardToCb, statistic, statisticData]
+    [errorMessage, errorTime, goForwardToCb, statistic, statisticData]
   );
 });
 

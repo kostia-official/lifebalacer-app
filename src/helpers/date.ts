@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon';
+import { DateTime, DurationObject } from 'luxon';
 
 export type DateAny = string | Date | DateTime;
 
@@ -18,4 +18,8 @@ export const getIsToday = (date: DateAny) => {
 export const getDateTitle = (date: DateAny) => {
   const headerDate = toLuxon(date).toLocaleString(DateTime.DATE_HUGE);
   return getIsToday(date) ? `Today, ${headerDate}` : headerDate;
+};
+
+export const getDayStartFromToday = (duration: DurationObject): DateTime => {
+  return DateTime.local().minus(duration).startOf('day');
 };

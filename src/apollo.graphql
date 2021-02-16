@@ -155,9 +155,41 @@ fragment EntryPerDateFragment on EntryPerDate {
   valueSum
 }
 
-query GetActivitiesStatistic {
-  activitiesStatistic {
+query GetActivitiesStatistic($dateAfter: Date, $dateBefore: Date) {
+  activitiesStatistic(dateAfter: $dateAfter, dateBefore: $dateBefore) {
     _id
+    activity @client {
+      name
+      emoji
+      valueType
+      isRequired
+      isReverseColors
+    }
+    total
+    perWeek
+    medianValue
+    averageValue
+    streakWith {
+      count
+      from
+      to
+    }
+    streakWithout {
+      count
+      from
+      to
+    }
+  }
+}
+
+query GetActivityAdvancedStatistic($activityId: String!, $dateAfter: Date, $dateBefore: Date) {
+  activityAdvancedStatistic(
+    activityId: $activityId
+    dateAfter: $dateAfter
+    dateBefore: $dateBefore
+  ) {
+    _id
+    dateAfter
     activity @client {
       name
       emoji
@@ -276,7 +308,7 @@ mutation UpsertPushToken($data: PushTokenUpsertInput!) {
   }
 }
 
-query GetTodoistActivity  {
+query GetTodoistActivity {
   todoistActivity @client {
     ...ActivityResult
   }

@@ -23,8 +23,6 @@ import { getIsToday } from '../../helpers/date';
 import { DayCard } from '../../components/DayCard';
 import { HeaderCard } from '../../components/HeaderCard';
 import { getDayQueryVariables } from '../../helpers/getDayQueryVariables';
-import { useMount } from 'react-use';
-import Loadable from 'react-loadable';
 
 const EntriesLabelsWrapper = styled.div`
   margin: 6px 16px 14px 16px;
@@ -37,10 +35,6 @@ const DatePickerButtonWrapper = styled.div`
 `;
 
 const EntriesByDay = React.memo(() => {
-  useMount(() => {
-    Loadable.preloadAll().then();
-  });
-
   const { goForwardTo } = useHistoryNavigation();
   const { errorMessage, errorTime, onError } = useApolloError();
 

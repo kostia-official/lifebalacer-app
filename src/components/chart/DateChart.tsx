@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
-import { ChartData, Extremes } from '../../common/types';
+import { ChartData } from '../../common/types';
 import { KeyOf } from '../../common/typeUtils';
 import { EntriesPerDateGroup } from '../../generated/apollo';
 import Chart, {
@@ -17,6 +17,8 @@ import { DateTime } from 'luxon';
 import styled from 'styled-components';
 import { isMobile } from 'react-device-detect';
 import _ from 'lodash';
+import { useExtremes } from '../../hooks/useExtremes';
+import { chartDataComparator } from './chartDataComparator';
 
 export interface Props {
   data: ChartData[];
@@ -29,18 +31,7 @@ const Wrapper = styled.div`
 `;
 
 const DateChart: React.FC<Props> = React.memo(({ data, dateGroup }) => {
-  const extremes: Extremes = useMemo(() => {
-    return data.reduce(
-      (acc, item) => {
-        const value = item.yValue! as number;
-        const min = value < acc.min ? value : acc.min;
-        const max = value > acc.max ? value : acc.max;
-
-        return { min, max };
-      },
-      { min: Infinity, max: 0 }
-    );
-  }, [data]);
+  const extremes = useExtremes(data, 'yValue');
 
   const defaultVisualRange = useMemo(() => {
     if (!isMobile) return [];
@@ -139,6 +130,6 @@ const DateChart: React.FC<Props> = React.memo(({ data, dateGroup }) => {
     isEmptyData,
     zoomRange
   ]);
-});
+}, chartDataComparator);
 
 export default DateChart;

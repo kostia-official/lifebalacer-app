@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Card from '@material-ui/core/Card';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
@@ -41,16 +41,22 @@ const Container = styled.div`
   z-index: 300;
 `;
 
-export const CardModal: React.FC<CardModalProps> = ({ isShow, onClose, children, showDelay }) => (
-  <FadeTransition isShow={isShow} delay={showDelay}>
-    <Container>
-      <Overlay onClick={onClose} />
-      <CardStyled>
-        <IconButton onClick={onClose}>
-          <CloseIcon fontSize="small" />
-        </IconButton>
-        {children}
-      </CardStyled>
-    </Container>
-  </FadeTransition>
-);
+export const CardModal: React.FC<CardModalProps> = ({ isShow, onClose, children, showDelay }) => {
+  useEffect(() => {
+    document.body.style.overflow = isShow ? 'hidden' : 'unset';
+  }, [isShow]);
+
+  return (
+    <FadeTransition isShow={isShow} delay={showDelay}>
+      <Container>
+        <Overlay onClick={onClose} />
+        <CardStyled>
+          <IconButton onClick={onClose}>
+            <CloseIcon fontSize="small" />
+          </IconButton>
+          {children}
+        </CardStyled>
+      </Container>
+    </FadeTransition>
+  );
+};
