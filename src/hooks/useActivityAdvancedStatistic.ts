@@ -15,7 +15,7 @@ export const useActivityAdvancedStatistic = (
 ) => {
   const [fetchPolicy, setFetchPolicy] = useState<WatchQueryFetchPolicy>('cache-and-network');
 
-  const { data, networkStatus } = useGetActivityAdvancedStatisticQuery({
+  const { data, networkStatus, loading } = useGetActivityAdvancedStatisticQuery({
     ...queryHookOptions,
     fetchPolicy,
     notifyOnNetworkStatusChange: true,
@@ -32,6 +32,7 @@ export const useActivityAdvancedStatistic = (
 
   return {
     statistic: statisticRef.current,
-    isUpdating: networkStatus === NetworkStatus.setVariables
+    isUpdating: networkStatus === NetworkStatus.setVariables,
+    isLoading: loading
   };
 };

@@ -31,7 +31,7 @@ export type Query = {
   entriesByOneDay?: Maybe<EntriesByDay>;
   entry?: Maybe<Entry>;
   journal: Array<Journal>;
-  pushToken?: Maybe<PushToken>;
+  pushTokens: Array<PushToken>;
   reminder?: Maybe<Reminder>;
   todoistActivity: Activity;
 };
@@ -260,7 +260,7 @@ export type BasicStatistic = {
   activity: Activity;
   averageValue?: Maybe<Scalars['Float']>;
   medianValue?: Maybe<Scalars['Float']>;
-  perWeek: Scalars['Float'];
+  perWeek?: Maybe<Scalars['Float']>;
   streakWith: Streak;
   streakWithout: Streak;
   total: Scalars['Int'];
@@ -272,7 +272,7 @@ export type ActivityStatistic = BasicStatistic & {
   activity: Activity;
   averageValue?: Maybe<Scalars['Float']>;
   medianValue?: Maybe<Scalars['Float']>;
-  perWeek: Scalars['Float'];
+  perWeek?: Maybe<Scalars['Float']>;
   streakWith: Streak;
   streakWithout: Streak;
   total: Scalars['Int'];
@@ -287,7 +287,7 @@ export type ActivityAdvancedStatistic = BasicStatistic & {
   dateAfter?: Maybe<Scalars['String']>;
   entriesPerDateGroup: EntriesPerDateGroup;
   medianValue?: Maybe<Scalars['Float']>;
-  perWeek: Scalars['Float'];
+  perWeek?: Maybe<Scalars['Float']>;
   streakWith: Streak;
   streakWithout: Streak;
   total: Scalars['Int'];
@@ -616,10 +616,10 @@ export type GetReminderQuery = { __typename?: 'Query' } & {
   >;
 };
 
-export type GetPushTokenQueryVariables = Exact<{ [key: string]: never }>;
+export type GetPushTokensQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetPushTokenQuery = { __typename?: 'Query' } & {
-  pushToken?: Maybe<{ __typename?: 'PushToken' } & Pick<PushToken, '_id' | 'token' | 'userId'>>;
+export type GetPushTokensQuery = { __typename?: 'Query' } & {
+  pushTokens: Array<{ __typename?: 'PushToken' } & Pick<PushToken, '_id' | 'token' | 'userId'>>;
 };
 
 export type CreateActivityMutationVariables = Exact<{
@@ -1511,9 +1511,9 @@ export type GetReminderQueryResult = Apollo.QueryResult<
 export function refetchGetReminderQuery(variables?: GetReminderQueryVariables) {
   return { query: GetReminderDocument, variables: variables };
 }
-export const GetPushTokenDocument = gql`
-  query GetPushToken {
-    pushToken {
+export const GetPushTokensDocument = gql`
+  query GetPushTokens {
+    pushTokens {
       _id
       token
       userId
@@ -1522,44 +1522,44 @@ export const GetPushTokenDocument = gql`
 `;
 
 /**
- * __useGetPushTokenQuery__
+ * __useGetPushTokensQuery__
  *
- * To run a query within a React component, call `useGetPushTokenQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPushTokenQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetPushTokensQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPushTokensQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetPushTokenQuery({
+ * const { data, loading, error } = useGetPushTokensQuery({
  *   variables: {
  *   },
  * });
  */
-export function useGetPushTokenQuery(
-  baseOptions?: Apollo.QueryHookOptions<GetPushTokenQuery, GetPushTokenQueryVariables>
+export function useGetPushTokensQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetPushTokensQuery, GetPushTokensQueryVariables>
 ) {
-  return Apollo.useQuery<GetPushTokenQuery, GetPushTokenQueryVariables>(
-    GetPushTokenDocument,
+  return Apollo.useQuery<GetPushTokensQuery, GetPushTokensQueryVariables>(
+    GetPushTokensDocument,
     baseOptions
   );
 }
-export function useGetPushTokenLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<GetPushTokenQuery, GetPushTokenQueryVariables>
+export function useGetPushTokensLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetPushTokensQuery, GetPushTokensQueryVariables>
 ) {
-  return Apollo.useLazyQuery<GetPushTokenQuery, GetPushTokenQueryVariables>(
-    GetPushTokenDocument,
+  return Apollo.useLazyQuery<GetPushTokensQuery, GetPushTokensQueryVariables>(
+    GetPushTokensDocument,
     baseOptions
   );
 }
-export type GetPushTokenQueryHookResult = ReturnType<typeof useGetPushTokenQuery>;
-export type GetPushTokenLazyQueryHookResult = ReturnType<typeof useGetPushTokenLazyQuery>;
-export type GetPushTokenQueryResult = Apollo.QueryResult<
-  GetPushTokenQuery,
-  GetPushTokenQueryVariables
+export type GetPushTokensQueryHookResult = ReturnType<typeof useGetPushTokensQuery>;
+export type GetPushTokensLazyQueryHookResult = ReturnType<typeof useGetPushTokensLazyQuery>;
+export type GetPushTokensQueryResult = Apollo.QueryResult<
+  GetPushTokensQuery,
+  GetPushTokensQueryVariables
 >;
-export function refetchGetPushTokenQuery(variables?: GetPushTokenQueryVariables) {
-  return { query: GetPushTokenDocument, variables: variables };
+export function refetchGetPushTokensQuery(variables?: GetPushTokensQueryVariables) {
+  return { query: GetPushTokensDocument, variables: variables };
 }
 export const CreateActivityDocument = gql`
   mutation CreateActivity($data: CreateActivityInput!) {

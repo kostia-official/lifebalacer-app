@@ -240,8 +240,8 @@ query GetReminder {
   }
 }
 
-query GetPushToken {
-  pushToken {
+query GetPushTokens {
+  pushTokens {
     _id
     token
     userId

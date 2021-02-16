@@ -36,6 +36,7 @@ const TitleWrapper = styled.div`
 `;
 
 const fallbackColor = teal[500];
+const gradientColors = [teal[500], teal[700], teal[800]];
 
 export const WeekdayChart: React.FC<WeekdayChartProps> = ({ data, isWithValue }) => {
   const [valueField, setValueField] = useState<WeekdayChartType>(
@@ -68,8 +69,9 @@ export const WeekdayChart: React.FC<WeekdayChartProps> = ({ data, isWithValue })
 
   const colors = useMemo(() => {
     if (sortedYValues.length < 3) return [fallbackColor];
+    if (sortedYValues.length === 3) return gradientColors;
 
-    return generateGradient([teal[500], teal[700], teal[800]], sortedYValues.length);
+    return generateGradient(gradientColors, sortedYValues.length);
   }, [sortedYValues]);
 
   const customizePoint: BarChartProps['customizePoint'] = useCallback(

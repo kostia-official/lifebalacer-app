@@ -23,6 +23,7 @@ import { getIsToday } from '../../helpers/date';
 import { DayCard } from '../../components/DayCard';
 import { HeaderCard } from '../../components/HeaderCard';
 import { getDayQueryVariables } from '../../helpers/getDayQueryVariables';
+import { usePushTokenUpdate } from '../../hooks/usePushTokenUpdate';
 
 const EntriesLabelsWrapper = styled.div`
   margin: 6px 16px 14px 16px;
@@ -37,6 +38,8 @@ const DatePickerButtonWrapper = styled.div`
 const EntriesByDay = React.memo(() => {
   const { goForwardTo } = useHistoryNavigation();
   const { errorMessage, errorTime, onError } = useApolloError();
+
+  usePushTokenUpdate({ onError });
 
   const { statisticText, refetch: refetchStatistic } = useDaysStatisticText({ onError });
 

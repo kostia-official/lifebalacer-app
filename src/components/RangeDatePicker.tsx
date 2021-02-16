@@ -119,7 +119,7 @@ export const RangeDatePicker: React.FC<RangeDatePickerProps> = ({ onChange, isLo
   );
 
   const onDone = useCallback(() => {
-    onChange({ dateBefore, dateAfter });
+    onChange({ dateAfter: dateAfter.startOf('day'), dateBefore: dateBefore.endOf('day') });
   }, [dateAfter, dateBefore, onChange]);
 
   const datePickerProps: Partial<DatePickerProps> = useMemo(() => {

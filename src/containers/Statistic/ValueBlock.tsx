@@ -1,7 +1,6 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import styled, { css } from 'styled-components';
-import _ from 'lodash';
 import { mobileStyles } from '../../common/breakpoints';
 
 export interface ValueBlockProps {
@@ -62,12 +61,10 @@ export const ValueBlock: React.FC<ValueBlockProps> = ({
   icon,
   valueInterval
 }) => {
-  const valueRounded = _.isNumber(value) ? _.round(value, 1) : value;
-
   return (
     <NumberBlockPaper>
       <ValueWrapper valueInterval={valueInterval}>
-        <Typography variant="h5">{valueRounded ?? '—'}</Typography>
+        <Typography variant="h5">{value ?? '—'}</Typography>
         {icon && <IconWrapper>{icon}</IconWrapper>}
       </ValueWrapper>
       <Text variant="overline">{text}</Text>

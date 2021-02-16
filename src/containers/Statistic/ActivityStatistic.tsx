@@ -91,13 +91,17 @@ const ActivityStatistic: React.FC = () => {
             <Grid item xs={valueBlockGridXs} sm={valueBlockGridSm}>
               <ValueBlock
                 value={statistic?.total}
-                text="Total entries"
+                text="Entries count"
                 icon={<Icon>receipt_long</Icon>}
               />
             </Grid>
 
             <Grid item xs={valueBlockGridXs} sm={valueBlockGridSm}>
-              <ValueBlock value={`x${statistic?.perWeek}`} text="Per week" icon={<DateRange />} />
+              <ValueBlock
+                value={statistic?.perWeek === null ? '—' : `x${statistic?.perWeek}`}
+                text="Per week"
+                icon={<DateRange />}
+              />
             </Grid>
 
             {isWithValue && (
