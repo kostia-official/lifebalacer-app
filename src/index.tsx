@@ -1,6 +1,5 @@
 import './services/sentry';
 import React from 'react';
-import { AppRegistry } from 'react-native';
 import './index.css';
 import * as serviceWorker from './serviceWorkerRegistration';
 import { ThemeProvider } from './ThemeProvider';
@@ -14,10 +13,11 @@ import LuxonUtils from '@date-io/luxon';
 import { ApolloCacheLoader } from './containers/ApolloCacheLoader';
 import { LogsProvider } from './components/LogsProvider';
 import App from './containers/App/App';
+import ReactDOM from 'react-dom';
 
 export const history = createBrowserHistory();
 
-const Index = () => (
+ReactDOM.render(
   <LogsProvider>
     <Auth0Provider {...config.auth}>
       <ThemeProvider>
@@ -30,13 +30,8 @@ const Index = () => (
         </MuiPickersUtilsProvider>
       </ThemeProvider>
     </Auth0Provider>
-  </LogsProvider>
+  </LogsProvider>,
+  document.getElementById('root')
 );
-
-AppRegistry.registerComponent('Index', () => Index);
-
-AppRegistry.runApplication('Index', {
-  rootTag: document.getElementById('root')
-});
 
 serviceWorker.register();

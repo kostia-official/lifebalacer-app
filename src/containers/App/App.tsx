@@ -1,15 +1,12 @@
 import * as React from 'react';
 import { Fragment, RefObject } from 'react';
 import { NavigationContainer, DarkTheme, NavigationContainerRef } from '@react-navigation/native';
-import { enableScreens } from 'react-native-screens';
 import { MainColors } from '../../common/colors';
 import { useAuth } from '../../hooks/useAuth';
 import { ErrorCatcher } from '../ErrorCatcher';
 import { BottomTabsNavigator } from './BottomTabsNavigator';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Auth } from '../Auth';
-
-enableScreens();
 
 export type NavigationParams = {
   Auth: { error_description: string };
