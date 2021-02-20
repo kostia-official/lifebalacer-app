@@ -25,7 +25,9 @@ import { toLuxon } from '../../helpers/date';
 import { PageWrapper } from '../../components/PageWrapper';
 
 const ActivityTitle = styled(Typography)`
-  font-size: 15px;
+  display: flex;
+  align-items: center;
+
   margin-bottom: 8px;
 `;
 

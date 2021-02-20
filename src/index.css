@@ -12,6 +12,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
+html {
+  text-size-adjust: auto;
+}
+
 body,
 html {
   height: 100%;
