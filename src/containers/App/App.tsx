@@ -7,6 +7,8 @@ import { ErrorCatcher } from '../ErrorCatcher';
 import { BottomTabsNavigator } from './BottomTabsNavigator';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Auth } from '../Auth';
+import { useMount } from 'react-use';
+import Loadable from 'react-loadable';
 
 export type NavigationParams = {
   Auth: { error_description: string };
@@ -21,6 +23,10 @@ const RootStack = createStackNavigator();
 
 export default function App() {
   const { user, isAuthenticated } = useAuth();
+
+  useMount(() => {
+    Loadable.preloadAll().then();
+  });
 
   return (
     <NavigationContainer

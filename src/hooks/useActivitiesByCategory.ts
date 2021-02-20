@@ -14,9 +14,9 @@ export const ARCHIVED_CATEGORY = 'Archived';
 export const ActivityCategoryOrder: {
   [key: string]: number;
 } = {
-  [ActivityCategory.Neutral]: 1,
-  [ActivityCategory.Positive]: 2,
-  [ActivityCategory.Negative]: 3,
+  [ActivityCategory.Negative]: 1,
+  [ActivityCategory.Neutral]: 2,
+  [ActivityCategory.Positive]: 3,
   [TODOIST_CATEGORY]: 4,
   [ARCHIVED_CATEGORY]: 5
 };

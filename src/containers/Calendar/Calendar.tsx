@@ -43,6 +43,12 @@ const FormControlStyled = styled(FormControl)`
   width: 200px;
 `;
 
+const MaterialCalendarWrapper = styled.div`
+  & .MuiPickersCalendarHeader-iconButton {
+    top: 155px;
+  }
+`;
+
 const Calendar = () => {
   const { goForwardTo } = useNavigationHelpers();
 
@@ -135,7 +141,9 @@ const Calendar = () => {
           </FormControlStyled>
         </FormControlWrapper>
 
-        <MaterialCalendar {...pickerProps} renderDay={renderDay} />
+        <MaterialCalendarWrapper>
+          <MaterialCalendar {...pickerProps} renderDay={renderDay} />
+        </MaterialCalendarWrapper>
 
         <CalendarLegendsWrapper>
           {!selectedActivity ||

@@ -86,17 +86,30 @@ const OtherTab = () => (
   </OtherStack.Navigator>
 );
 
+const tabBarColorSchemas = {
+  teal: {
+    backgroundColor: MainColors.Primary,
+    inactiveTintColor: '#b6f1ed'
+  },
+  grey: {
+    backgroundColor: MainColors.Background,
+    inactiveTintColor: '#bebebe'
+  }
+};
+
 export const BottomTabsNavigator: React.FC = () => {
   const isKeyboardOpen = useIsKeyboardOpen();
 
   const hideTabBarOptionalStyle = isKeyboardOpen ? { height: 0, bottom: -100 } : {};
 
+  const { backgroundColor, inactiveTintColor } = tabBarColorSchemas.grey;
+
   return (
     <BottomTabs.Navigator
       lazy={false}
       tabBarOptions={{
-        activeBackgroundColor: MainColors.Primary,
-        inactiveBackgroundColor: MainColors.Primary,
+        activeBackgroundColor: backgroundColor,
+        inactiveBackgroundColor: backgroundColor,
 
         style: {
           ...hideTabBarOptionalStyle,
@@ -114,7 +127,7 @@ export const BottomTabsNavigator: React.FC = () => {
         },
 
         activeTintColor: '#fff',
-        inactiveTintColor: '#b6f1ed',
+        inactiveTintColor,
         labelStyle: {
           marginBottom: 4,
           fontSize: 11

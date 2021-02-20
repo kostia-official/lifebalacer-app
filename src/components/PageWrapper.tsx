@@ -1,12 +1,9 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useMemo } from 'react';
 import { ErrorMessage } from './ErrorMessage';
 import { Showable } from './Showable';
 import { Spinner } from './Spinner';
 import styled from 'styled-components';
-import { useAuth } from '../hooks/useAuth';
-import { Auth } from '../containers/Auth';
-import { useMount } from 'react-use';
-import Loadable from 'react-loadable';
+import { useScrolling, createGlobalState } from 'react-use';
 
 export interface PageWrapperProps {
   isLoading?: boolean;
@@ -25,6 +22,8 @@ const ContentWrapper = styled.div`
   margin: 8px;
 `;
 
+export const useIsScrolling = createGlobalState(false);
+
 export const PageWrapper: React.FC<PageWrapperProps> = ({
   errorMessage,
   errorTime = Date.now(),
@@ -32,29 +31,29 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
   children,
   id
 }) => {
-  useMount(() => {
-    Loadable.preloadAll().then();
-  });
+  const [, setIsScrolling] = useIsScrolling();
+  const scrollRef = React.useRef(null);
+  const scrolling = useScrolling(scrollRef);
 
-  const { isAuthenticated } = useAuth();
+  useEffect(() => {
+    setIsScrolling(scrolling);
+  }, [scrolling, setIsScrolling]);
 
-  if (!isAuthenticated) return <Auth />;
+  return useMemo(() => {
+    return (
+      <Fragment>
+        <Scroll {...{ id }} ref={scrollRef}>
+          <ErrorMessage errorMessage={errorMessage} errorTime={errorTime} />
 
-  return (
-    <Fragment>
-      {/*<AppBar />*/}
+          <Showable isShow={isLoading}>
+            <Spinner />
+          </Showable>
 
-      <Scroll {...{ id }}>
-        <ErrorMessage errorMessage={errorMessage} errorTime={errorTime} />
-
-        <Showable isShow={isLoading}>
-          <Spinner />
-        </Showable>
-
-        <Showable isShow={!isLoading}>
-          <ContentWrapper>{children}</ContentWrapper>
-        </Showable>
-      </Scroll>
-    </Fragment>
-  );
+          <Showable isShow={!isLoading}>
+            <ContentWrapper>{children}</ContentWrapper>
+          </Showable>
+        </Scroll>
+      </Fragment>
+    );
+  }, [children, errorMessage, errorTime, id, isLoading]);
 };
