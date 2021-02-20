@@ -7,7 +7,7 @@ class Config {
   auth = {
     domain: 'rewarder.eu.auth0.com',
     clientId: process.env.REACT_APP_AUTH0_CLIENT_ID!,
-    redirectUri: this.host,
+    redirectUri: this.host + '/auth',
     responseType: 'token id_token',
     scope: 'openid email profile',
     audience: 'rewarder-api',

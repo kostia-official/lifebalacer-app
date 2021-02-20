@@ -1,12 +1,11 @@
 import React from 'react';
-import { getDateTitle } from '../../helpers/date';
+import { getDateTitle, DateAny } from '../../helpers/date';
 import { HeaderCard } from '../../components/HeaderCard';
-import { DayResult } from '../../common/types';
 
 export interface DayHeaderProps {
-  day?: Pick<DayResult, 'date' | 'points'> | null;
+  date: DateAny;
 }
 
-export const DayHeader: React.FC<DayHeaderProps> = ({ day }) => {
-  return <HeaderCard text={getDateTitle(day?.date ?? '')} />;
+export const DayHeader: React.FC<DayHeaderProps> = ({ date }) => {
+  return <HeaderCard text={getDateTitle(date)} />;
 };

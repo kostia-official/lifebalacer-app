@@ -4,7 +4,7 @@ import { useApolloError } from '../../hooks/useApolloError';
 import { List, Paper, ListItem, ListItemText, Typography } from '@material-ui/core';
 import { useGetActivitiesStatisticQuery } from '../../generated/apollo';
 import { Emoji } from '../../components/Emoji';
-import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
+import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import styled from 'styled-components';
 
 const PrimaryText = styled.span`
@@ -15,7 +15,7 @@ const PrimaryText = styled.span`
 
 const ActivitiesStatistic: React.FC = React.memo(() => {
   const { errorMessage, onError, errorTime } = useApolloError();
-  const { goForwardToCb } = useHistoryNavigation();
+  const { goForwardToCb } = useNavigationHelpers();
 
   const { data: statisticData } = useGetActivitiesStatisticQuery({ onError });
 
@@ -34,7 +34,7 @@ const ActivitiesStatistic: React.FC = React.memo(() => {
               return (
                 <ListItem
                   key={stat._id}
-                  onClick={goForwardToCb(`/statistic/activity/${stat._id}`)}
+                  onClick={goForwardToCb(`ActivityStatistic`, { id: stat._id })}
                   button
                   divider={!isLast}
                 >

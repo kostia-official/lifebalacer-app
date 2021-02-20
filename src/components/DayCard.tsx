@@ -11,6 +11,10 @@ export interface DayCardProps {
 
 const CardStyled = styled(Card)`
   margin-bottom: 8px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 `;
 
 const CardHeaderStyled = styled(CardHeader)`

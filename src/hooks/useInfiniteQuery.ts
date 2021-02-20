@@ -1,31 +1,32 @@
 import { useCallback, useState, useEffect } from 'react';
 import _ from 'lodash';
 import { useQuery } from '@apollo/client';
-import { getIsCanScroll } from '../helpers/scroll';
 import { OperationVariables } from '@apollo/client/core';
 import { DocumentNode } from 'graphql';
 import { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import { QueryHookOptions } from '@apollo/client/react/types/types';
+import { getIsCanScroll } from '../helpers/scroll';
 
 export interface Options<TData, TVariables> extends QueryHookOptions<TData, TVariables> {
   field: string;
   fetchMoreVariables: (data: TData) => TVariables | null;
+  scrollTargetId: string;
 }
 
 export const useInfiniteQuery = <TData = any, TVariables = OperationVariables>(
   query: DocumentNode | TypedDocumentNode<TData, TVariables>,
-  { field, fetchMoreVariables, ...apolloOptions }: Options<TData, TVariables>
+  { scrollTargetId, field, fetchMoreVariables, ...apolloOptions }: Options<TData, TVariables>
 ) => {
   const [isHasMore, setIsHasMore] = useState(true);
 
   useEffect(() => {
-    setIsHasMore(getIsCanScroll());
-  }, []);
+    setIsHasMore(getIsCanScroll(scrollTargetId));
+  }, [scrollTargetId]);
 
   const queryResult = useQuery(query, {
     ...apolloOptions,
     onCompleted: () => {
-      setIsHasMore(getIsCanScroll());
+      setIsHasMore(getIsCanScroll(scrollTargetId));
     }
   });
 

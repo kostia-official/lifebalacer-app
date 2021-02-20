@@ -1,36 +1,23 @@
 import React from 'react';
 import { List, ListItem, ListItemText } from '@material-ui/core';
-import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
-import { useAuth } from '../../hooks/useAuth';
-import { LastUpdatedAt } from './LastUpdatedAt';
-import { Center } from '../../components/Center';
+import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
+import { PageWrapper } from '../../components/PageWrapper';
 
 const About = () => {
-  const { goForwardToCb } = useHistoryNavigation();
-  const { user } = useAuth();
-
-  const isEnableDevTools = user?.email === 'kozzztya@gmail.com';
+  const { goForwardToCb } = useNavigationHelpers();
 
   return (
-    <div>
-      <List component="nav" aria-label="main mailbox folders">
-        <ListItem button onClick={goForwardToCb('/about/privacy-policy')}>
+    <PageWrapper>
+      <List>
+        <ListItem button onClick={goForwardToCb('PrivacyPolicy')}>
           <ListItemText primary="Privacy Policy" />
         </ListItem>
-        <ListItem button onClick={goForwardToCb('/about/terms-and-conditions')}>
+
+        <ListItem button onClick={goForwardToCb('TermsAndConditions')}>
           <ListItemText primary="Terms and Conditions" />
         </ListItem>
-        {isEnableDevTools && (
-          <ListItem button onClick={goForwardToCb('/about/dev-tools')}>
-            <ListItemText primary="Dev Tools" />
-          </ListItem>
-        )}
-
-        <Center margin="4px 0">
-          <LastUpdatedAt />
-        </Center>
       </List>
-    </div>
+    </PageWrapper>
   );
 };
 

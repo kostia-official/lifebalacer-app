@@ -1,5 +1,4 @@
 import React, { Fragment, useCallback } from 'react';
-import { PageWrapper } from '../../components/PageWrapper';
 import { useApolloError } from '../../hooks/useApolloError';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { Typography } from '@material-ui/core';
@@ -10,7 +9,7 @@ import { useActivities } from '../../hooks/useActivities';
 import { Spinner } from '../../components/Spinner';
 import { DatePickerButton } from '../EntriesByDay/DatePickerButton';
 import { FabButton } from '../../components/FabButton';
-import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
+import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { useInfiniteQuery } from '../../hooks/useInfiniteQuery';
 import {
   GetJournalQuery,
@@ -22,6 +21,8 @@ import { DayCard } from '../../components/DayCard';
 import { Emoji } from '../../components/Emoji';
 import _ from 'lodash';
 import { getDayQueryVariables } from '../../helpers/getDayQueryVariables';
+import { toLuxon } from '../../helpers/date';
+import { PageWrapper } from '../../components/PageWrapper';
 
 const ActivityTitle = styled(Typography)`
   font-size: 15px;
@@ -39,16 +40,18 @@ const Description = styled(Typography)`
 
 const DatePickerButtonWrapper = styled.div`
   position: fixed;
-  bottom: 94px;
-  right: 27px;
+  bottom: 140px;
+  right: 26px;
 `;
 
 const DayContent = styled.div`
   padding: 16px;
 `;
 
+const scrollTargetId = 'journal-wrapper';
+
 const Journal = () => {
-  const { goForwardTo } = useHistoryNavigation();
+  const { goForwardTo } = useNavigationHelpers();
   const { errorMessage, onError, errorTime } = useApolloError();
 
   const { getActivityById, todoistActivity, allActivities } = useActivities({ onError });
@@ -59,6 +62,7 @@ const Journal = () => {
   >(GetJournalDocument, {
     onError,
     field: 'journal',
+    scrollTargetId,
     variables: {
       activities: allActivities
         ?.filter((activity) => activity._id !== todoistActivity?._id)
@@ -73,7 +77,7 @@ const Journal = () => {
 
   const onDayClick = useCallback(
     (date = new Date()) => {
-      goForwardTo(`/entries/${new Date(date).toISOString()}`);
+      goForwardTo('JournalEntries', { date: toLuxon(date).toISODate() });
     },
     [goForwardTo]
   );
@@ -81,16 +85,21 @@ const Journal = () => {
   const isLoading = !journal || !allActivities;
 
   return (
-    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={isLoading}>
+    <PageWrapper
+      id={scrollTargetId}
+      errorMessage={errorMessage}
+      errorTime={errorTime}
+      isLoading={isLoading}
+    >
       {journal?.length === 0 ? (
         <EmptyState text="So far no entries with description..." />
       ) : (
         <InfiniteScroll
-          style={{ overflow: 'hidden' }}
           dataLength={journal?.length ?? 0}
           next={loadMore}
-          hasMore={isHasMore}
           loader={<Spinner />}
+          hasMore={isHasMore}
+          scrollableTarget={scrollTargetId}
         >
           {journal?.map((day) => {
             return (

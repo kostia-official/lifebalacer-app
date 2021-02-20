@@ -1,11 +1,9 @@
 import './services/sentry';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { AppRegistry } from 'react-native';
 import './index.css';
-import { App } from './containers/App';
 import * as serviceWorker from './serviceWorkerRegistration';
 import { ThemeProvider } from './ThemeProvider';
-import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { ApolloProvider } from '@apollo/client';
 import { apolloClient } from './apollo';
@@ -15,26 +13,30 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import LuxonUtils from '@date-io/luxon';
 import { ApolloCacheLoader } from './containers/ApolloCacheLoader';
 import { LogsProvider } from './components/LogsProvider';
+import App from './containers/App/App';
 
 export const history = createBrowserHistory();
 
-ReactDOM.render(
+const Index = () => (
   <LogsProvider>
     <Auth0Provider {...config.auth}>
-      <Router history={history}>
-        <ThemeProvider>
-          <MuiPickersUtilsProvider utils={LuxonUtils}>
-            <ApolloCacheLoader>
-              <ApolloProvider client={apolloClient}>
-                <App />
-              </ApolloProvider>
-            </ApolloCacheLoader>
-          </MuiPickersUtilsProvider>
-        </ThemeProvider>
-      </Router>
+      <ThemeProvider>
+        <MuiPickersUtilsProvider utils={LuxonUtils}>
+          <ApolloCacheLoader>
+            <ApolloProvider client={apolloClient}>
+              <App />
+            </ApolloProvider>
+          </ApolloCacheLoader>
+        </MuiPickersUtilsProvider>
+      </ThemeProvider>
     </Auth0Provider>
-  </LogsProvider>,
-  document.getElementById('root')
+  </LogsProvider>
 );
+
+AppRegistry.registerComponent('Index', () => Index);
+
+AppRegistry.runApplication('Index', {
+  rootTag: document.getElementById('root')
+});
 
 serviceWorker.register();

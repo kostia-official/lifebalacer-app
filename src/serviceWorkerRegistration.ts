@@ -5,7 +5,7 @@ import { config } from './common/config';
 
 navigator?.serviceWorker?.addEventListener('message', (event) => {
   if (event.data.url) {
-    history.push(event.data.url, { isPush: true, depth: 1 });
+    history.push(event.data.url, { isPush: true });
   }
 });
 

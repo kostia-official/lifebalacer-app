@@ -16,7 +16,7 @@ export interface ISaveFabButtonProps extends FabProps {
 
 const Wrapper = styled.div<IStyleProps>`
   position: fixed;
-  bottom: ${(props) => props.bottom || '20px'};
+  bottom: ${(props) => props.bottom || '70px'};
   right: ${(props) => props.right || '26px'};
   z-index: 200;
 `;

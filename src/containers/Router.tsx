@@ -36,7 +36,7 @@ const Activities = LoadableCommon(() => import('./Activities'));
 const Calendar = LoadableCommon(() => import('./Calendar/Calendar'));
 const Reminders = LoadableCommon(() => import('./Reminders'));
 const About = LoadableCommon(() => import('./About/About'));
-const DevTools = LoadableCommon(() => import('./About/DevTools'));
+const DevTools = LoadableCommon(() => import('./Other/DevTools'));
 const ActivitiesStatistic = LoadableCommon(() => import('./Statistic/ActivitiesStatistic'));
 const ActivityStatistic = LoadableCommon(() => import('./Statistic/ActivityStatistic'));
 

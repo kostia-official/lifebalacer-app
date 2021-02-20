@@ -16,7 +16,7 @@ import _ from 'lodash';
 import { useActivities } from '../hooks/useActivities';
 import { EmptySpaceUnderFab, FabButton } from '../components/FabButton';
 import { Greyscale } from '../components/Greyscale';
-import { useHistoryNavigation } from '../hooks/useHistoryNavigation';
+import { useNavigationHelpers } from '../hooks/useNavigationHelpers';
 import { Emoji } from '../components/Emoji';
 
 const ConnectTodoistButtonWrapper = styled.div`
@@ -36,7 +36,7 @@ const TitleWrapper = styled.div`
 
 const Activities = () => {
   const { isMobile } = useDeviceDetect();
-  const { goForwardToCb, goForwardTo } = useHistoryNavigation();
+  const { goForwardToCb, goForwardTo } = useNavigationHelpers();
   const { errorMessage, onError, errorTime } = useApolloError();
   const { authorizeInTodoist } = useTodoist();
 
@@ -88,7 +88,7 @@ const Activities = () => {
             tooltip: 'Edit',
             onClick: (event, rowData) => {
               const activity = rowData as Activity;
-              goForwardTo(`/activities/edit/${activity._id}`);
+              goForwardTo('ActivityEdit', { id: activity._id });
             }
           },
           {
@@ -135,7 +135,7 @@ const Activities = () => {
               tooltip: 'Edit',
               onClick: (event, rowData) => {
                 const activity = rowData as Activity;
-                goForwardTo(`/activities/edit/${activity._id}`);
+                goForwardTo('ActivityEdit', { id: activity._id });
               }
             },
             {
@@ -160,7 +160,7 @@ const Activities = () => {
 
       <EmptySpaceUnderFab />
 
-      <FabButton onClick={goForwardToCb('/activities/create')} />
+      <FabButton onClick={goForwardToCb('ActivityCreate')} />
     </PageWrapper>
   );
 };

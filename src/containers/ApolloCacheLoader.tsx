@@ -6,5 +6,5 @@ export const ApolloCacheLoader: React.FC = ({ children }) => {
 
   if (!isCacheLoaded) return <Fragment />;
 
-  return <div>{children}</div>;
+  return <Fragment>{children}</Fragment>;
 };

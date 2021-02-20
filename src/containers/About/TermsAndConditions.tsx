@@ -1,9 +1,10 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
+import { PageWrapper } from '../../components/PageWrapper';
 
 export const TermsAndConditions = () => {
   return (
-    <div>
+    <PageWrapper>
       <Typography gutterBottom variant="h5">
         Terms and Conditions
       </Typography>
@@ -279,6 +280,6 @@ export const TermsAndConditions = () => {
         As long as the website and the information and services on the website are provided free of
         charge, we will not be liable for any loss or damage of any nature.
       </Typography>
-    </div>
+    </PageWrapper>
   );
 };

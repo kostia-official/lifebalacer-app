@@ -11,7 +11,6 @@ import { EmptyState } from '../../components/EmptyState';
 import { EntriesLabels } from './EntriesLabels';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { Spinner } from '../../components/Spinner';
-import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
 import { useInfiniteQuery } from '../../hooks/useInfiniteQuery';
 import {
   GetEntriesByDayDocument,
@@ -19,11 +18,13 @@ import {
   GetEntriesByDayQueryVariables,
   useGetTodoistActivityQuery
 } from '../../generated/apollo';
-import { getIsToday } from '../../helpers/date';
+import { getIsToday, toLuxon } from '../../helpers/date';
 import { DayCard } from '../../components/DayCard';
 import { HeaderCard } from '../../components/HeaderCard';
 import { getDayQueryVariables } from '../../helpers/getDayQueryVariables';
 import { usePushTokenUpdate } from '../../hooks/usePushTokenUpdate';
+import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
+import { Fragment } from 'react';
 
 const EntriesLabelsWrapper = styled.div`
   margin: 6px 16px 14px 16px;
@@ -31,12 +32,14 @@ const EntriesLabelsWrapper = styled.div`
 
 const DatePickerButtonWrapper = styled.div`
   position: fixed;
-  bottom: 94px;
+  bottom: 140px;
   right: 26px;
 `;
 
+const scrollTargetId = 'entries-wrapper';
+
 const EntriesByDay = React.memo(() => {
-  const { goForwardTo } = useHistoryNavigation();
+  const { goForwardTo } = useNavigationHelpers();
   const { errorMessage, errorTime, onError } = useApolloError();
 
   usePushTokenUpdate({ onError });
@@ -53,6 +56,7 @@ const EntriesByDay = React.memo(() => {
     GetEntriesByDayQuery,
     GetEntriesByDayQueryVariables
   >(GetEntriesByDayDocument, {
+    scrollTargetId,
     onError,
     field: 'entriesByDay',
     fetchMoreVariables: (data) => getDayQueryVariables(_.last(data.entriesByDay)?.date)
@@ -68,7 +72,9 @@ const EntriesByDay = React.memo(() => {
 
   const onEntryFormOpen = useCallback(
     (date = new Date()) => {
-      goForwardTo(`/entries/${new Date(date).toISOString()}`);
+      goForwardTo('EntriesForm', {
+        date: toLuxon(date).toISODate()
+      });
     },
     [goForwardTo]
   );
@@ -79,16 +85,21 @@ const EntriesByDay = React.memo(() => {
 
   return useMemo(() => {
     return (
-      <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={isLoading}>
+      <PageWrapper
+        id={scrollTargetId}
+        errorMessage={errorMessage}
+        errorTime={errorTime}
+        isLoading={isLoading}
+      >
         {isEmptyState ? (
           <EmptyState text="So far no entries..." />
         ) : (
           <InfiniteScroll
-            style={{ overflow: 'hidden' }}
             dataLength={entriesByDay?.length ?? 0}
             next={loadMore}
+            loader={<Fragment />}
             hasMore={isHasMore}
-            loader={<Spinner />}
+            scrollableTarget={scrollTargetId}
           >
             <HeaderCard text={statisticText} />
 
@@ -101,6 +112,8 @@ const EntriesByDay = React.memo(() => {
                 </DayCard>
               );
             })}
+
+            {isHasMore && <Spinner />}
           </InfiniteScroll>
         )}
 

@@ -19,8 +19,9 @@ import { useReactiveVar } from '@apollo/client';
 import { calendarActivityIdVar } from '../../reactiveState';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { useOnActivityUpdate } from '../../hooks/useOnActivityUpdate';
-import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
+import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { Greyscale } from '../../components/Greyscale';
+import { toLuxon } from '../../helpers/date';
 
 const CalendarWrapper = styled.div`
   overflow: hidden;
@@ -43,7 +44,8 @@ const FormControlStyled = styled(FormControl)`
 `;
 
 const Calendar = () => {
-  const { goForwardTo } = useHistoryNavigation();
+  const { goForwardTo } = useNavigationHelpers();
+
   const { errorMessage, errorTime, onError } = useApolloError();
   const selectedActivityId = useReactiveVar(calendarActivityIdVar);
 
@@ -90,7 +92,7 @@ const Calendar = () => {
     [selectedActivity, updateActivity]
   );
 
-  const { renderDay, daysData } = useDatePickerRenderDayExtremes({
+  const { renderDay } = useDatePickerRenderDayExtremes({
     onError,
     selectedActivityExtremes,
     isReverseColors
@@ -99,7 +101,10 @@ const Calendar = () => {
   const onDateChange = useCallback(
     (date) => {
       if (!date) return;
-      goForwardTo(`/entries/${date.toISO()}`);
+
+      goForwardTo('CalendarEntries', {
+        date: toLuxon(date).toISODate()
+      });
     },
     [goForwardTo]
   );
@@ -112,11 +117,7 @@ const Calendar = () => {
   });
 
   return (
-    <PageWrapper
-      errorMessage={errorMessage}
-      errorTime={errorTime}
-      isLoading={!allActivities || !daysData}
-    >
+    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!allActivities}>
       <CalendarWrapper>
         <FormControlWrapper>
           <FormControlStyled margin="dense">

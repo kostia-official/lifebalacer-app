@@ -26,7 +26,6 @@ import {
 import _ from 'lodash';
 import { useUpdateInput } from '../../hooks/useUpdateInput';
 import { useApolloError } from '../../hooks/useApolloError';
-import { useParams } from 'react-router-dom';
 import { FabButton } from '../../components/FabButton';
 import { ActivityResult } from '../../common/types';
 import { SwitchBaseProps } from '@material-ui/core/internal/SwitchBase';
@@ -34,8 +33,10 @@ import { TooltipCheckbox } from '../../components/TooltipCheckbox';
 import { LinearPointsTooltip } from './LinearPointsTooltip';
 import { useSelectOnInputFocus } from '../../hooks/useSelectOnInputFocus';
 import { PageWrapper } from '../../components/PageWrapper';
-import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
+import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { EmojiPicker } from './EmojiPicker';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { NavigationParams } from '../App/App';
 
 const FormContainer = styled.form`
   display: flex;
@@ -79,12 +80,14 @@ const NameFormControl = styled(FormControl)`
 const EMOJI_PICKER_CLASS_NAME = 'emoji-picker-' + Date.now();
 
 const ActivityForm = () => {
-  let { _id } = useParams<{ _id: string }>();
+  const { params } = useRoute<RouteProp<NavigationParams, 'ActivityEdit'>>();
+  const _id = params.id;
+
   const isEdit = !!_id;
 
   const { errorMessage, onError, errorTime } = useApolloError({ isForceShowError: true });
 
-  const { goBackCb } = useHistoryNavigation();
+  const { goBackCb } = useNavigationHelpers();
 
   const { data } = useGetActivityQuery({ onError, variables: { _id }, skip: !isEdit });
   const existingActivity: Partial<ActivityResult> = isEdit && data?.activity ? data?.activity : {};

@@ -12,7 +12,7 @@ import { AppUpdateDialog } from './AppUpdateDialog';
 // @ts-ignore
 import ScrollRestoration from 'react-scroll-restoration';
 import { Button } from '@material-ui/core';
-import { useHistoryNavigation } from '../hooks/useHistoryNavigation';
+import { useNavigationHelpers } from '../hooks/useNavigationHelpers';
 import { Router, routes } from './Router';
 import { isMobile } from 'react-device-detect';
 
@@ -38,9 +38,9 @@ export interface IAppProps {
   history: History;
 }
 
-export const App: React.FC = () => {
+export const AppOld: React.FC = () => {
   const { isAuthenticated, user, login, logout } = useAuth();
-  const { goBackCb, switchTo, isNested } = useHistoryNavigation();
+  const { goBackCb, switchTo, isNested } = useNavigationHelpers();
   const [isExpandedMenu, setIsExpandedMenu] = useState(!isMobile);
 
   const swipeHandlers = useSwipeable({

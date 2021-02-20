@@ -14,7 +14,6 @@ import { useApolloError } from '../../hooks/useApolloError';
 import * as R from 'remeda';
 import _ from 'lodash';
 import { Card } from '@material-ui/core';
-import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { CardModal } from '../../components/CardModal';
 import { ActivityResult, SelectedEntry, EntryResult } from '../../common/types';
@@ -26,13 +25,15 @@ import { getIsToday } from '../../helpers/date';
 import { FabButton } from '../../components/FabButton';
 import { useActivitiesByCategory, ARCHIVED_CATEGORY } from '../../hooks/useActivitiesByCategory';
 import { PageWrapper } from '../../components/PageWrapper';
-import { useHistoryNavigation } from '../../hooks/useHistoryNavigation';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { useDeleteEntry } from '../../hooks/useDeleteEntry';
 import { useOnActivityUpdate } from '../../hooks/useOnActivityUpdate';
 import { DayHeader } from './DayHeader';
 import { calcPoints } from '../../helpers/calcPoints';
 import { ExpandableCard } from '../../components/ExpandableCard';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { NavigationParams } from '../App/App';
+import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 
 const CategoryWrapper = styled(Card)`
   margin-bottom: 8px;
@@ -41,6 +42,8 @@ const CategoryWrapper = styled(Card)`
 const showDelay = 300;
 
 const EntriesForm = () => {
+  const { goBackCb } = useNavigationHelpers();
+
   const [modalEntry, setModalEntry] = useState<SelectedEntry | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isForceDescription, setIsForceDescription] = useState(false);
@@ -56,8 +59,9 @@ const EntriesForm = () => {
     setIsModalOpen(true);
   }, []);
 
-  const params = useParams<{ date: string }>();
-  const dayDate = params.date || DateTime.local().toISO();
+  const { params } = useRoute<RouteProp<NavigationParams, 'EntriesForm'>>();
+
+  const dayDate = params.date ? new Date(params.date).toISOString() : DateTime.local().toISO();
   const endOfDay = DateTime.fromISO(dayDate).set({ hour: 23 }).toISO();
 
   const getCompletedAt = useCallback(
@@ -259,8 +263,6 @@ const EntriesForm = () => {
     }
   }, [getEntryById, deleteEntry, modalEntry, closeModal]);
 
-  const { goBackCb } = useHistoryNavigation();
-
   const modalActivity = useMemo(
     () => R.find(allActivities || [], (activity) => activity._id === modalEntry?.activityId),
     [allActivities, modalEntry]
@@ -269,7 +271,7 @@ const EntriesForm = () => {
   return useMemo(() => {
     return (
       <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!allActivities}>
-        <DayHeader day={entriesData?.entriesByOneDay} />
+        <DayHeader date={dayDate} />
 
         <CardModal isShow={isModalOpen} onClose={closeModal} showDelay={showDelay}>
           <EntryModalContent
@@ -320,7 +322,7 @@ const EntriesForm = () => {
           );
         })}
 
-        <FabButton onClick={goBackCb()} icon="keyboard_return" />
+        <FabButton onClick={goBackCb('EntriesByDay')} icon="keyboard_return" />
       </PageWrapper>
     );
   }, [
@@ -328,7 +330,6 @@ const EntriesForm = () => {
     allActivities,
     closeModal,
     dayDate,
-    entriesData?.entriesByOneDay,
     errorMessage,
     errorTime,
     getEntriesByActivityId,

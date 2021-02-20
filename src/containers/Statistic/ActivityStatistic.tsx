@@ -5,7 +5,6 @@ import { PageWrapper } from '../../components/PageWrapper';
 import { useApolloError } from '../../hooks/useApolloError';
 import { Grid, Paper, Typography, SvgIcon, Icon } from '@material-ui/core';
 import { ActivityType } from '../../generated/apollo';
-import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Emoji } from '../../components/Emoji';
 import { StreakBlock } from './StreakBlock';
@@ -20,6 +19,8 @@ import { EntryPerDateChart } from './EntryPerDateChart';
 import { CountPerValueChart } from './CountPerValueChart';
 import { RangeDatePicker, RangeDatePickerProps } from '../../components/RangeDatePicker';
 import { useActivityAdvancedStatistic } from '../../hooks/useActivityAdvancedStatistic';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { NavigationParams } from '../App/App';
 
 const TitlePaper = styled(Paper)`
   padding: 7px 6px 7px 15px;
@@ -52,13 +53,15 @@ const ActivityStatistic: React.FC = () => {
 
   const { errorMessage, onError, errorTime } = useApolloError();
 
-  let { _id } = useParams<{ _id: string }>();
+  let route = useRoute<RouteProp<NavigationParams, 'ActivityStatistic'>>();
+  const id = route.params.id;
+
   const [dateAfter, setDateAfter] = useState<string | undefined>();
   const [dateBefore, setDateBefore] = useState<string | undefined>();
 
   const { statistic, isUpdating } = useActivityAdvancedStatistic({
     onError,
-    variables: { activityId: _id, dateAfter, dateBefore }
+    variables: { activityId: id, dateAfter, dateBefore }
   });
 
   const isWithValue = statistic?.activity?.valueType !== ActivityType.Simple;

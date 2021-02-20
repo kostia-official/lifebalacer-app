@@ -2,7 +2,8 @@ import { teal } from '@material-ui/core/colors';
 
 export const MainColors = {
   Primary: teal['500'],
-  Secondary: '#ba4d4f'
+  Secondary: '#ba4d4f',
+  Background: '#303030'
 };
 
 export const ProductivityColors = {
