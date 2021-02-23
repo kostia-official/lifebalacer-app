@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Header } from '../components/Header';
-import { Navigation } from '../components/Navigation';
+import { DrawerMenu } from '../components/DrawerMenu';
 import styled from 'styled-components';
 import { Balance } from './Balance/Balance';
 import { useAuth } from '../hooks/useAuth';
@@ -86,7 +86,7 @@ export const AppOld: React.FC = () => {
       />
 
       <ContentWrapper>
-        <Navigation
+        <DrawerMenu
           isExpanded={isExpandedMenu}
           items={isAuthenticated ? routes : routes.filter(({ isPublic }) => isPublic)}
           onClose={onMenuClick}

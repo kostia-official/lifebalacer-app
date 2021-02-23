@@ -9,7 +9,6 @@ import _ from 'lodash';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Icon from '@material-ui/core/Icon';
 import { IRoute } from '../containers/Router';
-import { useDeviceDetect } from '../hooks/useDeviceDetect';
 import { Divider } from '@material-ui/core';
 import { User, UserListItem } from './UserListItem';
 
@@ -68,7 +67,7 @@ export interface INavigationProps {
   onLogout: () => void;
 }
 
-export const Navigation: React.FC<INavigationProps> = ({
+export const DrawerMenu: React.FC<INavigationProps> = ({
   isExpanded,
   items,
   onClose,
@@ -77,12 +76,11 @@ export const Navigation: React.FC<INavigationProps> = ({
   user
 }) => {
   const classes = useStyles();
-  const { isDesktop } = useDeviceDetect();
 
   return (
     <>
       <Drawer
-        variant={isDesktop ? 'permanent' : 'temporary'}
+        variant="permanent"
         className={clsx({
           [classes.drawerOpen]: isExpanded,
           [classes.drawerClose]: !isExpanded
@@ -113,7 +111,6 @@ export const Navigation: React.FC<INavigationProps> = ({
               key={name}
               onClick={() => {
                 if (onItemClick) onItemClick(path);
-                if (!isDesktop) onClose();
               }}
             >
               <ListItemIcon className={classes.icon}>
