@@ -27,7 +27,7 @@ export const TabBarIcon: React.FC<TabBarIconProps> = ({
 }) => {
   return (
     <IconWrapper $iconColor={color} $extraStyle={isActive ? '' : inactiveStyle}>
-      <Icon icon={!isActive && iconInactive ? iconInactive : icon} height={26} />
+      <Icon icon={!isActive && iconInactive ? iconInactive : icon} height={24} width={24} />
     </IconWrapper>
   );
 };

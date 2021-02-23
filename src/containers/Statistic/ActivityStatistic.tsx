@@ -13,7 +13,6 @@ import { ReactComponent as AverageIcon } from '../../assets/average.svg';
 import { ReactComponent as MedianIcon } from '../../assets/median.svg';
 import { ValueBlock } from './ValueBlock';
 import { WeekdayChart } from './WeekdayChart';
-import { useDisableMenuSwapOpen } from '../../hooks/useDisableMenuSwapOpen';
 import { EmptyBlock } from '../../components/EmptyBlock';
 import { EntryPerDateChart } from './EntryPerDateChart';
 import { CountPerValueChart } from './CountPerValueChart';
@@ -49,8 +48,6 @@ const MedianSvgIconStyled = styled(SvgIcon)`
 `;
 
 const ActivityStatistic: React.FC = () => {
-  useDisableMenuSwapOpen();
-
   const { errorMessage, onError, errorTime } = useApolloError();
 
   let route = useRoute<RouteProp<NavigationParams, 'ActivityStatistic'>>();

@@ -6,7 +6,19 @@ export const useIsKeyboardOpen = (): boolean => {
 
   useEffect(() => {
     const listener = () => {
-      setIsOpen(window.innerHeight < windowHeight);
+      const inShrinked = window.innerHeight < windowHeight;
+
+      if (inShrinked) {
+        if (
+          document.getElementsByClassName('Mui-focused')?.length > 0 ||
+          document.querySelectorAll('[data-focusvisible-polyfill="true"]')?.length > 0
+        ) {
+          setIsOpen(true);
+        }
+      } else {
+        setIsOpen(false);
+      }
+
       setWindowHeight(window.innerHeight);
     };
     window.addEventListener('resize', listener);

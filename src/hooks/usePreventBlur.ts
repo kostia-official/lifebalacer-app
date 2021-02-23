@@ -9,10 +9,10 @@ export const usePreventBlur = ({ preventTime = 1000 }: PreventBlurArgs = {}) => 
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onBlur = useCallback(() => {
-    if (Date.now() - mountTime < 1000) {
+    if (Date.now() - mountTime < preventTime) {
       inputRef.current?.focus();
     }
-  }, [mountTime]);
+  }, [mountTime, preventTime]);
 
   return { onBlur, inputRef };
 };

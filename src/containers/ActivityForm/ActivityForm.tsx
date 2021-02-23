@@ -292,8 +292,8 @@ const ActivityForm = () => {
           text="Required for every day tracking"
           tooltipContent={
             <Typography color="inherit" variant="body2" component="p">
-              Good for mood or sleep activities that need to be tracked every day. You will see if
-              you miss to add an entry.
+              Good for activities that need to be tracked every day, like mood or sleep. You will
+              see if you miss to add an entry.
             </Typography>
           }
           onChange={onToggleIsRequired}

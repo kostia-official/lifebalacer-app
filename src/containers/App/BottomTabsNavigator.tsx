@@ -100,8 +100,6 @@ const tabBarColorSchemas = {
 export const BottomTabsNavigator: React.FC = () => {
   const isKeyboardOpen = useIsKeyboardOpen();
 
-  const hideTabBarOptionalStyle = isKeyboardOpen ? { height: 0, bottom: -100 } : {};
-
   const { backgroundColor, inactiveTintColor } = tabBarColorSchemas.grey;
 
   return (
@@ -112,7 +110,7 @@ export const BottomTabsNavigator: React.FC = () => {
         inactiveBackgroundColor: backgroundColor,
 
         style: {
-          ...hideTabBarOptionalStyle,
+          display: isKeyboardOpen ? 'none' : 'flex',
           borderTopWidth: 0,
 
           shadowColor: '#000',

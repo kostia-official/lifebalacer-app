@@ -27,7 +27,6 @@ import { useDeviceDetect } from '../../hooks/useDeviceDetect';
 import { usePreventBlur } from '../../hooks/usePreventBlur';
 import { useFocusOnTheEnd } from '../../hooks/useFocusOnTheEnd';
 import { useDebouncedCallback } from 'use-debounce';
-import { useDisableMenuSwapOpen } from '../../hooks/useDisableMenuSwapOpen';
 
 export interface EntryValueModalContentProps {
   onUpdate: (toUpdate: Partial<EntryResult>) => Promise<void>;
@@ -76,8 +75,6 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   const averageValue = Math.ceil((max + min) / 2);
 
   const { onBlur, inputRef } = usePreventBlur({ preventTime: 1000 });
-
-  useDisableMenuSwapOpen();
 
   const [value, setValue] = useState(
     activity.valueType === ActivityType.Range ? entry.value || averageValue : entry.value
