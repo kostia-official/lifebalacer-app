@@ -60,8 +60,8 @@ const splitLink = split(
   ({ query }) => {
     const definition = getMainDefinition(query);
 
-    // Run GetEntriesByDay query only on warmer lambda
-    return definition.name?.value === 'GetEntriesByDay';
+    // Run priority queries only on warmer lambda
+    return ['GetEntriesByDay', 'GetEntriesByOneDay'].includes(definition.name?.value!);
   },
   warmApiLink,
   baseApiLink

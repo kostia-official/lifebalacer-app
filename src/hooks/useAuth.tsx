@@ -17,17 +17,18 @@ export const useAuth = (): IUseAuthResult => {
     getAccessTokenSilently,
     isAuthenticated,
     getIdTokenClaims,
-    loginWithPopup,
+    loginWithRedirect,
     logout: logoutDefault
   } = auth;
+
   const savedToken = localStorage.getItem('token');
   const userJSON = localStorage.getItem('user');
   const savedUser: Auth0User = userJSON ? JSON.parse(userJSON) : null;
   const [isLoading, setIsLoading] = useState(!!savedToken);
 
   const login = useCallback(() => {
-    loginWithPopup(config.auth).then();
-  }, [loginWithPopup]);
+    loginWithRedirect(config.auth).then();
+  }, [loginWithRedirect]);
 
   const logout = useCallback(() => {
     logoutDefault({ returnTo: window.location.origin });

@@ -6,6 +6,7 @@ import { useGetActivitiesStatisticQuery } from '../../generated/apollo';
 import { Emoji } from '../../components/Emoji';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import styled from 'styled-components';
+import { pluralLabel } from '../../helpers/pluralarize';
 
 const PrimaryText = styled.span`
   display: flex;
@@ -29,6 +30,9 @@ const ActivitiesStatistic: React.FC = React.memo(() => {
             {statistic?.map((stat, index) => {
               const isLast = index === statistic?.length - 1;
 
+              const primaryRightText = stat.perWeek
+                ? `x${stat.perWeek} per week`
+                : pluralLabel('entry', stat.total);
               const secondaryText = `Streak with activity: ${stat.streakWith.count}. Streak without: ${stat.streakWithout.count}`;
 
               return (
@@ -44,7 +48,7 @@ const ActivitiesStatistic: React.FC = React.memo(() => {
                         <Typography variant="subtitle1">
                           <Emoji>{stat.activity?.emoji}</Emoji> {stat.activity?.name}
                         </Typography>
-                        <Typography>x{stat.perWeek} per week</Typography>
+                        <Typography>{primaryRightText}</Typography>
                       </PrimaryText>
                     }
                     secondary={secondaryText}

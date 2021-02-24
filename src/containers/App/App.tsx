@@ -6,9 +6,10 @@ import { useAuth } from '../../hooks/useAuth';
 import { ErrorCatcher } from '../ErrorCatcher';
 import { BottomTabsNavigator } from './BottomTabsNavigator';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Auth } from '../Auth';
+import { Auth } from '../Auth/Auth';
 import { useMount } from 'react-use';
 import Loadable from 'react-loadable';
+import { AppUpdateDialog } from '../AppUpdateDialog';
 
 export type NavigationParams = {
   Auth: { error_description: string };
@@ -46,6 +47,7 @@ export default function App() {
         config: {
           screens: {
             Auth: 'auth',
+            Callback: 'auth/callback',
             Home: {
               screens: {
                 EntriesTab: {
@@ -97,6 +99,8 @@ export default function App() {
       }}
     >
       <ErrorCatcher userEmail={user?.email} userName={user?.name}>
+        <AppUpdateDialog />
+
         <RootStack.Navigator screenOptions={{ headerShown: false }}>
           {isAuthenticated ? (
             <RootStack.Screen name="Home" component={BottomTabsNavigator} />

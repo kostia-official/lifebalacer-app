@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, RouteProps } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { Auth } from '../containers/Auth';
+import { Auth } from '../containers/Auth/Auth';
 import { RouteState } from '../containers/Router';
 import { useMount } from 'react-use';
 import Loadable from 'react-loadable';
