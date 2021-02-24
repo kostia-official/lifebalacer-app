@@ -21,6 +21,7 @@ import baselineMoreHoriz from '@iconify-icons/ic/baseline-more-horiz';
 import baselineImportContacts from '@iconify-icons/ic/baseline-import-contacts';
 import twotoneImportContacts from '@iconify-icons/ic/twotone-import-contacts';
 import { css } from 'styled-components';
+import { TodoistAuth } from '../TodoistAuth';
 
 const BottomTabs = createBottomTabNavigator();
 
@@ -76,6 +77,7 @@ const OtherTab = () => (
     <OtherStack.Screen name="Activities" component={Activities} />
     <OtherStack.Screen name="ActivityEdit" component={ActivityForm} />
     <OtherStack.Screen name="ActivityCreate" component={ActivityForm} />
+    <OtherStack.Screen name="TodoistAuth" component={TodoistAuth} />
 
     <OtherStack.Screen name="Reminders" component={Reminders} />
 

@@ -16,6 +16,7 @@ export type NavigationParams = {
   EntriesForm: { date: string };
   ActivityStatistic: { id: string };
   ActivityEdit: { id: string };
+  TodoistAuth: { code: string; error: string };
 };
 
 export const navigationRef: RefObject<NavigationContainerRef> | null = React.createRef();
@@ -85,6 +86,7 @@ export default function App() {
                     Activities: 'activities',
                     ActivityEdit: 'activities/:id',
                     ActivityCreate: 'activities/create',
+                    TodoistAuth: 'todoist/auth',
                     Reminders: 'reminders',
                     About: 'about',
                     PrivacyPolicy: 'about/privacy-policy',
