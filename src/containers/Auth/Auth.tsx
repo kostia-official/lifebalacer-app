@@ -1,13 +1,14 @@
 import React from 'react';
-import { Button } from '@material-ui/core';
+import { Button, Link } from '@material-ui/core';
 import { useAuth } from '../../hooks/useAuth';
 import { ErrorMessage } from '../../components/ErrorMessage';
 import styled from 'styled-components';
 import { EmptyState } from '../../components/EmptyState';
 import { ReactComponent as LoginLogo } from '../../assets/login.svg';
-import { useRoute, RouteProp } from '@react-navigation/native';
+import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { NavigationParams } from '../App/App';
 import { Spinner } from '../../components/Spinner';
+import { DateTime } from 'luxon';
 
 const Wrapper = styled.div`
   display: flex;
@@ -22,8 +23,15 @@ const ButtonStyled = styled(Button)`
   margin-bottom: 80px;
 `;
 
+const Footer = styled.div`
+  position: fixed;
+
+  bottom: 10px;
+`;
+
 export const Auth = () => {
   const { params } = useRoute<RouteProp<NavigationParams, 'Auth'>>();
+  const navigator = useNavigation();
   const { login, error, isLoading } = useAuth();
 
   const errorMessage = params?.error_description || error?.message || '';
@@ -43,6 +51,19 @@ export const Auth = () => {
       )}
 
       <ErrorMessage errorMessage={String(errorMessage)} />
+
+      {isLoading || (
+        <Footer>
+          Life Balancer © {DateTime.local().get('year')} |{' '}
+          <Link
+            onClick={() => {
+              navigator.navigate('AnonAboutStack');
+            }}
+          >
+            About
+          </Link>
+        </Footer>
+      )}
     </Wrapper>
   );
 };

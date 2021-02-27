@@ -22,6 +22,9 @@ import baselineImportContacts from '@iconify-icons/ic/baseline-import-contacts';
 import twotoneImportContacts from '@iconify-icons/ic/twotone-import-contacts';
 import { css } from 'styled-components';
 import { TodoistAuth } from '../TodoistAuth';
+import { PaymentInfo } from '../About/PaymentInfo';
+import { ContactInfo } from '../About/ContactInfo';
+import { RefundPolicy } from '../About/RefundPolicy';
 
 const BottomTabs = createBottomTabNavigator();
 
@@ -84,6 +87,9 @@ const OtherTab = () => (
     <OtherStack.Screen name="About" component={About} />
     <OtherStack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
     <OtherStack.Screen name="TermsAndConditions" component={TermsAndConditions} />
+    <OtherStack.Screen name="PaymentInfo" component={PaymentInfo} />
+    <OtherStack.Screen name="RefundPolicy" component={RefundPolicy} />
+    <OtherStack.Screen name="ContactInfo" component={ContactInfo} />
     <OtherStack.Screen name="DevTools" component={DevTools} />
   </OtherStack.Navigator>
 );

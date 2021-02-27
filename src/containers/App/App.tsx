@@ -10,6 +10,13 @@ import { Auth } from '../Auth/Auth';
 import { useMount } from 'react-use';
 import Loadable from 'react-loadable';
 import { AppUpdateDialog } from '../AppUpdateDialog';
+import { PrivacyPolicy } from '../About/PrivacyPolicy';
+import { TermsAndConditions } from '../About/TermsAndConditions';
+import { PaymentInfo } from '../About/PaymentInfo';
+import { RefundPolicy } from '../About/RefundPolicy';
+import { ContactInfo } from '../About/ContactInfo';
+import About from '../About/About';
+import { AppBar } from './AppBar';
 
 export type NavigationParams = {
   Auth: { error_description: string };
@@ -22,6 +29,20 @@ export type NavigationParams = {
 export const navigationRef: RefObject<NavigationContainerRef> | null = React.createRef();
 
 const RootStack = createStackNavigator();
+const AnonAboutStack = createStackNavigator();
+
+const AnonAboutStackComponent = () => {
+  return (
+    <AnonAboutStack.Navigator screenOptions={{ headerShown: true, header: () => <AppBar /> }}>
+      <AnonAboutStack.Screen name="About" component={About} />
+      <AnonAboutStack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
+      <AnonAboutStack.Screen name="TermsAndConditions" component={TermsAndConditions} />
+      <AnonAboutStack.Screen name="PaymentInfo" component={PaymentInfo} />
+      <AnonAboutStack.Screen name="RefundPolicy" component={RefundPolicy} />
+      <AnonAboutStack.Screen name="ContactInfo" component={ContactInfo} />
+    </AnonAboutStack.Navigator>
+  );
+};
 
 export default function App() {
   const { user, isAuthenticated } = useAuth();
@@ -48,7 +69,17 @@ export default function App() {
         config: {
           screens: {
             Auth: 'auth',
-            Callback: 'auth/callback',
+            AnonAboutStack: {
+              initialRouteName: 'About',
+              screens: {
+                About: 'about',
+                PrivacyPolicy: 'about/privacy-policy',
+                TermsAndConditions: 'about/terms-conditions',
+                PaymentInfo: 'about/payment',
+                RefundPolicy: 'about/refund',
+                ContactInfo: 'about/contact'
+              }
+            },
             Home: {
               screens: {
                 EntriesTab: {
@@ -88,9 +119,12 @@ export default function App() {
                     ActivityCreate: 'activities/create',
                     TodoistAuth: 'todoist/auth',
                     Reminders: 'reminders',
-                    About: 'about',
-                    PrivacyPolicy: 'about/privacy-policy',
-                    TermsAndConditions: 'about/terms-conditions',
+                    About: 'other/about',
+                    PrivacyPolicy: 'other/about/privacy-policy',
+                    TermsAndConditions: 'other/about/terms-conditions',
+                    PaymentInfo: 'other/about/payment',
+                    RefundPolicy: 'other/about/refund',
+                    ContactInfo: 'other/about/contact',
                     DevTools: 'other/dev-tools'
                   }
                 }
@@ -109,6 +143,11 @@ export default function App() {
           ) : (
             <Fragment>
               <RootStack.Screen name="Auth" component={Auth} />
+              <RootStack.Screen
+                name="AnonAboutStack"
+                component={AnonAboutStackComponent}
+                // options={{ headerShown: true, header: () => <AppBar /> }}
+              />
             </Fragment>
           )}
         </RootStack.Navigator>

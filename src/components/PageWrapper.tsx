@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { ErrorMessage } from './ErrorMessage';
 import { Showable } from './Showable';
 import { Spinner } from './Spinner';
@@ -14,8 +14,8 @@ export interface PageWrapperProps {
 
 const Scroll = styled.div`
   overflow-x: hidden;
-  overflow-y: auto;
-  height: 100%;
+  overflow-y: scroll;
+  height: 94vh; // TODO: Fix tech debt. With 100% or 100vh in anon stack don't show full content
 `;
 
 const ContentWrapper = styled.div`
@@ -41,19 +41,17 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
 
   return useMemo(() => {
     return (
-      <Fragment>
-        <Scroll {...{ id }} ref={scrollRef}>
-          <ErrorMessage errorMessage={errorMessage} errorTime={errorTime} />
+      <Scroll {...{ id }} ref={scrollRef}>
+        <ErrorMessage errorMessage={errorMessage} errorTime={errorTime} />
 
-          <Showable isShow={isLoading}>
-            <Spinner />
-          </Showable>
+        <Showable isShow={isLoading}>
+          <Spinner />
+        </Showable>
 
-          <Showable isShow={!isLoading}>
-            <ContentWrapper>{children}</ContentWrapper>
-          </Showable>
-        </Scroll>
-      </Fragment>
+        <Showable isShow={!isLoading}>
+          <ContentWrapper>{children}</ContentWrapper>
+        </Showable>
+      </Scroll>
     );
   }, [children, errorMessage, errorTime, id, isLoading]);
 };

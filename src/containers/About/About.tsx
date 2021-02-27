@@ -16,6 +16,18 @@ const About = () => {
         <ListItem button onClick={goForwardToCb('TermsAndConditions')}>
           <ListItemText primary="Terms and Conditions" />
         </ListItem>
+
+        <ListItem button onClick={goForwardToCb('PaymentInfo')}>
+          <ListItemText primary="Payment Information" />
+        </ListItem>
+
+        <ListItem button onClick={goForwardToCb('RefundPolicy')}>
+          <ListItemText primary="Refund Policy" />
+        </ListItem>
+
+        <ListItem button onClick={goForwardToCb('ContactInfo')}>
+          <ListItemText primary="Contact Information" />
+        </ListItem>
       </List>
     </PageWrapper>
   );
