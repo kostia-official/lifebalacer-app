@@ -25,7 +25,6 @@ import { getIsToday } from '../../helpers/date';
 import { FabButton } from '../../components/FabButton';
 import { useActivitiesByCategory, ARCHIVED_CATEGORY } from '../../hooks/useActivitiesByCategory';
 import { PageWrapper } from '../../components/PageWrapper';
-import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { useDeleteEntry } from '../../hooks/useDeleteEntry';
 import { useOnActivityUpdate } from '../../hooks/useOnActivityUpdate';
 import { DayHeader } from './DayHeader';
@@ -78,7 +77,7 @@ const EntriesForm = () => {
   const entriesByDay = entriesData?.entriesByOneDay?.entries;
   const missingEntries = entriesData?.entriesByOneDay?.missing;
 
-  useOnEntryUpdate([refetch]);
+  // useOnEntryUpdate([refetch]);
   useOnActivityUpdate([refetch]);
 
   const [selectedEntries, setSelectedEntries] = useState<SelectedEntry[]>(entriesByDay || []);
