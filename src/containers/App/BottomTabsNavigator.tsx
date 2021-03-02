@@ -137,7 +137,9 @@ export const BottomTabsNavigator: React.FC = () => {
         labelStyle: {
           marginBottom: 4,
           fontSize: 11
-        }
+        },
+
+        labelPosition: 'below-icon'
       }}
     >
       <BottomTabs.Screen
