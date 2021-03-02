@@ -4,7 +4,7 @@ import { NavigationContainer, DarkTheme, NavigationContainerRef } from '@react-n
 import { MainColors } from '../../common/colors';
 import { useAuth } from '../../hooks/useAuth';
 import { ErrorCatcher } from '../ErrorCatcher';
-import { BottomTabsNavigator } from './BottomTabsNavigator';
+import { Navigator } from './Navigator';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Auth } from '../Auth/Auth';
 import { useMount } from 'react-use';
@@ -139,7 +139,7 @@ export default function App() {
 
         <RootStack.Navigator screenOptions={{ headerShown: false }}>
           {isAuthenticated ? (
-            <RootStack.Screen name="Home" component={BottomTabsNavigator} />
+            <RootStack.Screen name="Home" component={Navigator} />
           ) : (
             <Fragment>
               <RootStack.Screen name="Auth" component={Auth} />

@@ -105,7 +105,7 @@ const tabBarColorSchemas = {
   }
 };
 
-export const BottomTabsNavigator: React.FC = () => {
+export const Navigator: React.FC = () => {
   const isKeyboardOpen = useIsKeyboardOpen();
 
   const { backgroundColor, inactiveTintColor } = tabBarColorSchemas.grey;
