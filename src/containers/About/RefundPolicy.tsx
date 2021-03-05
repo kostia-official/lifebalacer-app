@@ -1,10 +1,10 @@
 import { Link } from '@material-ui/core';
 import React from 'react';
-import { PageWrapper } from '../../components/PageWrapper';
+import { ScreenWrapper } from '../App/ScreenWrapper';
 
 export const RefundPolicy = () => {
   return (
-    <PageWrapper>
+    <ScreenWrapper>
       <h2>Return and Refund Policy</h2>
 
       <p>The following terms are applicable for any products that You purchased with Us.</p>
@@ -94,6 +94,6 @@ export const RefundPolicy = () => {
       <ul>
         <li>By email: admin@lifebalancer.app</li>
       </ul>
-    </PageWrapper>
+    </ScreenWrapper>
   );
 };

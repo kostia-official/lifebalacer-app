@@ -1,10 +1,10 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
-import { PageWrapper } from '../../components/PageWrapper';
+import { ScreenWrapper } from '../App/ScreenWrapper';
 
 export const ContactInfo = () => {
   return (
-    <PageWrapper>
+    <ScreenWrapper>
       <Typography gutterBottom variant="h5">
         Contact Information
       </Typography>
@@ -16,6 +16,6 @@ export const ContactInfo = () => {
 
       <Typography>Email: admin@lifebalancer.app</Typography>
       <Typography>Phone: +380932310373</Typography>
-    </PageWrapper>
+    </ScreenWrapper>
   );
 };

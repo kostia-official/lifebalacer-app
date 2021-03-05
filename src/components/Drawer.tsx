@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import Drawer from '@material-ui/core/Drawer';
+import MaterialDrawer from '@material-ui/core/Drawer';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import List from '@material-ui/core/List';
@@ -8,8 +8,6 @@ import clsx from 'clsx';
 import _ from 'lodash';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Icon from '@material-ui/core/Icon';
-import { IRoute } from '../containers/Router';
-import { useDeviceDetect } from '../hooks/useDeviceDetect';
 import { Divider } from '@material-ui/core';
 import { User, UserListItem } from './UserListItem';
 
@@ -61,69 +59,69 @@ const useStyles = makeStyles((theme) => ({
 
 export interface INavigationProps {
   isExpanded: boolean;
-  items: IRoute[];
-  onClose: () => void;
+  items: {
+    name: string;
+    icon: string;
+    screen: string;
+  }[];
+  onClose?: () => void;
   onItemClick: (path: string) => void;
   user?: User;
   onLogout: () => void;
 }
 
-export const Navigation: React.FC<INavigationProps> = ({
+export const Drawer: React.FC<INavigationProps> = ({
   isExpanded,
   items,
-  onClose,
+  onClose = () => {},
   onItemClick,
   onLogout,
   user
 }) => {
   const classes = useStyles();
-  const { isDesktop } = useDeviceDetect();
 
   return (
-    <>
-      <Drawer
-        variant={isDesktop ? 'permanent' : 'temporary'}
-        className={clsx({
+    <MaterialDrawer
+      variant="permanent"
+      className={clsx({
+        [classes.drawerOpen]: isExpanded,
+        [classes.drawerClose]: !isExpanded
+      })}
+      classes={{
+        paper: clsx(classes.drawerPaper, {
           [classes.drawerOpen]: isExpanded,
           [classes.drawerClose]: !isExpanded
-        })}
-        classes={{
-          paper: clsx(classes.drawerPaper, {
-            [classes.drawerOpen]: isExpanded,
-            [classes.drawerClose]: !isExpanded
-          })
-        }}
-        onClose={onClose}
-        open={isExpanded}
-      >
-        <List className={classes.list}>
-          {user && (
-            <Fragment>
-              <div className={classes.userListItem}>
-                <UserListItem user={user} onLogout={onLogout} />
-              </div>
+        })
+      }}
+      onClose={onClose}
+      open={isExpanded}
+    >
+      <List className={classes.list}>
+        {user && (
+          <Fragment>
+            <div className={classes.userListItem}>
+              <UserListItem user={user} onLogout={onLogout} />
+            </div>
 
-              <Divider className={classes.divider} />
-            </Fragment>
-          )}
+            <Divider className={classes.divider} />
+          </Fragment>
+        )}
 
-          {_.map(items, ({ icon, name, path }) => (
-            <ListItem
-              button
-              key={name}
-              onClick={() => {
-                if (onItemClick) onItemClick(path);
-                if (!isDesktop) onClose();
-              }}
-            >
-              <ListItemIcon className={classes.icon}>
-                <Icon>{icon}</Icon>
-              </ListItemIcon>
-              <ListItemText primary={name} />
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-    </>
+        {_.map(items, ({ icon, name, screen }) => (
+          <ListItem
+            button
+            key={name}
+            onClick={() => {
+              if (onItemClick) onItemClick(screen);
+            }}
+          >
+            <ListItemIcon className={classes.icon}>
+              <Icon>{icon}</Icon>
+            </ListItemIcon>
+            <ListItemText primary={name} />
+          </ListItem>
+        ))}
+      </List>
+    </MaterialDrawer>
   );
 };

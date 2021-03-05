@@ -5,10 +5,11 @@ import { ErrorMessage } from '../../components/ErrorMessage';
 import styled from 'styled-components';
 import { EmptyState } from '../../components/EmptyState';
 import { ReactComponent as LoginLogo } from '../../assets/login.svg';
-import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
+import { useRoute, RouteProp } from '@react-navigation/native';
 import { NavigationParams } from '../App/App';
 import { Spinner } from '../../components/Spinner';
 import { DateTime } from 'luxon';
+import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 
 const Wrapper = styled.div`
   display: flex;
@@ -31,7 +32,7 @@ const Footer = styled.div`
 
 export const Auth = () => {
   const { params } = useRoute<RouteProp<NavigationParams, 'Auth'>>();
-  const navigator = useNavigation();
+  const { goForwardToCb } = useNavigationHelpers();
   const { login, error, isLoading } = useAuth();
 
   const errorMessage = params?.error_description || error?.message || '';
@@ -55,13 +56,7 @@ export const Auth = () => {
       {isLoading || (
         <Footer>
           Life Balancer © {DateTime.local().get('year')} |{' '}
-          <Link
-            onClick={() => {
-              navigator.navigate('AnonAboutStack');
-            }}
-          >
-            About
-          </Link>
+          <Link onClick={goForwardToCb('AboutStack')}>About</Link>
         </Footer>
       )}
     </Wrapper>

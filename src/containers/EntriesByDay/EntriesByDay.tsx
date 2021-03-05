@@ -1,9 +1,8 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, Fragment } from 'react';
 import _ from 'lodash';
-import { DatePickerButton } from './DatePickerButton';
 import styled from 'styled-components';
 import { useApolloError } from '../../hooks/useApolloError';
-import { PageWrapper } from '../../components/PageWrapper';
+import { ScreenWrapper } from '../App/ScreenWrapper';
 import { useDaysStatisticText } from '../../hooks/useDaysStatisticText';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { FabButton } from '../../components/FabButton';
@@ -24,22 +23,17 @@ import { HeaderCard } from '../../components/HeaderCard';
 import { getDayQueryVariables } from '../../helpers/getDayQueryVariables';
 import { usePushTokenUpdate } from '../../hooks/usePushTokenUpdate';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
-import { Fragment } from 'react';
+import { FabWrapper } from '../../components/FabWrapper';
+import { EmptyBlock } from '../../components/EmptyBlock';
 
 const EntriesLabelsWrapper = styled.div`
   margin: 6px 16px 14px 16px;
 `;
 
-const DatePickerButtonWrapper = styled.div`
-  position: fixed;
-  bottom: 140px;
-  right: 26px;
-`;
-
 const scrollTargetId = 'entries-wrapper';
 
 const EntriesByDay = React.memo(() => {
-  const { goForwardTo } = useNavigationHelpers();
+  const { goForwardTo, goForwardToCb } = useNavigationHelpers();
   const { errorMessage, errorTime, onError } = useApolloError();
 
   usePushTokenUpdate({ onError });
@@ -85,7 +79,7 @@ const EntriesByDay = React.memo(() => {
 
   return useMemo(() => {
     return (
-      <PageWrapper
+      <ScreenWrapper
         id={scrollTargetId}
         errorMessage={errorMessage}
         errorTime={errorTime}
@@ -117,17 +111,20 @@ const EntriesByDay = React.memo(() => {
           </InfiniteScroll>
         )}
 
-        <DatePickerButtonWrapper>
-          <DatePickerButton onChange={onEntryFormOpen} />
-        </DatePickerButtonWrapper>
+        <FabWrapper>
+          <FabButton icon="event" onClick={goForwardToCb('EntriesCalendar')} />
 
-        <FabButton onClick={() => onEntryFormOpen()} isShowBadge={isEmptyState} />
-      </PageWrapper>
+          <EmptyBlock height={16} />
+
+          <FabButton onClick={() => onEntryFormOpen()} isShowBadge={isEmptyState} />
+        </FabWrapper>
+      </ScreenWrapper>
     );
   }, [
     entriesByDay,
     errorMessage,
     errorTime,
+    goForwardToCb,
     isEmptyState,
     isHasMore,
     isLoading,

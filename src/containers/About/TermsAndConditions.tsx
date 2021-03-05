@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from '@material-ui/core';
-import { PageWrapper } from '../../components/PageWrapper';
+import { ScreenWrapper } from '../App/ScreenWrapper';
 
 export const TermsAndConditions = () => {
   return (
-    <PageWrapper>
+    <ScreenWrapper>
       <h1>Terms and Conditions</h1>
       <p>Last updated: February 27, 2021</p>
       <p>Please read these terms and conditions carefully before using Our Service.</p>
@@ -336,6 +336,6 @@ export const TermsAndConditions = () => {
       <ul>
         <li>By email: admin@lifebalancer.app</li>
       </ul>
-    </PageWrapper>
+    </ScreenWrapper>
   );
 };

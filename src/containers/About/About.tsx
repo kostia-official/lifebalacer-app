@@ -1,13 +1,19 @@
 import React from 'react';
 import { List, ListItem, ListItemText } from '@material-ui/core';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
-import { PageWrapper } from '../../components/PageWrapper';
+import { ScreenWrapper } from '../App/ScreenWrapper';
+import { useAuth } from '../../hooks/useAuth';
+import { Center } from '../../components/Center';
+import { LastUpdatedAt } from './LastUpdatedAt';
 
 const About = () => {
   const { goForwardToCb } = useNavigationHelpers();
+  const { user } = useAuth();
+
+  const isEnableDevTools = user?.email === 'kozzztya@gmail.com';
 
   return (
-    <PageWrapper>
+    <ScreenWrapper>
       <List>
         <ListItem button onClick={goForwardToCb('PrivacyPolicy')}>
           <ListItemText primary="Privacy Policy" />
@@ -28,8 +34,18 @@ const About = () => {
         <ListItem button onClick={goForwardToCb('ContactInfo')}>
           <ListItemText primary="Contact Information" />
         </ListItem>
+
+        {isEnableDevTools && (
+          <ListItem button onClick={goForwardToCb('DevTools')}>
+            <ListItemText primary="Dev Tools" />
+          </ListItem>
+        )}
       </List>
-    </PageWrapper>
+
+      <Center margin="8px 0">
+        <LastUpdatedAt />
+      </Center>
+    </ScreenWrapper>
   );
 };
 

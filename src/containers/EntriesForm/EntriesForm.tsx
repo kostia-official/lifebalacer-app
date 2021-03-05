@@ -24,7 +24,7 @@ import { EntryModalContent } from './EntryModalContent';
 import { getIsToday } from '../../helpers/date';
 import { FabButton } from '../../components/FabButton';
 import { useActivitiesByCategory, ARCHIVED_CATEGORY } from '../../hooks/useActivitiesByCategory';
-import { PageWrapper } from '../../components/PageWrapper';
+import { ScreenWrapper } from '../App/ScreenWrapper';
 import { useDeleteEntry } from '../../hooks/useDeleteEntry';
 import { useOnActivityUpdate } from '../../hooks/useOnActivityUpdate';
 import { DayHeader } from './DayHeader';
@@ -33,6 +33,7 @@ import { ExpandableCard } from '../../components/ExpandableCard';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { NavigationParams } from '../App/App';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
+import { FabWrapper } from '../../components/FabWrapper';
 
 const CategoryWrapper = styled(Card)`
   margin-bottom: 8px;
@@ -269,7 +270,7 @@ const EntriesForm = () => {
 
   return useMemo(() => {
     return (
-      <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!allActivities}>
+      <ScreenWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!allActivities}>
         <DayHeader date={dayDate} />
 
         <CardModal isShow={isModalOpen} onClose={closeModal} showDelay={showDelay}>
@@ -321,8 +322,10 @@ const EntriesForm = () => {
           );
         })}
 
-        <FabButton onClick={goBackCb('EntriesByDay')} icon="keyboard_return" />
-      </PageWrapper>
+        <FabWrapper>
+          <FabButton onClick={goBackCb('EntriesByDay')} icon="keyboard_return" />
+        </FabWrapper>
+      </ScreenWrapper>
     );
   }, [
     activitiesByCategory,

@@ -1,12 +1,14 @@
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import { ChevronLeft } from '@material-ui/icons';
 import Typography from '@material-ui/core/Typography';
 import React, { MouseEvent } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { SpeedDialIcon } from '@material-ui/lab';
 import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
+import MenuIcon from '@material-ui/icons/Menu';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import { useDeviceMediaQuery } from '../hooks/useDeviceMediaQuery';
 
 const useStyles = makeStyles((theme) => ({
   toolbarGutters: {
@@ -39,6 +41,7 @@ export const Header: React.FC<IHeaderProps> = ({
   rightContent
 }) => {
   const classes = useStyles();
+  const { isDesktop } = useDeviceMediaQuery();
 
   return (
     <div>
@@ -56,8 +59,8 @@ export const Header: React.FC<IHeaderProps> = ({
             onClick={isShowBack ? onBackClick : onMenuClick}
           >
             <SpeedDialIcon
-              icon={<AllInclusiveIcon />}
-              openIcon={<ChevronLeft />}
+              icon={isDesktop ? <MenuIcon /> : <AllInclusiveIcon />}
+              openIcon={<ChevronLeftIcon />}
               open={isShowBack}
             />
           </IconButton>

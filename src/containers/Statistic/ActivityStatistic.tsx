@@ -1,7 +1,7 @@
 import 'devextreme/dist/css/dx.material.teal.dark.css';
 
 import React, { Fragment, useCallback, useState, useMemo } from 'react';
-import { PageWrapper } from '../../components/PageWrapper';
+import { ScreenWrapper } from '../App/ScreenWrapper';
 import { useApolloError } from '../../hooks/useApolloError';
 import { Grid, Paper, Typography, SvgIcon, Icon } from '@material-ui/core';
 import { ActivityType } from '../../generated/apollo';
@@ -76,7 +76,7 @@ const ActivityStatistic: React.FC = () => {
 
   return useMemo(() => {
     return (
-      <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!statistic}>
+      <ScreenWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!statistic}>
         <TitlePaper>
           <Typography variant="subtitle1">
             <Emoji>{statistic?.activity?.emoji}</Emoji>
@@ -180,7 +180,7 @@ const ActivityStatistic: React.FC = () => {
             </Grid>
           )}
         </Grid>
-      </PageWrapper>
+      </ScreenWrapper>
     );
   }, [
     chartsGridSm,

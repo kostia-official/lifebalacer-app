@@ -32,11 +32,12 @@ import { SwitchBaseProps } from '@material-ui/core/internal/SwitchBase';
 import { TooltipCheckbox } from '../../components/TooltipCheckbox';
 import { LinearPointsTooltip } from './LinearPointsTooltip';
 import { useSelectOnInputFocus } from '../../hooks/useSelectOnInputFocus';
-import { PageWrapper } from '../../components/PageWrapper';
+import { ScreenWrapper } from '../App/ScreenWrapper';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { EmojiPicker } from './EmojiPicker';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { NavigationParams } from '../App/App';
+import { FabWrapper } from '../../components/FabWrapper';
 
 const FormContainer = styled.form`
   display: flex;
@@ -223,7 +224,7 @@ const ActivityForm = () => {
   }, []);
 
   return (
-    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!existingActivity}>
+    <ScreenWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!existingActivity}>
       <FormContainer onSubmit={onSubmit}>
         <NameContainer>
           <NameFormControl fullWidth>
@@ -389,9 +390,11 @@ const ActivityForm = () => {
           />
         )}
 
-        <FabButton type="submit" icon="save" />
+        <FabWrapper>
+          <FabButton type="submit" icon="save" />
+        </FabWrapper>
       </FormContainer>
-    </PageWrapper>
+    </ScreenWrapper>
   );
 };
 

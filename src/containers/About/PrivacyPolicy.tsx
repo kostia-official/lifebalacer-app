@@ -1,10 +1,10 @@
 import React from 'react';
 import { Typography, Link } from '@material-ui/core';
-import { PageWrapper } from '../../components/PageWrapper';
+import { ScreenWrapper } from '../App/ScreenWrapper';
 
 export const PrivacyPolicy = () => {
   return (
-    <PageWrapper>
+    <ScreenWrapper>
       <Typography gutterBottom variant="h5">
         Privacy Policy for lifebalancer.app
       </Typography>
@@ -208,6 +208,6 @@ export const PrivacyPolicy = () => {
         on our website, we strongly encourage you to contact us immediately and we will do our best
         efforts to promptly remove such information from our records.
       </Typography>
-    </PageWrapper>
+    </ScreenWrapper>
   );
 };

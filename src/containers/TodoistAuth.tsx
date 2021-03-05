@@ -5,6 +5,7 @@ import { useApolloError } from '../hooks/useApolloError';
 import { useActivities } from '../hooks/useActivities';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { NavigationParams } from './App/App';
+import { ScreenWrapper } from './App/ScreenWrapper';
 
 export const TodoistAuth = () => {
   const { errorMessage, onError, setErrorMessage } = useApolloError();
@@ -38,8 +39,8 @@ export const TodoistAuth = () => {
   }, [navigation, todoistActivity]);
 
   return (
-    <div>
+    <ScreenWrapper isLoading={!errorMessage}>
       <ErrorMessage errorMessage={errorMessage} />
-    </div>
+    </ScreenWrapper>
   );
 };

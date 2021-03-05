@@ -3,7 +3,7 @@ import { Calendar as MaterialCalendar, useStaticState } from '@material-ui/picke
 import styled from 'styled-components';
 import { useApolloError } from '../../hooks/useApolloError';
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
-import { PageWrapper } from '../../components/PageWrapper';
+import { ScreenWrapper } from '../App/ScreenWrapper';
 import { CalendarLegends } from './CalendarLegends';
 import { useActivities } from '../../hooks/useActivities';
 import {
@@ -22,6 +22,7 @@ import { useOnActivityUpdate } from '../../hooks/useOnActivityUpdate';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { Greyscale } from '../../components/Greyscale';
 import { toLuxon } from '../../helpers/date';
+import { useRoute } from '@react-navigation/native';
 
 const CalendarWrapper = styled.div`
   overflow: hidden;
@@ -50,7 +51,14 @@ const MaterialCalendarWrapper = styled.div`
 `;
 
 const Calendar = () => {
+  const route = useRoute();
+
   const { goForwardTo } = useNavigationHelpers();
+  const [isCanRenderCalendar, setIsCanRenderCalendar] = useState(false);
+
+  useEffect(() => {
+    setIsCanRenderCalendar(true);
+  }, []);
 
   const { errorMessage, errorTime, onError } = useApolloError();
   const selectedActivityId = useReactiveVar(calendarActivityIdVar);
@@ -108,11 +116,16 @@ const Calendar = () => {
     (date) => {
       if (!date) return;
 
-      goForwardTo('CalendarEntries', {
+      const nextRouteMapper: Record<string, string> = {
+        EntriesCalendar: 'EntriesForm',
+        Calendar: 'CalendarEntries'
+      };
+
+      goForwardTo(nextRouteMapper[route.name], {
         date: toLuxon(date).toISODate()
       });
     },
-    [goForwardTo]
+    [goForwardTo, route.name]
   );
 
   const [date] = useState(new Date());
@@ -123,7 +136,11 @@ const Calendar = () => {
   });
 
   return (
-    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!allActivities}>
+    <ScreenWrapper
+      errorMessage={errorMessage}
+      errorTime={errorTime}
+      isLoading={!allActivities || !isCanRenderCalendar}
+    >
       <CalendarWrapper>
         <FormControlWrapper>
           <FormControlStyled margin="dense">
@@ -142,7 +159,7 @@ const Calendar = () => {
         </FormControlWrapper>
 
         <MaterialCalendarWrapper>
-          <MaterialCalendar {...pickerProps} renderDay={renderDay} />
+          {isCanRenderCalendar && <MaterialCalendar {...pickerProps} renderDay={renderDay} />}
         </MaterialCalendarWrapper>
 
         <CalendarLegendsWrapper>
@@ -160,7 +177,7 @@ const Calendar = () => {
           )}
         </CalendarLegendsWrapper>
       </CalendarWrapper>
-    </PageWrapper>
+    </ScreenWrapper>
   );
 };
 

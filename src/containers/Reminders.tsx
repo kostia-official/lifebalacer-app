@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useApolloError } from '../hooks/useApolloError';
-import { PageWrapper } from '../components/PageWrapper';
+import { ScreenWrapper } from './App/ScreenWrapper';
 import {
   useGetReminderQuery,
   useUpsertReminderMutation,
@@ -49,7 +49,7 @@ const Reminders = () => {
   );
 
   return (
-    <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!data}>
+    <ScreenWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!data}>
       <LogoContent logo={ReminderLogo} logoStyles={logoStyles} />
 
       <TimePicker
@@ -60,7 +60,7 @@ const Reminders = () => {
         ampm={false}
         fullWidth
       />
-    </PageWrapper>
+    </ScreenWrapper>
   );
 };
 

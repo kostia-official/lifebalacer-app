@@ -7,8 +7,6 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import styled from 'styled-components';
 import { useActivities } from '../../hooks/useActivities';
 import { Spinner } from '../../components/Spinner';
-import { DatePickerButton } from '../EntriesByDay/DatePickerButton';
-import { FabButton } from '../../components/FabButton';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { useInfiniteQuery } from '../../hooks/useInfiniteQuery';
 import {
@@ -22,7 +20,7 @@ import { Emoji } from '../../components/Emoji';
 import _ from 'lodash';
 import { getDayQueryVariables } from '../../helpers/getDayQueryVariables';
 import { toLuxon } from '../../helpers/date';
-import { PageWrapper } from '../../components/PageWrapper';
+import { ScreenWrapper } from '../App/ScreenWrapper';
 
 const ActivityTitle = styled(Typography)`
   display: flex;
@@ -38,12 +36,6 @@ const Description = styled(Typography)`
   :last-child {
     margin-bottom: 0;
   }
-`;
-
-const DatePickerButtonWrapper = styled.div`
-  position: fixed;
-  bottom: 140px;
-  right: 26px;
 `;
 
 const DayContent = styled.div`
@@ -87,7 +79,7 @@ const Journal = () => {
   const isLoading = !journal || !allActivities;
 
   return (
-    <PageWrapper
+    <ScreenWrapper
       id={scrollTargetId}
       errorMessage={errorMessage}
       errorTime={errorTime}
@@ -126,13 +118,7 @@ const Journal = () => {
           })}
         </InfiniteScroll>
       )}
-
-      <DatePickerButtonWrapper>
-        <DatePickerButton onChange={onDayClick} />
-      </DatePickerButtonWrapper>
-
-      <FabButton onClick={() => onDayClick()} />
-    </PageWrapper>
+    </ScreenWrapper>
   );
 };
 

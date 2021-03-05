@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
-import { PageWrapper } from '../../components/PageWrapper';
+import { ScreenWrapper } from '../App/ScreenWrapper';
 import { ReactComponent as FondyLogo } from '../../assets/fondyLogo.svg';
 import styled from 'styled-components';
 
@@ -13,7 +13,7 @@ const FondyLogoStyled = styled(FondyLogo)`
 
 export const PaymentInfo = () => {
   return (
-    <PageWrapper>
+    <ScreenWrapper>
       <Typography gutterBottom variant="h5">
         Payment Information
       </Typography>
@@ -82,6 +82,6 @@ export const PaymentInfo = () => {
       </Typography>
 
       <FondyLogoStyled />
-    </PageWrapper>
+    </ScreenWrapper>
   );
 };

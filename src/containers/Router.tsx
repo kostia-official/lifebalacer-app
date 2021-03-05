@@ -36,7 +36,7 @@ const Activities = LoadableCommon(() => import('./Activities'));
 const Calendar = LoadableCommon(() => import('./Calendar/Calendar'));
 const Reminders = LoadableCommon(() => import('./Reminders'));
 const About = LoadableCommon(() => import('./About/About'));
-const DevTools = LoadableCommon(() => import('./Other/DevTools'));
+const DevTools = LoadableCommon(() => import('./About/DevTools'));
 const ActivitiesStatistic = LoadableCommon(() => import('./Statistic/ActivitiesStatistic'));
 const ActivityStatistic = LoadableCommon(() => import('./Statistic/ActivityStatistic'));
 
@@ -56,43 +56,43 @@ export const routes: IRoute[] = [
   {
     name: 'Entries',
     icon: 'receipt_long',
-    path: '/',
+    path: 'EntriesTab',
     component: EntriesByDay
   },
   {
     name: 'Calendar',
     icon: 'date_range',
-    path: '/calendar',
+    path: 'CalendarTab',
     component: Calendar
   },
   {
     name: 'Journal',
     icon: 'import_contacts',
-    path: '/journal',
+    path: 'Journal',
     component: Journal
   },
   {
     name: 'Activities',
     icon: 'assignment_turned_in',
-    path: '/activities',
+    path: 'Activities',
     component: Activities
   },
   {
     name: 'Statistic',
     icon: 'insights',
-    path: '/statistic',
+    path: 'Statistic',
     component: ActivitiesStatistic
   },
   {
     name: 'Reminders',
     icon: 'notifications',
-    path: '/reminders',
+    path: 'Reminders',
     component: Reminders
   },
   {
     name: 'About',
     icon: 'info',
-    path: '/about',
+    path: 'About',
     component: About,
     isPublic: true
   }

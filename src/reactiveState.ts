@@ -5,6 +5,8 @@ export const isSwipeHandlersEnabledVar: ReactiveVar<boolean> = makeVar<boolean>(
 
 export const isShowAppUpdateDialogVar: ReactiveVar<boolean> = makeVar<boolean>(false);
 
+export const isExpandedMenuVar: ReactiveVar<boolean> = makeVar<boolean>(true);
+
 export const calendarActivityIdVar: ReactiveVar<string> = makeVar<string>('');
 
 export const logsVar: ReactiveVar<Message[]> = makeVar<Message[]>([]);

@@ -8,16 +8,17 @@ import {
 import { Table } from '../components/Table';
 import { useApolloError } from '../hooks/useApolloError';
 import styled from 'styled-components';
-import { PageWrapper } from '../components/PageWrapper';
+import { ScreenWrapper } from './App/ScreenWrapper';
 import { Button } from '@material-ui/core';
 import { useTodoist } from '../hooks/useTodoist';
-import { useDeviceDetect } from '../hooks/useDeviceDetect';
+import { useDeviceMediaQuery } from '../hooks/useDeviceMediaQuery';
 import _ from 'lodash';
 import { useActivities } from '../hooks/useActivities';
-import { EmptySpaceUnderFab, FabButton } from '../components/FabButton';
+import { FabButton } from '../components/FabButton';
 import { Greyscale } from '../components/Greyscale';
 import { useNavigationHelpers } from '../hooks/useNavigationHelpers';
 import { Emoji } from '../components/Emoji';
+import { EmptySpaceUnderFab, FabWrapper } from '../components/FabWrapper';
 
 const ConnectTodoistButtonWrapper = styled.div`
   display: flex;
@@ -35,7 +36,7 @@ const TitleWrapper = styled.div`
 `;
 
 const Activities = () => {
-  const { isMobile } = useDeviceDetect();
+  const { isMobile } = useDeviceMediaQuery();
   const { goForwardToCb, goForwardTo } = useNavigationHelpers();
   const { errorMessage, onError, errorTime } = useApolloError();
   const { authorizeInTodoist } = useTodoist();
@@ -53,7 +54,7 @@ const Activities = () => {
   });
 
   return (
-    <PageWrapper
+    <ScreenWrapper
       errorMessage={errorMessage}
       errorTime={errorTime}
       isLoading={_.isNil(allActivities)}
@@ -160,8 +161,10 @@ const Activities = () => {
 
       <EmptySpaceUnderFab />
 
-      <FabButton onClick={goForwardToCb('ActivityCreate')} />
-    </PageWrapper>
+      <FabWrapper>
+        <FabButton onClick={goForwardToCb('ActivityCreate')} />
+      </FabWrapper>
+    </ScreenWrapper>
   );
 };
 

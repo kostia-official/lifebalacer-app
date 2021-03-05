@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { PageWrapper } from '../../components/PageWrapper';
+import { ScreenWrapper } from '../App/ScreenWrapper';
 import { useApolloError } from '../../hooks/useApolloError';
 import { List, Paper, ListItem, ListItemText, Typography } from '@material-ui/core';
 import { useGetActivitiesStatisticQuery } from '../../generated/apollo';
@@ -24,7 +24,7 @@ const ActivitiesStatistic: React.FC = React.memo(() => {
 
   return useMemo(
     () => (
-      <PageWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!statisticData}>
+      <ScreenWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!statisticData}>
         <Paper>
           <List disablePadding>
             {statistic?.map((stat, index) => {
@@ -58,7 +58,7 @@ const ActivitiesStatistic: React.FC = React.memo(() => {
             })}
           </List>
         </Paper>
-      </PageWrapper>
+      </ScreenWrapper>
     ),
     [errorMessage, errorTime, goForwardToCb, statistic, statisticData]
   );

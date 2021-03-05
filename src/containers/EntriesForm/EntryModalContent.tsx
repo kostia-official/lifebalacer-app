@@ -23,7 +23,7 @@ import {
 } from '@material-ui/core';
 import { InputProps as StandardInputProps } from '@material-ui/core/Input/Input';
 import _ from 'lodash';
-import { useDeviceDetect } from '../../hooks/useDeviceDetect';
+import { useDeviceMediaQuery } from '../../hooks/useDeviceMediaQuery';
 import { usePreventBlur } from '../../hooks/usePreventBlur';
 import { useFocusOnTheEnd } from '../../hooks/useFocusOnTheEnd';
 import { useDebouncedCallback } from 'use-debounce';
@@ -68,7 +68,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   activity,
   isForceDescription
 }) => {
-  const { isDesktop } = useDeviceDetect();
+  const { isDesktop } = useDeviceMediaQuery();
 
   const min = activity?.rangeMeta?.from!;
   const max = activity?.rangeMeta?.to!;
