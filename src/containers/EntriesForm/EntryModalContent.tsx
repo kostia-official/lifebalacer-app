@@ -27,6 +27,8 @@ import { useDeviceMediaQuery } from '../../hooks/useDeviceMediaQuery';
 import { usePreventBlur } from '../../hooks/usePreventBlur';
 import { useFocusOnTheEnd } from '../../hooks/useFocusOnTheEnd';
 import { useDebouncedCallback } from 'use-debounce';
+import { DatePicker } from '@material-ui/pickers';
+import { useDatePicker } from '../../hooks/useDatePicker';
 
 export interface EntryValueModalContentProps {
   onUpdate: (toUpdate: Partial<EntryResult>) => Promise<void>;
@@ -34,7 +36,7 @@ export interface EntryValueModalContentProps {
   onDelete: () => void;
   entry: SelectedEntry;
   activity: ActivityResult;
-  isForceDescription: boolean;
+  isLongPressMode: boolean;
 }
 
 const CardActionsStyled = styled(CardActions)`
@@ -66,8 +68,9 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   onDelete,
   entry,
   activity,
-  isForceDescription
+  isLongPressMode
 }) => {
+  const { date, formatDateLabel, changeDate } = useDatePicker();
   const { isDesktop } = useDeviceMediaQuery();
 
   const min = activity?.rangeMeta?.from!;
@@ -144,7 +147,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   }, [min, max]);
 
   const isWithValue = [ActivityType.Value, ActivityType.Todoist].includes(activity.valueType);
-  const isWithDescription = isForceDescription || activity.isWithDescription || entry.description;
+  const isWithDescription = isLongPressMode || activity.isWithDescription || entry.description;
   const isFocusDescription = activity.valueType === ActivityType.Simple;
   const valueLabel = activity.valueLabel || activity.name;
 
@@ -210,6 +213,17 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
                 </AutoSaveWrapper>
               )
             }}
+          />
+        )}
+
+        {isLongPressMode && (
+          <DatePicker
+            label="Entry date"
+            value={date}
+            onChange={changeDate}
+            fullWidth
+            labelFunc={formatDateLabel}
+            autoOk
           />
         )}
       </CardContentStyled>

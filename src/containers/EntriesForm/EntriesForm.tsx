@@ -46,7 +46,7 @@ const EntriesForm = () => {
 
   const [modalEntry, setModalEntry] = useState<SelectedEntry | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isForceDescription, setIsForceDescription] = useState(false);
+  const [isLongPressMode, setIsForceDescription] = useState(false);
 
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
@@ -280,7 +280,7 @@ const EntriesForm = () => {
             onUpdate={upsertEntry}
             entry={modalEntry!}
             activity={modalActivity!}
-            isForceDescription={isForceDescription}
+            isLongPressMode={isLongPressMode}
           />
         </CardModal>
 
@@ -337,7 +337,7 @@ const EntriesForm = () => {
     getEntriesByActivityId,
     getMissingByActivityId,
     goBackCb,
-    isForceDescription,
+    isLongPressMode,
     isModalOpen,
     modalActivity,
     modalEntry,

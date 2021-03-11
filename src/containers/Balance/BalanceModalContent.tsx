@@ -1,5 +1,5 @@
-import React, { useState, useCallback, Fragment } from 'react';
-import { useGetBalanceQuery } from '../../generated/apollo';
+import React, { useCallback, useEffect } from 'react';
+import { useGetBalanceLazyQuery } from '../../generated/apollo';
 import { CardContent, Typography } from '@material-ui/core';
 import { Points } from '../../components/Points';
 import styled from 'styled-components';
@@ -8,11 +8,10 @@ import { DateTime } from 'luxon';
 import { EmptyBlock } from '../../components/EmptyBlock';
 import { TooltipCheckbox } from '../../components/TooltipCheckbox';
 import { useToggle } from 'react-use';
-import { BasePickerProps } from '@material-ui/pickers/typings/BasePicker';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { useDatePickerRenderDayExtremes } from '../../hooks/useDatePickerRenderDayExtremes';
 import { Center } from '../../components/Center';
 import { SwitchBaseProps } from '@material-ui/core/internal/SwitchBase';
+import { useDatePicker } from '../../hooks/useDatePicker';
 
 export interface BalanceModalProps {}
 
@@ -40,28 +39,19 @@ const CheckboxWrapper = styled.div`
 
 export const BalanceModalContent: React.FC<BalanceModalProps> = () => {
   const [isToday, toggleIsToday] = useToggle(true);
-  const [date, setDate] = useState(DateTime.local());
 
-  const formatDateLabel: BasePickerProps['labelFunc'] = useCallback(
-    (dateArg: MaterialUiPickersDate) => {
-      const date = dateArg || DateTime.local();
-      return date.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY);
-    },
-    []
-  );
-
-  const { data, refetch } = useGetBalanceQuery({ variables: { dateAfter: date.toISO() } });
+  const [queryBalance, { data }] = useGetBalanceLazyQuery();
   const balance = data?.balance;
 
-  const changeDate: BasePickerProps['onChange'] = useCallback(
-    (date) => {
-      if (!date) return;
+  const { date, changeDate, formatDateLabel } = useDatePicker({
+    onDateChange: (date) => {
+      queryBalance({ variables: { dateAfter: date.toISO() } });
+    }
+  });
 
-      setDate(date as DateTime);
-      refetch({ dateAfter: date.toISO() }).then();
-    },
-    [refetch]
-  );
+  useEffect(() => {
+    queryBalance({ variables: { dateAfter: date.toISO() } });
+  }, [date, queryBalance]);
 
   const onIsTodayCheck: SwitchBaseProps['onChange'] = useCallback(
     (e) => {
@@ -114,9 +104,7 @@ export const BalanceModalContent: React.FC<BalanceModalProps> = () => {
         />
       </CheckboxWrapper>
 
-      {isToday ? (
-        <Fragment />
-      ) : (
+      {!isToday && (
         <DatePicker
           label="Sum up for a specific date"
           value={date}
