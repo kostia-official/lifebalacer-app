@@ -10,6 +10,8 @@ import {
   ReminderScreen
 } from './Navigation';
 import { TodoistAuth } from '../TodoistAuth';
+import { PremiumPlan } from '../PremiumPlan/PremiumPlan';
+import { AppBar } from './AppBar';
 
 const DrawerStack = createStackNavigator();
 
@@ -24,6 +26,11 @@ export const DrawerNavigator: React.FC = () => {
       <DrawerStack.Screen name="AboutStack" component={AboutScreen} />
       <DrawerStack.Screen name="RemindersStack" component={ReminderScreen} />
       <DrawerStack.Screen name="TodoistAuth" component={TodoistAuth} />
+      <DrawerStack.Screen
+        name="PremiumPlan"
+        component={PremiumPlan}
+        options={{ header: () => <AppBar />, headerShown: true }}
+      />
     </DrawerStack.Navigator>
   );
 };

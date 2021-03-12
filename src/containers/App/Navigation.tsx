@@ -16,6 +16,7 @@ import { DrawerNavigator } from './DrawerNavigator';
 import { Auth } from '../Auth/Auth';
 import { useAuth } from '../../hooks/useAuth';
 import { useDeviceMediaQuery } from '../../hooks/useDeviceMediaQuery';
+import { PremiumPlan } from '../PremiumPlan/PremiumPlan';
 
 export const linking: LinkingOptions = {
   prefixes: ['https://*.lifebalancer.app', 'http://localhost:3000'],
@@ -88,7 +89,8 @@ export const linking: LinkingOptions = {
               DevTools: 'other/dev-tools'
             }
           },
-          RemindersStack: { screens: { Reminders: 'reminders' } }
+          RemindersStack: { screens: { Reminders: 'reminders' } },
+          PremiumPlan: 'premium'
         }
       }
     }
@@ -217,6 +219,7 @@ export const OtherScreen = () => (
     <OtherStack.Screen name="Other" component={Other} />
 
     <OtherStack.Screen name="Reminders" component={Reminders} />
+    <OtherStack.Screen name="PremiumPlan" component={PremiumPlan} />
 
     <OtherStack.Screen name="About" component={About} />
     <OtherStack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />

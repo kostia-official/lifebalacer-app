@@ -313,3 +313,13 @@ query GetTodoistActivity {
     ...ActivityResult
   }
 }
+
+query GetPaymentUrl($callbackUrl: String!) {
+  paymentUrl(callbackUrl: $callbackUrl)
+}
+
+query GetSubscription {
+  subscription {
+    isPremium
+  }
+}

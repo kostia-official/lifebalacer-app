@@ -2,15 +2,13 @@ import React from 'react';
 import { List, ListItem, ListItemText } from '@material-ui/core';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { ScreenWrapper } from '../App/ScreenWrapper';
-import { useAuth } from '../../hooks/useAuth';
 import { Center } from '../../components/Center';
 import { LastUpdatedAt } from './LastUpdatedAt';
+import { useIsInternalTestUser } from '../../hooks/useIsInternalTestUser';
 
 const About = () => {
   const { goForwardToCb } = useNavigationHelpers();
-  const { user } = useAuth();
-
-  const isEnableDevTools = user?.email === 'kozzztya@gmail.com';
+  const isInternalTestUser = useIsInternalTestUser();
 
   return (
     <ScreenWrapper>
@@ -35,7 +33,7 @@ const About = () => {
           <ListItemText primary="Contact Information" />
         </ListItem>
 
-        {isEnableDevTools && (
+        {isInternalTestUser && (
           <ListItem button onClick={goForwardToCb('DevTools')}>
             <ListItemText primary="Dev Tools" />
           </ListItem>

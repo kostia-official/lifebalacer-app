@@ -31,8 +31,10 @@ export type Query = {
   entriesByOneDay?: Maybe<EntriesByDay>;
   entry?: Maybe<Entry>;
   journal: Array<Journal>;
+  paymentUrl: Scalars['String'];
   pushTokens: Array<PushToken>;
   reminder?: Maybe<Reminder>;
+  subscription?: Maybe<Subscription>;
   todoistActivity: Activity;
 };
 
@@ -71,6 +73,10 @@ export type QueryEntryArgs = {
 export type QueryJournalArgs = {
   dateAfter?: Maybe<Scalars['Date']>;
   activities?: Maybe<Array<Scalars['String']>>;
+};
+
+export type QueryPaymentUrlArgs = {
+  callbackUrl: Scalars['String'];
 };
 
 export type Mutation = {
@@ -153,6 +159,14 @@ export type ReminderInput = {
   _id?: Maybe<Scalars['ID']>;
   isRepeating?: Maybe<Scalars['Boolean']>;
   remindAt: Scalars['DateTime'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  _id: Scalars['String'];
+  userId: Scalars['String'];
+  externalId: Scalars['String'];
+  isPremium: Scalars['Boolean'];
 };
 
 export type Activity = {
@@ -495,7 +509,7 @@ export type GetEntriesByDayQuery = { __typename?: 'Query' } & {
 
 export type GetJournalQueryVariables = Exact<{
   dateAfter?: Maybe<Scalars['Date']>;
-  activities?: Maybe<Array<Scalars['String']>>;
+  activities?: Maybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 export type GetJournalQuery = { __typename?: 'Query' } & {
@@ -711,6 +725,18 @@ export type GetTodoistActivityQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetTodoistActivityQuery = { __typename?: 'Query' } & {
   todoistActivity: { __typename?: 'Activity' } & ActivityResultFragment;
+};
+
+export type GetPaymentUrlQueryVariables = Exact<{
+  callbackUrl: Scalars['String'];
+}>;
+
+export type GetPaymentUrlQuery = { __typename?: 'Query' } & Pick<Query, 'paymentUrl'>;
+
+export type GetSubscriptionQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetSubscriptionQuery = { __typename?: 'Query' } & {
+  subscription?: Maybe<{ __typename?: 'Subscription' } & Pick<Subscription, 'isPremium'>>;
 };
 
 export const ActivityResultFragmentDoc = gql`
@@ -2055,4 +2081,99 @@ export type GetTodoistActivityQueryResult = Apollo.QueryResult<
 >;
 export function refetchGetTodoistActivityQuery(variables?: GetTodoistActivityQueryVariables) {
   return { query: GetTodoistActivityDocument, variables: variables };
+}
+export const GetPaymentUrlDocument = gql`
+  query GetPaymentUrl($callbackUrl: String!) {
+    paymentUrl(callbackUrl: $callbackUrl)
+  }
+`;
+
+/**
+ * __useGetPaymentUrlQuery__
+ *
+ * To run a query within a React component, call `useGetPaymentUrlQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPaymentUrlQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPaymentUrlQuery({
+ *   variables: {
+ *      callbackUrl: // value for 'callbackUrl'
+ *   },
+ * });
+ */
+export function useGetPaymentUrlQuery(
+  baseOptions: Apollo.QueryHookOptions<GetPaymentUrlQuery, GetPaymentUrlQueryVariables>
+) {
+  return Apollo.useQuery<GetPaymentUrlQuery, GetPaymentUrlQueryVariables>(
+    GetPaymentUrlDocument,
+    baseOptions
+  );
+}
+export function useGetPaymentUrlLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetPaymentUrlQuery, GetPaymentUrlQueryVariables>
+) {
+  return Apollo.useLazyQuery<GetPaymentUrlQuery, GetPaymentUrlQueryVariables>(
+    GetPaymentUrlDocument,
+    baseOptions
+  );
+}
+export type GetPaymentUrlQueryHookResult = ReturnType<typeof useGetPaymentUrlQuery>;
+export type GetPaymentUrlLazyQueryHookResult = ReturnType<typeof useGetPaymentUrlLazyQuery>;
+export type GetPaymentUrlQueryResult = Apollo.QueryResult<
+  GetPaymentUrlQuery,
+  GetPaymentUrlQueryVariables
+>;
+export function refetchGetPaymentUrlQuery(variables?: GetPaymentUrlQueryVariables) {
+  return { query: GetPaymentUrlDocument, variables: variables };
+}
+export const GetSubscriptionDocument = gql`
+  query GetSubscription {
+    subscription {
+      isPremium
+    }
+  }
+`;
+
+/**
+ * __useGetSubscriptionQuery__
+ *
+ * To run a query within a React component, call `useGetSubscriptionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSubscriptionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSubscriptionQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetSubscriptionQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetSubscriptionQuery, GetSubscriptionQueryVariables>
+) {
+  return Apollo.useQuery<GetSubscriptionQuery, GetSubscriptionQueryVariables>(
+    GetSubscriptionDocument,
+    baseOptions
+  );
+}
+export function useGetSubscriptionLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetSubscriptionQuery, GetSubscriptionQueryVariables>
+) {
+  return Apollo.useLazyQuery<GetSubscriptionQuery, GetSubscriptionQueryVariables>(
+    GetSubscriptionDocument,
+    baseOptions
+  );
+}
+export type GetSubscriptionQueryHookResult = ReturnType<typeof useGetSubscriptionQuery>;
+export type GetSubscriptionLazyQueryHookResult = ReturnType<typeof useGetSubscriptionLazyQuery>;
+export type GetSubscriptionQueryResult = Apollo.QueryResult<
+  GetSubscriptionQuery,
+  GetSubscriptionQueryVariables
+>;
+export function refetchGetSubscriptionQuery(variables?: GetSubscriptionQueryVariables) {
+  return { query: GetSubscriptionDocument, variables: variables };
 }

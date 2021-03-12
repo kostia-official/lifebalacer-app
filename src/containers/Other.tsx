@@ -5,10 +5,12 @@ import { ScreenWrapper } from './App/ScreenWrapper';
 import { useAuth } from '../hooks/useAuth';
 import { UserListItem } from '../components/UserListItem';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { useIsInternalTestUser } from '../hooks/useIsInternalTestUser';
 
 const Other = () => {
   const { goForwardToCb } = useNavigationHelpers();
   const { user, logout } = useAuth();
+  const isInternalTestUser = useIsInternalTestUser();
 
   return (
     <ScreenWrapper>
@@ -31,6 +33,16 @@ const Other = () => {
 
           <ListItemText primary="Reminders" />
         </ListItem>
+
+        {isInternalTestUser && (
+          <ListItem button onClick={goForwardToCb('PremiumPlan')}>
+            <ListItemIcon>
+              <Icon>stars</Icon>
+            </ListItemIcon>
+
+            <ListItemText primary="Premium Plan" />
+          </ListItem>
+        )}
 
         <ListItem button onClick={goForwardToCb('About')}>
           <ListItemIcon>

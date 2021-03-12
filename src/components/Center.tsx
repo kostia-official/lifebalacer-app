@@ -8,6 +8,7 @@ export interface CenterProps {
 const Wrapper = styled.div<CenterProps>`
   display: flex;
   justify-content: center;
+  width: 100%;
 
   text-align: center;
 

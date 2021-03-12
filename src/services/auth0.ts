@@ -6,6 +6,7 @@ export interface Auth0User {
   username: string;
   email: string;
   picture: string;
+  userId: string;
 }
 
 class Auth {
