@@ -74,6 +74,7 @@
     "react-transition-group": "^4.4.1",
     "react-use": "^15.3.4",
     "remeda": "0.0.22",
+    "scroll-behavior-polyfill": "^2.0.13",
     "styled-components": "^5.2.1",
     "subscriptions-transport-ws": "^0.9.18",
     "use-debounce": "^5.2.0",

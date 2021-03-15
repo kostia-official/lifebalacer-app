@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, Fragment } from 'react';
 import { ErrorMessage } from '../../components/ErrorMessage';
 import { Showable } from '../../components/Showable';
 import { Spinner } from '../../components/Spinner';
@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { useScrolling, createGlobalState } from 'react-use';
 import { DrawerContainer } from './DrawerContainer';
 import { useDeviceMediaQuery } from '../../hooks/useDeviceMediaQuery';
-import { Fragment } from 'react';
+import { useScrollToTop } from '@react-navigation/native';
 
 export interface PageWrapperProps {
   isLoading?: boolean;
@@ -41,7 +41,7 @@ export const ScreenWrapper: React.FC<PageWrapperProps> = ({
   id
 }) => {
   const [, setIsScrolling] = useIsScrolling();
-  const scrollRef = React.useRef(null);
+  const scrollRef = React.useRef<HTMLDivElement>(null);
   const scrolling = useScrolling(scrollRef);
 
   const { isDesktop } = useDeviceMediaQuery();
@@ -49,6 +49,14 @@ export const ScreenWrapper: React.FC<PageWrapperProps> = ({
   useEffect(() => {
     setIsScrolling(scrolling);
   }, [scrolling, setIsScrolling]);
+
+  useScrollToTop(
+    React.useRef({
+      scrollToTop: () => {
+        scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    })
+  );
 
   const content = useMemo(() => {
     return (

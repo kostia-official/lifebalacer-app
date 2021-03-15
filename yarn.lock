@@ -17116,6 +17116,11 @@ screenfull@^5.0.0:
   resolved "https://registry.yarnpkg.com/screenfull/-/screenfull-5.1.0.tgz#85c13c70f4ead4c1b8a935c70010dfdcd2c0e5c8"
   integrity sha512-dYaNuOdzr+kc6J6CFcBrzkLCfyGcMg+gWkJ8us93IQ7y1cevhQAugFsaCdMHb6lw8KV3xPzSxzH7zM1dQap9mA==
 
+scroll-behavior-polyfill@^2.0.13:
+  version "2.0.13"
+  resolved "https://registry.yarnpkg.com/scroll-behavior-polyfill/-/scroll-behavior-polyfill-2.0.13.tgz#f6f4db9eecdb94d5744b85b653440602fcf3b24b"
+  integrity sha512-X1AC6+k0++Y3XOT8Likr5Dh4XMmwvbTolr3Mp2g1jYPpOQ3++wff/JPfPEK6zqPCkZ88Ac0/OMRW/Uwh16U+HQ==
+
 scuid@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/scuid/-/scuid-1.1.0.tgz#d3f9f920956e737a60f72d0e4ad280bf324d5dab"

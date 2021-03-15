@@ -1,3 +1,4 @@
+import './polyfills';
 import './services/sentry';
 import React from 'react';
 import './index.css';
