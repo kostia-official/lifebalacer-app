@@ -56,7 +56,6 @@ const Journal = () => {
   >(GetJournalDocument, {
     onError,
     field: 'journal',
-    scrollTargetId,
     variables: {
       activities: allActivities
         ?.filter((activity) => activity._id !== todoistActivity?._id)

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, Fragment } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import _ from 'lodash';
 import styled from 'styled-components';
 import { useApolloError } from '../../hooks/useApolloError';
@@ -50,7 +50,6 @@ const EntriesByDay = React.memo(() => {
     GetEntriesByDayQuery,
     GetEntriesByDayQueryVariables
   >(GetEntriesByDayDocument, {
-    scrollTargetId,
     onError,
     field: 'entriesByDay',
     fetchMoreVariables: (data) => getDayQueryVariables(_.last(data.entriesByDay)?.date)
@@ -91,7 +90,7 @@ const EntriesByDay = React.memo(() => {
           <InfiniteScroll
             dataLength={entriesByDay?.length ?? 0}
             next={loadMore}
-            loader={<Fragment />}
+            loader={<Spinner />}
             hasMore={isHasMore}
             scrollableTarget={scrollTargetId}
           >
@@ -106,8 +105,6 @@ const EntriesByDay = React.memo(() => {
                 </DayCard>
               );
             })}
-
-            {isHasMore && <Spinner />}
           </InfiniteScroll>
         )}
 
