@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
   appBar: { zIndex: 1000 },
   menuButton: {
-    marginRight: theme.spacing(1)
+    marginRight: '10px'
   },
   title: {
     flexGrow: 1

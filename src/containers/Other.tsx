@@ -3,9 +3,26 @@ import { Icon, List, ListItem, ListItemIcon, ListItemText, Divider } from '@mate
 import { useNavigationHelpers } from '../hooks/useNavigationHelpers';
 import { ScreenWrapper } from './App/ScreenWrapper';
 import { useAuth } from '../hooks/useAuth';
-import { UserListItem } from '../components/UserListItem';
+import { UserListItemContent } from '../components/UserListItemContent';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { useIsInternalTestUser } from '../hooks/useIsInternalTestUser';
+import styled from 'styled-components';
+
+const UserListItemContentWrapper = styled.div`
+  margin-left: -9px;
+  display: flex;
+  align-items: center;
+`;
+
+const ListItemIconStyled = styled(ListItemIcon)`
+  min-width: 46px;
+  margin-left: -1px;
+`;
+
+const DividerStyled = styled(Divider)`
+  margin-top: 6px;
+  margin-bottom: 10px;
+`;
 
 const Other = () => {
   const { goForwardToCb } = useNavigationHelpers();
@@ -17,45 +34,49 @@ const Other = () => {
       <List disablePadding>
         {user && (
           <>
-            <UserListItem
-              user={{ avatar: user?.picture, email: user?.email, name: user?.username }}
-              onLogout={logout}
-            />
+            <ListItem>
+              <UserListItemContentWrapper>
+                <UserListItemContent
+                  user={{ avatar: user?.picture, email: user?.email, name: user?.username }}
+                  interval={14}
+                />
+              </UserListItemContentWrapper>
+            </ListItem>
 
-            <Divider />
+            <DividerStyled />
           </>
         )}
 
         <ListItem button onClick={goForwardToCb('Reminders')}>
-          <ListItemIcon>
+          <ListItemIconStyled>
             <Icon>notifications</Icon>
-          </ListItemIcon>
+          </ListItemIconStyled>
 
           <ListItemText primary="Reminders" />
         </ListItem>
 
         {isInternalTestUser && (
           <ListItem button onClick={goForwardToCb('PremiumPlan')}>
-            <ListItemIcon>
+            <ListItemIconStyled>
               <Icon>stars</Icon>
-            </ListItemIcon>
+            </ListItemIconStyled>
 
             <ListItemText primary="Premium Plan" />
           </ListItem>
         )}
 
         <ListItem button onClick={goForwardToCb('About')}>
-          <ListItemIcon>
+          <ListItemIconStyled>
             <Icon>info</Icon>
-          </ListItemIcon>
+          </ListItemIconStyled>
 
           <ListItemText primary="About" />
         </ListItem>
 
         <ListItem button onClick={() => logout()}>
-          <ListItemIcon>
+          <ListItemIconStyled>
             <ExitToAppIcon />
-          </ListItemIcon>
+          </ListItemIconStyled>
 
           <ListItemText primary="Logout" />
         </ListItem>
