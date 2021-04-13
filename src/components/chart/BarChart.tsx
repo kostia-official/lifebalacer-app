@@ -37,7 +37,7 @@ const BarChart: React.FC<BarChartProps> = React.memo(({ data, customizePoint }) 
         <Chart dataSource={data} {...optionalCustomizePoint}>
           <Animation duration={600} easing="easeOutCubic" />
 
-          <Size height={140} />
+          <Size height={115} />
 
           <ArgumentAxis />
           <ValueAxis

@@ -25,6 +25,9 @@ import { usePushTokenUpdate } from '../../hooks/usePushTokenUpdate';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { FabWrapper } from '../../components/FabWrapper';
 import { EmptyBlock } from '../../components/EmptyBlock';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { IconButton } from '@material-ui/core';
+import { MoreButton } from '../../components/MoreButton';
 
 const EntriesLabelsWrapper = styled.div`
   margin: 6px 16px 14px 16px;
@@ -38,7 +41,7 @@ const EntriesByDay = React.memo(() => {
 
   usePushTokenUpdate({ onError });
 
-  const { statisticText, refetch: refetchStatistic } = useDaysStatisticText({ onError });
+  const { statisticContent, refetch: refetchStatistic } = useDaysStatisticText({ onError });
 
   const { data: todoistActivityData } = useGetTodoistActivityQuery({
     onError,
@@ -94,7 +97,7 @@ const EntriesByDay = React.memo(() => {
             hasMore={isHasMore}
             scrollableTarget={scrollTargetId}
           >
-            <HeaderCard text={statisticText} />
+            <HeaderCard content={statisticContent} rightContent={<MoreButton />} />
 
             {entriesByDay?.map((day) => {
               return (
@@ -127,7 +130,7 @@ const EntriesByDay = React.memo(() => {
     isLoading,
     loadMore,
     onEntryFormOpen,
-    statisticText,
+    statisticContent,
     todoistActivity
   ]);
 });

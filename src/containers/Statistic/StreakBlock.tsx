@@ -45,7 +45,7 @@ export const StreakBlock: React.FC<StreakProps> = ({ streak, text, isWithActivit
         text={text}
         subText={getInterval()}
         value={pluralLabel('day', streak.count)}
-        valueInterval={10}
+        valueInterval={12}
         icon={
           isWithActivity ? (
             <WhatshotOutlined color="primary" fontSize="inherit" />

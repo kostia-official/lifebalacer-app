@@ -15,7 +15,7 @@ const TitleWrapper = styled.div<{ isExpanded: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: ${(p) => (p.isExpanded ? '10px' : '6px')} 11px 6px 15px;
+  margin: ${(p) => (p.isExpanded ? '10px' : '6px')} 12px 6px 15px;
 
   cursor: pointer;
 `;

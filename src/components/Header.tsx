@@ -9,6 +9,8 @@ import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { useDeviceMediaQuery } from '../hooks/useDeviceMediaQuery';
+import { Emoji } from './Emoji';
+import { CardModal } from './CardModal';
 
 const useStyles = makeStyles((theme) => ({
   toolbarGutters: {
@@ -59,7 +61,7 @@ export const Header: React.FC<IHeaderProps> = ({
             onClick={isShowBack ? onBackClick : onMenuClick}
           >
             <SpeedDialIcon
-              icon={isDesktop ? <MenuIcon /> : <AllInclusiveIcon />}
+              icon={isDesktop ? <MenuIcon /> : <MenuIcon />}
               openIcon={<ChevronLeftIcon />}
               open={isShowBack}
             />

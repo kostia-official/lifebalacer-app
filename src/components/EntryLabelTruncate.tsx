@@ -35,7 +35,7 @@ export const EntryLabelTruncate = ({ entry, activity }: GetEntryLabelProps) => {
 
   return (
     <Label>
-      <Emoji>{activity?.emoji}</Emoji>
+      <Emoji size={18}>{activity?.emoji}</Emoji>
       <TextWrapper>{text}</TextWrapper>
       {value}
       <DescriptionIcon entry={entry} activity={activity} />

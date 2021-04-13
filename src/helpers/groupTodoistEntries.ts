@@ -8,7 +8,11 @@ export interface HookProps {
 }
 
 export const groupTodoistEntries = ({ entries, todoistActivityId }: HookProps) => {
-  const { todoistEntries = [], regularEntries = [] } = R.groupBy(entries, (entry) => {
+  const notArchivedEntries = entries.filter((entry) => {
+    return !entry.activity.isArchived;
+  });
+
+  const { todoistEntries = [], regularEntries = [] } = R.groupBy(notArchivedEntries, (entry) => {
     return entry.activityId === todoistActivityId ? 'todoistEntries' : 'regularEntries';
   });
 

@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import { Fragment } from 'react';
 
 export interface PageStartSectionProps {
-  text: string;
-  rightContent?: React.ReactElement;
+  content: React.ReactNode;
+  rightContent?: React.ReactNode;
 }
 
 const Wrapper = styled(Card)`
@@ -21,11 +21,11 @@ const HeaderContent = styled.div`
   align-items: center;
 `;
 
-export const HeaderCard: React.FC<PageStartSectionProps> = ({ text, rightContent }) => {
+export const HeaderCard: React.FC<PageStartSectionProps> = ({ content, rightContent }) => {
   return (
     <Wrapper key="stats">
       <HeaderContent>
-        <Typography variant="subtitle2">{text}</Typography>
+        <Typography variant="subtitle2">{content}</Typography>
         {rightContent || <Fragment />}
       </HeaderContent>
     </Wrapper>

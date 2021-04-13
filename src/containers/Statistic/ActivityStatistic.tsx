@@ -22,7 +22,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { NavigationParams } from '../App/App';
 
 const TitlePaper = styled(Paper)`
-  padding: 7px 6px 7px 15px;
+  padding: 7px 14px 7px 18px;
   margin-bottom: 8px;
 
   display: flex;
@@ -31,12 +31,17 @@ const TitlePaper = styled(Paper)`
 `;
 
 const StatBlockPaper = styled(Paper)`
-  padding: 15px;
+  padding: 12px 15px;
+  margin-bottom: 8px;
+`;
+
+const StreakBlockPaper = styled(Paper)`
+  padding: 18px 15px;
   margin-bottom: 8px;
 `;
 
 const ChartPaper = styled(Paper)`
-  padding: 15px;
+  padding: 8px 15px;
 `;
 
 const AverageSvgIconStyled = styled(SvgIcon)`
@@ -130,7 +135,7 @@ const ActivityStatistic: React.FC = () => {
           </Grid>
         </StatBlockPaper>
 
-        <StatBlockPaper>
+        <StreakBlockPaper>
           <Grid container spacing={1}>
             <Grid item xs={6}>
               <StreakBlock
@@ -148,7 +153,7 @@ const ActivityStatistic: React.FC = () => {
               />
             </Grid>
           </Grid>
-        </StatBlockPaper>
+        </StreakBlockPaper>
 
         <ChartPaper>
           {statistic?.entriesPerDateGroup && (

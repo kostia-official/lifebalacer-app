@@ -19,7 +19,7 @@ const TitleWrapper = styled.div`
   align-items: baseline;
   justify-content: center;
 
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 `;
 
 type ValueField = keyof Omit<EntryPerDate, '__typename' | 'completedAt'>;
@@ -76,13 +76,13 @@ export const EntryPerDateChart: React.FC<EntryPerDateChartProps> = ({ data, isWi
         )}
 
         <Typography variant="body1" gutterBottom>
-          &nbsp;per month
+          &nbsp;per&nbsp;
         </Typography>
 
-        {/*<SelectInline value={dateGroup} onChange={onDateGroupChange}>*/}
-        {/*  <MenuItem value="month">month</MenuItem>*/}
-        {/*  <MenuItem value="week">week</MenuItem>*/}
-        {/*</SelectInline>*/}
+        <SelectInline value={dateGroup}>
+          <MenuItem value="month">month</MenuItem>
+          <MenuItem value="week">week</MenuItem>
+        </SelectInline>
       </TitleWrapper>
 
       {finalData && (

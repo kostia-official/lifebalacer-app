@@ -26,8 +26,10 @@ export interface Props {
   yValueLabel: string;
 }
 
+const HEIGHT = 200;
+
 const Wrapper = styled.div`
-  min-height: 250px;
+  min-height: ${HEIGHT}px;
 `;
 
 const DateChart: React.FC<Props> = React.memo(({ data, dateGroup }) => {
@@ -81,7 +83,7 @@ const DateChart: React.FC<Props> = React.memo(({ data, dateGroup }) => {
         >
           <Animation duration={600} />
 
-          <Size height={250} />
+          <Size height={HEIGHT} />
 
           <Series
             valueField="yValue"

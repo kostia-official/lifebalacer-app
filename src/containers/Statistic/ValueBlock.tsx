@@ -17,7 +17,7 @@ const NumberBlockPaper = styled.div`
   justify-content: center;
   align-items: center;
 
-  height: 70px;
+  height: 60px;
   min-width: 150px;
 `;
 

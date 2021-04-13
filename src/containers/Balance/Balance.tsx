@@ -7,6 +7,8 @@ import { CardModal } from '../../components/CardModal';
 import { useToggle } from 'react-use';
 import styled from 'styled-components';
 import { BalanceModalContent } from './BalanceModalContent';
+import { Emoji } from '../../components/Emoji';
+import { Typography } from '@material-ui/core';
 
 const PointsWrapper = styled.div`
   cursor: pointer;
@@ -28,7 +30,7 @@ export const Balance = () => {
       </CardModal>
 
       <PointsWrapper onClick={toggle}>
-        <Points points={balanceData?.balance.total} pointsSize={20} coinSize={22} />
+        <Points points={1200} pointsSize={20} coinSize={22} />
       </PointsWrapper>
     </Fragment>
   );

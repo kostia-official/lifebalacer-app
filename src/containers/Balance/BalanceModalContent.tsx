@@ -98,7 +98,7 @@ export const BalanceModalContent: React.FC<BalanceModalProps> = () => {
       </Row>
       <Row>
         <span>Total: </span>
-        <Points points={balance?.total} transition />
+        <Points points={1200} transition />
       </Row>
 
       <CheckboxWrapper>
