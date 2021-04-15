@@ -7,6 +7,7 @@ import { useScrolling, createGlobalState } from 'react-use';
 import { DrawerContainer } from './DrawerContainer';
 import { useDeviceMediaQuery } from '../../hooks/useDeviceMediaQuery';
 import { useScrollToTop } from '@react-navigation/native';
+import { useScreenHeight } from '../../hooks/useScreenHeight';
 
 export interface PageWrapperProps {
   isLoading?: boolean;
@@ -15,10 +16,10 @@ export interface PageWrapperProps {
   id?: string;
 }
 
-const Scroll = styled.div`
+const Scroll = styled.div<{ $height: string }>`
   overflow-x: hidden;
   overflow-y: scroll;
-  height: 94vh; // TODO: Fix tech debt. With 100% or 100vh in anon stack don't show full content
+  height: ${(p) => p.$height};
 
   width: 100%;
 `;
@@ -45,6 +46,7 @@ export const ScreenWrapper: React.FC<PageWrapperProps> = ({
   const scrolling = useScrolling(scrollRef);
 
   const { isDesktop } = useDeviceMediaQuery();
+  const screenHeight = useScreenHeight();
 
   useEffect(() => {
     setIsScrolling(scrolling);
@@ -60,7 +62,7 @@ export const ScreenWrapper: React.FC<PageWrapperProps> = ({
 
   const content = useMemo(() => {
     return (
-      <Scroll {...{ id }} ref={scrollRef}>
+      <Scroll {...{ id }} ref={scrollRef} $height={screenHeight}>
         <ErrorMessage errorMessage={errorMessage} errorTime={errorTime} />
 
         <Showable isShow={isLoading}>
@@ -72,7 +74,7 @@ export const ScreenWrapper: React.FC<PageWrapperProps> = ({
         </Showable>
       </Scroll>
     );
-  }, [children, errorMessage, errorTime, id, isLoading]);
+  }, [children, errorMessage, errorTime, id, isLoading, screenHeight]);
 
   return isDesktop ? (
     <Wrapper>
