@@ -25,6 +25,7 @@ import { usePushTokenUpdate } from '../../hooks/usePushTokenUpdate';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { FabWrapper } from '../../components/FabWrapper';
 import { EmptyBlock } from '../../components/EmptyBlock';
+import { useLocalNotificationsUpdate } from '../../hooks/useLocalNotificationsUpdate';
 
 const EntriesLabelsWrapper = styled.div`
   margin: 6px 16px 14px 16px;
@@ -37,6 +38,7 @@ const EntriesByDay = React.memo(() => {
   const { errorMessage, errorTime, onError } = useApolloError();
 
   usePushTokenUpdate({ onError });
+  useLocalNotificationsUpdate({ onError });
 
   const { statisticText, refetch: refetchStatistic } = useDaysStatisticText({ onError });
 

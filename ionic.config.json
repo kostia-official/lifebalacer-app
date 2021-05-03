@@ -1,0 +1,7 @@
+{
+  "name": "Life Balancer",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

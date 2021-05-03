@@ -1,7 +1,7 @@
 import './polyfills';
 import './services/sentry';
-import React from 'react';
 import './index.css';
+import React from 'react';
 import * as serviceWorker from './serviceWorkerRegistration';
 import { ThemeProvider } from './ThemeProvider';
 import { createBrowserHistory } from 'history';
@@ -15,6 +15,7 @@ import { ApolloCacheLoader } from './containers/ApolloCacheLoader';
 import { LogsProvider } from './components/LogsProvider';
 import App from './containers/App/App';
 import ReactDOM from 'react-dom';
+import { CapacitorProvider } from './CapacitorProvider';
 
 export const history = createBrowserHistory();
 
@@ -25,7 +26,9 @@ ReactDOM.render(
         <MuiPickersUtilsProvider utils={LuxonUtils}>
           <ApolloCacheLoader>
             <ApolloProvider client={apolloClient}>
-              <App />
+              <CapacitorProvider>
+                <App />
+              </CapacitorProvider>
             </ApolloProvider>
           </ApolloCacheLoader>
         </MuiPickersUtilsProvider>

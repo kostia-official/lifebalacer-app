@@ -1,0 +1,25 @@
+{
+  "appId": "app.bestion.lifebalancer",
+  "appName": "Life Balancer",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "build",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 5000
+    },
+    "LocalNotifications": {
+      "smallIcon": "ic_notification",
+      "iconColor": "#009688"
+    }
+  },
+  "backgroundColor": "#303030",
+  "ios": { "contentInset": "always" },
+  "android": {
+    "backgroundColor": "#303030"
+  },
+  "cordova": {},
+  "server": {
+    "url": "https://web.lifebalancer.app"
+  }
+}

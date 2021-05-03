@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useApolloError } from '../hooks/useApolloError';
 import { ScreenWrapper } from './App/ScreenWrapper';
 import {
@@ -11,6 +11,7 @@ import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { LogoContent } from '../components/LogoContent';
 import { ReactComponent as ReminderLogo } from '../assets/reminder.svg';
 import { css } from 'styled-components';
+import { useLocalNotificationsUpdate } from '../hooks/useLocalNotificationsUpdate';
 
 const logoStyles = css`
   max-width: 300px;
@@ -21,31 +22,40 @@ const logoStyles = css`
 
 const Reminders = () => {
   const { errorMessage, onError, errorTime } = useApolloError();
+
   const { data } = useGetReminderQuery({ onError });
+  const remindAt = data?.reminder?.remindAt;
+
+  useLocalNotificationsUpdate({ onError });
 
   const [upsertReminderMutation] = useUpsertReminderMutation({
     onError,
     refetchQueries: [refetchGetReminderQuery()]
   });
 
-  const [date, setDate] = useState<string | null>(data?.reminder?.remindAt || null);
+  const [date, setDate] = useState<string | null>(remindAt || null);
 
-  const upsertReminder = useCallback(
-    (remindAt: string) => {
-      const idField = { _id: data?.reminder?._id };
-      upsertReminderMutation({
-        variables: { data: { remindAt, ...idField } }
-      }).then();
+  useEffect(() => {
+    setDate(remindAt);
+  }, [remindAt]);
+
+  const updateDate = useCallback(
+    async (remindAt: string) => {
       setDate(remindAt);
+
+      const idField = { _id: data?.reminder?._id };
+      await upsertReminderMutation({
+        variables: { data: { remindAt, ...idField } }
+      });
     },
-    [upsertReminderMutation, data]
+    [data?.reminder?._id, upsertReminderMutation]
   );
 
   const onDateChange = useCallback(
     (date: MaterialUiPickersDate) => {
-      date && upsertReminder(date.set({ second: 0, millisecond: 0 }).toISO());
+      date && updateDate(date.set({ second: 0, millisecond: 0 }).toISO());
     },
-    [upsertReminder]
+    [updateDate]
   );
 
   return (

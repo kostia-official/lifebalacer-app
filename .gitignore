@@ -30,3 +30,10 @@ public/firebase-messaging-sw.js
 
 # Intermediate generated data
 scripts/generateIcons/iconsData.json
+
+.gradle
+gradle/wrapper/gradle-wrapper.jar
+.idea
+android.keystore
+app-release*
+local.properties

@@ -21,6 +21,11 @@ export const cache = new InMemoryCache({
         entries: { merge: (_, incoming) => incoming }
       }
     },
+    Reminder: {
+      fields: {
+        reminder: { merge: (_, incoming) => incoming }
+      }
+    },
     Query: {
       fields: {
         todoistActivity: {
@@ -44,7 +49,7 @@ export const cache = new InMemoryCache({
         },
         entriesByOneDay: {
           merge: (_, incoming) => incoming,
-          read: (existing, { args, toReference, ...other }) => {
+          read: (existing, { args, toReference }) => {
             if (!existing) return existing;
             if (!args?.date) return;
 

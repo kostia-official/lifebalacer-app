@@ -8,6 +8,7 @@ import {
   useGetPushTokensQuery
 } from '../generated/apollo';
 import { useSyncedCachePolicy } from './useSyncedCachePolicy';
+import { getAppType } from '../common/appType';
 
 export interface UseApolloErrorProps {
   onError?: (error: ApolloError) => void;
@@ -22,8 +23,7 @@ export const usePushTokenUpdate = ({ onError }: UseApolloErrorProps) => {
 
   const { data: pushTokenData } = useGetPushTokensQuery({
     onError,
-    ...syncedCachePolicy,
-    onCompleted: () => {}
+    ...syncedCachePolicy
   });
   const { data: reminderData } = useGetReminderQuery({ onError, ...syncedCachePolicy });
 
@@ -35,6 +35,8 @@ export const usePushTokenUpdate = ({ onError }: UseApolloErrorProps) => {
   );
 
   const upsertPushToken = useCallback(async () => {
+    if (getAppType() === 'cap') return;
+
     if (!reminderData?.reminder?.remindAt) return;
 
     const token = await pushService.getToken();

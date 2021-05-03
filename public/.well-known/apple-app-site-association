@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "485SYS9SS4.app.bestion.lifebalancer",
+        "paths": ["*"]
+      }
+    ]
+  }
+}

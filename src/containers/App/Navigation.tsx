@@ -31,7 +31,8 @@ export const linking: LinkingOptions = {
           TermsAndConditions: 'about/terms-conditions',
           PaymentInfo: 'about/payment',
           RefundPolicy: 'about/refund',
-          ContactInfo: 'about/contact'
+          ContactInfo: 'about/contact',
+          DevTools: 'about/devtools'
         }
       },
       Home: {
@@ -128,6 +129,7 @@ const AnonAboutStackComponent = () => {
       <AnonAboutStack.Screen name="PaymentInfo" component={PaymentInfo} />
       <AnonAboutStack.Screen name="RefundPolicy" component={RefundPolicy} />
       <AnonAboutStack.Screen name="ContactInfo" component={ContactInfo} />
+      <AnonAboutStack.Screen name="DevTools" component={DevTools} />
     </AnonAboutStack.Navigator>
   );
 };

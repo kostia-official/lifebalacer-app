@@ -1,5 +1,5 @@
 class Config {
-  host = process.env.REACT_APP_HOST || 'http://localhost:3000';
+  host = window.location.origin;
   isDev = process.env.NODE_ENV !== 'production';
   stage = process.env.STAGE || 'dev';
   apiUrl = process.env.REACT_APP_API_URL;
