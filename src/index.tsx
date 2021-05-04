@@ -3,27 +3,26 @@ import './services/sentry';
 import './index.css';
 import React from 'react';
 import * as serviceWorker from './serviceWorkerRegistration';
-import { ThemeProvider } from './ThemeProvider';
+import { ThemeProvider } from './providers/ThemeProvider';
 import { createBrowserHistory } from 'history';
 import { ApolloProvider } from '@apollo/client';
 import { apolloClient } from './apollo';
-import { Auth0Provider } from '@auth0/auth0-react';
-import { config } from './common/config';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import LuxonUtils from '@date-io/luxon';
-import { ApolloCacheLoader } from './containers/ApolloCacheLoader';
-import { LogsProvider } from './components/LogsProvider';
+import { ApolloCacheLoader } from './providers/ApolloCacheLoader';
+import { LogsProvider } from './providers/LogsProvider';
 import App from './containers/App/App';
 import ReactDOM from 'react-dom';
-import { CapacitorProvider } from './CapacitorProvider';
+import { CapacitorProvider } from './providers/CapacitorProvider';
+import { AuthProvider } from './providers/AuthProvider';
 
 export const history = createBrowserHistory();
 
 ReactDOM.render(
   <LogsProvider>
-    <Auth0Provider {...config.auth}>
-      <ThemeProvider>
-        <MuiPickersUtilsProvider utils={LuxonUtils}>
+    <ThemeProvider>
+      <MuiPickersUtilsProvider utils={LuxonUtils}>
+        <AuthProvider>
           <ApolloCacheLoader>
             <ApolloProvider client={apolloClient}>
               <CapacitorProvider>
@@ -31,9 +30,9 @@ ReactDOM.render(
               </CapacitorProvider>
             </ApolloProvider>
           </ApolloCacheLoader>
-        </MuiPickersUtilsProvider>
-      </ThemeProvider>
-    </Auth0Provider>
+        </AuthProvider>
+      </MuiPickersUtilsProvider>
+    </ThemeProvider>
   </LogsProvider>,
   document.getElementById('root')
 );

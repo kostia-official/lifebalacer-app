@@ -9,11 +9,17 @@ export interface Auth0User {
   userId: string;
 }
 
+export const auth0Client = new Auth0Client({
+  ...config.auth,
+  client_id: config.auth.clientId,
+  redirect_uri: config.auth.redirectUri,
+  cacheLocation: 'localstorage'
+});
+
 class Auth {
-  private auth0: Auth0Client;
+  public auth0: Auth0Client;
 
   public token: string | null = null;
-  private user: Auth0User | null = null;
 
   private getTokenSilentlyPromise: Promise<string> | null = null;
   private getIdTokenClaimsPromise: Promise<IdToken> | null = null;
@@ -22,7 +28,8 @@ class Auth {
     this.auth0 = new Auth0Client({
       ...config.auth,
       client_id: config.auth.clientId,
-      redirect_uri: config.auth.redirectUri
+      redirect_uri: config.auth.redirectUri,
+      cacheLocation: 'localstorage'
     });
   }
 

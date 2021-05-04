@@ -2,7 +2,7 @@ import { createMuiTheme, ThemeProvider as MaterialThemeProvider } from '@materia
 import CssBaseline from '@material-ui/core/CssBaseline';
 import React from 'react';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
-import { MainColors } from './common/colors';
+import { MainColors } from '../common/colors';
 import { MuiPickersOverrides } from '@material-ui/pickers/typings/overrides';
 
 type overridesNameToClassKey = {

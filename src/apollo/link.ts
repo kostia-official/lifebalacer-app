@@ -1,5 +1,5 @@
 import { setContext } from '@apollo/client/link/context';
-import { authService } from '../services/auth0';
+import { auth0Client } from '../services/auth0';
 import { useTimezone } from '../hooks/useTimezone';
 import { config } from '../common/config';
 import { RetryLink } from '@apollo/client/link/retry';
@@ -8,12 +8,12 @@ import { ApolloLink } from '@apollo/client/link/core';
 import { split, HttpLink } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
 
-const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
+const errorLink = onError(({ graphQLErrors, operation, forward }) => {
   if (graphQLErrors) {
     for (let err of graphQLErrors) {
       switch (err.extensions?.code) {
         case 'UNAUTHENTICATED':
-          authService.invalidateToken();
+          // auth0Client.getTokenSilently().then();
 
           return forward(operation);
       }
@@ -36,7 +36,7 @@ const retryLink = new RetryLink({
 });
 
 const authLink = setContext(async (_, { headers }) => {
-  const token = await authService.getToken();
+  const token = await auth0Client.getTokenSilently();
   const timezone = useTimezone();
 
   return {

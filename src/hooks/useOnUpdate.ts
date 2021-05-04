@@ -1,13 +1,13 @@
 import { useEffect, useCallback, useState } from 'react';
 import { pubsub } from '../services/pubsub';
-import { authService } from '../services/auth0';
 // @ts-ignore
 import { usePageVisibility } from 'react-page-visibility';
+import { useAuth } from './useAuth';
 
 export type PromiseFn = () => Promise<unknown>;
 
 export const useOnUpdate = (channelPrefix: string, toCall: PromiseFn[] = []) => {
-  const userId = authService.getUserId();
+  const { userId } = useAuth();
   const [isRefetching, setIsRefetching] = useState(false);
 
   const onUpdate = useCallback(async () => {
