@@ -26,6 +26,7 @@ import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { FabWrapper } from '../../components/FabWrapper';
 import { EmptyBlock } from '../../components/EmptyBlock';
 import { useLocalNotificationsUpdate } from '../../hooks/useLocalNotificationsUpdate';
+import { useDebugTabBarJump } from '../../hooks/useDebugTabBarJump';
 
 const EntriesLabelsWrapper = styled.div`
   margin: 6px 16px 14px 16px;
@@ -34,6 +35,8 @@ const EntriesLabelsWrapper = styled.div`
 const scrollTargetId = 'entries-wrapper';
 
 const EntriesByDay = React.memo(() => {
+  useDebugTabBarJump();
+
   const { goForwardTo, goForwardToCb } = useNavigationHelpers();
   const { errorMessage, errorTime, onError } = useApolloError();
 

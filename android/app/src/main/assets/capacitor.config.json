@@ -1,7 +1,6 @@
 {
   "appId": "app.bestion.lifebalancer",
   "appName": "Life Balancer",
-  "bundledWebRuntime": true,
   "npmClient": "npm",
   "webDir": "build",
   "plugins": {
@@ -16,8 +15,7 @@
   "backgroundColor": "#303030",
   "ios": { "contentInset": "always" },
   "android": {
-    "backgroundColor": "#303030",
-    "allowMixedContent": true
+    "backgroundColor": "#303030"
   },
   "cordova": {},
   "server": {

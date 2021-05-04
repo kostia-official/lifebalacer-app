@@ -23,6 +23,7 @@ import {
 } from './Navigation';
 
 const BottomTabs = createBottomTabNavigator();
+const tabBarTestID = 'lb-tab-bar';
 
 const tabBarColorSchemas = {
   teal: {
@@ -75,6 +76,7 @@ export const BottomNavigator: React.FC = () => {
       <BottomTabs.Screen
         name="EntriesStack"
         options={{
+          tabBarTestID,
           title: 'Entries',
           tabBarButton: TabBarButton,
           tabBarIcon: ({ color, focused }) => (
