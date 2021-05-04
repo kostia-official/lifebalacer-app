@@ -1,25 +1,11 @@
 import { setContext } from '@apollo/client/link/context';
-import { auth0Client } from '../services/auth0';
+import { auth0Client } from '../common/auth0';
 import { useTimezone } from '../hooks/useTimezone';
 import { config } from '../common/config';
 import { RetryLink } from '@apollo/client/link/retry';
-import { onError } from '@apollo/client/link/error';
 import { ApolloLink } from '@apollo/client/link/core';
 import { split, HttpLink } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
-
-const errorLink = onError(({ graphQLErrors, operation, forward }) => {
-  if (graphQLErrors) {
-    for (let err of graphQLErrors) {
-      switch (err.extensions?.code) {
-        case 'UNAUTHENTICATED':
-          // auth0Client.getTokenSilently().then();
-
-          return forward(operation);
-      }
-    }
-  }
-});
 
 const retryLink = new RetryLink({
   delay: {
@@ -67,4 +53,4 @@ const splitLink = split(
   baseApiLink
 );
 
-export const link = ApolloLink.from([errorLink, retryLink, authLink, splitLink]);
+export const link = ApolloLink.from([retryLink, authLink, splitLink]);

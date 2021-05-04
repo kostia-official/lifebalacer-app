@@ -1,7 +1,7 @@
 import { useAuth0, Auth0ContextInterface } from '@auth0/auth0-react';
 import { useCallback } from 'react';
 import { config } from '../common/config';
-import { Auth0User } from '../services/auth0';
+import { Auth0User } from '../common/auth0';
 
 export interface IUseAuthResult extends Auth0ContextInterface {
   accessToken?: string | null;
