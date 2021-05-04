@@ -17,7 +17,7 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
 
-  height: 100%;
+  height: 100vh;
 `;
 
 const ButtonStyled = styled(Button)`

@@ -1,9 +1,9 @@
 import React from 'react';
-import { Plugins, SplashScreen } from '@capacitor/core';
+import { Plugins } from '@capacitor/core';
 import { useMount } from 'react-use';
 import { MobileAccessibility } from '@ionic-native/mobile-accessibility';
 
-const { App } = Plugins;
+const { App, SplashScreen } = Plugins;
 
 App.addListener('appUrlOpen', async ({ url }) => {
   if (url) {

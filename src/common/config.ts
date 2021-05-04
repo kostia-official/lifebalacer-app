@@ -2,6 +2,7 @@ import { Auth0ProviderOptions } from '@auth0/auth0-react';
 
 class Config {
   host = window.location.origin;
+  isCapacitorLocal = window.location.origin === 'http://localhost';
   isDev = process.env.NODE_ENV !== 'production';
   stage = process.env.STAGE || 'dev';
   apiUrl = process.env.REACT_APP_API_URL;
@@ -9,7 +10,7 @@ class Config {
   auth: Auth0ProviderOptions = {
     domain: 'rewarder.eu.auth0.com',
     clientId: process.env.REACT_APP_AUTH0_CLIENT_ID!,
-    redirectUri: this.host + '/auth',
+    redirectUri: this.isCapacitorLocal ? 'https://web.lifebalancer.app' : this.host + '/auth',
     responseType: 'token id_token',
     scope: 'openid email profile',
     audience: 'rewarder-api',
