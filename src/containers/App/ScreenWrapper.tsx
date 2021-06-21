@@ -14,6 +14,7 @@ export interface PageWrapperProps {
   errorMessage?: string;
   errorTime?: number;
   id?: string;
+  unmountOnHide?: boolean;
 }
 
 const Scroll = styled.div<{ $height: string }>`
@@ -39,7 +40,8 @@ export const ScreenWrapper: React.FC<PageWrapperProps> = ({
   errorTime = Date.now(),
   isLoading = false,
   children,
-  id
+  id,
+  unmountOnHide
 }) => {
   const [, setIsScrolling] = useIsScrolling();
   const scrollRef = React.useRef<HTMLDivElement>(null);
@@ -65,16 +67,16 @@ export const ScreenWrapper: React.FC<PageWrapperProps> = ({
       <Scroll {...{ id }} ref={scrollRef} $height={screenHeight}>
         <ErrorMessage errorMessage={errorMessage} errorTime={errorTime} />
 
-        <Showable isShow={isLoading}>
+        <Showable isShow={isLoading} unmountOnHide={unmountOnHide}>
           <Spinner />
         </Showable>
 
-        <Showable isShow={!isLoading}>
+        <Showable isShow={!isLoading} unmountOnHide={unmountOnHide}>
           <ContentWrapper>{children}</ContentWrapper>
         </Showable>
       </Scroll>
     );
-  }, [children, errorMessage, errorTime, id, isLoading, screenHeight]);
+  }, [unmountOnHide, children, errorMessage, errorTime, id, isLoading, screenHeight]);
 
   return isDesktop ? (
     <Wrapper>

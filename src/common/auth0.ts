@@ -2,7 +2,7 @@ import { config } from './config';
 import { Auth0Client } from '@auth0/auth0-spa-js';
 
 export interface Auth0User {
-  name: string;
+  name?: string;
   username: string;
   email: string;
   picture: string;

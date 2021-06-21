@@ -37,7 +37,7 @@ export const items = [
     screen: 'RemindersStack'
   },
   {
-    name: 'Premium Plan',
+    name: 'Subscription',
     icon: 'stars',
     screen: 'PremiumPlan',
     isInternalTesting: true

@@ -33,7 +33,10 @@ const Footer = styled.div`
 export const Auth = () => {
   const { params } = useRoute<RouteProp<NavigationParams, 'Auth'>>();
   const { goForwardToCb } = useNavigationHelpers();
-  const { login, error, isLoading } = useAuth();
+  const { login, error, isLoading, isAuthenticated } = useAuth();
+
+  console.log('params', params);
+  console.log('useAuth', { isAuthenticated, error });
 
   const errorMessage = params?.error_description || error?.message || '';
 

@@ -11,7 +11,9 @@ App.addListener('appUrlOpen', async ({ url }) => {
       await Plugins.Browser.close();
     } catch (e) {}
 
-    window.location.href = url;
+    const { origin } = new URL(url);
+
+    window.window.location.href = url.replace(origin, '');
   }
 });
 

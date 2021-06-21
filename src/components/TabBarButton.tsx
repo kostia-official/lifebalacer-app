@@ -17,7 +17,6 @@ export const TabBarButton: React.FC<BottomTabBarButtonProps> = ({
   style,
   onPress,
   to,
-  accessibilityRole,
   ...rest
 }) => {
   return (

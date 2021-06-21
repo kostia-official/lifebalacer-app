@@ -5,12 +5,12 @@ class Config {
   isCapacitorLocal = window.location.origin === 'http://localhost';
   isDev = process.env.NODE_ENV !== 'production';
   stage = process.env.STAGE || 'dev';
-  apiUrl = process.env.REACT_APP_API_URL;
+  apiUrl = process.env.REACT_APP_API_URL!;
   warmApiUrl = process.env.REACT_APP_WARM_API_URL;
   auth: Auth0ProviderOptions = {
     domain: 'rewarder.eu.auth0.com',
     clientId: process.env.REACT_APP_AUTH0_CLIENT_ID!,
-    redirectUri: this.isCapacitorLocal ? 'https://web.lifebalancer.app' : this.host + '/auth',
+    redirectUri: (this.isCapacitorLocal ? 'https://web.lifebalancer.app' : this.host) + '/auth',
     responseType: 'token id_token',
     scope: 'openid email profile',
     audience: 'rewarder-api',

@@ -35,11 +35,11 @@ const authLink = setContext(async (_, { headers }) => {
 });
 
 const baseApiLink = new HttpLink({
-  uri: config.apiUrl
+  uri: config.apiUrl + '/graphql'
 });
 
 const warmApiLink = new HttpLink({
-  uri: config.warmApiUrl
+  uri: config.warmApiUrl + '/graphql'
 });
 
 const splitLink = split(

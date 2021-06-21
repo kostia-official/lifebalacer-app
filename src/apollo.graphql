@@ -308,6 +308,10 @@ mutation UpsertPushToken($data: PushTokenUpsertInput!) {
   }
 }
 
+mutation ApproveStoreSubscription($storeReceipt: String!, $platform: SubscriptionPlatform!) {
+  approveStoreSubscription(storeReceipt: $storeReceipt, platform: $platform)
+}
+
 query GetTodoistActivity {
   todoistActivity @client {
     ...ActivityResult
@@ -320,6 +324,8 @@ query GetPaymentUrl($callbackUrl: String!) {
 
 query GetSubscription {
   subscription {
-    isPremium
+    _id
+    productId
+    status
   }
 }

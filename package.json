@@ -1,5 +1,5 @@
 {
-  "name": "app-rewarder",
+  "name": "lifebalancer-ui",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -34,6 +34,7 @@
     "@iconify/react": "^1.1.4",
     "@ionic-native/core": "^5.32.1",
     "@ionic-native/device": "^5.32.1",
+    "@ionic-native/in-app-purchase-2": "^5.32.1",
     "@ionic-native/mobile-accessibility": "^5.32.1",
     "@ionic-native/network": "^5.32.1",
     "@material-ui/core": "^4.11.0",
@@ -52,6 +53,7 @@
     "console-feed": "^3.2.1",
     "cordova-plugin-device": "^2.0.3",
     "cordova-plugin-network-information": "^2.0.2",
+    "cordova-plugin-purchase": "^10.5.3",
     "devextreme": "^20.2.5",
     "devextreme-react": "^20.2.5",
     "emoji-mart": "^3.0.0",
@@ -85,6 +87,7 @@
     "react-scroll-restoration": "^1.0.6",
     "react-spinners": "^0.10.4",
     "react-swipeable": "^5.5.1",
+    "react-textfit": "^1.1.1",
     "react-transition-group": "^4.4.1",
     "react-use": "^15.3.4",
     "remeda": "0.0.22",

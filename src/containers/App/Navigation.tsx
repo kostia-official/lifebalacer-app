@@ -81,6 +81,7 @@ export const linking: LinkingOptions = {
             screens: {
               Other: 'other',
               Reminders: 'other/reminders',
+              PremiumPlan: 'other/premium',
               About: 'other/about',
               PrivacyPolicy: 'other/about/privacy-policy',
               TermsAndConditions: 'other/about/terms-conditions',

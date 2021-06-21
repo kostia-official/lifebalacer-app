@@ -47,6 +47,16 @@ const Other = () => {
           </>
         )}
 
+        {isInternalTestUser && (
+          <ListItem button onClick={goForwardToCb('PremiumPlan')}>
+            <ListItemIconStyled>
+              <Icon>stars</Icon>
+            </ListItemIconStyled>
+
+            <ListItemText primary="Premium Subscription" />
+          </ListItem>
+        )}
+
         <ListItem button onClick={goForwardToCb('Reminders')}>
           <ListItemIconStyled>
             <Icon>notifications</Icon>
@@ -54,16 +64,6 @@ const Other = () => {
 
           <ListItemText primary="Reminders" />
         </ListItem>
-
-        {isInternalTestUser && (
-          <ListItem button onClick={goForwardToCb('PremiumPlan')}>
-            <ListItemIconStyled>
-              <Icon>stars</Icon>
-            </ListItemIconStyled>
-
-            <ListItemText primary="Premium Plan" />
-          </ListItem>
-        )}
 
         <ListItem button onClick={goForwardToCb('About')}>
           <ListItemIconStyled>
