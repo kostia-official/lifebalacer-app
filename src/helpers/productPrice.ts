@@ -1,6 +1,6 @@
 import { IAPProduct } from '@ionic-native/in-app-purchase-2';
-import { DraftProduct } from '../containers/PremiumPlan/PremiumPlan';
 import { round } from './round';
+import { DraftProduct } from '../common/subscriptionProducts';
 
 export const getPriceText = (product: IAPProduct | undefined, draftProduct: DraftProduct) => {
   return product?.price || `$${draftProduct.price}`;

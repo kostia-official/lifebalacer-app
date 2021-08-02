@@ -3,10 +3,13 @@ import { Icon, List, ListItem, ListItemIcon, ListItemText, Divider } from '@mate
 import { useNavigationHelpers } from '../hooks/useNavigationHelpers';
 import { ScreenWrapper } from './App/ScreenWrapper';
 import { useAuth } from '../hooks/useAuth';
-import { UserListItemContent } from '../components/UserListItemContent';
+import { UserListItemContent } from '../components/UserListItem/UserListItemContent';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { useIsInternalTestUser } from '../hooks/useIsInternalTestUser';
 import styled from 'styled-components';
+import { Icon as Iconify } from '@iconify/react';
+import outlineWorkspacePremium from '@iconify-icons/ic/outline-workspace-premium';
+import { useSubscriptionStatus } from '../hooks/useSubscriptionStatus';
 
 const UserListItemContentWrapper = styled.div`
   margin-left: -9px;
@@ -29,6 +32,8 @@ const Other = () => {
   const { user, logout } = useAuth();
   const isInternalTestUser = useIsInternalTestUser();
 
+  const { isPremium } = useSubscriptionStatus({ fetchPolicy: 'cache-first' });
+
   return (
     <ScreenWrapper>
       <List disablePadding>
@@ -37,7 +42,12 @@ const Other = () => {
             <ListItem>
               <UserListItemContentWrapper>
                 <UserListItemContent
-                  user={{ avatar: user?.picture, email: user?.email, name: user?.username }}
+                  user={{
+                    avatar: user?.picture,
+                    email: user?.email,
+                    name: user?.username,
+                    isPremium
+                  }}
                   interval={14}
                 />
               </UserListItemContentWrapper>
@@ -50,7 +60,7 @@ const Other = () => {
         {isInternalTestUser && (
           <ListItem button onClick={goForwardToCb('PremiumPlan')}>
             <ListItemIconStyled>
-              <Icon>stars</Icon>
+              <Iconify icon={outlineWorkspacePremium} width={26} />
             </ListItemIconStyled>
 
             <ListItemText primary="Premium Subscription" />

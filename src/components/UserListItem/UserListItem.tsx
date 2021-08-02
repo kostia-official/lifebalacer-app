@@ -1,16 +1,10 @@
 import React, { Fragment, useCallback, useState } from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import { Menu, MenuItem } from '@material-ui/core';
-import { UserListItemContent } from './UserListItemContent';
-
-export interface User {
-  name: string;
-  email: string;
-  avatar: string;
-}
+import { UserListItemContent, UserListItemData } from './UserListItemContent';
 
 export interface UserListItemProps {
-  user?: User;
+  user?: UserListItemData;
   onLogout: () => void;
 }
 
@@ -38,7 +32,13 @@ export const UserListItem: React.FC<UserListItemProps> = ({ user, onLogout }) =>
         <UserListItemContent user={user} />
       </ListItem>
 
-      <Menu anchorEl={menuAnchor} keepMounted open={Boolean(menuAnchor)} onClose={handleClose}>
+      <Menu
+        anchorEl={menuAnchor}
+        anchorOrigin={{ horizontal: 'right', vertical: 'center' }}
+        keepMounted
+        open={Boolean(menuAnchor)}
+        onClose={handleClose}
+      >
         <MenuItem onClick={logout}>Logout</MenuItem>
       </Menu>
     </Fragment>

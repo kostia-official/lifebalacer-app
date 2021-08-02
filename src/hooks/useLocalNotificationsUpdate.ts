@@ -5,7 +5,7 @@ import { Plugins } from '@capacitor/core';
 import { DateTime } from 'luxon';
 import { useMount } from 'react-use';
 import { useNavigationHelpers } from './useNavigationHelpers';
-import { getAppType } from '../common/appType';
+import { getAppType } from '../common/platform';
 
 const { LocalNotifications } = Plugins;
 

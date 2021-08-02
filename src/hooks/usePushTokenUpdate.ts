@@ -8,7 +8,7 @@ import {
   useGetPushTokensQuery
 } from '../generated/apollo';
 import { useSyncedCachePolicy } from './useSyncedCachePolicy';
-import { getAppType } from '../common/appType';
+import { getAppType } from '../common/platform';
 
 export interface UseApolloErrorProps {
   onError?: (error: ApolloError) => void;

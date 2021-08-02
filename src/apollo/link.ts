@@ -4,8 +4,9 @@ import { useTimezone } from '../hooks/useTimezone';
 import { config } from '../common/config';
 import { RetryLink } from '@apollo/client/link/retry';
 import { ApolloLink } from '@apollo/client/link/core';
-import { split, HttpLink } from '@apollo/client';
+import { HttpLink } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
+import { OperationDefinitionNode } from 'graphql/language';
 
 const retryLink = new RetryLink({
   delay: {
@@ -34,23 +35,23 @@ const authLink = setContext(async (_, { headers }) => {
   };
 });
 
-const baseApiLink = new HttpLink({
-  uri: config.apiUrl + '/graphql'
+export const uriResolverLink = new ApolloLink((operation, forward) => {
+  const { operationName, query } = operation;
+  const definition = getMainDefinition(query);
+
+  const isNeedWarmApi = ['GetEntriesByDay', 'GetEntriesByOneDay'].includes(definition.name?.value!);
+
+  const uri = isNeedWarmApi ? config.warmApiUrl + '/graphql' : config.apiUrl + '/graphql';
+
+  const queryType = query.definitions.find(
+    (d) => d.kind === 'OperationDefinition'
+  ) as OperationDefinitionNode;
+
+  operation.setContext(() => ({
+    uri: `${uri}?${queryType?.operation[0]}=${operationName}`
+  }));
+
+  return forward(operation);
 });
 
-const warmApiLink = new HttpLink({
-  uri: config.warmApiUrl + '/graphql'
-});
-
-const splitLink = split(
-  ({ query }) => {
-    const definition = getMainDefinition(query);
-
-    // Run priority queries only on warmer lambda
-    return ['GetEntriesByDay', 'GetEntriesByOneDay'].includes(definition.name?.value!);
-  },
-  warmApiLink,
-  baseApiLink
-);
-
-export const link = ApolloLink.from([retryLink, authLink, splitLink]);
+export const link = ApolloLink.from([retryLink, authLink, uriResolverLink, new HttpLink()]);

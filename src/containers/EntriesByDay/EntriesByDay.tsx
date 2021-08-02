@@ -26,6 +26,7 @@ import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { FabWrapper } from '../../components/FabWrapper';
 import { EmptyBlock } from '../../components/EmptyBlock';
 import { useLocalNotificationsUpdate } from '../../hooks/useLocalNotificationsUpdate';
+import { useCheckStoreSubscription } from '../../hooks/storeSubscription/useCheckStoreSubscription';
 
 const EntriesLabelsWrapper = styled.div`
   margin: 6px 16px 14px 16px;
@@ -39,6 +40,7 @@ const EntriesByDay = React.memo(() => {
 
   usePushTokenUpdate({ onError });
   useLocalNotificationsUpdate({ onError });
+  useCheckStoreSubscription({ onError });
 
   const { statisticText, refetch: refetchStatistic } = useDaysStatisticText({ onError });
 

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Card } from '@material-ui/core';
-import { MainColors } from '../../common/colors';
+import { MainColors } from '../../../common/colors';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import React from 'react';
 // @ts-ignore

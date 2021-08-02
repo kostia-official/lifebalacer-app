@@ -5,17 +5,12 @@ import styled from 'styled-components';
 import { useApolloError } from '../../hooks/useApolloError';
 import { useAuth } from '../../hooks/useAuth';
 import { EmptyBlock } from '../../components/EmptyBlock';
-import { PriceBox } from './PriceBox';
-import { PremiumFeature } from './PremiumFeature';
+import { PriceBox } from './components/PriceBox';
+import { PremiumFeature } from './components/PremiumFeature';
 import { ReactComponent as StatisticsIcon } from '../../assets/statistics.svg';
 import { ReactComponent as MigrationIcon } from '../../assets/migration.svg';
 import { ReactComponent as SupportIcon } from '../../assets/support.svg';
-import { useStoreSubscription } from './hooks/useStoreSubscription';
-import {
-  useGetSubscriptionQuery,
-  SubscriptionStatus,
-  refetchGetSubscriptionQuery
-} from '../../generated/apollo';
+import { useStoreSubscription } from '../../hooks/storeSubscription/useStoreSubscription';
 import { NetworkStatus } from '@apollo/client';
 import { useWatchChanges } from '../../hooks/useWatchChange';
 import { pluralLabel } from '../../helpers/pluralarize';
@@ -26,7 +21,9 @@ import {
   getMonthPriceText,
   getPeriod
 } from '../../helpers/productPrice';
-import { useApproveStoreSubscription } from './hooks/useApproveStoreSubscription';
+import { useSubscriptionStatus } from '../../hooks/useSubscriptionStatus';
+import { getPlatform } from '../../common/platform';
+import { productsMap, yearlyProductId } from '../../common/subscriptionProducts';
 
 const Wrapper = styled.div`
   display: flex;
@@ -43,7 +40,7 @@ const CardsWrapper = styled.div`
   justify-content: center;
 `;
 
-const SubscribeButton = styled(Button)`
+const ButtonStyled = styled(Button)`
   width: calc(80vw + 20px);
   max-width: 420px;
 `;
@@ -54,47 +51,20 @@ const Title = styled.span`
   font-weight: 500;
 `;
 
-const Spinner = styled(CircularProgress)`
+const ButtonSpinner = styled(CircularProgress)`
   margin: 6px 0;
 `;
 
-const yearlyProductId = '3456456456546';
-const monthlyProductId = '12312313123123';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars,unused-imports/no-unused-vars
-const testProductId = '99999999999';
-
-export interface DraftProduct {
-  name: string;
-  price: number;
-  period: 'year' | 'month' | 'week';
-  isBestValue: boolean;
-}
-
-const productsMap: Record<string, DraftProduct> = {
-  [yearlyProductId]: { isBestValue: true, name: 'Yearly', price: 39.99, period: 'year' },
-  [monthlyProductId]: { isBestValue: false, name: 'Monthly', price: 3.99, period: 'month' }
-};
-
 export const PremiumPlan: React.FC = () => {
   const { errorMessage, errorTime, onError } = useApolloError();
-  const { userId } = useAuth();
-
-  const { approve } = useApproveStoreSubscription({
-    onError,
-    refetchQueries: [refetchGetSubscriptionQuery()]
-  });
 
   const {
-    data: subscriptionData,
-    loading: isSubscriptionStatusLoading,
-    networkStatus: subscriptionQueryStatus
-  } = useGetSubscriptionQuery({
-    notifyOnNetworkStatusChange: true,
-    fetchPolicy: 'network-only',
-    onError
-  });
-  const subscription = subscriptionData?.subscription;
-  const isPremium = subscription?.status === SubscriptionStatus.Subscribed;
+    isPremium,
+    subscription,
+    networkStatus: subscriptionQueryStatus,
+    refetch: refetchSubscriptionStatus,
+    loading: isSubscriptionStatusLoading
+  } = useSubscriptionStatus({ onError });
 
   const [selectedProductId, setSelectedProductId] = useState(
     subscription?.productId || yearlyProductId
@@ -106,35 +76,36 @@ export const PremiumPlan: React.FC = () => {
     }
   }, [isPremium, subscription?.productId]);
 
+  const { token } = useAuth();
+
   const {
     isSubscribed,
-    isLoading,
+    isLoading: isStoreLoading,
     subscribe,
     initProducts,
     errorMessage: nativeError,
     products,
-    isVerifying
+    isVerifying,
+    manageSubscriptions
   } = useStoreSubscription({
-    userId,
+    token,
     productsIds: Object.keys(productsMap),
-    onVerified: approve,
+    onVerified: () => refetchSubscriptionStatus(),
     isVerifiedOnBackend: isPremium,
     validator: `${config.apiUrl}/payment/mobile/store`
   });
 
+  const isSubscribing = isVerifying || (isSubscribed && !isPremium);
+
   const updateSelectedProduct = useCallback(
     (id: string) => {
-      if (
-        subscription?.status === SubscriptionStatus.Subscribed ||
-        subscription?.status === SubscriptionStatus.Pending ||
-        isVerifying
-      ) {
+      if (isSubscribing || isPremium) {
         return;
       }
 
       setSelectedProductId(id);
     },
-    [isVerifying, subscription?.status]
+    [isPremium, isSubscribing]
   );
 
   useWatchChanges(() => {
@@ -142,8 +113,6 @@ export const PremiumPlan: React.FC = () => {
       initProducts();
     }
   }, [subscriptionQueryStatus]);
-
-  const isSubscribing = isVerifying || (isSubscribed && !isPremium);
 
   const buttonText = isPremium ? 'Subscribed' : 'Subscribe';
 
@@ -159,7 +128,7 @@ export const PremiumPlan: React.FC = () => {
 
   return (
     <ScreenWrapper
-      isLoading={isLoading || isSubscriptionStatusLoading}
+      isLoading={isStoreLoading || isSubscriptionStatusLoading}
       errorMessage={errorMessage || nativeError}
       errorTime={errorTime}
       unmountOnHide
@@ -230,15 +199,35 @@ export const PremiumPlan: React.FC = () => {
 
         <EmptyBlock height={10} />
 
-        <SubscribeButton
+        <ButtonStyled
           variant="contained"
           color="primary"
           fullWidth
           disabled={isVerifying || isSubscribing || isPremium}
-          onClick={() => subscribe(selectedProductId)}
+          onClick={() => {
+            if (getPlatform() === 'web') {
+              window.location.href =
+                'https://play.google.com/store/apps/details?id=app.lifebalancer.web.twa';
+            } else {
+              subscribe(selectedProductId);
+            }
+          }}
         >
-          {!isPremium && isSubscribing ? <Spinner size={12} color="inherit" /> : buttonText}
-        </SubscribeButton>
+          {!isPremium && isSubscribing ? <ButtonSpinner size={12} color="inherit" /> : buttonText}
+        </ButtonStyled>
+
+        <EmptyBlock height={16} />
+
+        {isPremium && (
+          <ButtonStyled
+            variant="outlined"
+            color="default"
+            fullWidth
+            onClick={() => manageSubscriptions()}
+          >
+            Cancel
+          </ButtonStyled>
+        )}
       </Wrapper>
     </ScreenWrapper>
   );

@@ -4,7 +4,7 @@ import { config } from '../common/config';
 import { Auth0User, auth0Client } from '../common/auth0';
 
 export interface IUseAuthResult extends Auth0ContextInterface {
-  accessToken?: string | null;
+  token?: string;
   userId?: string | null;
   user?: Auth0User;
   login: Function;
@@ -28,12 +28,22 @@ export const useAuth = (): IUseAuthResult => {
   }, []);
 
   const [user, setUser] = useState<Auth0User>(getUserFromClaims(claims));
+  const [token, setToken] = useState<string>();
 
   const updateClaims = useCallback(async () => {
     const claims = await getIdTokenClaims();
 
     setUser(getUserFromClaims(claims));
   }, [getIdTokenClaims, getUserFromClaims]);
+
+  useEffect(() => {
+    (async () => {
+      if (token || !isAuthenticated) return;
+
+      const newToken = await auth0Client.getTokenSilently();
+      setToken(newToken);
+    })();
+  }, [isAuthenticated, token]);
 
   useEffect(() => {
     (async () => {
@@ -59,6 +69,7 @@ export const useAuth = (): IUseAuthResult => {
     isAuthenticated,
     isLoading,
     login,
-    logout
+    logout,
+    token
   };
 };

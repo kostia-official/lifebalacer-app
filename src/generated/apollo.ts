@@ -79,6 +79,10 @@ export type QueryPaymentUrlArgs = {
   callbackUrl: Scalars['String'];
 };
 
+export type QuerySubscriptionArgs = {
+  platform?: Maybe<SubscriptionPlatform>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   upsertPushToken: PushToken;
@@ -91,7 +95,7 @@ export type Mutation = {
   updateEntryById: Entry;
   deleteEntry?: Maybe<Scalars['String']>;
   connectTodoist: Activity;
-  approveStoreSubscription: Scalars['Boolean'];
+  cancelSubscription: Scalars['Boolean'];
 };
 
 export type MutationUpsertPushTokenArgs = {
@@ -136,9 +140,8 @@ export type MutationConnectTodoistArgs = {
   authCode: Scalars['String'];
 };
 
-export type MutationApproveStoreSubscriptionArgs = {
-  storeReceipt: Scalars['String'];
-  platform: SubscriptionPlatform;
+export type MutationCancelSubscriptionArgs = {
+  _id: Scalars['ID'];
 };
 
 export type PushToken = {
@@ -175,6 +178,7 @@ export type Subscription = {
   subscriptionId?: Maybe<Scalars['String']>;
   platform: SubscriptionPlatform;
   status: SubscriptionStatus;
+  expireAt?: Maybe<Scalars['Date']>;
 };
 
 export type Activity = {
@@ -741,16 +745,6 @@ export type UpsertPushTokenMutation = { __typename?: 'Mutation' } & {
   upsertPushToken: { __typename?: 'PushToken' } & Pick<PushToken, '_id' | 'userId' | 'token'>;
 };
 
-export type ApproveStoreSubscriptionMutationVariables = Exact<{
-  storeReceipt: Scalars['String'];
-  platform: SubscriptionPlatform;
-}>;
-
-export type ApproveStoreSubscriptionMutation = { __typename?: 'Mutation' } & Pick<
-  Mutation,
-  'approveStoreSubscription'
->;
-
 export type GetTodoistActivityQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetTodoistActivityQuery = { __typename?: 'Query' } & {
@@ -763,13 +757,24 @@ export type GetPaymentUrlQueryVariables = Exact<{
 
 export type GetPaymentUrlQuery = { __typename?: 'Query' } & Pick<Query, 'paymentUrl'>;
 
-export type GetSubscriptionQueryVariables = Exact<{ [key: string]: never }>;
+export type GetSubscriptionQueryVariables = Exact<{
+  platform?: Maybe<SubscriptionPlatform>;
+}>;
 
 export type GetSubscriptionQuery = { __typename?: 'Query' } & {
   subscription?: Maybe<
     { __typename?: 'Subscription' } & Pick<Subscription, '_id' | 'productId' | 'status'>
   >;
 };
+
+export type CancelSubscriptionMutationVariables = Exact<{
+  _id: Scalars['ID'];
+}>;
+
+export type CancelSubscriptionMutation = { __typename?: 'Mutation' } & Pick<
+  Mutation,
+  'cancelSubscription'
+>;
 
 export const ActivityResultFragmentDoc = gql`
   fragment ActivityResult on Activity {
@@ -2060,53 +2065,6 @@ export type UpsertPushTokenMutationOptions = Apollo.BaseMutationOptions<
   UpsertPushTokenMutation,
   UpsertPushTokenMutationVariables
 >;
-export const ApproveStoreSubscriptionDocument = gql`
-  mutation ApproveStoreSubscription($storeReceipt: String!, $platform: SubscriptionPlatform!) {
-    approveStoreSubscription(storeReceipt: $storeReceipt, platform: $platform)
-  }
-`;
-export type ApproveStoreSubscriptionMutationFn = Apollo.MutationFunction<
-  ApproveStoreSubscriptionMutation,
-  ApproveStoreSubscriptionMutationVariables
->;
-
-/**
- * __useApproveStoreSubscriptionMutation__
- *
- * To run a mutation, you first call `useApproveStoreSubscriptionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useApproveStoreSubscriptionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [approveStoreSubscriptionMutation, { data, loading, error }] = useApproveStoreSubscriptionMutation({
- *   variables: {
- *      storeReceipt: // value for 'storeReceipt'
- *      platform: // value for 'platform'
- *   },
- * });
- */
-export function useApproveStoreSubscriptionMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    ApproveStoreSubscriptionMutation,
-    ApproveStoreSubscriptionMutationVariables
-  >
-) {
-  return Apollo.useMutation<
-    ApproveStoreSubscriptionMutation,
-    ApproveStoreSubscriptionMutationVariables
-  >(ApproveStoreSubscriptionDocument, baseOptions);
-}
-export type ApproveStoreSubscriptionMutationHookResult = ReturnType<
-  typeof useApproveStoreSubscriptionMutation
->;
-export type ApproveStoreSubscriptionMutationResult = Apollo.MutationResult<ApproveStoreSubscriptionMutation>;
-export type ApproveStoreSubscriptionMutationOptions = Apollo.BaseMutationOptions<
-  ApproveStoreSubscriptionMutation,
-  ApproveStoreSubscriptionMutationVariables
->;
 export const GetTodoistActivityDocument = gql`
   query GetTodoistActivity {
     todoistActivity @client {
@@ -2209,8 +2167,8 @@ export function refetchGetPaymentUrlQuery(variables?: GetPaymentUrlQueryVariable
   return { query: GetPaymentUrlDocument, variables: variables };
 }
 export const GetSubscriptionDocument = gql`
-  query GetSubscription {
-    subscription {
+  query GetSubscription($platform: SubscriptionPlatform) {
+    subscription(platform: $platform) {
       _id
       productId
       status
@@ -2230,6 +2188,7 @@ export const GetSubscriptionDocument = gql`
  * @example
  * const { data, loading, error } = useGetSubscriptionQuery({
  *   variables: {
+ *      platform: // value for 'platform'
  *   },
  * });
  */
@@ -2258,3 +2217,47 @@ export type GetSubscriptionQueryResult = Apollo.QueryResult<
 export function refetchGetSubscriptionQuery(variables?: GetSubscriptionQueryVariables) {
   return { query: GetSubscriptionDocument, variables: variables };
 }
+export const CancelSubscriptionDocument = gql`
+  mutation CancelSubscription($_id: ID!) {
+    cancelSubscription(_id: $_id)
+  }
+`;
+export type CancelSubscriptionMutationFn = Apollo.MutationFunction<
+  CancelSubscriptionMutation,
+  CancelSubscriptionMutationVariables
+>;
+
+/**
+ * __useCancelSubscriptionMutation__
+ *
+ * To run a mutation, you first call `useCancelSubscriptionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCancelSubscriptionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [cancelSubscriptionMutation, { data, loading, error }] = useCancelSubscriptionMutation({
+ *   variables: {
+ *      _id: // value for '_id'
+ *   },
+ * });
+ */
+export function useCancelSubscriptionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CancelSubscriptionMutation,
+    CancelSubscriptionMutationVariables
+  >
+) {
+  return Apollo.useMutation<CancelSubscriptionMutation, CancelSubscriptionMutationVariables>(
+    CancelSubscriptionDocument,
+    baseOptions
+  );
+}
+export type CancelSubscriptionMutationHookResult = ReturnType<typeof useCancelSubscriptionMutation>;
+export type CancelSubscriptionMutationResult = Apollo.MutationResult<CancelSubscriptionMutation>;
+export type CancelSubscriptionMutationOptions = Apollo.BaseMutationOptions<
+  CancelSubscriptionMutation,
+  CancelSubscriptionMutationVariables
+>;

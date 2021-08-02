@@ -9,8 +9,8 @@ import _ from 'lodash';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Icon from '@material-ui/core/Icon';
 import { Divider } from '@material-ui/core';
-import { User } from './UserListItemContent';
-import { UserListItem } from './UserListItem';
+import { UserListItemData } from './UserListItem/UserListItemContent';
+import { UserListItem } from './UserListItem/UserListItem';
 
 export const drawerWidth = '250px';
 
@@ -67,7 +67,7 @@ export interface INavigationProps {
   }[];
   onClose?: () => void;
   onItemClick: (path: string) => void;
-  user?: User;
+  user?: UserListItemData;
   onLogout: () => void;
 }
 
