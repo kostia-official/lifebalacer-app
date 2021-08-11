@@ -7,17 +7,17 @@ import { Grid, Paper, Typography, SvgIcon, Icon } from '@material-ui/core';
 import { ActivityType } from '../../generated/apollo';
 import styled from 'styled-components';
 import { Emoji } from '../../components/Emoji';
-import { StreakBlock } from './StreakBlock';
+import { StreakBlock } from './components/StreakBlock';
 import { DateRange } from '@material-ui/icons';
 import { ReactComponent as AverageIcon } from '../../assets/average.svg';
 import { ReactComponent as MedianIcon } from '../../assets/median.svg';
-import { ValueBlock } from './ValueBlock';
-import { WeekdayChart } from './WeekdayChart';
+import { ValueBlock } from './components/ValueBlock';
+import { WeekdayChart } from './components/WeekdayChart';
 import { EmptyBlock } from '../../components/EmptyBlock';
-import { EntryPerDateChart } from './EntryPerDateChart';
-import { CountPerValueChart } from './CountPerValueChart';
+import { EntryPerDateChart } from './components/EntryPerDateChart';
+import { CountPerValueChart } from './components/CountPerValueChart';
 import { RangeDatePicker, RangeDatePickerProps } from '../../components/RangeDatePicker';
-import { useActivityAdvancedStatistic } from '../../hooks/useActivityAdvancedStatistic';
+import { useActivityStatistic } from '../../hooks/useActivityStatistic';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { NavigationParams } from '../App/App';
 
@@ -56,12 +56,14 @@ const ActivityStatistic: React.FC = () => {
   const [dateAfter, setDateAfter] = useState<string | undefined>();
   const [dateBefore, setDateBefore] = useState<string | undefined>();
 
-  const { statistic, isUpdating } = useActivityAdvancedStatistic({
+  const { baseStatistic, advancedStatistic, isUpdating, isLoading } = useActivityStatistic({
     onError,
     variables: { activityId: id, dateAfter, dateBefore }
   });
 
-  const isWithValue = statistic?.activity?.valueType !== ActivityType.Simple;
+  const activity = baseStatistic?.activity;
+
+  const isWithValue = activity?.valueType !== ActivityType.Simple;
 
   const valueBlockGridXs = 6;
   const valueBlockGridSm = 3;
@@ -69,18 +71,23 @@ const ActivityStatistic: React.FC = () => {
   const chartsGridXs = 12;
   const chartsGridSm = isWithValue ? 6 : 12;
 
-  const onDateRangeChange: RangeDatePickerProps['onChange'] = useCallback(async (dateRange) => {
+  const onDateRangeChange: RangeDatePickerProps['onChange'] = useCallback((dateRange) => {
     setDateAfter(dateRange.dateAfter?.toISO());
     setDateBefore(dateRange.dateBefore?.toISO());
   }, []);
 
   return useMemo(() => {
     return (
-      <ScreenWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!statistic}>
+      <ScreenWrapper
+        errorMessage={errorMessage}
+        errorTime={errorTime}
+        isLoading={isLoading && !isUpdating}
+        unmountOnHide
+      >
         <TitlePaper>
           <Typography variant="subtitle1">
-            <Emoji>{statistic?.activity?.emoji}</Emoji>
-            {statistic?.activity?.name}
+            <Emoji>{activity?.emoji}</Emoji>
+            {activity?.name}
           </Typography>
 
           <RangeDatePicker onChange={onDateRangeChange} isLoading={isUpdating} />
@@ -90,7 +97,7 @@ const ActivityStatistic: React.FC = () => {
           <Grid container spacing={1} justify="space-around">
             <Grid item xs={valueBlockGridXs} sm={valueBlockGridSm}>
               <ValueBlock
-                value={statistic?.total}
+                value={baseStatistic?.total}
                 text="Entries count"
                 icon={<Icon>receipt_long</Icon>}
               />
@@ -98,7 +105,7 @@ const ActivityStatistic: React.FC = () => {
 
             <Grid item xs={valueBlockGridXs} sm={valueBlockGridSm}>
               <ValueBlock
-                value={statistic?.perWeek === null ? '—' : `x${statistic?.perWeek}`}
+                value={baseStatistic?.perWeek === null ? '—' : `x${baseStatistic?.perWeek}`}
                 text="Per week"
                 icon={<DateRange />}
               />
@@ -108,7 +115,7 @@ const ActivityStatistic: React.FC = () => {
               <Fragment>
                 <Grid item xs={valueBlockGridXs} sm={valueBlockGridSm}>
                   <ValueBlock
-                    value={statistic?.averageValue}
+                    value={baseStatistic?.averageValue}
                     text="Average value"
                     icon={<AverageSvgIconStyled>{<AverageIcon />}</AverageSvgIconStyled>}
                   />
@@ -116,7 +123,7 @@ const ActivityStatistic: React.FC = () => {
 
                 <Grid item xs={valueBlockGridXs} sm={valueBlockGridSm}>
                   <ValueBlock
-                    value={statistic?.medianValue}
+                    value={baseStatistic?.medianValue}
                     text="Median value"
                     icon={
                       <MedianSvgIconStyled>
@@ -135,7 +142,7 @@ const ActivityStatistic: React.FC = () => {
             <Grid item xs={6}>
               <StreakBlock
                 text={`Streak with activity`}
-                streak={statistic?.streakWith!}
+                streak={baseStatistic?.streakWith!}
                 isWithActivity={true}
               />
             </Grid>
@@ -143,39 +150,40 @@ const ActivityStatistic: React.FC = () => {
             <Grid item xs={6}>
               <StreakBlock
                 text={`Streak without activity`}
-                streak={statistic?.streakWithout!}
+                streak={baseStatistic?.streakWithout!}
                 isWithActivity={false}
               />
             </Grid>
           </Grid>
         </StatBlockPaper>
 
-        <ChartPaper>
-          {statistic?.entriesPerDateGroup && (
-            <EntryPerDateChart data={statistic?.entriesPerDateGroup} isWithValue={isWithValue} />
-          )}
-        </ChartPaper>
+        <EntryPerDateChart
+          data={advancedStatistic?.entriesPerDateGroup}
+          isWithValue={isWithValue}
+          isLocked={!advancedStatistic}
+        />
 
         <EmptyBlock height={8} />
 
         <Grid container spacing={1}>
           <Grid item xs={chartsGridXs} sm={chartsGridSm}>
             <ChartPaper>
-              {statistic?.weekdays && (
-                <WeekdayChart data={statistic.weekdays} isWithValue={isWithValue} />
-              )}
+              <WeekdayChart
+                data={advancedStatistic?.weekdays}
+                isWithValue={isWithValue}
+                isLocked={!advancedStatistic}
+              />
             </ChartPaper>
           </Grid>
 
           {isWithValue && (
             <Grid item xs={chartsGridXs} sm={chartsGridSm}>
               <ChartPaper>
-                {statistic?.countPerValue && (
-                  <CountPerValueChart
-                    data={statistic.countPerValue}
-                    isReverseColors={statistic.activity.isReverseColors}
-                  />
-                )}
+                <CountPerValueChart
+                  data={advancedStatistic?.countPerValue}
+                  isReverseColors={!!activity?.isReverseColors}
+                  isLocked={!advancedStatistic}
+                />
               </ChartPaper>
             </Grid>
           )}
@@ -183,13 +191,16 @@ const ActivityStatistic: React.FC = () => {
       </ScreenWrapper>
     );
   }, [
+    activity,
+    advancedStatistic,
+    baseStatistic,
     chartsGridSm,
     errorMessage,
     errorTime,
+    isLoading,
     isUpdating,
     isWithValue,
-    onDateRangeChange,
-    statistic
+    onDateRangeChange
   ]);
 };
 

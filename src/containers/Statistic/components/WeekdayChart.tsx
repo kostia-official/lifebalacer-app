@@ -1,22 +1,26 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import { WeekdayStatistic } from '../../generated/apollo';
+import { WeekdayStatistic } from '../../../generated/apollo';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { MenuItem, SelectProps } from '@material-ui/core';
-import { ChartData } from '../../common/types';
-import { SelectInline } from '../../components/SelectInline';
+import { ChartData } from '../../../common/types';
+import { SelectInline } from '../../../components/SelectInline';
 import _ from 'lodash';
-import BarChart, { BarChartProps } from '../../components/chart/BarChart';
+import BarChart, { BarChartProps } from '../../../components/chart/BarChart';
 // @ts-ignore
 import generateGradient from 'gradient-color';
 import { teal } from '@material-ui/core/colors';
-import { EmptyStateWrapper } from '../../components/EmptyStateWrapper';
+import { EmptyStateWrapper } from '../../../components/EmptyStateWrapper';
+import { weekdaysChartDataStub } from '../../../stub/chartStub';
+import { LockedFeature } from './LockedFeature';
+import { LockedFeatureWrapper } from './LockedFeatureWrapper';
 
 type WeekdayChartType = keyof WeekdayStatistic;
 
 export interface WeekdayChartProps {
-  data: WeekdayStatistic[];
+  data?: WeekdayStatistic[];
   isWithValue: boolean;
+  isLocked: boolean;
 }
 
 const weekdaysLabelMapper = {
@@ -38,7 +42,7 @@ const TitleWrapper = styled.div`
 const fallbackColor = teal[500];
 const gradientColors = [teal[500], teal[700], teal[800]];
 
-export const WeekdayChart: React.FC<WeekdayChartProps> = ({ data, isWithValue }) => {
+export const WeekdayChart: React.FC<WeekdayChartProps> = ({ data, isWithValue, isLocked }) => {
   const [valueField, setValueField] = useState<WeekdayChartType>(
     isWithValue ? 'valueSum' : 'count'
   );
@@ -48,6 +52,8 @@ export const WeekdayChart: React.FC<WeekdayChartProps> = ({ data, isWithValue })
   }, []);
 
   const finalData = useMemo(() => {
+    if (isLocked || !data) return weekdaysChartDataStub;
+
     const normalizedData: { [key: string]: WeekdayStatistic } = data.reduce((acc, item) => {
       return { ...acc, [String(item.weekday)]: item };
     }, {});
@@ -61,7 +67,7 @@ export const WeekdayChart: React.FC<WeekdayChartProps> = ({ data, isWithValue })
 
       return [...acc, { xValue: weekdayLabel, yValue: _.round(Number(yValue), 1) }];
     }, [] as ChartData[]);
-  }, [data, valueField]);
+  }, [data, isLocked, valueField]);
 
   const sortedYValues = useMemo(() => {
     return finalData.map(({ yValue }) => yValue).sort((a, b) => Number(a) - Number(b));
@@ -86,13 +92,25 @@ export const WeekdayChart: React.FC<WeekdayChartProps> = ({ data, isWithValue })
   );
 
   return (
-    <EmptyStateWrapper isEmpty={data.length === 0}>
+    <EmptyStateWrapper isEmpty={data?.length === 0}>
+      {isLocked && (
+        <LockedFeatureWrapper>
+          <LockedFeature size="small" />
+        </LockedFeatureWrapper>
+      )}
+
       <TitleWrapper>
         {isWithValue ? (
           <SelectInline value={valueField} onChange={onValueFieldChange}>
-            <MenuItem value="valueSum">Value sum</MenuItem>
-            <MenuItem value="averageValue">Average value</MenuItem>
-            <MenuItem value="count">Count</MenuItem>
+            <MenuItem value="valueSum" disabled={isLocked}>
+              Value sum
+            </MenuItem>
+            <MenuItem value="averageValue" disabled={isLocked}>
+              Average value
+            </MenuItem>
+            <MenuItem value="count" disabled={isLocked}>
+              Count
+            </MenuItem>
           </SelectInline>
         ) : (
           <Typography variant="body1" gutterBottom>

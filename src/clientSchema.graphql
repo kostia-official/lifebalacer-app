@@ -1,8 +1,4 @@
-interface BasicStatistic {
-    activity: Activity!
-}
-
-type ActivityStatistic {
+type ActivityBaseStatistic {
     activity: Activity!
 }
 

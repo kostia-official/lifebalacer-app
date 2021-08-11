@@ -1,19 +1,18 @@
-import { useSubscriptionStatus } from '../useSubscriptionStatus';
 import { getPlatform, getSubscriptionPlatform } from '../../common/platform';
 import { useEffect } from 'react';
 import { InAppPurchase2 as store, IAPProduct } from '@ionic-native/in-app-purchase-2';
 import { UseApolloErrorProps } from '../useLocalNotificationsUpdate';
-import { useCancelSubscriptionMutation, refetchGetSubscriptionQuery } from '../../generated/apollo';
+import {
+  useCancelSubscriptionMutation,
+  refetchGetActiveSubscriptionQuery
+} from '../../generated/apollo';
 import { productsMap } from '../../common/subscriptionProducts';
+import { useActiveSubscription } from '../useActiveSubscription';
 
 export const useCheckStoreSubscription = ({ onError }: UseApolloErrorProps) => {
   const isWeb = getPlatform() === 'web';
-  const { subscription } = useSubscriptionStatus({
-    onError,
-    variables: {
-      platform: getSubscriptionPlatform()
-    }
-  });
+  const { subscription } = useActiveSubscription({ onError });
+  const isCurrentPlatform = subscription?.platform === getSubscriptionPlatform();
 
   const [cancelSubscription] = useCancelSubscriptionMutation({
     onError,
@@ -25,11 +24,11 @@ export const useCheckStoreSubscription = ({ onError }: UseApolloErrorProps) => {
         }
       });
     },
-    refetchQueries: [refetchGetSubscriptionQuery()]
+    refetchQueries: [refetchGetActiveSubscriptionQuery()]
   });
 
   useEffect(() => {
-    if (!subscription || isWeb) return;
+    if (!subscription || !isCurrentPlatform || isWeb) return;
 
     const { _id } = subscription;
 
@@ -65,5 +64,5 @@ export const useCheckStoreSubscription = ({ onError }: UseApolloErrorProps) => {
     });
 
     store.refresh();
-  }, [isWeb, subscription, cancelSubscription]);
+  }, [isWeb, subscription, cancelSubscription, isCurrentPlatform]);
 };

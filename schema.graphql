@@ -1,0 +1,296 @@
+type Activity {
+  _id: ID!
+  name: String!
+  emoji: String!
+  userId: String!
+  valueLabel: String
+  valueType: ActivityType!
+  pointsType: PointsType!
+  category: ActivityCategory!
+  points: Float!
+  rangeMeta: RangeMeta
+  todoistMeta: TodoistMeta
+  createdAt: Date!
+  isArchived: Boolean!
+  isWithDescription: Boolean!
+  isWidget: Boolean!
+  isReverseColors: Boolean!
+  isRequired: Boolean!
+  dateIsRequiredSet: Date!
+}
+
+type ActivityAdvancedStatistic {
+  _id: ID!
+  weekdays: [WeekdayStatistic!]!
+  countPerValue: [CountPerValue!]
+  entriesPerDateGroup: EntriesPerDateGroup!
+}
+
+type ActivityBaseStatistic {
+  _id: ID!
+  perWeek: Float
+  total: Int!
+  medianValue: Float
+  averageValue: Float
+  streakWithout: Streak!
+  streakWith: Streak!
+}
+
+enum ActivityCategory {
+  Neutral
+  Positive
+  Negative
+}
+
+type ActivityExtremes {
+  _id: ID!
+  min: Float
+  max: Float
+  valueType: ActivityType!
+}
+
+type ActivityFullStatistic {
+  _id: ID!
+  isAdvancesStatisticAvailable: Boolean!
+  baseStatistic: ActivityBaseStatistic!
+  advancedStatistic: ActivityAdvancedStatistic
+}
+
+enum ActivityType {
+  Simple
+  Value
+  Range
+  Todoist
+}
+
+type Balance {
+  total: Int!
+  year: Int!
+  month: Int!
+  week: Int!
+}
+
+type CountPerValue {
+  value: Int!
+  count: Int!
+}
+
+input CreateActivityInput {
+  _id: ID
+  name: String!
+  emoji: String!
+  valueLabel: String
+  valueType: ActivityType!
+  pointsType: PointsType!
+  category: ActivityCategory!
+  points: Float!
+  rangeMeta: RangeMetaInput
+  todoistMeta: TodoistMetaInput
+  isWithDescription: Boolean
+  isWidget: Boolean
+  isReverseColors: Boolean
+  isRequired: Boolean
+  dateIsRequiredSet: Date
+}
+
+input CreateEntryInput {
+  _id: ID
+  description: String
+  completedAt: Date!
+  activityId: ID!
+  value: Float
+}
+
+"""Date custom scalar type"""
+scalar Date
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type DaysStatistic {
+  total: Int!
+  missing: Int!
+  streak: Int!
+}
+
+type EntriesByDay {
+  date: Date!
+  points: Float!
+  entries: [Entry!]!
+  missing: [EntryMissing!]!
+}
+
+type EntriesPerDateGroup {
+  week: [EntryPerDate!]!
+  month: [EntryPerDate!]!
+}
+
+type Entry {
+  _id: ID!
+  userId: String!
+  description: String
+  completedAt: Date!
+  activityId: ID!
+  activity: Activity!
+  points: Float!
+  value: Float
+}
+
+type EntryMissing {
+  activityId: ID!
+}
+
+type EntryPerDate {
+  valueSum: Float
+  averageValue: Float
+  count: Int!
+  completedAt: String!
+}
+
+type Journal {
+  date: Date!
+  points: Float!
+  entries: [Entry!]!
+}
+
+type Mutation {
+  upsertPushToken(data: PushTokenUpsertInput!): PushToken!
+  upsertReminder(data: ReminderInput!): Reminder!
+  createActivity(data: CreateActivityInput!): Activity!
+  updateActivityById(_id: ID!, data: UpdateActivityInput!): Activity!
+  archiveActivity(_id: ID!): Boolean!
+  restoreActivity(_id: ID!): Boolean!
+  createEntry(data: CreateEntryInput!): Entry!
+  updateEntryById(_id: ID!, data: UpdateEntryInput!): Entry!
+  deleteEntry(_id: ID!): String
+  connectTodoist(authCode: String!): Activity!
+  cancelSubscription(_id: ID!): Boolean!
+}
+
+enum PointsType {
+  Const
+  Linear
+}
+
+type PushToken {
+  _id: ID!
+  token: String!
+  userId: String!
+}
+
+input PushTokenUpsertInput {
+  token: String!
+}
+
+type Query {
+  pushTokens: [PushToken!]!
+  reminder: Reminder
+  entry(_id: ID!): Entry
+  entries: [Entry!]!
+  entriesByOneDay(date: Date!): EntriesByDay
+  entriesByDay(dateAfter: Date, dateBefore: Date): [EntriesByDay!]!
+  daysStatistic: DaysStatistic!
+  activity(_id: ID!): Activity
+  activities: [Activity!]!
+  activitiesExtremes: [ActivityExtremes!]!
+  activitiesStatistic(dateAfter: Date, dateBefore: Date): [ActivityBaseStatistic!]!
+  activityStatistic(activityId: String!, dateAfter: Date, dateBefore: Date): ActivityFullStatistic
+  journal(dateAfter: Date, activities: [String!]): [Journal!]!
+  balance(dateAfter: Date): Balance!
+  paymentUrl(callbackUrl: String!): String!
+  subscription(platform: SubscriptionPlatform): Subscription
+  activeSubscription: Subscription
+}
+
+type RangeMeta {
+  from: Int!
+  to: Int!
+}
+
+input RangeMetaInput {
+  from: Int!
+  to: Int!
+}
+
+type Reminder {
+  _id: ID!
+  createdAt: DateTime!
+  isRepeating: Boolean!
+  remindAt: DateTime!
+  userId: String!
+}
+
+input ReminderInput {
+  _id: ID
+  isRepeating: Boolean
+  remindAt: DateTime!
+}
+
+type Streak {
+  count: Int!
+  from: String
+  to: String
+}
+
+type Subscription {
+  _id: String!
+  userId: String!
+  productId: String!
+  subscriptionId: String
+  platform: SubscriptionPlatform!
+  status: SubscriptionStatus!
+  expireAt: Date
+}
+
+enum SubscriptionPlatform {
+  AppStore
+  GooglePlay
+  Fondy
+}
+
+enum SubscriptionStatus {
+  NotSubscribed
+  Pending
+  Subscribed
+}
+
+type TodoistMeta {
+  todoistUserId: String!
+}
+
+input TodoistMetaInput {
+  todoistUserId: String!
+}
+
+input UpdateActivityInput {
+  name: String
+  emoji: String
+  valueLabel: String
+  valueType: ActivityType
+  pointsType: PointsType
+  category: ActivityCategory
+  points: Float
+  rangeMeta: RangeMetaInput
+  todoistMeta: TodoistMetaInput
+  isWithDescription: Boolean
+  isWidget: Boolean
+  isReverseColors: Boolean
+  isRequired: Boolean
+  dateIsRequiredSet: Date
+}
+
+input UpdateEntryInput {
+  description: String
+  completedAt: Date
+  value: Float
+}
+
+type WeekdayStatistic {
+  weekday: Int!
+  count: Int!
+  valueSum: Float!
+  averageValue: Float
+}
+

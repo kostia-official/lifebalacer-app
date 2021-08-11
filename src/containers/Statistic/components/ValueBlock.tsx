@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import styled, { css } from 'styled-components';
-import { mobileStyles } from '../../common/breakpoints';
+import { mobileStyles } from '../../../common/breakpoints';
 
 export interface ValueBlockProps {
   value?: number | string | null;

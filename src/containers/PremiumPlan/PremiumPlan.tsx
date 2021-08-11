@@ -21,9 +21,10 @@ import {
   getMonthPriceText,
   getPeriod
 } from '../../helpers/productPrice';
-import { useSubscriptionStatus } from '../../hooks/useSubscriptionStatus';
+import { useActiveSubscription } from '../../hooks/useActiveSubscription';
 import { getPlatform } from '../../common/platform';
 import { productsMap, yearlyProductId } from '../../common/subscriptionProducts';
+import { useDeleteFieldFromCache } from '../../hooks/useDeleteFieldFromCache';
 
 const Wrapper = styled.div`
   display: flex;
@@ -64,7 +65,7 @@ export const PremiumPlan: React.FC = () => {
     networkStatus: subscriptionQueryStatus,
     refetch: refetchSubscriptionStatus,
     loading: isSubscriptionStatusLoading
-  } = useSubscriptionStatus({ onError });
+  } = useActiveSubscription({ onError, fetchPolicy: 'network-only' });
 
   const [selectedProductId, setSelectedProductId] = useState(
     subscription?.productId || yearlyProductId
@@ -78,19 +79,23 @@ export const PremiumPlan: React.FC = () => {
 
   const { token } = useAuth();
 
+  const deleteFromCache = useDeleteFieldFromCache();
+
   const {
     isSubscribed,
     isLoading: isStoreLoading,
     subscribe,
     initProducts,
-    errorMessage: nativeError,
     products,
     isVerifying,
     manageSubscriptions
   } = useStoreSubscription({
     token,
     productsIds: Object.keys(productsMap),
-    onVerified: () => refetchSubscriptionStatus(),
+    onVerified: () => {
+      refetchSubscriptionStatus();
+      deleteFromCache('activityAdvancedStatistic');
+    },
     isVerifiedOnBackend: isPremium,
     validator: `${config.apiUrl}/payment/mobile/store`
   });
@@ -129,7 +134,7 @@ export const PremiumPlan: React.FC = () => {
   return (
     <ScreenWrapper
       isLoading={isStoreLoading || isSubscriptionStatusLoading}
-      errorMessage={errorMessage || nativeError}
+      errorMessage={errorMessage}
       errorTime={errorTime}
       unmountOnHide
     >

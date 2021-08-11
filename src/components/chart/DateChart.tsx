@@ -19,6 +19,7 @@ import { isMobile } from 'react-device-detect';
 import _ from 'lodash';
 import { useExtremes } from '../../hooks/useExtremes';
 import { chartDataComparator } from './chartDataComparator';
+import ContainerDimensions from 'react-container-dimensions';
 
 export interface Props {
   data: ChartData[];
@@ -73,52 +74,58 @@ const DateChart: React.FC<Props> = React.memo(({ data, dateGroup }) => {
 
   return useMemo(() => {
     return (
-      <Wrapper>
-        <Chart
-          key={dateGroup} // for proper transition on dateGroup change
-          dataSource={data}
-          onZoomEnd={zoomRange}
-        >
-          <Animation duration={600} />
+      // Need because Chart lost it's width
+      // on rerender when not visible
+      <ContainerDimensions>
+        {({ width }) => (
+          <Wrapper>
+            <Chart
+              key={dateGroup} // for proper transition on dateGroup change
+              dataSource={data}
+              onZoomEnd={zoomRange}
+            >
+              <Animation duration={600} />
 
-          <Size height={250} />
+              <Size height={250} width={width} />
 
-          <Series
-            valueField="yValue"
-            argumentField="xValue"
-            color={ProductivityColors.Productive}
-            showInLegend={false}
-            type="spline"
-            point={{ size: isMobile ? 14 : 12 }}
-          />
+              <Series
+                valueField="yValue"
+                argumentField="xValue"
+                color={ProductivityColors.Productive}
+                showInLegend={false}
+                type="spline"
+                point={{ size: isMobile ? 14 : 12 }}
+              />
 
-          <ValueAxis
-            visualRange={[extremes.min, extremes.max]}
-            visible={!isEmptyData}
-            tick={{ visible: !isEmptyData }}
-            grid={{ visible: !isEmptyData }}
-          />
+              <ValueAxis
+                visualRange={[extremes.min, extremes.max]}
+                visible={!isEmptyData}
+                tick={{ visible: !isEmptyData }}
+                grid={{ visible: !isEmptyData }}
+              />
 
-          <ArgumentAxis
-            defaultVisualRange={defaultVisualRange}
-            discreteAxisDivisionMode="crossLabels"
-          >
-            <Label
-              rotationAngle={-45}
-              overlappingBehavior="rotate"
-              alignment="center"
-              wordWrap="none"
-              customizeText={customizeXLabel}
-            />
-          </ArgumentAxis>
+              <ArgumentAxis
+                defaultVisualRange={defaultVisualRange}
+                discreteAxisDivisionMode="crossLabels"
+              >
+                <Label
+                  rotationAngle={-45}
+                  overlappingBehavior="rotate"
+                  alignment="center"
+                  wordWrap="none"
+                  customizeText={customizeXLabel}
+                />
+              </ArgumentAxis>
 
-          <Crosshair enabled={true} dashStyle="dot" color={ProductivityColors.Lazy}>
-            <Label visible={true} customizeText={customizeCrosshairLabel} />
-          </Crosshair>
+              <Crosshair enabled={true} dashStyle="dot" color={ProductivityColors.Lazy}>
+                <Label visible={true} customizeText={customizeCrosshairLabel} />
+              </Crosshair>
 
-          <ZoomAndPan argumentAxis={'both'} valueAxis="none" />
-        </Chart>
-      </Wrapper>
+              <ZoomAndPan argumentAxis={'both'} valueAxis="none" />
+            </Chart>
+          </Wrapper>
+        )}
+      </ContainerDimensions>
     );
   }, [
     customizeCrosshairLabel,

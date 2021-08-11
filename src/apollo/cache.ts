@@ -5,8 +5,11 @@ import { ActivityType } from '../generated/apollo';
 
 export const cache = new InMemoryCache({
   typePolicies: {
+    ActivityBaseStatistic: {
+      keyFields: ['dateAfterKey', '_id']
+    },
     ActivityAdvancedStatistic: {
-      keyFields: ['dateAfter', '_id']
+      keyFields: ['dateAfterKey', '_id']
     },
     EntriesByDay: {
       keyFields: ['date'],
@@ -28,6 +31,9 @@ export const cache = new InMemoryCache({
     },
     Query: {
       fields: {
+        activityAdvancedStatistic: {
+          merge: (_, incoming) => incoming
+        },
         todoistActivity: {
           read(_, { readField }) {
             const activities = readField<Reference[]>('activities');

@@ -19,11 +19,13 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  activeSubscription?: Maybe<Subscription>;
   activities: Array<Activity>;
   activitiesExtremes: Array<ActivityExtremes>;
-  activitiesStatistic: Array<ActivityStatistic>;
+  activitiesStatistic: Array<ActivityBaseStatistic>;
   activity?: Maybe<Activity>;
-  activityAdvancedStatistic: ActivityAdvancedStatistic;
+  activityAdvancedStatistic?: Maybe<ActivityAdvancedStatistic>;
+  activityBaseStatistic: ActivityBaseStatistic;
   balance: Balance;
   daysStatistic: DaysStatistic;
   entries: Array<Entry>;
@@ -48,6 +50,12 @@ export type QueryActivityArgs = {
 };
 
 export type QueryActivityAdvancedStatisticArgs = {
+  activityId: Scalars['String'];
+  dateAfter?: Maybe<Scalars['Date']>;
+  dateBefore?: Maybe<Scalars['Date']>;
+};
+
+export type QueryActivityBaseStatisticArgs = {
   activityId: Scalars['String'];
   dateAfter?: Maybe<Scalars['Date']>;
   dateBefore?: Maybe<Scalars['Date']>;
@@ -281,10 +289,12 @@ export type EntriesPerDateGroup = {
   month: Array<EntryPerDate>;
 };
 
-export type BasicStatistic = {
+export type ActivityBaseStatistic = {
+  __typename?: 'ActivityBaseStatistic';
   _id: Scalars['ID'];
   activity: Activity;
   averageValue?: Maybe<Scalars['Float']>;
+  dateAfterKey: Scalars['String'];
   medianValue?: Maybe<Scalars['Float']>;
   perWeek?: Maybe<Scalars['Float']>;
   streakWith: Streak;
@@ -292,31 +302,13 @@ export type BasicStatistic = {
   total: Scalars['Int'];
 };
 
-export type ActivityStatistic = BasicStatistic & {
-  __typename?: 'ActivityStatistic';
-  _id: Scalars['ID'];
-  activity: Activity;
-  averageValue?: Maybe<Scalars['Float']>;
-  medianValue?: Maybe<Scalars['Float']>;
-  perWeek?: Maybe<Scalars['Float']>;
-  streakWith: Streak;
-  streakWithout: Streak;
-  total: Scalars['Int'];
-};
-
-export type ActivityAdvancedStatistic = BasicStatistic & {
+export type ActivityAdvancedStatistic = {
   __typename?: 'ActivityAdvancedStatistic';
   _id: Scalars['ID'];
   activity: Activity;
-  averageValue?: Maybe<Scalars['Float']>;
   countPerValue?: Maybe<Array<CountPerValue>>;
-  dateAfter?: Maybe<Scalars['String']>;
+  dateAfterKey: Scalars['String'];
   entriesPerDateGroup: EntriesPerDateGroup;
-  medianValue?: Maybe<Scalars['Float']>;
-  perWeek?: Maybe<Scalars['Float']>;
-  streakWith: Streak;
-  streakWithout: Streak;
-  total: Scalars['Int'];
   weekdays: Array<WeekdayStatistic>;
 };
 
@@ -592,6 +584,18 @@ export type EntryPerDateFragmentFragment = { __typename?: 'EntryPerDate' } & Pic
   'averageValue' | 'completedAt' | 'count' | 'valueSum'
 >;
 
+export type ActivityBaseStatisticFragmentFragment = { __typename?: 'ActivityBaseStatistic' } & Pick<
+  ActivityBaseStatistic,
+  '_id' | 'dateAfterKey' | 'total' | 'perWeek' | 'medianValue' | 'averageValue'
+> & {
+    activity: { __typename?: 'Activity' } & Pick<
+      Activity,
+      'name' | 'emoji' | 'valueType' | 'isRequired' | 'isReverseColors'
+    >;
+    streakWith: { __typename?: 'Streak' } & Pick<Streak, 'count' | 'from' | 'to'>;
+    streakWithout: { __typename?: 'Streak' } & Pick<Streak, 'count' | 'from' | 'to'>;
+  };
+
 export type GetActivitiesStatisticQueryVariables = Exact<{
   dateAfter?: Maybe<Scalars['Date']>;
   dateBefore?: Maybe<Scalars['Date']>;
@@ -599,51 +603,44 @@ export type GetActivitiesStatisticQueryVariables = Exact<{
 
 export type GetActivitiesStatisticQuery = { __typename?: 'Query' } & {
   activitiesStatistic: Array<
-    { __typename?: 'ActivityStatistic' } & Pick<
-      ActivityStatistic,
-      '_id' | 'total' | 'perWeek' | 'medianValue' | 'averageValue'
-    > & {
-        activity: { __typename?: 'Activity' } & Pick<
-          Activity,
-          'name' | 'emoji' | 'valueType' | 'isRequired' | 'isReverseColors'
-        >;
-        streakWith: { __typename?: 'Streak' } & Pick<Streak, 'count' | 'from' | 'to'>;
-        streakWithout: { __typename?: 'Streak' } & Pick<Streak, 'count' | 'from' | 'to'>;
-      }
+    { __typename?: 'ActivityBaseStatistic' } & ActivityBaseStatisticFragmentFragment
   >;
 };
 
-export type GetActivityAdvancedStatisticQueryVariables = Exact<{
+export type GetActivityStatisticQueryVariables = Exact<{
   activityId: Scalars['String'];
   dateAfter?: Maybe<Scalars['Date']>;
   dateBefore?: Maybe<Scalars['Date']>;
 }>;
 
-export type GetActivityAdvancedStatisticQuery = { __typename?: 'Query' } & {
-  activityAdvancedStatistic: { __typename?: 'ActivityAdvancedStatistic' } & Pick<
-    ActivityAdvancedStatistic,
-    '_id' | 'dateAfter' | 'total' | 'perWeek' | 'medianValue' | 'averageValue'
-  > & {
-      activity: { __typename?: 'Activity' } & Pick<
-        Activity,
-        'name' | 'emoji' | 'valueType' | 'isRequired' | 'isReverseColors'
-      >;
-      streakWith: { __typename?: 'Streak' } & Pick<Streak, 'count' | 'from' | 'to'>;
-      streakWithout: { __typename?: 'Streak' } & Pick<Streak, 'count' | 'from' | 'to'>;
-      weekdays: Array<
-        { __typename?: 'WeekdayStatistic' } & Pick<
-          WeekdayStatistic,
-          'weekday' | 'count' | 'valueSum' | 'averageValue'
-        >
-      >;
-      countPerValue?: Maybe<
-        Array<{ __typename?: 'CountPerValue' } & Pick<CountPerValue, 'count' | 'value'>>
-      >;
-      entriesPerDateGroup: { __typename?: 'EntriesPerDateGroup' } & {
-        week: Array<{ __typename?: 'EntryPerDate' } & EntryPerDateFragmentFragment>;
-        month: Array<{ __typename?: 'EntryPerDate' } & EntryPerDateFragmentFragment>;
-      };
-    };
+export type GetActivityStatisticQuery = { __typename?: 'Query' } & {
+  activityBaseStatistic: {
+    __typename?: 'ActivityBaseStatistic';
+  } & ActivityBaseStatisticFragmentFragment;
+  activityAdvancedStatistic?: Maybe<
+    { __typename?: 'ActivityAdvancedStatistic' } & Pick<
+      ActivityAdvancedStatistic,
+      '_id' | 'dateAfterKey'
+    > & {
+        activity: { __typename?: 'Activity' } & Pick<
+          Activity,
+          'name' | 'emoji' | 'valueType' | 'isRequired' | 'isReverseColors'
+        >;
+        weekdays: Array<
+          { __typename?: 'WeekdayStatistic' } & Pick<
+            WeekdayStatistic,
+            'weekday' | 'count' | 'valueSum' | 'averageValue'
+          >
+        >;
+        countPerValue?: Maybe<
+          Array<{ __typename?: 'CountPerValue' } & Pick<CountPerValue, 'count' | 'value'>>
+        >;
+        entriesPerDateGroup: { __typename?: 'EntriesPerDateGroup' } & {
+          week: Array<{ __typename?: 'EntryPerDate' } & EntryPerDateFragmentFragment>;
+          month: Array<{ __typename?: 'EntryPerDate' } & EntryPerDateFragmentFragment>;
+        };
+      }
+  >;
 };
 
 export type GetReminderQueryVariables = Exact<{ [key: string]: never }>;
@@ -757,13 +754,14 @@ export type GetPaymentUrlQueryVariables = Exact<{
 
 export type GetPaymentUrlQuery = { __typename?: 'Query' } & Pick<Query, 'paymentUrl'>;
 
-export type GetSubscriptionQueryVariables = Exact<{
-  platform?: Maybe<SubscriptionPlatform>;
-}>;
+export type GetActiveSubscriptionQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetSubscriptionQuery = { __typename?: 'Query' } & {
-  subscription?: Maybe<
-    { __typename?: 'Subscription' } & Pick<Subscription, '_id' | 'productId' | 'status'>
+export type GetActiveSubscriptionQuery = { __typename?: 'Query' } & {
+  activeSubscription?: Maybe<
+    { __typename?: 'Subscription' } & Pick<
+      Subscription,
+      '_id' | 'productId' | 'status' | 'platform'
+    >
   >;
 };
 
@@ -858,6 +856,33 @@ export const EntryPerDateFragmentFragmentDoc = gql`
     completedAt
     count
     valueSum
+  }
+`;
+export const ActivityBaseStatisticFragmentFragmentDoc = gql`
+  fragment ActivityBaseStatisticFragment on ActivityBaseStatistic {
+    _id
+    dateAfterKey
+    activity @client {
+      name
+      emoji
+      valueType
+      isRequired
+      isReverseColors
+    }
+    total
+    perWeek
+    medianValue
+    averageValue
+    streakWith {
+      count
+      from
+      to
+    }
+    streakWithout {
+      count
+      from
+      to
+    }
   }
 `;
 export const GetActivityDocument = gql`
@@ -1336,30 +1361,10 @@ export function refetchGetDaysStatisticQuery(variables?: GetDaysStatisticQueryVa
 export const GetActivitiesStatisticDocument = gql`
   query GetActivitiesStatistic($dateAfter: Date, $dateBefore: Date) {
     activitiesStatistic(dateAfter: $dateAfter, dateBefore: $dateBefore) {
-      _id
-      activity @client {
-        name
-        emoji
-        valueType
-        isRequired
-        isReverseColors
-      }
-      total
-      perWeek
-      medianValue
-      averageValue
-      streakWith {
-        count
-        from
-        to
-      }
-      streakWithout {
-        count
-        from
-        to
-      }
+      ...ActivityBaseStatisticFragment
     }
   }
+  ${ActivityBaseStatisticFragmentFragmentDoc}
 `;
 
 /**
@@ -1416,35 +1421,24 @@ export function refetchGetActivitiesStatisticQuery(
 ) {
   return { query: GetActivitiesStatisticDocument, variables: variables };
 }
-export const GetActivityAdvancedStatisticDocument = gql`
-  query GetActivityAdvancedStatistic($activityId: String!, $dateAfter: Date, $dateBefore: Date) {
+export const GetActivityStatisticDocument = gql`
+  query GetActivityStatistic($activityId: String!, $dateAfter: Date, $dateBefore: Date) {
+    activityBaseStatistic(activityId: $activityId, dateAfter: $dateAfter, dateBefore: $dateBefore) {
+      ...ActivityBaseStatisticFragment
+    }
     activityAdvancedStatistic(
       activityId: $activityId
       dateAfter: $dateAfter
       dateBefore: $dateBefore
     ) {
       _id
-      dateAfter
+      dateAfterKey
       activity @client {
         name
         emoji
         valueType
         isRequired
         isReverseColors
-      }
-      total
-      perWeek
-      medianValue
-      averageValue
-      streakWith {
-        count
-        from
-        to
-      }
-      streakWithout {
-        count
-        from
-        to
       }
       weekdays {
         weekday
@@ -1466,20 +1460,21 @@ export const GetActivityAdvancedStatisticDocument = gql`
       }
     }
   }
+  ${ActivityBaseStatisticFragmentFragmentDoc}
   ${EntryPerDateFragmentFragmentDoc}
 `;
 
 /**
- * __useGetActivityAdvancedStatisticQuery__
+ * __useGetActivityStatisticQuery__
  *
- * To run a query within a React component, call `useGetActivityAdvancedStatisticQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetActivityAdvancedStatisticQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetActivityStatisticQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetActivityStatisticQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetActivityAdvancedStatisticQuery({
+ * const { data, loading, error } = useGetActivityStatisticQuery({
  *   variables: {
  *      activityId: // value for 'activityId'
  *      dateAfter: // value for 'dateAfter'
@@ -1487,42 +1482,38 @@ export const GetActivityAdvancedStatisticDocument = gql`
  *   },
  * });
  */
-export function useGetActivityAdvancedStatisticQuery(
+export function useGetActivityStatisticQuery(
   baseOptions: Apollo.QueryHookOptions<
-    GetActivityAdvancedStatisticQuery,
-    GetActivityAdvancedStatisticQueryVariables
+    GetActivityStatisticQuery,
+    GetActivityStatisticQueryVariables
   >
 ) {
-  return Apollo.useQuery<
-    GetActivityAdvancedStatisticQuery,
-    GetActivityAdvancedStatisticQueryVariables
-  >(GetActivityAdvancedStatisticDocument, baseOptions);
+  return Apollo.useQuery<GetActivityStatisticQuery, GetActivityStatisticQueryVariables>(
+    GetActivityStatisticDocument,
+    baseOptions
+  );
 }
-export function useGetActivityAdvancedStatisticLazyQuery(
+export function useGetActivityStatisticLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    GetActivityAdvancedStatisticQuery,
-    GetActivityAdvancedStatisticQueryVariables
+    GetActivityStatisticQuery,
+    GetActivityStatisticQueryVariables
   >
 ) {
-  return Apollo.useLazyQuery<
-    GetActivityAdvancedStatisticQuery,
-    GetActivityAdvancedStatisticQueryVariables
-  >(GetActivityAdvancedStatisticDocument, baseOptions);
+  return Apollo.useLazyQuery<GetActivityStatisticQuery, GetActivityStatisticQueryVariables>(
+    GetActivityStatisticDocument,
+    baseOptions
+  );
 }
-export type GetActivityAdvancedStatisticQueryHookResult = ReturnType<
-  typeof useGetActivityAdvancedStatisticQuery
+export type GetActivityStatisticQueryHookResult = ReturnType<typeof useGetActivityStatisticQuery>;
+export type GetActivityStatisticLazyQueryHookResult = ReturnType<
+  typeof useGetActivityStatisticLazyQuery
 >;
-export type GetActivityAdvancedStatisticLazyQueryHookResult = ReturnType<
-  typeof useGetActivityAdvancedStatisticLazyQuery
+export type GetActivityStatisticQueryResult = Apollo.QueryResult<
+  GetActivityStatisticQuery,
+  GetActivityStatisticQueryVariables
 >;
-export type GetActivityAdvancedStatisticQueryResult = Apollo.QueryResult<
-  GetActivityAdvancedStatisticQuery,
-  GetActivityAdvancedStatisticQueryVariables
->;
-export function refetchGetActivityAdvancedStatisticQuery(
-  variables?: GetActivityAdvancedStatisticQueryVariables
-) {
-  return { query: GetActivityAdvancedStatisticDocument, variables: variables };
+export function refetchGetActivityStatisticQuery(variables?: GetActivityStatisticQueryVariables) {
+  return { query: GetActivityStatisticDocument, variables: variables };
 }
 export const GetReminderDocument = gql`
   query GetReminder {
@@ -2166,56 +2157,64 @@ export type GetPaymentUrlQueryResult = Apollo.QueryResult<
 export function refetchGetPaymentUrlQuery(variables?: GetPaymentUrlQueryVariables) {
   return { query: GetPaymentUrlDocument, variables: variables };
 }
-export const GetSubscriptionDocument = gql`
-  query GetSubscription($platform: SubscriptionPlatform) {
-    subscription(platform: $platform) {
+export const GetActiveSubscriptionDocument = gql`
+  query GetActiveSubscription {
+    activeSubscription {
       _id
       productId
       status
+      platform
     }
   }
 `;
 
 /**
- * __useGetSubscriptionQuery__
+ * __useGetActiveSubscriptionQuery__
  *
- * To run a query within a React component, call `useGetSubscriptionQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetSubscriptionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetActiveSubscriptionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetActiveSubscriptionQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetSubscriptionQuery({
+ * const { data, loading, error } = useGetActiveSubscriptionQuery({
  *   variables: {
- *      platform: // value for 'platform'
  *   },
  * });
  */
-export function useGetSubscriptionQuery(
-  baseOptions?: Apollo.QueryHookOptions<GetSubscriptionQuery, GetSubscriptionQueryVariables>
+export function useGetActiveSubscriptionQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetActiveSubscriptionQuery,
+    GetActiveSubscriptionQueryVariables
+  >
 ) {
-  return Apollo.useQuery<GetSubscriptionQuery, GetSubscriptionQueryVariables>(
-    GetSubscriptionDocument,
+  return Apollo.useQuery<GetActiveSubscriptionQuery, GetActiveSubscriptionQueryVariables>(
+    GetActiveSubscriptionDocument,
     baseOptions
   );
 }
-export function useGetSubscriptionLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<GetSubscriptionQuery, GetSubscriptionQueryVariables>
+export function useGetActiveSubscriptionLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetActiveSubscriptionQuery,
+    GetActiveSubscriptionQueryVariables
+  >
 ) {
-  return Apollo.useLazyQuery<GetSubscriptionQuery, GetSubscriptionQueryVariables>(
-    GetSubscriptionDocument,
+  return Apollo.useLazyQuery<GetActiveSubscriptionQuery, GetActiveSubscriptionQueryVariables>(
+    GetActiveSubscriptionDocument,
     baseOptions
   );
 }
-export type GetSubscriptionQueryHookResult = ReturnType<typeof useGetSubscriptionQuery>;
-export type GetSubscriptionLazyQueryHookResult = ReturnType<typeof useGetSubscriptionLazyQuery>;
-export type GetSubscriptionQueryResult = Apollo.QueryResult<
-  GetSubscriptionQuery,
-  GetSubscriptionQueryVariables
+export type GetActiveSubscriptionQueryHookResult = ReturnType<typeof useGetActiveSubscriptionQuery>;
+export type GetActiveSubscriptionLazyQueryHookResult = ReturnType<
+  typeof useGetActiveSubscriptionLazyQuery
 >;
-export function refetchGetSubscriptionQuery(variables?: GetSubscriptionQueryVariables) {
-  return { query: GetSubscriptionDocument, variables: variables };
+export type GetActiveSubscriptionQueryResult = Apollo.QueryResult<
+  GetActiveSubscriptionQuery,
+  GetActiveSubscriptionQueryVariables
+>;
+export function refetchGetActiveSubscriptionQuery(variables?: GetActiveSubscriptionQueryVariables) {
+  return { query: GetActiveSubscriptionDocument, variables: variables };
 }
 export const CancelSubscriptionDocument = gql`
   mutation CancelSubscription($_id: ID!) {

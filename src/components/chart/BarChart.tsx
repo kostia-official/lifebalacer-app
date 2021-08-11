@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import { ChartData } from '../../common/types';
 import { useExtremes } from '../../hooks/useExtremes';
 import { chartDataComparator } from './chartDataComparator';
+import ContainerDimensions from 'react-container-dimensions';
 
 export interface BarChartProps {
   data: ChartData[];
@@ -33,33 +34,39 @@ const BarChart: React.FC<BarChartProps> = React.memo(({ data, customizePoint }) 
     const optionalCustomizePoint = customizePoint ? { customizePoint } : {};
 
     return (
-      <ChartWrapper>
-        <Chart dataSource={data} {...optionalCustomizePoint}>
-          <Animation duration={600} easing="easeOutCubic" />
+      // Need because Chart lost it's width
+      // on rerender when not visible
+      <ContainerDimensions>
+        {({ width }) => (
+          <ChartWrapper>
+            <Chart dataSource={data} {...optionalCustomizePoint}>
+              <Animation duration={600} easing="easeOutCubic" />
 
-          <Size height={140} />
+              <Size height={140} width={width} />
 
-          <ArgumentAxis />
-          <ValueAxis
-            // defaultVisualRange={yDefaultVisualRange}
-            inverted={extremes.max < 0}
-            visible={false}
-            tick={{ visible: false }}
-            grid={{ visible: false }}
-          >
-            <Label visible={false} />
-          </ValueAxis>
+              <ArgumentAxis />
+              <ValueAxis
+                // defaultVisualRange={yDefaultVisualRange}
+                inverted={extremes.max < 0}
+                visible={false}
+                tick={{ visible: false }}
+                grid={{ visible: false }}
+              >
+                <Label visible={false} />
+              </ValueAxis>
 
-          <Series valueField="yValue" argumentField="xValue" type="bar" showInLegend={false}>
-            <Label
-              visible={true}
-              backgroundColor="transparent"
-              verticalOffset={8}
-              border={{ visible: false }}
-            />
-          </Series>
-        </Chart>
-      </ChartWrapper>
+              <Series valueField="yValue" argumentField="xValue" type="bar" showInLegend={false}>
+                <Label
+                  visible={true}
+                  backgroundColor="transparent"
+                  verticalOffset={8}
+                  border={{ visible: false }}
+                />
+              </Series>
+            </Chart>
+          </ChartWrapper>
+        )}
+      </ContainerDimensions>
     );
   }, [customizePoint, data, extremes.max]);
 }, chartDataComparator);

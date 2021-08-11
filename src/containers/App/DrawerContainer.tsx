@@ -4,7 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useIsExpandedDrawer } from '../../hooks/useIsExpandedDrawer';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { useIsInternalTestUser } from '../../hooks/useIsInternalTestUser';
-import { useSubscriptionStatus } from '../../hooks/useSubscriptionStatus';
+import { useActiveSubscription } from '../../hooks/useActiveSubscription';
 
 export const items = [
   {
@@ -64,7 +64,7 @@ export const DrawerContainer: React.FC = () => {
   }, [isInternalTestUser]);
 
   const { user, logout } = useAuth();
-  const { isPremium } = useSubscriptionStatus({ fetchPolicy: 'cache-first' });
+  const { isPremium } = useActiveSubscription({ withSyncedCachePolicy: true });
 
   return (
     <Drawer

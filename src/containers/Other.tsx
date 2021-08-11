@@ -9,7 +9,7 @@ import { useIsInternalTestUser } from '../hooks/useIsInternalTestUser';
 import styled from 'styled-components';
 import { Icon as Iconify } from '@iconify/react';
 import outlineWorkspacePremium from '@iconify-icons/ic/outline-workspace-premium';
-import { useSubscriptionStatus } from '../hooks/useSubscriptionStatus';
+import { useActiveSubscription } from '../hooks/useActiveSubscription';
 
 const UserListItemContentWrapper = styled.div`
   margin-left: -9px;
@@ -32,7 +32,7 @@ const Other = () => {
   const { user, logout } = useAuth();
   const isInternalTestUser = useIsInternalTestUser();
 
-  const { isPremium } = useSubscriptionStatus({ fetchPolicy: 'cache-first' });
+  const { isPremium } = useActiveSubscription({ withSyncedCachePolicy: true });
 
   return (
     <ScreenWrapper>

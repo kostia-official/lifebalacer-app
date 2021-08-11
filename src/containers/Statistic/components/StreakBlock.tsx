@@ -1,9 +1,9 @@
 import React, { Fragment, useCallback } from 'react';
-import { Streak } from '../../generated/apollo';
-import { toLuxon } from '../../helpers/date';
+import { Streak } from '../../../generated/apollo';
+import { toLuxon } from '../../../helpers/date';
 import { DateTime } from 'luxon';
 import { ValueBlock } from './ValueBlock';
-import { pluralLabel } from '../../helpers/pluralarize';
+import { pluralLabel } from '../../../helpers/pluralarize';
 import styled from 'styled-components';
 import { WhatshotOutlined } from '@material-ui/icons';
 import { Whatshot } from '@material-ui/icons';

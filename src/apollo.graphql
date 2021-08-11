@@ -155,61 +155,60 @@ fragment EntryPerDateFragment on EntryPerDate {
   valueSum
 }
 
-query GetActivitiesStatistic($dateAfter: Date, $dateBefore: Date) {
-  activitiesStatistic(dateAfter: $dateAfter, dateBefore: $dateBefore) {
-    _id
-    activity @client {
-      name
-      emoji
-      valueType
-      isRequired
-      isReverseColors
-    }
-    total
-    perWeek
-    medianValue
-    averageValue
-    streakWith {
-      count
-      from
-      to
-    }
-    streakWithout {
-      count
-      from
-      to
-    }
+fragment ActivityBaseStatisticFragment on ActivityBaseStatistic {
+  _id
+  dateAfterKey
+  activity @client {
+    name
+    emoji
+    valueType
+    isRequired
+    isReverseColors
+  }
+  total
+  perWeek
+  medianValue
+  averageValue
+  streakWith {
+    count
+    from
+    to
+  }
+  streakWithout {
+    count
+    from
+    to
   }
 }
 
-query GetActivityAdvancedStatistic($activityId: String!, $dateAfter: Date, $dateBefore: Date) {
+query GetActivitiesStatistic($dateAfter: Date, $dateBefore: Date) {
+  activitiesStatistic(dateAfter: $dateAfter, dateBefore: $dateBefore) {
+    ...ActivityBaseStatisticFragment
+  }
+}
+
+query GetActivityStatistic($activityId: String!, $dateAfter: Date, $dateBefore: Date) {
+  activityBaseStatistic(
+    activityId: $activityId
+    dateAfter: $dateAfter
+    dateBefore: $dateBefore
+  ) {
+    ...ActivityBaseStatisticFragment
+  }
+
   activityAdvancedStatistic(
     activityId: $activityId
     dateAfter: $dateAfter
     dateBefore: $dateBefore
   ) {
     _id
-    dateAfter
+    dateAfterKey
     activity @client {
       name
       emoji
       valueType
       isRequired
       isReverseColors
-    }
-    total
-    perWeek
-    medianValue
-    averageValue
-    streakWith {
-      count
-      from
-      to
-    }
-    streakWithout {
-      count
-      from
-      to
     }
     weekdays {
       weekday
@@ -318,11 +317,12 @@ query GetPaymentUrl($callbackUrl: String!) {
   paymentUrl(callbackUrl: $callbackUrl)
 }
 
-query GetSubscription($platform: SubscriptionPlatform) {
-  subscription(platform: $platform) {
+query GetActiveSubscription {
+  activeSubscription {
     _id
     productId
     status
+    platform
   }
 }
 

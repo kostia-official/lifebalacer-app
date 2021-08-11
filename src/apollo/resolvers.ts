@@ -11,7 +11,7 @@ const activityResolver = async (client: ApolloClient<InMemoryCache>, activityId:
 };
 
 export const resolvers: Resolvers = {
-  ActivityStatistic: {
+  ActivityBaseStatistic: {
     activity: async ({ _id }, _args, { client }) => {
       return activityResolver(client, _id);
     }
