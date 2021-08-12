@@ -1,4 +1,4 @@
-import React, { useState, useCallback, SyntheticEvent } from 'react';
+import React, { useState, useCallback, SyntheticEvent, useRef } from 'react';
 import styled from 'styled-components';
 import {
   FormControl,
@@ -38,7 +38,6 @@ import { EmojiPicker } from './EmojiPicker';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { NavigationParams } from '../App/App';
 import { FabWrapper } from '../../components/FabWrapper';
-import { isIOS } from 'react-device-detect';
 
 const FormContainer = styled.form`
   display: flex;
@@ -70,8 +69,7 @@ const StrictHeightInput = styled(Input)`
 `;
 
 const EmojiInput = styled(StrictHeightInput)`
-  // TODO: Unify emoji style for all devices and reuse styles here
-  font-size: ${isIOS ? '1.25rem' : '1.5rem'};
+  font-size: 20px;
 
   input {
     text-align: center;
@@ -88,7 +86,7 @@ const ActivityForm = () => {
   const { params } = useRoute<RouteProp<NavigationParams, 'ActivityEdit'>>();
   const _id = params.id;
 
-  const isEdit = !!_id;
+  const isEdit = !!_id && _id !== 'create';
 
   const { errorMessage, onError, errorTime } = useApolloError({ isForceShowError: true });
 
@@ -130,40 +128,6 @@ const ActivityForm = () => {
 
   const updateActivityField = useUpdateInput<CreateActivityInput>(setActivity);
   const updateRangeMetaField = useUpdateInput<RangeMeta>(setRangeMeta);
-
-  const onSubmit = useCallback(
-    (e: SyntheticEvent) => {
-      const rangeMetaInput: RangeMetaInput | undefined =
-        activity.valueType === ActivityType.Range
-          ? ({ from: rangeMeta.from, to: rangeMeta.to } as RangeMetaInput)
-          : undefined;
-
-      const formData = {
-        name: activity.name!,
-        emoji: activity.emoji!,
-        valueType: activity.valueType!,
-        pointsType: activity.pointsType!,
-        category: activity.category!,
-        points: _.isNil(activity.points) ? 0 : Number(activity.points),
-        isWithDescription: activity.isWithDescription,
-        isRequired: activity.isRequired,
-        dateIsRequiredSet: activity.dateIsRequiredSet,
-        rangeMeta:
-          activity.valueType === ActivityType.Range
-            ? { from: Number(rangeMetaInput?.from!), to: Number(rangeMetaInput?.to!) }
-            : null
-      };
-
-      if (isEdit) {
-        updateActivity({ variables: { _id, data: formData } }).then();
-      } else {
-        createActivity({ variables: { data: formData } }).then();
-      }
-
-      e.preventDefault();
-    },
-    [activity, rangeMeta, createActivity, updateActivity, _id, isEdit]
-  );
 
   const onToggleIsWithValue: SwitchBaseProps['onChange'] = useCallback((e) => {
     const isCheck: boolean = e.target.checked;
@@ -217,15 +181,55 @@ const ActivityForm = () => {
 
   const [isShowEmojiPicker, setIsShowEmojiPicker] = useState(false);
 
-  const onEmojiClick = useCallback((e) => {
+  const onEmojiClick = useCallback(() => {
     setIsShowEmojiPicker((prev) => !prev);
-    e.stopPropagation();
   }, []);
 
   const onEmojiSelect = useCallback((emoji) => {
     setActivity((prev) => ({ ...prev, emoji }));
     setIsShowEmojiPicker(false);
   }, []);
+
+  const emojiInputRef = useRef<HTMLInputElement>();
+
+  const onSubmit = useCallback(
+    (e: SyntheticEvent) => {
+      e.preventDefault();
+
+      if (!activity.emoji) {
+        emojiInputRef.current?.click();
+        return;
+      }
+
+      const rangeMetaInput: RangeMetaInput | undefined =
+        activity.valueType === ActivityType.Range
+          ? ({ from: rangeMeta.from, to: rangeMeta.to } as RangeMetaInput)
+          : undefined;
+
+      const formData = {
+        name: activity.name!,
+        emoji: activity.emoji!,
+        valueType: activity.valueType!,
+        pointsType: activity.pointsType!,
+        category: activity.category!,
+        points: _.isNil(activity.points) ? 0 : Number(activity.points),
+        isWithDescription: activity.isWithDescription,
+        isRequired: activity.isRequired,
+        dateIsRequiredSet: activity.dateIsRequiredSet,
+        rangeMeta:
+          activity.valueType === ActivityType.Range
+            ? { from: Number(rangeMetaInput?.from!), to: Number(rangeMetaInput?.to!) }
+            : null
+      };
+
+      if (isEdit) {
+        updateActivity({ variables: { _id, data: formData } }).then();
+      } else {
+        createActivity({ variables: { data: formData } }).then();
+      }
+    },
+    [activity, rangeMeta, createActivity, updateActivity, _id, isEdit]
+  );
 
   return (
     <ScreenWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!existingActivity}>
@@ -251,6 +255,7 @@ const ActivityForm = () => {
               Emoji
             </EmojiLabel>
             <EmojiInput
+              ref={emojiInputRef}
               required
               value={activity.emoji}
               onChange={updateActivityField('emoji')}

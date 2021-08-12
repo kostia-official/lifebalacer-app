@@ -322,7 +322,7 @@ const EntriesForm = () => {
           );
         })}
 
-        <FabWrapper>
+        <FabWrapper hideOnKeyboardOpen>
           <FabButton onClick={goBackCb('EntriesByDay')} icon="keyboard_return" />
         </FabWrapper>
       </ScreenWrapper>

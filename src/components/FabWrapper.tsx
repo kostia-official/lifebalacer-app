@@ -4,7 +4,9 @@ import { useIsKeyboardOpen } from '../hooks/useIsKeyboardOpen';
 import { Showable } from './Showable';
 import { useDeviceMediaQuery } from '../hooks/useDeviceMediaQuery';
 
-export interface FabWrapperProps {}
+export interface FabWrapperProps {
+  hideOnKeyboardOpen?: boolean;
+}
 
 const Wrapper = styled.div<{ isMobile: boolean }>`
   position: fixed;
@@ -20,12 +22,14 @@ export const EmptySpaceUnderFab = styled.div`
   height: 96px;
 `;
 
-export const FabWrapper: React.FC<FabWrapperProps> = ({ children }) => {
+export const FabWrapper: React.FC<FabWrapperProps> = ({ children, hideOnKeyboardOpen }) => {
   const isKeyboardOpen = useIsKeyboardOpen();
   const { isMobile } = useDeviceMediaQuery();
 
+  const isHide = hideOnKeyboardOpen && isKeyboardOpen;
+
   return (
-    <Showable isShow={!isKeyboardOpen}>
+    <Showable isShow={!isHide}>
       <Wrapper isMobile={isMobile}>{children}</Wrapper>
     </Showable>
   );
