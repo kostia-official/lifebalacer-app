@@ -38,6 +38,7 @@ import { EmojiPicker } from './EmojiPicker';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { NavigationParams } from '../App/App';
 import { FabWrapper } from '../../components/FabWrapper';
+import { isIOS } from 'react-device-detect';
 
 const FormContainer = styled.form`
   display: flex;
@@ -62,12 +63,15 @@ const EmojiLabel = styled(InputLabel)`
   margin-left: 8px;
 `;
 
-const EmojiInput = styled(Input)`
-  font-size: 20px;
-
-  & .MuiInputBase-input {
-    padding: 2px 0 3px 0;
+const StrictHeightInput = styled(Input)`
+  input {
+    height: 22px;
   }
+`;
+
+const EmojiInput = styled(StrictHeightInput)`
+  // TODO: Unify emoji style for all devices and reuse styles here
+  font-size: ${isIOS ? '1.25rem' : '1.5rem'};
 
   input {
     text-align: center;
@@ -231,7 +235,7 @@ const ActivityForm = () => {
             <InputLabel shrink required>
               Name
             </InputLabel>
-            <Input
+            <StrictHeightInput
               required
               value={activity.name}
               onChange={updateActivityField('name')}
