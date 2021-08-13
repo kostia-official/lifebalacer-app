@@ -34,6 +34,7 @@ import { useRoute, RouteProp } from '@react-navigation/native';
 import { NavigationParams } from '../App/App';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { FabWrapper } from '../../components/FabWrapper';
+import { useDeleteFieldFromCache } from '../../hooks/useDeleteFieldFromCache';
 
 const CategoryWrapper = styled(Card)`
   margin-bottom: 8px;
@@ -116,8 +117,13 @@ const EntriesForm = () => {
     [selectedEntries]
   );
 
+  const deleteField = useDeleteFieldFromCache();
+
   const mutationOptions = {
     onError,
+    onCompleted() {
+      deleteField('journal');
+    },
     refetchQueries: [
       refetchGetDaysStatisticQuery(),
       refetchGetEntriesByDayQuery(),
@@ -125,7 +131,7 @@ const EntriesForm = () => {
       refetchGetActivitiesExtremesQuery()
     ]
   };
-  const [deleteEntryMutation] = useDeleteEntry(mutationOptions, { date: dayDate });
+  const [deleteEntryMutation] = useDeleteEntry(mutationOptions);
   const [createEntryMutation] = useCreateEntryMutation(mutationOptions);
   const [updateEntryMutation] = useUpdateEntryMutation(mutationOptions);
 
