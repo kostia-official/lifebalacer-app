@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback } from 'react';
+import React, { Fragment, useCallback, useMemo } from 'react';
 import { useApolloError } from '../../hooks/useApolloError';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { Typography } from '@material-ui/core';
@@ -43,12 +43,21 @@ const DayContent = styled.div`
 `;
 
 const scrollTargetId = 'journal-wrapper';
+const daysLimit = 14;
 
 const Journal = () => {
   const { goForwardTo } = useNavigationHelpers();
   const { errorMessage, onError, errorTime } = useApolloError();
 
   const { getActivityById, todoistActivity, allActivities } = useActivities({ onError });
+
+  const activities = useMemo(
+    () =>
+      allActivities
+        ?.filter((activity) => activity._id !== todoistActivity?._id)
+        .map((activity) => activity._id),
+    [allActivities, todoistActivity?._id]
+  );
 
   const { data, isHasMore, loadMore, refetch } = useInfiniteQuery<
     GetJournalQuery,
@@ -57,11 +66,14 @@ const Journal = () => {
     onError,
     field: 'journal',
     variables: {
-      activities: allActivities
-        ?.filter((activity) => activity._id !== todoistActivity?._id)
-        .map((activity) => activity._id)
+      daysLimit,
+      activities
     },
-    fetchMoreVariables: (data) => getDayQueryVariables(_.last(data.journal)?.date)
+    fetchMoreVariables: (data) => ({
+      ...getDayQueryVariables(_.last(data.journal)?.date),
+      daysLimit,
+      activities
+    })
   });
 
   const journal = data?.journal;

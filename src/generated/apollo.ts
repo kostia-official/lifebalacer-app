@@ -80,6 +80,7 @@ export type QueryEntryArgs = {
 
 export type QueryJournalArgs = {
   dateAfter?: Maybe<Scalars['Date']>;
+  daysLimit: Scalars['Int'];
   activities?: Maybe<Array<Scalars['String']>>;
 };
 
@@ -373,13 +374,15 @@ export enum ActivityCategory {
 export enum SubscriptionPlatform {
   AppStore = 'AppStore',
   GooglePlay = 'GooglePlay',
-  Fondy = 'Fondy'
+  Fondy = 'Fondy',
+  Granted = 'Granted'
 }
 
 export enum SubscriptionStatus {
   NotSubscribed = 'NotSubscribed',
   Pending = 'Pending',
-  Subscribed = 'Subscribed'
+  Subscribed = 'Subscribed',
+  Expired = 'Expired'
 }
 
 export type RangeMeta = {
@@ -525,6 +528,7 @@ export type GetEntriesByDayQuery = { __typename?: 'Query' } & {
 
 export type GetJournalQueryVariables = Exact<{
   dateAfter?: Maybe<Scalars['Date']>;
+  daysLimit: Scalars['Int'];
   activities?: Maybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
@@ -1094,8 +1098,8 @@ export function refetchGetEntriesByDayQuery(variables?: GetEntriesByDayQueryVari
   return { query: GetEntriesByDayDocument, variables: variables };
 }
 export const GetJournalDocument = gql`
-  query GetJournal($dateAfter: Date, $activities: [String!]) {
-    journal(dateAfter: $dateAfter, activities: $activities) {
+  query GetJournal($dateAfter: Date, $daysLimit: Int!, $activities: [String!]) {
+    journal(dateAfter: $dateAfter, daysLimit: $daysLimit, activities: $activities) {
       date
       points
       entries {
@@ -1122,12 +1126,13 @@ export const GetJournalDocument = gql`
  * const { data, loading, error } = useGetJournalQuery({
  *   variables: {
  *      dateAfter: // value for 'dateAfter'
+ *      daysLimit: // value for 'daysLimit'
  *      activities: // value for 'activities'
  *   },
  * });
  */
 export function useGetJournalQuery(
-  baseOptions?: Apollo.QueryHookOptions<GetJournalQuery, GetJournalQueryVariables>
+  baseOptions: Apollo.QueryHookOptions<GetJournalQuery, GetJournalQueryVariables>
 ) {
   return Apollo.useQuery<GetJournalQuery, GetJournalQueryVariables>(
     GetJournalDocument,

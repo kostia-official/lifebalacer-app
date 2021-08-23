@@ -99,8 +99,8 @@ query GetEntriesByDay($dateAfter: Date) {
   }
 }
 
-query GetJournal($dateAfter: Date, $activities: [String!]) {
-  journal(dateAfter: $dateAfter, activities: $activities) {
+query GetJournal($dateAfter: Date, $daysLimit: Int!, $activities: [String!]) {
+  journal(dateAfter: $dateAfter, daysLimit: $daysLimit, activities: $activities) {
     date
     points
     entries {
