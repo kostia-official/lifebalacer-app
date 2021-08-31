@@ -30,6 +30,8 @@ const ActivityTitle = styled(Typography)`
 `;
 
 const Description = styled(Typography)`
+  max-height: 10000px; // Fixes FontBoosting for mobile
+  font-size: 16px;
   margin-bottom: 16px;
   white-space: pre-line;
 
