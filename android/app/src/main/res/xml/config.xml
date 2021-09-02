@@ -2,6 +2,10 @@
 <widget version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <access origin="*" />
   
+  <feature name="LaunchMyApp">
+    <param name="android-package" value="nl.xservices.plugins.LaunchMyApp"/>
+  </feature>
+
   <feature name="Device">
     <param name="android-package" value="org.apache.cordova.device.Device"/>
   </feature>
@@ -25,4 +29,8 @@
   </feature>
 
   
+  <preference name="URL_SCHEME" value="app.lifebalancer.web.twa" />
+  <preference name="ANDROID_SCHEME" value="app.lifebalancer.web.twa" />
+  <preference name="ANDROID_HOST" value="https://lifebalancer.loca.lt" />
+  <preference name="ANDROID_PATHPREFIX" value="/cordova/app.lifebalancer.web.twa/callback" />
 </widget>

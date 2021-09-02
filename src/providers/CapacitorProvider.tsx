@@ -17,10 +17,19 @@ App.addListener('appUrlOpen', async ({ url }) => {
   }
 });
 
+const configureBrowser = async () => {
+  window.open = (url) => {
+    if (url) Plugins.Browser.open({ url });
+
+    return window;
+  };
+};
+
 document.addEventListener(
   'deviceready',
   async () => {
     await MobileAccessibility.setTextZoom(100);
+    await configureBrowser();
   },
   false
 );

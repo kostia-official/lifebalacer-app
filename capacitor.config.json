@@ -17,8 +17,15 @@
   "android": {
     "backgroundColor": "#303030"
   },
-  "cordova": {},
+  "cordova": {
+    "preferences": {
+      "URL_SCHEME": "app.lifebalancer.web.twa",
+      "ANDROID_SCHEME": "app.lifebalancer.web.twa",
+      "ANDROID_HOST": "https://lifebalancer.loca.lt",
+      "ANDROID_PATHPREFIX": "/cordova/app.lifebalancer.web.twa/callback"
+    }
+  },
   "server": {
-    "url": "https://web.lifebalancer.app"
+    "url": "https://lifebalancer.loca.lt"
   }
 }

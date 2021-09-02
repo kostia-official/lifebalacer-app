@@ -7755,6 +7755,11 @@ copy-to-clipboard@^3.2.0:
   dependencies:
     toggle-selection "^1.0.6"
 
+cordova-plugin-customurlscheme@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/cordova-plugin-customurlscheme/-/cordova-plugin-customurlscheme-5.0.2.tgz#c6246e469a2c23772ebfb545138354cb0dc1a683"
+  integrity sha512-g139Av7iYD3xcSsCd5S6a7B7dp4GTqGYtvdhh44g4OS38+aX6XkC1lsCRmROuhLIs4fkwJqkrvxacH9H4U9Gsg==
+
 cordova-plugin-device@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/cordova-plugin-device/-/cordova-plugin-device-2.0.3.tgz#c2b41b7efd0455dd097f89356d85bfdd5dadeb0f"

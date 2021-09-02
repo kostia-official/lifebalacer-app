@@ -26,6 +26,14 @@ export const getPlatform = (): PlatformType => {
   return 'web';
 };
 
+export const isWeb = (): boolean => {
+  return getPlatform() === 'web';
+};
+
+export const isNative = (): boolean => {
+  return getPlatform() !== 'web';
+};
+
 export const getSubscriptionPlatform = (): SubscriptionPlatform => {
   return subscriptionPlatformMap[getPlatform()];
 };
