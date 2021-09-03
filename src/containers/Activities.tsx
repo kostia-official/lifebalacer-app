@@ -19,6 +19,9 @@ import { Greyscale } from '../components/Greyscale';
 import { useNavigationHelpers } from '../hooks/useNavigationHelpers';
 import { Emoji } from '../components/Emoji';
 import { EmptySpaceUnderFab, FabWrapper } from '../components/FabWrapper';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import RestoreIcon from '@material-ui/icons/RestoreFromTrash';
 
 const ConnectTodoistButtonWrapper = styled.div`
   display: flex;
@@ -85,7 +88,7 @@ const Activities = () => {
         data={activities!}
         actions={[
           {
-            icon: 'edit',
+            icon: EditIcon,
             tooltip: 'Edit',
             onClick: (event, rowData) => {
               const activity = rowData as Activity;
@@ -93,7 +96,7 @@ const Activities = () => {
             }
           },
           {
-            icon: 'delete',
+            icon: DeleteIcon,
             tooltip: 'Archive',
             onClick: (event, rowData) => {
               const activity = rowData as Activity;
@@ -132,7 +135,7 @@ const Activities = () => {
           data={archivedActivities!}
           actions={[
             {
-              icon: 'edit',
+              icon: EditIcon,
               tooltip: 'Edit',
               onClick: (event, rowData) => {
                 const activity = rowData as Activity;
@@ -140,7 +143,7 @@ const Activities = () => {
               }
             },
             {
-              icon: 'restore_from_trash',
+              icon: RestoreIcon,
               tooltip: 'Restore',
               onClick: (event, rowData) => {
                 const activity = rowData as Activity;

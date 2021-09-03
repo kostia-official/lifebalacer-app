@@ -3,12 +3,12 @@ import 'devextreme/dist/css/dx.material.teal.dark.css';
 import React, { Fragment, useCallback, useState, useMemo } from 'react';
 import { ScreenWrapper } from '../App/ScreenWrapper';
 import { useApolloError } from '../../hooks/useApolloError';
-import { Grid, Paper, Typography, SvgIcon, Icon } from '@material-ui/core';
+import { Grid, Paper, Typography, SvgIcon } from '@material-ui/core';
 import { ActivityType } from '../../generated/apollo';
 import styled from 'styled-components';
 import { Emoji } from '../../components/Emoji';
 import { StreakBlock } from './components/StreakBlock';
-import { DateRange } from '@material-ui/icons';
+import DateRange from '@material-ui/icons/DateRange';
 import { ReactComponent as AverageIcon } from '../../assets/average.svg';
 import { ReactComponent as MedianIcon } from '../../assets/median.svg';
 import { ValueBlock } from './components/ValueBlock';
@@ -20,6 +20,8 @@ import { RangeDatePicker, RangeDatePickerProps } from '../../components/RangeDat
 import { useActivityStatistic } from '../../hooks/useActivityStatistic';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { NavigationParams } from '../App/App';
+import { Icon } from '@iconify/react';
+import baselineReceiptLong from '@iconify/icons-ic/baseline-receipt-long';
 
 const TitlePaper = styled(Paper)`
   padding: 7px 6px 7px 15px;
@@ -44,7 +46,7 @@ const AverageSvgIconStyled = styled(SvgIcon)`
 `;
 
 const MedianSvgIconStyled = styled(SvgIcon)`
-  font-size: 26px;
+  font-size: 24px;
 `;
 
 const ActivityStatistic: React.FC = () => {
@@ -99,7 +101,7 @@ const ActivityStatistic: React.FC = () => {
               <ValueBlock
                 value={baseStatistic?.total}
                 text="Entries count"
-                icon={<Icon>receipt_long</Icon>}
+                icon={<Icon icon={baselineReceiptLong} width={24} />}
               />
             </Grid>
 

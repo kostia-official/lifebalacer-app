@@ -5,47 +5,56 @@ import { useIsExpandedDrawer } from '../../hooks/useIsExpandedDrawer';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { useIsInternalTestUser } from '../../hooks/useIsInternalTestUser';
 import { useActiveSubscription } from '../../hooks/useActiveSubscription';
+import { Icon } from '@iconify/react';
+import baselineReceiptLong from '@iconify/icons-ic/baseline-receipt-long';
+import manageAccounts from '@iconify/icons-ic/baseline-manage-accounts';
+import baselineInsights from '@iconify/icons-ic/baseline-insights';
+import outlineWorkspacePremium from '@iconify/icons-ic/outline-workspace-premium';
+import DateRangeIcon from '@material-ui/icons/DateRange';
+import ImportContactsIcon from '@material-ui/icons/ImportContacts';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import InfoIcon from '@material-ui/icons/Info';
 
 export const items = [
   {
     name: 'Entries',
-    icon: 'receipt_long',
+    icon: <Icon icon={baselineReceiptLong} width={24} />,
     screen: 'EntriesStack'
   },
   {
     name: 'Calendar',
-    icon: 'date_range',
+    icon: <DateRangeIcon />,
     screen: 'CalendarStack'
   },
   {
     name: 'Journal',
-    icon: 'import_contacts',
+    icon: <ImportContactsIcon />,
     screen: 'JournalStack'
   },
   {
     name: 'Activities',
-    icon: 'manage_accounts',
+    icon: <Icon icon={manageAccounts} width={26} />,
     screen: 'ActivitiesStack'
   },
   {
     name: 'Statistic',
-    icon: 'insights',
+    icon: <Icon icon={baselineInsights} width={24} />,
     screen: 'StatisticStack'
   },
   {
     name: 'Reminders',
-    icon: 'notifications',
+    icon: <NotificationsIcon />,
     screen: 'RemindersStack'
   },
   {
     name: 'Subscription',
-    icon: 'stars',
+    icon: <Icon icon={outlineWorkspacePremium} width={24} />,
     screen: 'PremiumPlan',
     isInternalTesting: true
   },
   {
     name: 'About',
-    icon: 'info',
+    icon: <InfoIcon />,
     screen: 'AboutStack'
   }
 ];

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, List, ListItem, ListItemIcon, ListItemText, Divider } from '@material-ui/core';
+import { List, ListItem, ListItemIcon, ListItemText, Divider } from '@material-ui/core';
 import { useNavigationHelpers } from '../hooks/useNavigationHelpers';
 import { ScreenWrapper } from './App/ScreenWrapper';
 import { useAuth } from '../hooks/useAuth';
@@ -8,8 +8,10 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { useIsInternalTestUser } from '../hooks/useIsInternalTestUser';
 import styled from 'styled-components';
 import { Icon as Iconify } from '@iconify/react';
-import outlineWorkspacePremium from '@iconify-icons/ic/outline-workspace-premium';
+import outlineWorkspacePremium from '@iconify/icons-ic/outline-workspace-premium';
 import { useActiveSubscription } from '../hooks/useActiveSubscription';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import InfoIcon from '@material-ui/icons/Info';
 
 const UserListItemContentWrapper = styled.div`
   margin-left: -9px;
@@ -69,7 +71,7 @@ const Other = () => {
 
         <ListItem button onClick={goForwardToCb('Reminders')}>
           <ListItemIconStyled>
-            <Icon>notifications</Icon>
+            <NotificationsIcon />
           </ListItemIconStyled>
 
           <ListItemText primary="Reminders" />
@@ -77,7 +79,7 @@ const Other = () => {
 
         <ListItem button onClick={goForwardToCb('About')}>
           <ListItemIconStyled>
-            <Icon>info</Icon>
+            <InfoIcon />
           </ListItemIconStyled>
 
           <ListItemText primary="About" />

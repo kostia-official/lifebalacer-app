@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { Activity, Entry } from '../generated/apollo';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faComment as commentIcon } from '@fortawesome/free-solid-svg-icons';
+import { faComment } from '@fortawesome/free-solid-svg-icons/faComment';
 
 export interface DescriptionIconProps {
   activity?: Pick<Activity, 'isWidget'>;
@@ -18,7 +18,7 @@ const FontAwesomeIconStyled = styled(FontAwesomeIcon)`
 export const DescriptionIcon: React.FC<DescriptionIconProps> = ({ entry, activity }) => {
   const isWithDescription = entry?.description && !activity?.isWidget;
 
-  if (isWithDescription) return <FontAwesomeIconStyled icon={commentIcon} />;
+  if (isWithDescription) return <FontAwesomeIconStyled icon={faComment} />;
 
   return <Fragment />;
 };

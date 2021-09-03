@@ -4,12 +4,12 @@ import {
   Typography,
   Tooltip,
   IconButton,
-  Icon,
   FormControlLabel
 } from '@material-ui/core';
 import { SwitchBaseProps } from '@material-ui/core/internal/SwitchBase';
 import styled from 'styled-components';
 import { grey } from '@material-ui/core/colors';
+import InfoIcon from '@material-ui/icons/Info';
 
 export interface TooltipCheckboxProps {
   checked: boolean;
@@ -27,8 +27,9 @@ const CheckboxLabel = styled.div`
   align-items: center;
 `;
 
-const IconStyled = styled(Icon)`
+const InfoIconStyled = styled(InfoIcon)`
   color: ${grey[400]};
+  width: 20px;
 `;
 
 const FormControlLabelStyled = styled(FormControlLabel)`
@@ -66,7 +67,7 @@ export const TooltipCheckbox: React.FC<TooltipCheckboxProps> = ({
               disableHoverListener
             >
               <IconButtonStyled edge="end" onClick={showTooltip}>
-                <IconStyled fontSize="small">info</IconStyled>
+                <InfoIconStyled />
               </IconButtonStyled>
             </Tooltip>
           </CheckboxLabel>

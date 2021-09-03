@@ -5,8 +5,8 @@ import { DateTime } from 'luxon';
 import { ValueBlock } from './ValueBlock';
 import { pluralLabel } from '../../../helpers/pluralarize';
 import styled from 'styled-components';
-import { WhatshotOutlined } from '@material-ui/icons';
-import { Whatshot } from '@material-ui/icons';
+import WhatshotOutlined from '@material-ui/icons/WhatshotOutlined';
+import Whatshot from '@material-ui/icons/Whatshot';
 
 export interface StreakProps {
   streak: Streak;

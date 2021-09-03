@@ -1,8 +1,7 @@
 import React from 'react';
 import styled, { SimpleInterpolation } from 'styled-components';
 import { Icon } from '@iconify/react';
-
-import baselineDateRange from '@iconify-icons/ic/baseline-date-range';
+import baselineDateRange from '@iconify/icons-ic/baseline-date-range';
 
 export interface TabBarIconProps {
   color: string;

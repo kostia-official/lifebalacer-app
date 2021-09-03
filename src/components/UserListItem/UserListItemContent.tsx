@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react';
 import { ListItemAvatar, Avatar, Tooltip } from '@material-ui/core';
-import Icon from '@material-ui/core/Icon';
 import ListItemText from '@material-ui/core/ListItemText';
 import styled, { css } from 'styled-components';
+import PersonIcon from '@material-ui/icons/Person';
 import { Icon as Iconify } from '@iconify/react';
-import baselineWorkspacePremium from '@iconify-icons/ic/baseline-workspace-premium';
+import baselineWorkspacePremium from '@iconify/icons-ic/baseline-workspace-premium';
 
 export interface UserListItemData {
   name: string;
@@ -53,7 +53,7 @@ export const UserListItemContent: React.FC<UserListItemProps> = ({ user, interva
             <Avatar alt={user.name} src={user.avatar} />
           ) : (
             <Avatar>
-              <Icon>person</Icon>
+              <PersonIcon />
             </Avatar>
           )}
           {user.isPremium && (

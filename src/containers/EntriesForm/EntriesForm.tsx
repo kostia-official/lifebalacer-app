@@ -10,6 +10,7 @@ import {
   refetchGetDaysStatisticQuery,
   refetchGetActivitiesExtremesQuery
 } from '../../generated/apollo';
+import ReturnIcon from '@material-ui/icons/KeyboardReturn';
 import { useApolloError } from '../../hooks/useApolloError';
 import * as R from 'remeda';
 import _ from 'lodash';
@@ -329,7 +330,7 @@ const EntriesForm = () => {
         })}
 
         <FabWrapper hideOnKeyboardOpen>
-          <FabButton onClick={goBackCb('EntriesByDay')} icon="keyboard_return" />
+          <FabButton onClick={goBackCb('EntriesByDay')} icon={<ReturnIcon />} />
         </FabWrapper>
       </ScreenWrapper>
     );

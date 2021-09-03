@@ -1,14 +1,15 @@
 import React from 'react';
-import { Fab, Icon, FabProps, Badge } from '@material-ui/core';
+import { Fab, FabProps, Badge } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 import { PartialBy } from '../common/typeUtils';
 
 export interface ISaveFabButtonProps extends FabProps {
-  icon?: string;
+  icon?: React.ReactNode;
   isShowBadge?: boolean;
 }
 
 export const FabButton: React.FC<PartialBy<ISaveFabButtonProps, 'children'>> = ({
-  icon = 'add',
+  icon = <AddIcon />,
   isShowBadge = false,
   ...fabProps
 }) => {
@@ -24,7 +25,7 @@ export const FabButton: React.FC<PartialBy<ISaveFabButtonProps, 'children'>> = (
       }}
     >
       <Fab color="primary" {...fabProps}>
-        <Icon>{icon}</Icon>
+        <>{icon}</>
       </Fab>
     </Badge>
   );

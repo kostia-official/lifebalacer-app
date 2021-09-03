@@ -1,8 +1,9 @@
-import { Card, Typography, IconButton, Collapse, Icon } from '@material-ui/core';
+import { Card, Typography, IconButton, Collapse } from '@material-ui/core';
 import React from 'react';
 import { useToggle } from 'react-use';
 import styled from 'styled-components';
-import { ExpandMore, ExpandLess } from '@material-ui/icons';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import ExpandLess from '@material-ui/icons/ExpandLess';
 import { SpeedDialIcon } from '@material-ui/lab';
 import { grey } from '@material-ui/core/colors';
 
@@ -24,7 +25,7 @@ const Content = styled.div`
   margin: 0 0 10px 15px;
 `;
 
-const IconStyled = styled(Icon)`
+const SpeedDialIconStyled = styled(SpeedDialIcon)`
   color: ${grey[400]};
 `;
 
@@ -41,14 +42,12 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
         <Typography>{title}</Typography>
 
         <IconButton aria-expanded={isExpanded} aria-label="show more" size="small">
-          <IconStyled>
-            <SpeedDialIcon
-              icon={<ExpandMore />}
-              openIcon={<ExpandLess />}
-              open={isExpanded}
-              aria-label="show more"
-            />
-          </IconStyled>
+          <SpeedDialIconStyled
+            icon={<ExpandMore />}
+            openIcon={<ExpandLess />}
+            open={isExpanded}
+            aria-label="show more"
+          />
         </IconButton>
       </TitleWrapper>
 

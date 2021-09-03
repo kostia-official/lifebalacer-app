@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import _ from 'lodash';
 import styled from 'styled-components';
+import EventIcon from '@material-ui/icons/Event';
 import { useApolloError } from '../../hooks/useApolloError';
 import { ScreenWrapper } from '../App/ScreenWrapper';
 import { useDaysStatisticText } from '../../hooks/useDaysStatisticText';
@@ -113,7 +114,7 @@ const EntriesByDay = React.memo(() => {
         )}
 
         <FabWrapper>
-          <FabButton icon="event" onClick={goForwardToCb('EntriesCalendar')} />
+          <FabButton icon={<EventIcon />} onClick={goForwardToCb('EntriesCalendar')} />
 
           <EmptyBlock height={16} />
 

@@ -7,7 +7,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import _ from 'lodash';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Icon from '@material-ui/core/Icon';
 import { Divider } from '@material-ui/core';
 import { UserListItemData } from './UserListItem/UserListItemContent';
 import { UserListItem } from './UserListItem/UserListItem';
@@ -62,7 +61,7 @@ export interface INavigationProps {
   isExpanded: boolean;
   items: {
     name: string;
-    icon: string;
+    icon: React.ReactNode;
     screen: string;
   }[];
   onClose?: () => void;
@@ -117,7 +116,7 @@ export const Drawer: React.FC<INavigationProps> = ({
             }}
           >
             <ListItemIcon className={classes.icon}>
-              <Icon>{icon}</Icon>
+              <>{icon}</>
             </ListItemIcon>
             <ListItemText primary={name} />
           </ListItem>

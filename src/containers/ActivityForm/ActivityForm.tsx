@@ -38,6 +38,7 @@ import { EmojiPicker } from './EmojiPicker';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { NavigationParams } from '../App/App';
 import { FabWrapper } from '../../components/FabWrapper';
+import SaveIcon from '@material-ui/icons/Save';
 
 const FormContainer = styled.form`
   display: flex;
@@ -400,7 +401,7 @@ const ActivityForm = () => {
         )}
 
         <FabWrapper>
-          <FabButton type="submit" icon="save" />
+          <FabButton type="submit" icon={<SaveIcon />} />
         </FabWrapper>
       </FormContainer>
     </ScreenWrapper>

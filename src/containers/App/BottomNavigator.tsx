@@ -4,15 +4,15 @@ import { TabBarButton } from '../../components/TabBarButton';
 import { TabBarIcon } from '../../components/TabBarIcon';
 import { useIsKeyboardOpen } from '../../hooks/useIsKeyboardOpen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import baselineReceiptLong from '@iconify-icons/ic/baseline-receipt-long';
-import outlineReceiptLong from '@iconify-icons/ic/outline-receipt-long';
-import baselineActivities from '@iconify-icons/ic/baseline-manage-accounts';
-import outlineActivities from '@iconify-icons/ic/outline-manage-accounts';
-import baselineInsights from '@iconify-icons/ic/baseline-insights';
-import baselineTimeline from '@iconify-icons/ic/baseline-timeline';
-import baselineMoreHoriz from '@iconify-icons/ic/baseline-more-horiz';
-import baselineImportContacts from '@iconify-icons/ic/baseline-import-contacts';
-import twotoneImportContacts from '@iconify-icons/ic/twotone-import-contacts';
+import baselineReceiptLong from '@iconify/icons-ic/baseline-receipt-long';
+import outlineReceiptLong from '@iconify/icons-ic/outline-receipt-long';
+import baselineActivities from '@iconify/icons-ic/baseline-manage-accounts';
+import outlineActivities from '@iconify/icons-ic/outline-manage-accounts';
+import baselineInsights from '@iconify/icons-ic/baseline-insights';
+import baselineTimeline from '@iconify/icons-ic/baseline-timeline';
+import baselineMoreHoriz from '@iconify/icons-ic/baseline-more-horiz';
+import baselineImportContacts from '@iconify/icons-ic/baseline-import-contacts';
+import twotoneImportContacts from '@iconify/icons-ic/twotone-import-contacts';
 import { css } from 'styled-components';
 import {
   EntriesScreen,
