@@ -23,7 +23,7 @@ export const getMonthPriceText = (product: IAPProduct | undefined, draftProduct:
 export const getPriceTextSize = (yearlyProductPrice: string) => {
   const size = 220 / yearlyProductPrice.length;
 
-  if (size > 28) return 28;
+  if (size > 28) return 26;
   if (size < 12) return 12;
 
   return size;

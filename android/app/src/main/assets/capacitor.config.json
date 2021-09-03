@@ -5,7 +5,9 @@
   "webDir": "build",
   "plugins": {
     "SplashScreen": {
-      "launchShowDuration": 5000
+      "launchShowDuration": 5000,
+      "launchAutoHide": false,
+      "backgroundColor": "#303030"
     },
     "LocalNotifications": {
       "smallIcon": "ic_notification",
@@ -21,11 +23,11 @@
     "preferences": {
       "URL_SCHEME": "app.lifebalancer.web.twa",
       "ANDROID_SCHEME": "app.lifebalancer.web.twa",
-      "ANDROID_HOST": "https://lifebalancer.loca.lt",
+      "ANDROID_HOST": "https://local.lifebalancer.app:3000",
       "ANDROID_PATHPREFIX": "/cordova/app.lifebalancer.web.twa/callback"
     }
   },
   "server": {
-    "url": "https://lifebalancer.loca.lt"
+    "url": "https://local.lifebalancer.app:3000"
   }
 }

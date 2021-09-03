@@ -12,18 +12,20 @@ const PriceCard = styled(Card)`
 
   max-width: 200px;
   max-height: 200px;
-  padding: 20px;
+  padding: 16px;
 
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
 
   border-radius: 8px;
 `;
 
 const Title = styled.div`
+  margin-top: 2px;
   font-size: 20px;
+  line-height: 18px;
 `;
 
 const PriceTextWrapper = styled.div`
@@ -39,6 +41,7 @@ const PriceText = styled.span<{ $size: number }>`
   text-align: center;
   font-size: ${(p) => p.$size}px;
   width: 100%;
+  line-height: 30px;
 `;
 
 const PriceSubText = styled.span`

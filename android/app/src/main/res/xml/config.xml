@@ -31,6 +31,6 @@
   
   <preference name="URL_SCHEME" value="app.lifebalancer.web.twa" />
   <preference name="ANDROID_SCHEME" value="app.lifebalancer.web.twa" />
-  <preference name="ANDROID_HOST" value="https://lifebalancer.loca.lt" />
+  <preference name="ANDROID_HOST" value="https://local.lifebalancer.app:3000" />
   <preference name="ANDROID_PATHPREFIX" value="/cordova/app.lifebalancer.web.twa/callback" />
 </widget>

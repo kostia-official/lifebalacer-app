@@ -1,7 +1,7 @@
 import React from 'react';
 import { Plugins } from '@capacitor/core';
-import { useMount } from 'react-use';
 import { MobileAccessibility } from '@ionic-native/mobile-accessibility';
+import { waitForTextZoom } from '../helpers/waitForTextZoom';
 
 const { App, SplashScreen } = Plugins;
 
@@ -28,18 +28,19 @@ const configureBrowser = async () => {
 document.addEventListener(
   'deviceready',
   async () => {
-    await MobileAccessibility.setTextZoom(100);
+    setTimeout(SplashScreen.hide, 3000); // fallback
+
     await configureBrowser();
+
+    await MobileAccessibility.setTextZoom(100);
+    await waitForTextZoom(100);
+
+    // Give plugin time to apply text zoom
+    process.nextTick(SplashScreen.hide);
   },
   false
 );
 
 export const CapacitorProvider: React.FC = ({ children }) => {
-  useMount(() => {
-    (async () => {
-      await SplashScreen.hide();
-    })();
-  });
-
   return <>{children}</>;
 };
