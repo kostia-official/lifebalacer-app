@@ -3,6 +3,7 @@ import styled, { SimpleInterpolation } from 'styled-components';
 import { Typography, TypographyProps } from '@material-ui/core';
 
 const ContentWrapper = styled.div`
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -23,8 +24,8 @@ const LogoWrapper = styled.div<{ $logoStyles: SimpleInterpolation }>`
   height: auto;
   margin-top: 40px;
   margin-bottom: 40px;
-  
-  ${props => props.$logoStyles}
+
+  ${(props) => props.$logoStyles}
 `;
 
 export const LogoContent: React.FC<LogoContentProps> = ({
