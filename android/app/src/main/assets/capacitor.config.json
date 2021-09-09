@@ -1,33 +1,31 @@
 {
-  "appId": "app.bestion.lifebalancer",
-  "appName": "Life Balancer",
-  "npmClient": "npm",
-  "webDir": "build",
-  "plugins": {
-    "SplashScreen": {
-      "launchShowDuration": 5000,
-      "launchAutoHide": false,
-      "backgroundColor": "#303030"
-    },
-    "LocalNotifications": {
-      "smallIcon": "ic_notification",
-      "iconColor": "#009688"
-    }
-  },
-  "backgroundColor": "#303030",
-  "ios": { "contentInset": "always" },
-  "android": {
-    "backgroundColor": "#303030"
-  },
-  "cordova": {
-    "preferences": {
-      "URL_SCHEME": "app.lifebalancer.web.twa",
-      "ANDROID_SCHEME": "app.lifebalancer.web.twa",
-      "ANDROID_HOST": "https://local.lifebalancer.app:3000",
-      "ANDROID_PATHPREFIX": "/cordova/app.lifebalancer.web.twa/callback"
-    }
-  },
-  "server": {
-    "url": "https://local.lifebalancer.app:3000"
-  }
+	"appId": "app.bestion.lifebalancer",
+	"appName": "Life Balancer",
+	"npmClient": "npm",
+	"webDir": "build",
+	"plugins": {
+		"SplashScreen": {
+			"launchShowDuration": 2000,
+			"backgroundColor": "#303030"
+		},
+		"LocalNotifications": {
+			"smallIcon": "ic_notification",
+			"iconColor": "#009688"
+		}
+	},
+	"backgroundColor": "#303030",
+	"ios": {
+		"contentInset": "always"
+	},
+	"android": {
+		"backgroundColor": "#303030"
+	},
+	"cordova": {
+		"preferences": {
+			"URL_SCHEME": "app.lifebalancer.web.twa",
+			"ANDROID_SCHEME": "app.lifebalancer.web.twa",
+			"ANDROID_HOST": "https://web.lifebalancer.app",
+			"ANDROID_PATHPREFIX": "/cordova/app.lifebalancer.web.twa/callback"
+		}
+	}
 }

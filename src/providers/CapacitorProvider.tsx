@@ -1,14 +1,11 @@
 import React from 'react';
-import { Plugins } from '@capacitor/core';
-import { MobileAccessibility } from '@ionic-native/mobile-accessibility';
-import { waitForTextZoom } from '../helpers/waitForTextZoom';
-
-const { App, SplashScreen } = Plugins;
+import { App } from '@capacitor/app';
+import { Browser } from '@capacitor/browser';
 
 App.addListener('appUrlOpen', async ({ url }) => {
   if (url) {
     try {
-      await Plugins.Browser.close();
+      await Browser.close();
     } catch (e) {}
 
     const { origin } = new URL(url);
@@ -19,7 +16,7 @@ App.addListener('appUrlOpen', async ({ url }) => {
 
 const configureBrowser = async () => {
   window.open = (url) => {
-    if (url) Plugins.Browser.open({ url });
+    if (url) Browser.open({ url });
 
     return window;
   };
@@ -28,15 +25,7 @@ const configureBrowser = async () => {
 document.addEventListener(
   'deviceready',
   async () => {
-    setTimeout(SplashScreen.hide, 3000); // fallback
-
     await configureBrowser();
-
-    await MobileAccessibility.setTextZoom(100);
-    await waitForTextZoom(100);
-
-    // Give plugin time to apply text zoom
-    process.nextTick(SplashScreen.hide);
   },
   false
 );

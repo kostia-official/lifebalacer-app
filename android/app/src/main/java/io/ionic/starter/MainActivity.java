@@ -1,37 +1,19 @@
 package io.ionic.starter;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.webkit.ServiceWorkerClient;
-import android.webkit.ServiceWorkerController;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 
 import com.getcapacitor.BridgeActivity;
-import com.getcapacitor.Plugin;
-
-import java.util.ArrayList;
 
 public class MainActivity extends BridgeActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    // Initializes the Bridge
-    this.init(savedInstanceState, new ArrayList<Class<? extends Plugin>>() {{
-      // Additional plugins you've installed go here
-      // Ex: add(TotallyAwesomePlugin.class);
-    }});
+    WebView mWebView = (WebView) findViewById(R.id.webview);
+    WebSettings webSettings = mWebView.getSettings();
 
-    if(Build.VERSION.SDK_INT >= 24 ){
-      ServiceWorkerController swController = ServiceWorkerController.getInstance();
-
-      swController.setServiceWorkerClient(new ServiceWorkerClient() {
-        @Override
-        public WebResourceResponse shouldInterceptRequest(WebResourceRequest request) {
-          return bridge.getLocalServer().shouldInterceptRequest(request);
-        }
-      });
-    }
+    webSettings.setTextZoom(100);
   }
 }

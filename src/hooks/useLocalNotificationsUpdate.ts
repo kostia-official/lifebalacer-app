@@ -1,13 +1,11 @@
 import { ApolloError } from '@apollo/client';
 import { useEffect } from 'react';
 import { useGetReminderQuery } from '../generated/apollo';
-import { Plugins } from '@capacitor/core';
+import { LocalNotifications } from '@capacitor/local-notifications';
 import { DateTime } from 'luxon';
 import { useMount } from 'react-use';
 import { useNavigationHelpers } from './useNavigationHelpers';
 import { getAppType } from '../common/platform';
-
-const { LocalNotifications } = Plugins;
 
 export interface UseApolloErrorProps {
   onError?: (error: ApolloError) => void;
@@ -47,7 +45,7 @@ export const useLocalNotificationsUpdate = ({ onError }: UseApolloErrorProps) =>
         await LocalNotifications.cancel(await LocalNotifications.getPending());
       } catch (e) {}
 
-      await LocalNotifications.requestPermission();
+      await LocalNotifications.requestPermissions();
       await LocalNotifications.schedule({
         notifications: [
           {
