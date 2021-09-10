@@ -2,13 +2,13 @@ import { useEffect, useCallback } from 'react';
 
 export const useDebugWindowSize = () => {
   const logSize = useCallback(() => {
-    console.log('window.screen.height', window.screen.height);
-    console.log('window.screen.availHeight', window.screen.availHeight);
-    console.log('window.innerHeight', window.innerHeight);
-    console.log('window.outerHeight', window.outerHeight);
-    console.log('document.documentElement.offsetHeight', document.documentElement.offsetHeight);
-    console.log('document.documentElement.clientHeight', document.documentElement.clientHeight);
-    console.log('document.documentElement.scrollHeight', document.documentElement.scrollHeight);
+    console.info('window.screen.height', window.screen.height);
+    console.info('window.screen.availHeight', window.screen.availHeight);
+    console.info('window.innerHeight', window.innerHeight);
+    console.info('window.outerHeight', window.outerHeight);
+    console.info('document.documentElement.offsetHeight', document.documentElement.offsetHeight);
+    console.info('document.documentElement.clientHeight', document.documentElement.clientHeight);
+    console.info('document.documentElement.scrollHeight', document.documentElement.scrollHeight);
   }, []);
 
   useEffect(() => {

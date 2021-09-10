@@ -2678,6 +2678,16 @@
   resolved "https://registry.yarnpkg.com/@iconify/icons-ic/-/icons-ic-1.1.10.tgz#fdc3823edf98ffd69035a6968f0905c6637b4a9e"
   integrity sha512-decmjXkGbK7BocYw+T0dDZMOpHqs4JX//aN1+pNbcdjUYu/gK5pir717CoSpX771eCGKmoLWS0VGx0tIC8wqJQ==
 
+"@iconify/icons-logos@^1.1.10":
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/@iconify/icons-logos/-/icons-logos-1.1.10.tgz#4a6c5f6036ca6f515a78b5eaef6d57fc7ad4e9ad"
+  integrity sha512-bGs/c0kGUCWr29wuppFYSaHqDH3o6qV85/h5jJhmenDPgVF8xWkFbXcFW7lAa+nJy1rMk4K7kFeXDOdMG1b5Rw==
+
+"@iconify/icons-simple-icons@^1.1.41":
+  version "1.1.41"
+  resolved "https://registry.yarnpkg.com/@iconify/icons-simple-icons/-/icons-simple-icons-1.1.41.tgz#caa8fd242b41b3cfd10f99e0da2b04eff2bb05bf"
+  integrity sha512-USKJDZ5s3+NDD0F+ruli7eJXnjnf5XCJL38FXZYFsUIsCw3QchUDMVT3GQ6oxQX6df/Cn17ewC6YWQgciXA+2g==
+
 "@iconify/react@^1.1.4":
   version "1.1.4"
   resolved "https://registry.npmjs.org/@iconify/react/-/react-1.1.4.tgz"

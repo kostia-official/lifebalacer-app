@@ -38,6 +38,8 @@
     "@fortawesome/react-fontawesome": "^0.1.12",
     "@iconify/icons-bx": "^1.1.2",
     "@iconify/icons-ic": "^1.1.10",
+    "@iconify/icons-logos": "^1.1.10",
+    "@iconify/icons-simple-icons": "^1.1.41",
     "@iconify/react": "^1.1.4",
     "@ionic-native/core": "^5.32.1",
     "@ionic-native/device": "^5.32.1",
@@ -167,7 +169,15 @@
           "argsIgnorePattern": "^_"
         }
       ],
-      "no-console": ["error", { "allow": ["info", "error"] }]
+      "no-console": [
+        "error",
+        {
+          "allow": [
+            "info",
+            "error"
+          ]
+        }
+      ]
     }
   },
   "browserslist": {

@@ -9,25 +9,18 @@ import { Table } from '../../components/Table';
 import { useApolloError } from '../../hooks/useApolloError';
 import styled from 'styled-components';
 import { ScreenWrapper } from '../App/ScreenWrapper';
-import { Button } from '@material-ui/core';
-import { useTodoist } from '../../hooks/useTodoist';
 import { useDeviceMediaQuery } from '../../hooks/useDeviceMediaQuery';
 import _ from 'lodash';
 import { useActivities } from '../../hooks/useActivities';
-import { FabButton } from '../../components/FabButton';
 import { Greyscale } from '../../components/Greyscale';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { Emoji } from '../../components/Emoji';
-import { EmptySpaceAboveFab, FabWrapper } from '../../components/FabWrapper';
+import { EmptySpaceAboveFab } from '../../components/FabWrapper';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import RestoreIcon from '@material-ui/icons/RestoreFromTrash';
-
-const ConnectTodoistButtonWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  padding-top: 10px;
-`;
+import { AddActivityFab } from './components/AddActivityFab';
+import { AddIntegrationModal } from './components/IntegrationsDialog';
 
 const ArchivedActivitiesWrapper = styled.div`
   padding-top: 10px;
@@ -40,11 +33,10 @@ const TitleWrapper = styled.div`
 
 const Activities = () => {
   const { isMobile } = useDeviceMediaQuery();
-  const { goForwardToCb, goForwardTo } = useNavigationHelpers();
+  const { goForwardTo } = useNavigationHelpers();
   const { errorMessage, onError, errorTime } = useApolloError();
-  const { authorizeInTodoist } = useTodoist();
 
-  const { todoistActivity, activities, archivedActivities, allActivities } = useActivities({
+  const { activities, archivedActivities, allActivities } = useActivities({
     onError
   });
   const [archiveActivity] = useArchiveActivityMutation({
@@ -154,19 +146,10 @@ const Activities = () => {
         />
       </ArchivedActivitiesWrapper>
 
-      {!todoistActivity && (
-        <ConnectTodoistButtonWrapper>
-          <Button variant="contained" color="primary" onClick={authorizeInTodoist}>
-            Connect Todoist
-          </Button>
-        </ConnectTodoistButtonWrapper>
-      )}
-
       <EmptySpaceAboveFab />
 
-      <FabWrapper>
-        <FabButton onClick={goForwardToCb('ActivityCreate')} />
-      </FabWrapper>
+      <AddActivityFab />
+      <AddIntegrationModal />
     </ScreenWrapper>
   );
 };

@@ -6,6 +6,6 @@ export interface EmptyBlockProps {
 }
 
 export const EmptyBlock = styled.div<EmptyBlockProps>`
-  height: ${(props) => props.height || 0}px;
-  width: ${(props) => props.width || 0}px;
+  min-height: ${(props) => props.height || 0}px;
+  min-width: ${(props) => props.width || 0}px;
 `;
