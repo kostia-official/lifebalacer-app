@@ -9,6 +9,7 @@ import { FabWrapper } from '../../../components/FabWrapper';
 import { useNavigationHelpers } from '../../../hooks/useNavigationHelpers';
 import styled from 'styled-components';
 import { useAddIntegrationModal } from './IntegrationsDialog';
+import { Backdrop } from '@material-ui/core';
 
 const IconStyled = styled(Icon)`
   margin-left: 2px;
@@ -25,6 +26,8 @@ export const AddActivityFab: React.FC = () => {
 
   return (
     <FabWrapper>
+      <Backdrop open={isMenuOpen} />
+
       <SpeedDial
         ariaLabel="Add new activity"
         icon={<SpeedDialIcon />}
