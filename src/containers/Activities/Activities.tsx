@@ -4,21 +4,21 @@ import {
   Activity,
   useArchiveActivityMutation,
   useRestoreActivityMutation
-} from '../generated/apollo';
-import { Table } from '../components/Table';
-import { useApolloError } from '../hooks/useApolloError';
+} from '../../generated/apollo';
+import { Table } from '../../components/Table';
+import { useApolloError } from '../../hooks/useApolloError';
 import styled from 'styled-components';
-import { ScreenWrapper } from './App/ScreenWrapper';
+import { ScreenWrapper } from '../App/ScreenWrapper';
 import { Button } from '@material-ui/core';
-import { useTodoist } from '../hooks/useTodoist';
-import { useDeviceMediaQuery } from '../hooks/useDeviceMediaQuery';
+import { useTodoist } from '../../hooks/useTodoist';
+import { useDeviceMediaQuery } from '../../hooks/useDeviceMediaQuery';
 import _ from 'lodash';
-import { useActivities } from '../hooks/useActivities';
-import { FabButton } from '../components/FabButton';
-import { Greyscale } from '../components/Greyscale';
-import { useNavigationHelpers } from '../hooks/useNavigationHelpers';
-import { Emoji } from '../components/Emoji';
-import { EmptySpaceUnderFab, FabWrapper } from '../components/FabWrapper';
+import { useActivities } from '../../hooks/useActivities';
+import { FabButton } from '../../components/FabButton';
+import { Greyscale } from '../../components/Greyscale';
+import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
+import { Emoji } from '../../components/Emoji';
+import { EmptySpaceAboveFab, FabWrapper } from '../../components/FabWrapper';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import RestoreIcon from '@material-ui/icons/RestoreFromTrash';
@@ -162,7 +162,7 @@ const Activities = () => {
         </ConnectTodoistButtonWrapper>
       )}
 
-      <EmptySpaceUnderFab />
+      <EmptySpaceAboveFab />
 
       <FabWrapper>
         <FabButton onClick={goForwardToCb('ActivityCreate')} />

@@ -9,7 +9,7 @@ import {
   AboutScreen,
   ReminderScreen
 } from './Navigation';
-import { TodoistAuth } from '../TodoistAuth';
+import { TodoistAuth } from '../Activities/TodoistAuth';
 import { PremiumPlan } from '../PremiumPlan/PremiumPlan';
 import { AppBar } from './AppBar';
 

@@ -10,7 +10,7 @@ const Auth0Loader: React.FC = ({ children }) => {
   if (isLoading) return <Fragment />;
 
   if (Date.now() - initTime > 150) {
-    console.warn('Auth0 init time too long', initTime);
+    console.info('Auth0 init time too long', initTime);
   }
 
   return <Fragment>{children}</Fragment>;
@@ -18,7 +18,7 @@ const Auth0Loader: React.FC = ({ children }) => {
 
 export const AuthProvider: React.FC = ({ children }) => {
   return (
-    <Auth0Provider {...config.auth}>
+    <Auth0Provider {...config.auth} skipRedirectCallback={window.location.pathname !== '/auth'}>
       <Auth0Loader>{children}</Auth0Loader>
     </Auth0Provider>
   );

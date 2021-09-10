@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import { ErrorMessage } from '../components/ErrorMessage';
-import { useConnectTodoistMutation, refetchGetActivitiesQuery } from '../generated/apollo';
-import { useApolloError } from '../hooks/useApolloError';
-import { useActivities } from '../hooks/useActivities';
+import { ErrorMessage } from '../../components/ErrorMessage';
+import { useConnectTodoistMutation, refetchGetActivitiesQuery } from '../../generated/apollo';
+import { useApolloError } from '../../hooks/useApolloError';
+import { useActivities } from '../../hooks/useActivities';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
-import { NavigationParams } from './App/App';
-import { ScreenWrapper } from './App/ScreenWrapper';
+import { NavigationParams } from '../App/App';
+import { ScreenWrapper } from '../App/ScreenWrapper';
 
 export const TodoistAuth = () => {
   const { errorMessage, onError, setErrorMessage } = useApolloError();

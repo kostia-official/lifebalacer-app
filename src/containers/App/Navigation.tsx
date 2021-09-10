@@ -2,7 +2,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { LazyComponent } from '../../components/LazyComponent';
 import { AppBar } from './AppBar';
 import EntriesByDay from '../EntriesByDay/EntriesByDay';
-import { TodoistAuth } from '../TodoistAuth';
+import { TodoistAuth } from '../Activities/TodoistAuth';
 import { PrivacyPolicy } from '../About/PrivacyPolicy';
 import { TermsAndConditions } from '../About/TermsAndConditions';
 import { PaymentInfo } from '../About/PaymentInfo';
@@ -113,7 +113,7 @@ const OtherStack = createStackNavigator();
 const EntriesForm = LazyComponent(() => import('../EntriesForm/EntriesForm'));
 const Journal = LazyComponent(() => import('../Journal/Journal'));
 const ActivityForm = LazyComponent(() => import('../ActivityForm/ActivityForm'));
-const Activities = LazyComponent(() => import('../Activities'));
+const Activities = LazyComponent(() => import('../Activities/Activities'));
 const Calendar = LazyComponent(() => import('../Calendar/Calendar'));
 const Reminders = LazyComponent(() => import('../Reminders'));
 const About = LazyComponent(() => import('../About/About'));
@@ -144,11 +144,6 @@ export const RootNavigator = () => {
       {isAuthenticated ? (
         <Fragment>
           <RootStack.Screen name="Home" component={isMobile ? BottomNavigator : DrawerNavigator} />
-          <RootStack.Screen
-            name="TodoistAuth"
-            component={TodoistAuth}
-            options={{ header: () => <AppBar />, headerShown: true }}
-          />
         </Fragment>
       ) : (
         <Fragment>

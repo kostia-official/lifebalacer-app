@@ -18,7 +18,7 @@ const Wrapper = styled.div<{ isMobile: boolean }>`
   flex-direction: column;
 `;
 
-export const EmptySpaceUnderFab = styled.div`
+export const EmptySpaceAboveFab = styled.div`
   height: 96px;
 `;
 
