@@ -1,9 +1,10 @@
 import React, { useMemo, Fragment } from 'react';
 import styled from 'styled-components';
-import { Typography, IconButton, Icon, Tooltip } from '@material-ui/core';
+import { Typography, IconButton, Tooltip } from '@material-ui/core';
 import { getColorsOfRange } from '../../helpers/color';
 import _ from 'lodash';
 import { grey } from '@material-ui/core/colors';
+import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 
 const Wrapper = styled.div`
   position: relative;
@@ -37,7 +38,7 @@ const Gradient = styled.div<{ colors: string[] }>`
   background-image: linear-gradient(to right, ${(props) => props.colors.join(',')});
 `;
 
-const IconStyled = styled(Icon)`
+const SwapIcon = styled(SwapHorizIcon)`
   color: ${grey[400]};
 `;
 
@@ -85,7 +86,7 @@ export const ValueGradient: React.FC<ValueGradientProps> = ({
 
       <Tooltip title="Reverse colors">
         <IconButtonStyled onClick={() => onReverseColors(!isReverseColors)}>
-          <IconStyled>swap_horiz</IconStyled>
+          <SwapIcon />
         </IconButtonStyled>
       </Tooltip>
     </Wrapper>
