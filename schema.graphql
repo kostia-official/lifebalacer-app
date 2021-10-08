@@ -21,6 +21,7 @@ type Activity {
 
 type ActivityAdvancedStatistic {
   _id: ID!
+  dateAfterKey: String!
   weekdays: [WeekdayStatistic!]!
   countPerValue: [CountPerValue!]
   entriesPerDateGroup: EntriesPerDateGroup!
@@ -28,6 +29,7 @@ type ActivityAdvancedStatistic {
 
 type ActivityBaseStatistic {
   _id: ID!
+  dateAfterKey: String!
   perWeek: Float
   total: Int!
   medianValue: Float
@@ -49,13 +51,6 @@ type ActivityExtremes {
   valueType: ActivityType!
 }
 
-type ActivityFullStatistic {
-  _id: ID!
-  isAdvancesStatisticAvailable: Boolean!
-  baseStatistic: ActivityBaseStatistic!
-  advancedStatistic: ActivityAdvancedStatistic
-}
-
 enum ActivityType {
   Simple
   Value
@@ -68,6 +63,11 @@ type Balance {
   year: Int!
   month: Int!
   week: Int!
+}
+
+enum ConditionType {
+  LessOrEqual
+  GreaterOrEqual
 }
 
 type CountPerValue {
@@ -101,6 +101,17 @@ input CreateEntryInput {
   value: Float
 }
 
+input CreateGoalInput {
+  name: String!
+  activityId: ID!
+  conditionType: String!
+  durationType: String!
+  timesPerDuration: Int!
+  successPoints: Float
+  failPoints: Float
+  startDate: Date
+}
+
 """Date custom scalar type"""
 scalar Date
 
@@ -113,6 +124,11 @@ type DaysStatistic {
   total: Int!
   missing: Int!
   streak: Int!
+}
+
+enum DurationType {
+  Week
+  Month
 }
 
 type EntriesByDay {
@@ -136,6 +152,7 @@ type Entry {
   activity: Activity!
   points: Float!
   value: Float
+  goalResultsIds: [ID]!
 }
 
 type EntryMissing {
@@ -147,6 +164,36 @@ type EntryPerDate {
   averageValue: Float
   count: Int!
   completedAt: String!
+}
+
+type Goal {
+  _id: ID!
+  name: String!
+  userId: String!
+  activityId: ID!
+  conditionType: ConditionType!
+  durationType: DurationType!
+  timesPerDuration: Int!
+  successPoints: Float
+  failPoints: Float
+  negativeFailPoints: Float
+  startDate: Date
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+type GoalResult {
+  _id: ID!
+  userId: String!
+  goalId: ID!
+  recordedAt: Date!
+  status: GoalResultStatus!
+}
+
+enum GoalResultStatus {
+  Pending
+  Completed
+  Failed
 }
 
 type Journal {
@@ -195,9 +242,12 @@ type Query {
   activity(_id: ID!): Activity
   activities: [Activity!]!
   activitiesExtremes: [ActivityExtremes!]!
+  goals: [Goal!]!
+  goal(_id: ID!): Goal
   activitiesStatistic(dateAfter: Date, dateBefore: Date): [ActivityBaseStatistic!]!
-  activityStatistic(activityId: String!, dateAfter: Date, dateBefore: Date): ActivityFullStatistic
-  journal(dateAfter: Date, activities: [String!]): [Journal!]!
+  activityBaseStatistic(activityId: String!, dateAfter: Date, dateBefore: Date): ActivityBaseStatistic!
+  activityAdvancedStatistic(activityId: String!, dateAfter: Date, dateBefore: Date): ActivityAdvancedStatistic
+  journal(dateAfter: Date, daysLimit: Int!, activities: [String!]): [Journal!]!
   balance(dateAfter: Date): Balance!
   paymentUrl(callbackUrl: String!): String!
   subscription(platform: SubscriptionPlatform): Subscription
@@ -248,12 +298,14 @@ enum SubscriptionPlatform {
   AppStore
   GooglePlay
   Fondy
+  Granted
 }
 
 enum SubscriptionStatus {
   NotSubscribed
   Pending
   Subscribed
+  Expired
 }
 
 type TodoistMeta {
@@ -285,6 +337,17 @@ input UpdateEntryInput {
   description: String
   completedAt: Date
   value: Float
+}
+
+input UpdateGoalInput {
+  name: String
+  activityId: ID
+  conditionType: String
+  durationType: String
+  timesPerDuration: Int
+  successPoints: Float
+  failPoints: Float
+  startDate: Date
 }
 
 type WeekdayStatistic {

@@ -9,11 +9,10 @@ export interface PageStartSectionProps {
 }
 
 const Wrapper = styled(Card)`
-  margin-bottom: 8px;
+  padding: 10px 16px;
 `;
 
 const HeaderContent = styled.div`
-  margin: 10px 16px;
   color: ${(props) => props.theme.palette.text.secondary};
 
   display: flex;
@@ -21,13 +20,15 @@ const HeaderContent = styled.div`
   align-items: center;
 `;
 
-export const HeaderCard: React.FC<PageStartSectionProps> = ({ text, rightContent }) => {
+export const HeaderCard: React.FC<PageStartSectionProps> = ({ text, rightContent, children }) => {
   return (
-    <Wrapper key="stats">
+    <Wrapper>
       <HeaderContent>
         <Typography variant="subtitle2">{text}</Typography>
         {rightContent || <Fragment />}
       </HeaderContent>
+
+      {children}
     </Wrapper>
   );
 };

@@ -4,7 +4,14 @@ export const MainColors = {
   Primary: teal['500'],
   Secondary: '#ba4d4f',
   Background: '#303030',
-  Yellow: '#e7c73a'
+  BackgroundLight: '#424242',
+  Yellow: '#e7c73a',
+  White: '#ffffffb3'
+};
+
+export const WhiteColor = {
+  Main: MainColors.White,
+  Dim: 'rgba(255,255,255,0.47)'
 };
 
 export const ProductivityColors = {

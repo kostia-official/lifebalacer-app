@@ -8,7 +8,7 @@ import SpeedDial from '@material-ui/lab/SpeedDial';
 import { FabWrapper } from '../../../components/FabWrapper';
 import { useNavigationHelpers } from '../../../hooks/useNavigationHelpers';
 import styled from 'styled-components';
-import { useAddIntegrationModal } from './IntegrationsDialog';
+import { useAddIntegrationModal, AddIntegrationModal } from './IntegrationsDialog';
 import { Backdrop } from '@material-ui/core';
 
 const IconStyled = styled(Icon)`
@@ -22,7 +22,7 @@ const ExtensionIconStyled = styled(ExtensionIcon)`
 export const AddActivityFab: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { goForwardToCb } = useNavigationHelpers();
-  const { openModal } = useAddIntegrationModal();
+  const { openModal: openIntegrationsModal } = useAddIntegrationModal();
 
   return (
     <FabWrapper>
@@ -36,18 +36,21 @@ export const AddActivityFab: React.FC = () => {
         open={isMenuOpen}
       >
         <SpeedDialAction
+          icon={<ExtensionIconStyled />}
+          tooltipTitle="Integration"
+          tooltipOpen
+          onClick={() => openIntegrationsModal()}
+        />
+
+        <SpeedDialAction
           icon={<IconStyled icon={manageAccounts} width={26} />}
           tooltipTitle="Activity"
           tooltipOpen
           onClick={goForwardToCb('ActivityCreate')}
         />
-        <SpeedDialAction
-          icon={<ExtensionIconStyled />}
-          tooltipTitle="Integration"
-          tooltipOpen
-          onClick={() => openModal()}
-        />
       </SpeedDial>
+
+      <AddIntegrationModal />
     </FabWrapper>
   );
 };

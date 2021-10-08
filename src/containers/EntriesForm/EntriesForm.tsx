@@ -8,7 +8,8 @@ import {
   useGetEntriesByOneDayQuery,
   useUpdateEntryMutation,
   refetchGetDaysStatisticQuery,
-  refetchGetActivitiesExtremesQuery
+  refetchGetActivitiesExtremesQuery,
+  refetchGetCurrentGoalsResultsQuery
 } from '../../generated/apollo';
 import ReturnIcon from '@material-ui/icons/KeyboardReturn';
 import { useApolloError } from '../../hooks/useApolloError';
@@ -129,7 +130,8 @@ const EntriesForm = () => {
       refetchGetDaysStatisticQuery(),
       refetchGetEntriesByDayQuery(),
       refetchGetBalanceQuery(),
-      refetchGetActivitiesExtremesQuery()
+      refetchGetActivitiesExtremesQuery(),
+      refetchGetCurrentGoalsResultsQuery()
     ]
   };
   const [deleteEntryMutation] = useDeleteEntry(mutationOptions);

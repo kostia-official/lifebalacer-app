@@ -1,5 +1,5 @@
 import {
-  useGetActiveSubscriptionQuery,
+  useGetActiveSubscription,
   GetActiveSubscriptionQuery,
   GetActiveSubscriptionQueryVariables
 } from '../generated/apollo';
@@ -15,7 +15,7 @@ export const useActiveSubscription = (options: HookArgs = {}) => {
   const syncedCachePolicy = useSyncedCachePolicy();
   const syncedCachePolicyOptional = options.withSyncedCachePolicy ? syncedCachePolicy : {};
 
-  const { data: subscriptionData, ...other } = useGetActiveSubscriptionQuery({
+  const { data: subscriptionData, ...other } = useGetActiveSubscription({
     notifyOnNetworkStatusChange: true,
     ...syncedCachePolicyOptional,
     ...options

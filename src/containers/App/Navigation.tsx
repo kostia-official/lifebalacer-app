@@ -76,11 +76,22 @@ export const linking: LinkingOptions = {
               TodoistAuth: 'activities/todoist/auth'
             }
           },
+          GoalsStack: {
+            initialRouteName: 'Goals',
+            screens: {
+              Goals: 'goals',
+              GoalEdit: 'goals/:id',
+              GoalCreate: 'goals/create'
+            }
+          },
           OtherStack: {
             initialRouteName: 'Other',
             screens: {
               Other: 'other',
               Reminders: 'other/reminders',
+              Goals: 'other/goals',
+              GoalEdit: 'other/goals/:id',
+              GoalCreate: 'other/goals/create',
               PremiumPlan: 'other/premium',
               About: 'other/about',
               PrivacyPolicy: 'other/about/privacy-policy',
@@ -106,14 +117,17 @@ const CalendarStack = createStackNavigator();
 const JournalStack = createStackNavigator();
 const StatisticStack = createStackNavigator();
 const ActivitiesStack = createStackNavigator();
+const GoalsStack = createStackNavigator();
 const ReminderStack = createStackNavigator();
 const AboutStack = createStackNavigator();
 const OtherStack = createStackNavigator();
 
 const EntriesForm = LazyComponent(() => import('../EntriesForm/EntriesForm'));
 const Journal = LazyComponent(() => import('../Journal/Journal'));
-const ActivityForm = LazyComponent(() => import('../ActivityForm/ActivityForm'));
 const Activities = LazyComponent(() => import('../Activities/Activities'));
+const ActivityForm = LazyComponent(() => import('../ActivityForm/ActivityForm'));
+const Goals = LazyComponent(() => import('../Goals/Goals'));
+const GoalForm = LazyComponent(() => import('../Goals/GoalForm'));
 const Calendar = LazyComponent(() => import('../Calendar/Calendar'));
 const Reminders = LazyComponent(() => import('../Reminders'));
 const About = LazyComponent(() => import('../About/About'));
@@ -194,6 +208,14 @@ export const ActivitiesScreen = () => (
   </ActivitiesStack.Navigator>
 );
 
+export const GoalsScreen = () => (
+  <GoalsStack.Navigator screenOptions={{ header: () => <AppBar /> }}>
+    <GoalsStack.Screen name="Goals" component={Goals} />
+    <GoalsStack.Screen name="GoalEdit" component={GoalForm} />
+    <GoalsStack.Screen name="GoalCreate" component={GoalForm} />
+  </GoalsStack.Navigator>
+);
+
 export const ReminderScreen = () => (
   <ReminderStack.Navigator screenOptions={{ header: () => <AppBar /> }}>
     <ReminderStack.Screen name="Reminders" component={Reminders} />
@@ -218,6 +240,10 @@ export const OtherScreen = () => (
 
     <OtherStack.Screen name="Reminders" component={Reminders} />
     <OtherStack.Screen name="PremiumPlan" component={PremiumPlan} />
+
+    <OtherStack.Screen name="Goals" component={Goals} />
+    <OtherStack.Screen name="GoalEdit" component={GoalForm} />
+    <OtherStack.Screen name="GoalCreate" component={GoalForm} />
 
     <OtherStack.Screen name="About" component={About} />
     <OtherStack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />

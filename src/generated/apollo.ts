@@ -27,11 +27,14 @@ export type Query = {
   activityAdvancedStatistic?: Maybe<ActivityAdvancedStatistic>;
   activityBaseStatistic: ActivityBaseStatistic;
   balance: Balance;
+  currentGoalsResults: Array<GoalResult>;
   daysStatistic: DaysStatistic;
   entries: Array<Entry>;
   entriesByDay: Array<EntriesByDay>;
   entriesByOneDay?: Maybe<EntriesByDay>;
   entry?: Maybe<Entry>;
+  goal?: Maybe<Goal>;
+  goals: Array<Goal>;
   journal: Array<Journal>;
   paymentUrl: Scalars['String'];
   pushTokens: Array<PushToken>;
@@ -78,6 +81,10 @@ export type QueryEntryArgs = {
   _id: Scalars['ID'];
 };
 
+export type QueryGoalArgs = {
+  _id: Scalars['ID'];
+};
+
 export type QueryJournalArgs = {
   dateAfter?: Maybe<Scalars['Date']>;
   daysLimit: Scalars['Int'];
@@ -100,6 +107,9 @@ export type Mutation = {
   updateActivityById: Activity;
   archiveActivity: Scalars['Boolean'];
   restoreActivity: Scalars['Boolean'];
+  createGoal: Goal;
+  updateGoalById: Goal;
+  checkFailedGoalsResults: Scalars['Boolean'];
   createEntry: Entry;
   updateEntryById: Entry;
   deleteEntry?: Maybe<Scalars['String']>;
@@ -130,6 +140,15 @@ export type MutationArchiveActivityArgs = {
 
 export type MutationRestoreActivityArgs = {
   _id: Scalars['ID'];
+};
+
+export type MutationCreateGoalArgs = {
+  data: CreateGoalInput;
+};
+
+export type MutationUpdateGoalByIdArgs = {
+  _id: Scalars['ID'];
+  data: UpdateGoalInput;
 };
 
 export type MutationCreateEntryArgs = {
@@ -189,6 +208,70 @@ export type Subscription = {
   status: SubscriptionStatus;
   expireAt?: Maybe<Scalars['Date']>;
 };
+
+export type Goal = {
+  __typename?: 'Goal';
+  _id: Scalars['ID'];
+  activity: Activity;
+  activityId: Scalars['ID'];
+  conditionType: ConditionType;
+  durationEndCheckedAt: Scalars['Date'];
+  durationType: DurationType;
+  failPoints?: Maybe<Scalars['Float']>;
+  negativeFailPoints?: Maybe<Scalars['Float']>;
+  startDate: Scalars['Date'];
+  successPoints?: Maybe<Scalars['Float']>;
+  timesPerDuration: Scalars['Int'];
+  userId: Scalars['String'];
+};
+
+export enum ConditionType {
+  LessOrEqual = 'LessOrEqual',
+  GreaterOrEqual = 'GreaterOrEqual'
+}
+
+export enum DurationType {
+  Week = 'Week',
+  Month = 'Month'
+}
+
+export type CreateGoalInput = {
+  activityId: Scalars['ID'];
+  conditionType: ConditionType;
+  durationType: DurationType;
+  timesPerDuration: Scalars['Int'];
+  successPoints?: Maybe<Scalars['Float']>;
+  failPoints?: Maybe<Scalars['Float']>;
+  startDate?: Maybe<Scalars['Date']>;
+};
+
+export type UpdateGoalInput = {
+  activityId?: Maybe<Scalars['ID']>;
+  conditionType?: Maybe<Scalars['String']>;
+  durationType?: Maybe<Scalars['String']>;
+  timesPerDuration?: Maybe<Scalars['Int']>;
+  successPoints?: Maybe<Scalars['Float']>;
+  failPoints?: Maybe<Scalars['Float']>;
+  startDate?: Maybe<Scalars['Date']>;
+};
+
+export type GoalResult = {
+  __typename?: 'GoalResult';
+  _id: Scalars['ID'];
+  userId: Scalars['String'];
+  goalId: Scalars['ID'];
+  goal: Goal;
+  entries: Array<Entry>;
+  recordedAt: Scalars['Date'];
+  status: GoalResultStatus;
+  points: Scalars['Float'];
+};
+
+export enum GoalResultStatus {
+  Pending = 'Pending',
+  Completed = 'Completed',
+  Failed = 'Failed'
+}
 
 export type Activity = {
   __typename?: 'Activity';
@@ -320,6 +403,7 @@ export type Entry = {
   activityId: Scalars['ID'];
   completedAt: Scalars['Date'];
   description?: Maybe<Scalars['String']>;
+  goalResultsIds: Array<Maybe<Scalars['ID']>>;
   points: Scalars['Float'];
   userId: Scalars['String'];
   value?: Maybe<Scalars['Float']>;
@@ -427,7 +511,7 @@ export type UpdateEntryInput = {
   value?: Maybe<Scalars['Float']>;
 };
 
-export type ActivityResultFragment = { __typename?: 'Activity' } & Pick<
+export type ActivityFragment = { __typename?: 'Activity' } & Pick<
   Activity,
   | '_id'
   | 'name'
@@ -449,14 +533,77 @@ export type GetActivityQueryVariables = Exact<{
 }>;
 
 export type GetActivityQuery = { __typename?: 'Query' } & {
-  activity?: Maybe<{ __typename?: 'Activity' } & ActivityResultFragment>;
+  activity?: Maybe<{ __typename?: 'Activity' } & ActivityFragment>;
 };
 
 export type GetActivitiesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetActivitiesQuery = { __typename?: 'Query' } & {
-  activities: Array<{ __typename?: 'Activity' } & ActivityResultFragment>;
+  activities: Array<{ __typename?: 'Activity' } & ActivityFragment>;
 };
+
+export type GoalFragment = { __typename?: 'Goal' } & Pick<
+  Goal,
+  | '_id'
+  | 'activityId'
+  | 'conditionType'
+  | 'timesPerDuration'
+  | 'durationType'
+  | 'failPoints'
+  | 'successPoints'
+  | 'startDate'
+> & { activity: { __typename?: 'Activity' } & Pick<Activity, '_id' | 'name' | 'emoji'> };
+
+export type GetGoalQueryVariables = Exact<{
+  _id: Scalars['ID'];
+}>;
+
+export type GetGoalQuery = { __typename?: 'Query' } & {
+  goal?: Maybe<{ __typename?: 'Goal' } & GoalFragment>;
+};
+
+export type GetGoalsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetGoalsQuery = { __typename?: 'Query' } & {
+  goals: Array<{ __typename?: 'Goal' } & GoalFragment>;
+};
+
+export type GetCurrentGoalsResultsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetCurrentGoalsResultsQuery = { __typename?: 'Query' } & {
+  currentGoalsResults: Array<
+    { __typename?: 'GoalResult' } & Pick<GoalResult, '_id' | 'status' | 'points'> & {
+        entries: Array<{ __typename?: 'Entry' } & Pick<Entry, '_id'>>;
+        goal: { __typename?: 'Goal' } & Pick<Goal, '_id' | 'conditionType' | 'timesPerDuration'> & {
+            activity: { __typename?: 'Activity' } & Pick<Activity, '_id' | 'name' | 'emoji'>;
+          };
+      }
+  >;
+};
+
+export type CreateGoalMutationVariables = Exact<{
+  data: CreateGoalInput;
+}>;
+
+export type CreateGoalMutation = { __typename?: 'Mutation' } & {
+  createGoal: { __typename?: 'Goal' } & Pick<Goal, '_id'>;
+};
+
+export type UpdateGoalMutationVariables = Exact<{
+  _id: Scalars['ID'];
+  data: UpdateGoalInput;
+}>;
+
+export type UpdateGoalMutation = { __typename?: 'Mutation' } & {
+  updateGoalById: { __typename?: 'Goal' } & Pick<Goal, '_id'>;
+};
+
+export type CheckFailedGoalsResultsMutationVariables = Exact<{ [key: string]: never }>;
+
+export type CheckFailedGoalsResultsMutation = { __typename?: 'Mutation' } & Pick<
+  Mutation,
+  'checkFailedGoalsResults'
+>;
 
 export type GetActivitiesExtremesQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -583,12 +730,12 @@ export type GetDaysStatisticQuery = { __typename?: 'Query' } & {
   >;
 };
 
-export type EntryPerDateFragmentFragment = { __typename?: 'EntryPerDate' } & Pick<
+export type EntryPerDateFragment = { __typename?: 'EntryPerDate' } & Pick<
   EntryPerDate,
   'averageValue' | 'completedAt' | 'count' | 'valueSum'
 >;
 
-export type ActivityBaseStatisticFragmentFragment = { __typename?: 'ActivityBaseStatistic' } & Pick<
+export type ActivityBaseStatisticFragment = { __typename?: 'ActivityBaseStatistic' } & Pick<
   ActivityBaseStatistic,
   '_id' | 'dateAfterKey' | 'total' | 'perWeek' | 'medianValue' | 'averageValue'
 > & {
@@ -607,7 +754,7 @@ export type GetActivitiesStatisticQueryVariables = Exact<{
 
 export type GetActivitiesStatisticQuery = { __typename?: 'Query' } & {
   activitiesStatistic: Array<
-    { __typename?: 'ActivityBaseStatistic' } & ActivityBaseStatisticFragmentFragment
+    { __typename?: 'ActivityBaseStatistic' } & ActivityBaseStatisticFragment
   >;
 };
 
@@ -618,9 +765,7 @@ export type GetActivityStatisticQueryVariables = Exact<{
 }>;
 
 export type GetActivityStatisticQuery = { __typename?: 'Query' } & {
-  activityBaseStatistic: {
-    __typename?: 'ActivityBaseStatistic';
-  } & ActivityBaseStatisticFragmentFragment;
+  activityBaseStatistic: { __typename?: 'ActivityBaseStatistic' } & ActivityBaseStatisticFragment;
   activityAdvancedStatistic?: Maybe<
     { __typename?: 'ActivityAdvancedStatistic' } & Pick<
       ActivityAdvancedStatistic,
@@ -640,8 +785,8 @@ export type GetActivityStatisticQuery = { __typename?: 'Query' } & {
           Array<{ __typename?: 'CountPerValue' } & Pick<CountPerValue, 'count' | 'value'>>
         >;
         entriesPerDateGroup: { __typename?: 'EntriesPerDateGroup' } & {
-          week: Array<{ __typename?: 'EntryPerDate' } & EntryPerDateFragmentFragment>;
-          month: Array<{ __typename?: 'EntryPerDate' } & EntryPerDateFragmentFragment>;
+          week: Array<{ __typename?: 'EntryPerDate' } & EntryPerDateFragment>;
+          month: Array<{ __typename?: 'EntryPerDate' } & EntryPerDateFragment>;
         };
       }
   >;
@@ -749,7 +894,7 @@ export type UpsertPushTokenMutation = { __typename?: 'Mutation' } & {
 export type GetTodoistActivityQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetTodoistActivityQuery = { __typename?: 'Query' } & {
-  todoistActivity: { __typename?: 'Activity' } & ActivityResultFragment;
+  todoistActivity: { __typename?: 'Activity' } & ActivityFragment;
 };
 
 export type GetPaymentUrlQueryVariables = Exact<{
@@ -778,8 +923,8 @@ export type CancelSubscriptionMutation = { __typename?: 'Mutation' } & Pick<
   'cancelSubscription'
 >;
 
-export const ActivityResultFragmentDoc = gql`
-  fragment ActivityResult on Activity {
+export const ActivityFragmentDoc = gql`
+  fragment ActivityFragment on Activity {
     _id
     name
     emoji
@@ -796,6 +941,23 @@ export const ActivityResultFragmentDoc = gql`
     rangeMeta {
       from
       to
+    }
+  }
+`;
+export const GoalFragmentDoc = gql`
+  fragment GoalFragment on Goal {
+    _id
+    activityId
+    conditionType
+    timesPerDuration
+    durationType
+    failPoints
+    successPoints
+    startDate
+    activity @client {
+      _id
+      name
+      emoji
     }
   }
 `;
@@ -854,7 +1016,7 @@ export const EntriesByDayResultFragmentDoc = gql`
     }
   }
 `;
-export const EntryPerDateFragmentFragmentDoc = gql`
+export const EntryPerDateFragmentDoc = gql`
   fragment EntryPerDateFragment on EntryPerDate {
     averageValue
     completedAt
@@ -862,7 +1024,7 @@ export const EntryPerDateFragmentFragmentDoc = gql`
     valueSum
   }
 `;
-export const ActivityBaseStatisticFragmentFragmentDoc = gql`
+export const ActivityBaseStatisticFragmentDoc = gql`
   fragment ActivityBaseStatisticFragment on ActivityBaseStatistic {
     _id
     dateAfterKey
@@ -892,10 +1054,10 @@ export const ActivityBaseStatisticFragmentFragmentDoc = gql`
 export const GetActivityDocument = gql`
   query GetActivity($_id: ID!) {
     activity(_id: $_id) {
-      ...ActivityResult
+      ...ActivityFragment
     }
   }
-  ${ActivityResultFragmentDoc}
+  ${ActivityFragmentDoc}
 `;
 
 /**
@@ -942,10 +1104,10 @@ export function refetchGetActivityQuery(variables?: GetActivityQueryVariables) {
 export const GetActivitiesDocument = gql`
   query GetActivities {
     activities {
-      ...ActivityResult
+      ...ActivityFragment
     }
   }
-  ${ActivityResultFragmentDoc}
+  ${ActivityFragmentDoc}
 `;
 
 /**
@@ -988,6 +1150,294 @@ export type GetActivitiesQueryResult = Apollo.QueryResult<
 export function refetchGetActivitiesQuery(variables?: GetActivitiesQueryVariables) {
   return { query: GetActivitiesDocument, variables: variables };
 }
+export const GetGoalDocument = gql`
+  query GetGoal($_id: ID!) {
+    goal(_id: $_id) {
+      ...GoalFragment
+    }
+  }
+  ${GoalFragmentDoc}
+`;
+
+/**
+ * __useGetGoalQuery__
+ *
+ * To run a query within a React component, call `useGetGoalQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGoalQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetGoalQuery({
+ *   variables: {
+ *      _id: // value for '_id'
+ *   },
+ * });
+ */
+export function useGetGoalQuery(
+  baseOptions: Apollo.QueryHookOptions<GetGoalQuery, GetGoalQueryVariables>
+) {
+  return Apollo.useQuery<GetGoalQuery, GetGoalQueryVariables>(GetGoalDocument, baseOptions);
+}
+export function useGetGoalLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetGoalQuery, GetGoalQueryVariables>
+) {
+  return Apollo.useLazyQuery<GetGoalQuery, GetGoalQueryVariables>(GetGoalDocument, baseOptions);
+}
+export type GetGoalQueryHookResult = ReturnType<typeof useGetGoalQuery>;
+export type GetGoalLazyQueryHookResult = ReturnType<typeof useGetGoalLazyQuery>;
+export type GetGoalQueryResult = Apollo.QueryResult<GetGoalQuery, GetGoalQueryVariables>;
+export function refetchGetGoalQuery(variables?: GetGoalQueryVariables) {
+  return { query: GetGoalDocument, variables: variables };
+}
+export const GetGoalsDocument = gql`
+  query GetGoals {
+    goals {
+      ...GoalFragment
+    }
+  }
+  ${GoalFragmentDoc}
+`;
+
+/**
+ * __useGetGoalsQuery__
+ *
+ * To run a query within a React component, call `useGetGoalsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGoalsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetGoalsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetGoalsQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetGoalsQuery, GetGoalsQueryVariables>
+) {
+  return Apollo.useQuery<GetGoalsQuery, GetGoalsQueryVariables>(GetGoalsDocument, baseOptions);
+}
+export function useGetGoalsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetGoalsQuery, GetGoalsQueryVariables>
+) {
+  return Apollo.useLazyQuery<GetGoalsQuery, GetGoalsQueryVariables>(GetGoalsDocument, baseOptions);
+}
+export type GetGoalsQueryHookResult = ReturnType<typeof useGetGoalsQuery>;
+export type GetGoalsLazyQueryHookResult = ReturnType<typeof useGetGoalsLazyQuery>;
+export type GetGoalsQueryResult = Apollo.QueryResult<GetGoalsQuery, GetGoalsQueryVariables>;
+export function refetchGetGoalsQuery(variables?: GetGoalsQueryVariables) {
+  return { query: GetGoalsDocument, variables: variables };
+}
+export const GetCurrentGoalsResultsDocument = gql`
+  query GetCurrentGoalsResults {
+    currentGoalsResults {
+      _id
+      status
+      points
+      entries {
+        _id
+      }
+      goal {
+        _id
+        conditionType
+        timesPerDuration
+        activity {
+          _id
+          name
+          emoji
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetCurrentGoalsResultsQuery__
+ *
+ * To run a query within a React component, call `useGetCurrentGoalsResultsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCurrentGoalsResultsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCurrentGoalsResultsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCurrentGoalsResultsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetCurrentGoalsResultsQuery,
+    GetCurrentGoalsResultsQueryVariables
+  >
+) {
+  return Apollo.useQuery<GetCurrentGoalsResultsQuery, GetCurrentGoalsResultsQueryVariables>(
+    GetCurrentGoalsResultsDocument,
+    baseOptions
+  );
+}
+export function useGetCurrentGoalsResultsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCurrentGoalsResultsQuery,
+    GetCurrentGoalsResultsQueryVariables
+  >
+) {
+  return Apollo.useLazyQuery<GetCurrentGoalsResultsQuery, GetCurrentGoalsResultsQueryVariables>(
+    GetCurrentGoalsResultsDocument,
+    baseOptions
+  );
+}
+export type GetCurrentGoalsResultsQueryHookResult = ReturnType<
+  typeof useGetCurrentGoalsResultsQuery
+>;
+export type GetCurrentGoalsResultsLazyQueryHookResult = ReturnType<
+  typeof useGetCurrentGoalsResultsLazyQuery
+>;
+export type GetCurrentGoalsResultsQueryResult = Apollo.QueryResult<
+  GetCurrentGoalsResultsQuery,
+  GetCurrentGoalsResultsQueryVariables
+>;
+export function refetchGetCurrentGoalsResultsQuery(
+  variables?: GetCurrentGoalsResultsQueryVariables
+) {
+  return { query: GetCurrentGoalsResultsDocument, variables: variables };
+}
+export const CreateGoalDocument = gql`
+  mutation CreateGoal($data: CreateGoalInput!) {
+    createGoal(data: $data) {
+      _id
+    }
+  }
+`;
+export type CreateGoalMutationFn = Apollo.MutationFunction<
+  CreateGoalMutation,
+  CreateGoalMutationVariables
+>;
+
+/**
+ * __useCreateGoalMutation__
+ *
+ * To run a mutation, you first call `useCreateGoalMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGoalMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGoalMutation, { data, loading, error }] = useCreateGoalMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateGoalMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateGoalMutation, CreateGoalMutationVariables>
+) {
+  return Apollo.useMutation<CreateGoalMutation, CreateGoalMutationVariables>(
+    CreateGoalDocument,
+    baseOptions
+  );
+}
+export type CreateGoalMutationHookResult = ReturnType<typeof useCreateGoalMutation>;
+export type CreateGoalMutationResult = Apollo.MutationResult<CreateGoalMutation>;
+export type CreateGoalMutationOptions = Apollo.BaseMutationOptions<
+  CreateGoalMutation,
+  CreateGoalMutationVariables
+>;
+export const UpdateGoalDocument = gql`
+  mutation UpdateGoal($_id: ID!, $data: UpdateGoalInput!) {
+    updateGoalById(_id: $_id, data: $data) {
+      _id
+    }
+  }
+`;
+export type UpdateGoalMutationFn = Apollo.MutationFunction<
+  UpdateGoalMutation,
+  UpdateGoalMutationVariables
+>;
+
+/**
+ * __useUpdateGoalMutation__
+ *
+ * To run a mutation, you first call `useUpdateGoalMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGoalMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGoalMutation, { data, loading, error }] = useUpdateGoalMutation({
+ *   variables: {
+ *      _id: // value for '_id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateGoalMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateGoalMutation, UpdateGoalMutationVariables>
+) {
+  return Apollo.useMutation<UpdateGoalMutation, UpdateGoalMutationVariables>(
+    UpdateGoalDocument,
+    baseOptions
+  );
+}
+export type UpdateGoalMutationHookResult = ReturnType<typeof useUpdateGoalMutation>;
+export type UpdateGoalMutationResult = Apollo.MutationResult<UpdateGoalMutation>;
+export type UpdateGoalMutationOptions = Apollo.BaseMutationOptions<
+  UpdateGoalMutation,
+  UpdateGoalMutationVariables
+>;
+export const CheckFailedGoalsResultsDocument = gql`
+  mutation CheckFailedGoalsResults {
+    checkFailedGoalsResults
+  }
+`;
+export type CheckFailedGoalsResultsMutationFn = Apollo.MutationFunction<
+  CheckFailedGoalsResultsMutation,
+  CheckFailedGoalsResultsMutationVariables
+>;
+
+/**
+ * __useCheckFailedGoalsResultsMutation__
+ *
+ * To run a mutation, you first call `useCheckFailedGoalsResultsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCheckFailedGoalsResultsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [checkFailedGoalsResultsMutation, { data, loading, error }] = useCheckFailedGoalsResultsMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCheckFailedGoalsResultsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CheckFailedGoalsResultsMutation,
+    CheckFailedGoalsResultsMutationVariables
+  >
+) {
+  return Apollo.useMutation<
+    CheckFailedGoalsResultsMutation,
+    CheckFailedGoalsResultsMutationVariables
+  >(CheckFailedGoalsResultsDocument, baseOptions);
+}
+export type CheckFailedGoalsResultsMutationHookResult = ReturnType<
+  typeof useCheckFailedGoalsResultsMutation
+>;
+export type CheckFailedGoalsResultsMutationResult = Apollo.MutationResult<CheckFailedGoalsResultsMutation>;
+export type CheckFailedGoalsResultsMutationOptions = Apollo.BaseMutationOptions<
+  CheckFailedGoalsResultsMutation,
+  CheckFailedGoalsResultsMutationVariables
+>;
 export const GetActivitiesExtremesDocument = gql`
   query GetActivitiesExtremes {
     activitiesExtremes {
@@ -1369,7 +1819,7 @@ export const GetActivitiesStatisticDocument = gql`
       ...ActivityBaseStatisticFragment
     }
   }
-  ${ActivityBaseStatisticFragmentFragmentDoc}
+  ${ActivityBaseStatisticFragmentDoc}
 `;
 
 /**
@@ -1465,8 +1915,8 @@ export const GetActivityStatisticDocument = gql`
       }
     }
   }
-  ${ActivityBaseStatisticFragmentFragmentDoc}
-  ${EntryPerDateFragmentFragmentDoc}
+  ${ActivityBaseStatisticFragmentDoc}
+  ${EntryPerDateFragmentDoc}
 `;
 
 /**
@@ -2064,10 +2514,10 @@ export type UpsertPushTokenMutationOptions = Apollo.BaseMutationOptions<
 export const GetTodoistActivityDocument = gql`
   query GetTodoistActivity {
     todoistActivity @client {
-      ...ActivityResult
+      ...ActivityFragment
     }
   }
-  ${ActivityResultFragmentDoc}
+  ${ActivityFragmentDoc}
 `;
 
 /**
@@ -2174,21 +2624,21 @@ export const GetActiveSubscriptionDocument = gql`
 `;
 
 /**
- * __useGetActiveSubscriptionQuery__
+ * __useGetActiveSubscription__
  *
- * To run a query within a React component, call `useGetActiveSubscriptionQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetActiveSubscriptionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetActiveSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useGetActiveSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetActiveSubscriptionQuery({
+ * const { data, loading, error } = useGetActiveSubscription({
  *   variables: {
  *   },
  * });
  */
-export function useGetActiveSubscriptionQuery(
+export function useGetActiveSubscription(
   baseOptions?: Apollo.QueryHookOptions<
     GetActiveSubscriptionQuery,
     GetActiveSubscriptionQueryVariables
@@ -2210,7 +2660,7 @@ export function useGetActiveSubscriptionLazyQuery(
     baseOptions
   );
 }
-export type GetActiveSubscriptionQueryHookResult = ReturnType<typeof useGetActiveSubscriptionQuery>;
+export type GetActiveSubscriptionHookResult = ReturnType<typeof useGetActiveSubscription>;
 export type GetActiveSubscriptionLazyQueryHookResult = ReturnType<
   typeof useGetActiveSubscriptionLazyQuery
 >;
@@ -2218,7 +2668,7 @@ export type GetActiveSubscriptionQueryResult = Apollo.QueryResult<
   GetActiveSubscriptionQuery,
   GetActiveSubscriptionQueryVariables
 >;
-export function refetchGetActiveSubscriptionQuery(variables?: GetActiveSubscriptionQueryVariables) {
+export function refetchGetActiveSubscription(variables?: GetActiveSubscriptionQueryVariables) {
   return { query: GetActiveSubscriptionDocument, variables: variables };
 }
 export const CancelSubscriptionDocument = gql`
@@ -2232,23 +2682,23 @@ export type CancelSubscriptionMutationFn = Apollo.MutationFunction<
 >;
 
 /**
- * __useCancelSubscriptionMutation__
+ * __useCancelSubscription__
  *
- * To run a mutation, you first call `useCancelSubscriptionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCancelSubscriptionMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCancelSubscription` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCancelSubscription` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [cancelSubscriptionMutation, { data, loading, error }] = useCancelSubscriptionMutation({
+ * const [cancelSubscription, { data, loading, error }] = useCancelSubscription({
  *   variables: {
  *      _id: // value for '_id'
  *   },
  * });
  */
-export function useCancelSubscriptionMutation(
+export function useCancelSubscription(
   baseOptions?: Apollo.MutationHookOptions<
     CancelSubscriptionMutation,
     CancelSubscriptionMutationVariables
@@ -2259,7 +2709,7 @@ export function useCancelSubscriptionMutation(
     baseOptions
   );
 }
-export type CancelSubscriptionMutationHookResult = ReturnType<typeof useCancelSubscriptionMutation>;
+export type CancelSubscriptionHookResult = ReturnType<typeof useCancelSubscription>;
 export type CancelSubscriptionMutationResult = Apollo.MutationResult<CancelSubscriptionMutation>;
 export type CancelSubscriptionMutationOptions = Apollo.BaseMutationOptions<
   CancelSubscriptionMutation,

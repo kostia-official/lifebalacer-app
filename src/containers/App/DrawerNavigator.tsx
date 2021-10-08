@@ -7,7 +7,8 @@ import {
   StatisticScreen,
   ActivitiesScreen,
   AboutScreen,
-  ReminderScreen
+  ReminderScreen,
+  GoalsScreen
 } from './Navigation';
 import { TodoistAuth } from '../Activities/TodoistAuth';
 import { PremiumPlan } from '../PremiumPlan/PremiumPlan';
@@ -23,6 +24,7 @@ export const DrawerNavigator: React.FC = () => {
       <DrawerStack.Screen name="JournalStack" component={JournalScreen} />
       <DrawerStack.Screen name="StatisticStack" component={StatisticScreen} />
       <DrawerStack.Screen name="ActivitiesStack" component={ActivitiesScreen} />
+      <DrawerStack.Screen name="GoalsStack" component={GoalsScreen} />
       <DrawerStack.Screen name="AboutStack" component={AboutScreen} />
       <DrawerStack.Screen name="RemindersStack" component={ReminderScreen} />
       <DrawerStack.Screen name="TodoistAuth" component={TodoistAuth} />

@@ -7,11 +7,12 @@ import { UserListItemContent } from '../components/UserListItem/UserListItemCont
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { useIsInternalTestUser } from '../hooks/useIsInternalTestUser';
 import styled from 'styled-components';
-import { Icon as Iconify } from '@iconify/react';
+import { Icon as Iconify, Icon } from '@iconify/react';
 import outlineWorkspacePremium from '@iconify/icons-ic/outline-workspace-premium';
 import { useActiveSubscription } from '../hooks/useActiveSubscription';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import InfoIcon from '@material-ui/icons/Info';
+import goalIcon from '@iconify/icons-fluent/target-arrow-20-filled';
 
 const UserListItemContentWrapper = styled.div`
   margin-left: -9px;
@@ -75,6 +76,14 @@ const Other = () => {
           </ListItemIconStyled>
 
           <ListItemText primary="Reminders" />
+        </ListItem>
+
+        <ListItem button onClick={goForwardToCb('Goals')}>
+          <ListItemIconStyled>
+            <Icon icon={goalIcon} width={26} />
+          </ListItemIconStyled>
+
+          <ListItemText primary="Goals" />
         </ListItem>
 
         <ListItem button onClick={goForwardToCb('About')}>

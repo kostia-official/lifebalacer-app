@@ -20,7 +20,6 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import RestoreIcon from '@material-ui/icons/RestoreFromTrash';
 import { AddActivityFab } from './components/AddActivityFab';
-import { AddIntegrationModal } from './components/IntegrationsDialog';
 
 const ArchivedActivitiesWrapper = styled.div`
   padding-top: 10px;
@@ -149,7 +148,6 @@ const Activities = () => {
       <EmptySpaceAboveFab />
 
       <AddActivityFab />
-      <AddIntegrationModal />
     </ScreenWrapper>
   );
 };

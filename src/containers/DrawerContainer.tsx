@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
-import { Drawer } from '../../components/Drawer';
-import { useAuth } from '../../hooks/useAuth';
-import { useIsExpandedDrawer } from '../../hooks/useIsExpandedDrawer';
-import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
-import { useIsInternalTestUser } from '../../hooks/useIsInternalTestUser';
-import { useActiveSubscription } from '../../hooks/useActiveSubscription';
+import { Drawer } from '../components/Drawer';
+import { useAuth } from '../hooks/useAuth';
+import { useIsExpandedDrawer } from '../hooks/useIsExpandedDrawer';
+import { useNavigationHelpers } from '../hooks/useNavigationHelpers';
+import { useIsInternalTestUser } from '../hooks/useIsInternalTestUser';
+import { useActiveSubscription } from '../hooks/useActiveSubscription';
 import { Icon } from '@iconify/react';
 import baselineReceiptLong from '@iconify/icons-ic/baseline-receipt-long';
 import manageAccounts from '@iconify/icons-ic/baseline-manage-accounts';
@@ -14,6 +14,7 @@ import DateRangeIcon from '@material-ui/icons/DateRange';
 import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import InfoIcon from '@material-ui/icons/Info';
+import goalIcon from '@iconify/icons-fluent/target-arrow-20-filled';
 
 export const items = [
   {
@@ -35,6 +36,11 @@ export const items = [
     name: 'Activities',
     icon: <Icon icon={manageAccounts} width={26} />,
     screen: 'ActivitiesStack'
+  },
+  {
+    name: 'Goals',
+    icon: <Icon icon={goalIcon} width={26} />,
+    screen: 'GoalsStack'
   },
   {
     name: 'Statistic',

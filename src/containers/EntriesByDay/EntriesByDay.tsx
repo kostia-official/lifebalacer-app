@@ -28,6 +28,9 @@ import { FabWrapper } from '../../components/FabWrapper';
 import { EmptyBlock } from '../../components/EmptyBlock';
 import { useLocalNotificationsUpdate } from '../../hooks/useLocalNotificationsUpdate';
 import { useCheckStoreSubscription } from '../../hooks/storeSubscription/useCheckStoreSubscription';
+import { CurrentGoalsResults } from './CurrentGoalResults/CurrentGoalsResults';
+import { FlexBox } from '../../components/FlexBox';
+import { useCheckFailedGoalsResults } from '../../hooks/useCheckFailedGoalsResults';
 
 const EntriesLabelsWrapper = styled.div`
   margin: 6px 16px 14px 16px;
@@ -42,6 +45,7 @@ const EntriesByDay = React.memo(() => {
   usePushTokenUpdate({ onError });
   useLocalNotificationsUpdate({ onError });
   useCheckStoreSubscription({ onError });
+  useCheckFailedGoalsResults({ onError });
 
   const { statisticText, refetch: refetchStatistic } = useDaysStatisticText({ onError });
 
@@ -99,7 +103,11 @@ const EntriesByDay = React.memo(() => {
             hasMore={isHasMore}
             scrollableTarget={scrollTargetId}
           >
-            <HeaderCard text={statisticText} />
+            <FlexBox column gap={8} marginBottom={1}>
+              <HeaderCard text={statisticText} />
+
+              <CurrentGoalsResults />
+            </FlexBox>
 
             {entriesByDay?.map((day) => {
               return (

@@ -30,5 +30,10 @@ export const resolvers: Resolvers = {
     activity: async ({ activityId }, _args, { client }) => {
       return activityResolver(client, activityId);
     }
+  },
+  Goal: {
+    activity: async ({ activityId }, _args, { client }) => {
+      return activityResolver(client, activityId);
+    }
   }
 };

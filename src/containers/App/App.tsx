@@ -14,6 +14,7 @@ export type NavigationParams = {
   EntriesForm: { date: string };
   ActivityStatistic: { id: string };
   ActivityEdit: { id: string };
+  GoalEdit: { id: string };
   TodoistAuth: { code: string; error: string };
 };
 

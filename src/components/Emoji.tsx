@@ -12,6 +12,7 @@ const Wrapper = styled.span`
 
 const Span = styled.span`
   font-size: 16px;
+  color: white;
 `;
 
 export const Emoji: React.FC = ({ children }) => {

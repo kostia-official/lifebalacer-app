@@ -2,10 +2,7 @@ import { getPlatform, getSubscriptionPlatform } from '../../common/platform';
 import { useEffect } from 'react';
 import { InAppPurchase2 as store, IAPProduct } from '@ionic-native/in-app-purchase-2';
 import { UseApolloErrorProps } from '../useLocalNotificationsUpdate';
-import {
-  useCancelSubscriptionMutation,
-  refetchGetActiveSubscriptionQuery
-} from '../../generated/apollo';
+import { useCancelSubscription, refetchGetActiveSubscription } from '../../generated/apollo';
 import { productsMap } from '../../common/subscriptionProducts';
 import { useActiveSubscription } from '../useActiveSubscription';
 
@@ -14,8 +11,9 @@ export const useCheckStoreSubscription = ({ onError }: UseApolloErrorProps) => {
   const { subscription } = useActiveSubscription({ onError });
   const isCurrentPlatform = subscription?.platform === getSubscriptionPlatform();
 
-  const [cancelSubscription] = useCancelSubscriptionMutation({
+  const [cancelSubscription] = useCancelSubscription({
     onError,
+
     update: (cache) => {
       cache.modify({
         id: `Subscription:${subscription?._id}`,
@@ -24,7 +22,7 @@ export const useCheckStoreSubscription = ({ onError }: UseApolloErrorProps) => {
         }
       });
     },
-    refetchQueries: [refetchGetActiveSubscriptionQuery()]
+    refetchQueries: [refetchGetActiveSubscription()]
   });
 
   useEffect(() => {

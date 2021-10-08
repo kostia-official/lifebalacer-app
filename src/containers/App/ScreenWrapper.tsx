@@ -4,7 +4,7 @@ import { Showable } from '../../components/Showable';
 import { Spinner } from '../../components/Spinner';
 import styled from 'styled-components';
 import { useScrolling, createGlobalState } from 'react-use';
-import { DrawerContainer } from './DrawerContainer';
+import { DrawerContainer } from '../DrawerContainer';
 import { useDeviceMediaQuery } from '../../hooks/useDeviceMediaQuery';
 import { useScrollToTop } from '@react-navigation/native';
 import { useScreenHeight } from '../../hooks/useScreenHeight';

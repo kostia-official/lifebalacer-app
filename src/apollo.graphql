@@ -1,4 +1,4 @@
-fragment ActivityResult on Activity {
+fragment ActivityFragment on Activity {
   _id
   name
   emoji
@@ -20,14 +20,79 @@ fragment ActivityResult on Activity {
 
 query GetActivity($_id: ID!) {
   activity(_id: $_id) {
-    ...ActivityResult
+    ...ActivityFragment
   }
 }
 
 query GetActivities {
   activities {
-    ...ActivityResult
+    ...ActivityFragment
   }
+}
+
+fragment GoalFragment on Goal {
+  _id
+  activityId
+  conditionType
+  timesPerDuration
+  durationType
+  failPoints
+  successPoints
+  startDate
+  activity @client {
+    _id
+    name
+    emoji
+  }
+}
+
+query GetGoal($_id: ID!) {
+  goal(_id: $_id) {
+    ...GoalFragment
+  }
+}
+
+query GetGoals {
+  goals {
+    ...GoalFragment
+  }
+}
+
+query GetCurrentGoalsResults {
+  currentGoalsResults {
+    _id
+    status
+    points
+    entries {
+      _id
+    }
+    goal {
+      _id
+      conditionType
+      timesPerDuration
+      activity {
+        _id
+        name
+        emoji
+      }
+    }
+  }
+}
+
+mutation CreateGoal($data: CreateGoalInput!) {
+  createGoal(data: $data) {
+    _id
+  }
+}
+
+mutation UpdateGoal($_id: ID!, $data: UpdateGoalInput!) {
+  updateGoalById(_id: $_id, data: $data) {
+    _id
+  }
+}
+
+mutation CheckFailedGoalsResults {
+  checkFailedGoalsResults
 }
 
 query GetActivitiesExtremes {
@@ -309,7 +374,7 @@ mutation UpsertPushToken($data: PushTokenUpsertInput!) {
 
 query GetTodoistActivity {
   todoistActivity @client {
-    ...ActivityResult
+    ...ActivityFragment
   }
 }
 

@@ -86,7 +86,6 @@ const EMOJI_PICKER_CLASS_NAME = 'emoji-picker-' + Date.now();
 const ActivityForm = () => {
   const { params } = useRoute<RouteProp<NavigationParams, 'ActivityEdit'>>();
   const _id = params.id;
-
   const isEdit = !!_id && _id !== 'create';
 
   const { errorMessage, onError, errorTime } = useApolloError({ isForceShowError: true });
