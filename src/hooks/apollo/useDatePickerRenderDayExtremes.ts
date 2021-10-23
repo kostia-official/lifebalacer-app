@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react';
-import { useGetCalendarDaysQuery, ActivityExtremes, ActivityType } from '../generated/apollo';
+import { useGetCalendarDaysQuery, ActivityExtremes, ActivityType } from '../../generated/apollo';
 import { DateTime } from 'luxon';
 import { ApolloError } from '@apollo/client/errors';
-import { getColorFromPoints, getColorInGradient } from '../helpers/color';
-import { useOnEntryUpdate } from './useOnEntryUpdate';
+import { getColorFromPoints, getColorInGradient } from '../../helpers/color';
+import { useOnEntryUpdate } from '../useOnEntryUpdate';
 import _ from 'lodash';
 import { useDatePickerRenderDay } from './useDatePickerRenderDay';
 
@@ -11,6 +11,7 @@ export interface UseDatePickerRenderDayProps {
   onError?: (error: ApolloError) => void;
   selectedActivityExtremes?: ActivityExtremes;
   isReverseColors?: boolean;
+  activityId?: string;
 }
 
 export interface DaysPayload {
@@ -20,11 +21,13 @@ export interface DaysPayload {
 export const useDatePickerRenderDayExtremes = ({
   onError,
   selectedActivityExtremes,
-  isReverseColors = false
+  isReverseColors = false,
+  activityId
 }: UseDatePickerRenderDayProps = {}) => {
   const { data: daysData, refetch } = useGetCalendarDaysQuery({
     onError,
     variables: {
+      activityId,
       dateAfter: DateTime.local().endOf('day').toISO(),
       dateBefore: DateTime.fromMillis(0).toISO() // TODO: Add calendar pagination
     }

@@ -1,7 +1,7 @@
 import { OnErrorParams } from './useApolloError';
-import { useCheckFailedGoalsResultsMutation } from '../generated/apollo';
+import { useCheckFailedGoalsResultsMutation } from '../../generated/apollo';
 import { useEffect } from 'react';
-import { makeGlobalState } from './makeGlobalState';
+import { makeGlobalState } from '../makeGlobalState';
 
 const useIsCalled = makeGlobalState(false);
 

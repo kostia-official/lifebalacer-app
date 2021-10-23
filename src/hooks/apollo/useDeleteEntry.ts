@@ -2,7 +2,7 @@ import {
   useDeleteEntryMutation,
   DeleteEntryMutation,
   DeleteEntryMutationVariables
-} from '../generated/apollo';
+} from '../../generated/apollo';
 import * as Apollo from '@apollo/client';
 
 export const useDeleteEntry = (

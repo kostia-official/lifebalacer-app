@@ -1,7 +1,7 @@
 import React, { useState, Fragment } from 'react';
 import { DatePicker as MaterialDatePicker } from '@material-ui/pickers';
 import { DateTime } from 'luxon';
-import { useDatePickerRenderDayExtremes } from '../../hooks/useDatePickerRenderDayExtremes';
+import { useDatePickerRenderDayExtremes } from '../../hooks/apollo/useDatePickerRenderDayExtremes';
 
 export interface IDatePickerProps {
   onChange: (date: Date) => void;

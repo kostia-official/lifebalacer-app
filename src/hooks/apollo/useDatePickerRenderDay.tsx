@@ -6,7 +6,7 @@ import { ExtendButtonBase } from '@material-ui/core/ButtonBase';
 import { IconButtonTypeMap } from '@material-ui/core/IconButton/IconButton';
 import { DateTime } from 'luxon';
 import { transparentize } from 'polished';
-import { Spinner } from '../components/Spinner';
+import { Spinner } from '../../components/Spinner';
 
 export interface UseDatePickerRenderDayProps {
   onRenderDay: (

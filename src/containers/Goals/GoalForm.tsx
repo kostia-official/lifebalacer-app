@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useApolloError } from '../../hooks/useApolloError';
+import { useApolloError } from '../../hooks/apollo/useApolloError';
 import { ScreenWrapper } from '../App/ScreenWrapper';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { NavigationParams } from '../App/App';
@@ -10,7 +10,9 @@ import {
   DurationType,
   useCreateGoalMutation,
   useUpdateGoalMutation,
-  refetchGetGoalsQuery
+  refetchGetGoalsQuery,
+  refetchGetCurrentGoalsResultsQuery,
+  useCheckFailedGoalsResultsMutation
 } from '../../generated/apollo';
 import { Form, Field } from 'react-final-form';
 import styled from 'styled-components';
@@ -19,15 +21,15 @@ import { FabWrapper } from '../../components/FabWrapper';
 import { FabButton } from '../../components/FabButton';
 import SaveIcon from '@material-ui/icons/Save';
 import { FormControl, Select, InputLabel } from '@material-ui/core';
-import { useActivities } from '../../hooks/useActivities';
+import { useActivities } from '../../hooks/apollo/useActivities';
 import { Spacer } from '../../components/Spacer';
-import { DatePicker } from '@material-ui/pickers';
 import { DateTime } from 'luxon';
 import { formatDateLabel } from '../../common/datePicker';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { omit } from 'remeda';
 import { parseFloatValue, parseIntValue } from '../../common/form';
 import { conditionTypeTextMap } from '../../common/goals';
+import { DatePickerWithActivityData } from './components/DatePickerWithActivityData';
 
 const ConditionFormControl = styled(FormControl)`
   width: 74px;
@@ -42,26 +44,35 @@ const GoalForm = () => {
   const _id = params.id;
   const isEdit = !!_id && _id !== 'create';
 
-  const { goBackCb } = useNavigationHelpers();
+  const { goBack } = useNavigationHelpers();
 
   const { errorMessage, onError, errorTime } = useApolloError();
 
   const { data } = useGetGoalQuery({ onError, variables: { _id }, skip: !isEdit });
+  const isArchived = data?.goal?.isArchived;
+
   const { activities } = useActivities({ onError });
 
   const initialValues: Partial<CreateGoalInput> =
     isEdit && data?.goal
-      ? omit(data?.goal, ['activity', '_id', '__typename'])
+      ? omit(data?.goal, ['activity', '_id', '__typename', 'isArchived'])
       : {
           conditionType: ConditionType.GreaterOrEqual,
           durationType: DurationType.Week,
-          startDate: DateTime.local().toISO()
+          lastSyncAt: DateTime.local().toISO()
         };
+
+  const [checkFailedGoalsResults] = useCheckFailedGoalsResultsMutation({ onError });
 
   const mutationOptions = {
     onError,
-    refetchQueries: [refetchGetGoalsQuery()],
-    onCompleted: goBackCb('/')
+    refetchQueries: isArchived
+      ? []
+      : [refetchGetGoalsQuery(), refetchGetCurrentGoalsResultsQuery()],
+    onCompleted: async () => {
+      goBack('/');
+      if (!isArchived) await checkFailedGoalsResults();
+    }
   };
   const [createGoalMutation] = useCreateGoalMutation(mutationOptions);
   const [updateGoalMutation] = useUpdateGoalMutation(mutationOptions);
@@ -82,7 +93,7 @@ const GoalForm = () => {
       <Form
         onSubmit={onSubmit}
         initialValues={initialValues}
-        render={({ handleSubmit }) => (
+        render={({ handleSubmit, values }) => (
           <form onSubmit={handleSubmit}>
             <Spacer flex column spacingY={16}>
               <Field
@@ -98,6 +109,7 @@ const GoalForm = () => {
                       inputProps={{ id: 'activity' }}
                       value={value}
                       onChange={onChange}
+                      disabled={isEdit}
                     >
                       <option key={-1} value={undefined}>
                         {' '}
@@ -210,11 +222,12 @@ const GoalForm = () => {
               </Spacer>
 
               <Field
-                name="startDate"
+                name="lastSyncAt"
                 render={({ input: { value, onChange } }) => (
-                  <DatePicker
+                  <DatePickerWithActivityData
+                    activityId={values.activityId}
                     required
-                    label="Start date"
+                    label="Update result from"
                     value={value}
                     onChange={onChange}
                     fullWidth

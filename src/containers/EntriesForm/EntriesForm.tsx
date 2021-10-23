@@ -12,7 +12,7 @@ import {
   refetchGetCurrentGoalsResultsQuery
 } from '../../generated/apollo';
 import ReturnIcon from '@material-ui/icons/KeyboardReturn';
-import { useApolloError } from '../../hooks/useApolloError';
+import { useApolloError } from '../../hooks/apollo/useApolloError';
 import * as R from 'remeda';
 import _ from 'lodash';
 import { Card } from '@material-ui/core';
@@ -20,14 +20,17 @@ import styled from 'styled-components';
 import { CardModal } from '../../components/CardModal';
 import { ActivityResult, SelectedEntry, EntryResult } from '../../common/types';
 import { EntryPickButton } from './EntryPickButton';
-import { useActivities } from '../../hooks/useActivities';
+import { useActivities } from '../../hooks/apollo/useActivities';
 import { DateTime } from 'luxon';
 import { EntryModalContent } from './EntryModalContent';
 import { getIsToday } from '../../helpers/date';
 import { FabButton } from '../../components/FabButton';
-import { useActivitiesByCategory, ARCHIVED_CATEGORY } from '../../hooks/useActivitiesByCategory';
+import {
+  useActivitiesByCategory,
+  ARCHIVED_CATEGORY
+} from '../../hooks/apollo/useActivitiesByCategory';
 import { ScreenWrapper } from '../App/ScreenWrapper';
-import { useDeleteEntry } from '../../hooks/useDeleteEntry';
+import { useDeleteEntry } from '../../hooks/apollo/useDeleteEntry';
 import { useOnActivityUpdate } from '../../hooks/useOnActivityUpdate';
 import { DayHeader } from './DayHeader';
 import { calcPoints } from '../../helpers/calcPoints';
@@ -36,10 +39,14 @@ import { useRoute, RouteProp } from '@react-navigation/native';
 import { NavigationParams } from '../App/App';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { FabWrapper } from '../../components/FabWrapper';
-import { useDeleteFieldFromCache } from '../../hooks/useDeleteFieldFromCache';
+import { useDeleteFieldFromCache } from '../../hooks/apollo/useDeleteFieldFromCache';
 
 const CategoryWrapper = styled(Card)`
   margin-bottom: 8px;
+`;
+
+const Content = styled.div`
+  margin: 0 0 10px 15px;
 `;
 
 const showDelay = 300;
@@ -293,10 +300,10 @@ const EntriesForm = () => {
           />
         </CardModal>
 
-        {activitiesByCategory.map(({ category, activities }) => {
-          return (
-            <CategoryWrapper key={category}>
-              <ExpandableCard title={category} defaultExpanded={category !== ARCHIVED_CATEGORY}>
+        {activitiesByCategory.map(({ category, activities }) => (
+          <CategoryWrapper key={category}>
+            <ExpandableCard title={category} defaultExpanded={category !== ARCHIVED_CATEGORY}>
+              <Content>
                 {activities.map((activity) => {
                   const entries = getEntriesByActivityId(activity._id);
                   const isMissing = !!getMissingByActivityId(activity._id);
@@ -326,10 +333,10 @@ const EntriesForm = () => {
                     );
                   });
                 })}
-              </ExpandableCard>
-            </CategoryWrapper>
-          );
-        })}
+              </Content>
+            </ExpandableCard>
+          </CategoryWrapper>
+        ))}
 
         <FabWrapper hideOnKeyboardOpen>
           <FabButton onClick={goBackCb('EntriesByDay')} icon={<ReturnIcon />} />

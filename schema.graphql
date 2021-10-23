@@ -102,14 +102,13 @@ input CreateEntryInput {
 }
 
 input CreateGoalInput {
-  name: String!
   activityId: ID!
-  conditionType: String!
-  durationType: String!
+  conditionType: ConditionType!
+  durationType: DurationType!
   timesPerDuration: Int!
   successPoints: Float
   failPoints: Float
-  startDate: Date
+  lastSyncAt: Date!
 }
 
 """Date custom scalar type"""
@@ -149,7 +148,6 @@ type Entry {
   description: String
   completedAt: Date!
   activityId: ID!
-  activity: Activity!
   points: Float!
   value: Float
   goalResultsIds: [ID]!
@@ -168,26 +166,29 @@ type EntryPerDate {
 
 type Goal {
   _id: ID!
-  name: String!
   userId: String!
   activityId: ID!
+  activity: Activity!
   conditionType: ConditionType!
   durationType: DurationType!
   timesPerDuration: Int!
   successPoints: Float
   failPoints: Float
   negativeFailPoints: Float
-  startDate: Date
-  createdAt: Date!
-  updatedAt: Date!
+  lastSyncAt: Date!
+  isArchived: Boolean!
 }
 
 type GoalResult {
   _id: ID!
   userId: String!
   goalId: ID!
+  goal: Goal!
+  entries: [Entry!]!
   recordedAt: Date!
   status: GoalResultStatus!
+  points: Float!
+  timesPerDuration: Int!
 }
 
 enum GoalResultStatus {
@@ -209,6 +210,11 @@ type Mutation {
   updateActivityById(_id: ID!, data: UpdateActivityInput!): Activity!
   archiveActivity(_id: ID!): Boolean!
   restoreActivity(_id: ID!): Boolean!
+  createGoal(data: CreateGoalInput!): Goal!
+  updateGoalById(_id: ID!, data: UpdateGoalInput!): Goal!
+  archiveGoal(_id: ID!): Boolean!
+  restoreGoal(_id: ID!): Boolean!
+  checkFailedGoalsResults: Boolean!
   createEntry(data: CreateEntryInput!): Entry!
   updateEntryById(_id: ID!, data: UpdateEntryInput!): Entry!
   deleteEntry(_id: ID!): String
@@ -237,13 +243,15 @@ type Query {
   entry(_id: ID!): Entry
   entries: [Entry!]!
   entriesByOneDay(date: Date!): EntriesByDay
-  entriesByDay(dateAfter: Date, dateBefore: Date): [EntriesByDay!]!
+  entriesByDay(dateAfter: Date, dateBefore: Date, activityId: ID): [EntriesByDay!]!
   daysStatistic: DaysStatistic!
   activity(_id: ID!): Activity
   activities: [Activity!]!
   activitiesExtremes: [ActivityExtremes!]!
   goals: [Goal!]!
   goal(_id: ID!): Goal
+  currentGoalsResults: [GoalResult!]!
+  goalsResults(dateAfter: Date!, limit: Int!, goalsIds: [ID!], durationType: DurationType): [GoalResult!]!
   activitiesStatistic(dateAfter: Date, dateBefore: Date): [ActivityBaseStatistic!]!
   activityBaseStatistic(activityId: String!, dateAfter: Date, dateBefore: Date): ActivityBaseStatistic!
   activityAdvancedStatistic(activityId: String!, dateAfter: Date, dateBefore: Date): ActivityAdvancedStatistic
@@ -340,14 +348,13 @@ input UpdateEntryInput {
 }
 
 input UpdateGoalInput {
-  name: String
   activityId: ID
   conditionType: String
   durationType: String
   timesPerDuration: Int
   successPoints: Float
   failPoints: Float
-  startDate: Date
+  lastSyncAt: Date
 }
 
 type WeekdayStatistic {

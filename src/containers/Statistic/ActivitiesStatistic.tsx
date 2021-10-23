@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { ScreenWrapper } from '../App/ScreenWrapper';
-import { useApolloError } from '../../hooks/useApolloError';
+import { useApolloError } from '../../hooks/apollo/useApolloError';
 import { List, Paper, ListItem, ListItemText, Typography } from '@material-ui/core';
 import { useGetActivitiesStatisticQuery } from '../../generated/apollo';
 import { Emoji } from '../../components/Emoji';

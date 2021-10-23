@@ -3,12 +3,12 @@ import {
   ActivityType,
   GetActivitiesQuery,
   GetActivitiesQueryVariables
-} from '../generated/apollo';
+} from '../../generated/apollo';
 import { useCallback, useMemo } from 'react';
-import { ActivityResult } from '../common/types';
+import { ActivityResult } from '../../common/types';
 import * as R from 'remeda';
 import _ from 'lodash';
-import { useOnActivityUpdate } from './useOnActivityUpdate';
+import { useOnActivityUpdate } from '../useOnActivityUpdate';
 import * as Apollo from '@apollo/client';
 
 export const useActivities = (

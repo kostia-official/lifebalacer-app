@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { useApolloError } from '../hooks/useApolloError';
+import { useApolloError } from '../hooks/apollo/useApolloError';
 import { ScreenWrapper } from './App/ScreenWrapper';
 import {
   useGetReminderQuery,

@@ -25,7 +25,7 @@ import {
 } from '../../generated/apollo';
 import _ from 'lodash';
 import { useUpdateInput } from '../../hooks/useUpdateInput';
-import { useApolloError } from '../../hooks/useApolloError';
+import { useApolloError } from '../../hooks/apollo/useApolloError';
 import { FabButton } from '../../components/FabButton';
 import { ActivityResult } from '../../common/types';
 import { SwitchBaseProps } from '@material-ui/core/internal/SwitchBase';

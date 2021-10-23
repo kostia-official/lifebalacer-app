@@ -14,8 +14,8 @@ import { Icon } from '@iconify/react';
 import todoistIconColor from '@iconify/icons-logos/todoist-icon';
 import googleFit from '@iconify/icons-logos/google-fit';
 import styled from 'styled-components';
-import { useTodoist } from '../../../hooks/useTodoist';
-import { useActivities } from '../../../hooks/useActivities';
+import { useTodoist } from '../../../hooks/apollo/useTodoist';
+import { useActivities } from '../../../hooks/apollo/useActivities';
 import { Spacer } from '../../../components/Spacer';
 
 export const useAddIntegrationModal = makeModal();

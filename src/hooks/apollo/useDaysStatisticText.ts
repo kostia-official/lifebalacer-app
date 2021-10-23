@@ -1,4 +1,4 @@
-import { useGetDaysStatisticQuery } from '../generated/apollo';
+import { useGetDaysStatisticQuery } from '../../generated/apollo';
 import pluralize from 'pluralize';
 import { OnErrorParams } from './useApolloError';
 

@@ -1,3 +1,5 @@
+///<reference path='./index.d.ts' />
+
 import './polyfills';
 import './services/sentry';
 import './index.css';

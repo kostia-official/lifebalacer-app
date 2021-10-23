@@ -1,14 +1,14 @@
 import { ApolloError } from '@apollo/client';
-import { pushService } from '../services/push';
+import { pushService } from '../../services/push';
 import { useEffect, useCallback } from 'react';
 import {
   useUpsertPushTokenMutation,
   useGetReminderQuery,
   refetchGetPushTokensQuery,
   useGetPushTokensQuery
-} from '../generated/apollo';
+} from '../../generated/apollo';
 import { useSyncedCachePolicy } from './useSyncedCachePolicy';
-import { getAppType } from '../common/platform';
+import { getAppType } from '../../common/platform';
 
 export interface UseApolloErrorProps {
   onError?: (error: ApolloError) => void;

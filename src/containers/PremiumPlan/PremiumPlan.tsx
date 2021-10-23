@@ -2,7 +2,7 @@ import { Button, CircularProgress, Typography } from '@material-ui/core';
 import React, { Fragment, useCallback, useState, useEffect } from 'react';
 import { ScreenWrapper } from '../App/ScreenWrapper';
 import styled from 'styled-components';
-import { useApolloError } from '../../hooks/useApolloError';
+import { useApolloError } from '../../hooks/apollo/useApolloError';
 import { useAuth } from '../../hooks/useAuth';
 import { EmptyBlock } from '../../components/EmptyBlock';
 import { PriceBox } from './components/PriceBox';
@@ -10,7 +10,7 @@ import { PremiumFeature } from './components/PremiumFeature';
 import { ReactComponent as StatisticsIcon } from '../../assets/statistics.svg';
 import { ReactComponent as MigrationIcon } from '../../assets/migration.svg';
 import { ReactComponent as SupportIcon } from '../../assets/support.svg';
-import { useStoreSubscription } from '../../hooks/storeSubscription/useStoreSubscription';
+import { useStoreSubscription } from '../../hooks/apollo/storeSubscription/useStoreSubscription';
 import { NetworkStatus } from '@apollo/client';
 import { useWatchChanges } from '../../hooks/useWatchChange';
 import { pluralLabel } from '../../helpers/pluralarize';
@@ -21,10 +21,10 @@ import {
   getMonthPriceText,
   getPeriod
 } from '../../helpers/productPrice';
-import { useActiveSubscription } from '../../hooks/useActiveSubscription';
+import { useActiveSubscription } from '../../hooks/apollo/useActiveSubscription';
 import { getPlatform } from '../../common/platform';
 import { productsMap, yearlyProductId } from '../../common/subscriptionProducts';
-import { useDeleteFieldFromCache } from '../../hooks/useDeleteFieldFromCache';
+import { useDeleteFieldFromCache } from '../../hooks/apollo/useDeleteFieldFromCache';
 
 const Wrapper = styled.div`
   display: flex;

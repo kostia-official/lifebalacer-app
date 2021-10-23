@@ -6,12 +6,12 @@ import {
   useRestoreActivityMutation
 } from '../../generated/apollo';
 import { Table } from '../../components/Table';
-import { useApolloError } from '../../hooks/useApolloError';
+import { useApolloError } from '../../hooks/apollo/useApolloError';
 import styled from 'styled-components';
 import { ScreenWrapper } from '../App/ScreenWrapper';
 import { useDeviceMediaQuery } from '../../hooks/useDeviceMediaQuery';
 import _ from 'lodash';
-import { useActivities } from '../../hooks/useActivities';
+import { useActivities } from '../../hooks/apollo/useActivities';
 import { Greyscale } from '../../components/Greyscale';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { Emoji } from '../../components/Emoji';

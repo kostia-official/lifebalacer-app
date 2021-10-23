@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { ErrorMessage } from '../../components/ErrorMessage';
 import { useConnectTodoistMutation, refetchGetActivitiesQuery } from '../../generated/apollo';
-import { useApolloError } from '../../hooks/useApolloError';
-import { useActivities } from '../../hooks/useActivities';
+import { useApolloError } from '../../hooks/apollo/useApolloError';
+import { useActivities } from '../../hooks/apollo/useActivities';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { NavigationParams } from '../App/App';
 import { ScreenWrapper } from '../App/ScreenWrapper';

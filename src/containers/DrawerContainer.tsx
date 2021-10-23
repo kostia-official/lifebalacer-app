@@ -4,7 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useIsExpandedDrawer } from '../hooks/useIsExpandedDrawer';
 import { useNavigationHelpers } from '../hooks/useNavigationHelpers';
 import { useIsInternalTestUser } from '../hooks/useIsInternalTestUser';
-import { useActiveSubscription } from '../hooks/useActiveSubscription';
+import { useActiveSubscription } from '../hooks/apollo/useActiveSubscription';
 import { Icon } from '@iconify/react';
 import baselineReceiptLong from '@iconify/icons-ic/baseline-receipt-long';
 import manageAccounts from '@iconify/icons-ic/baseline-manage-accounts';

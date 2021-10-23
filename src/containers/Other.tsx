@@ -7,9 +7,9 @@ import { UserListItemContent } from '../components/UserListItem/UserListItemCont
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { useIsInternalTestUser } from '../hooks/useIsInternalTestUser';
 import styled from 'styled-components';
-import { Icon as Iconify, Icon } from '@iconify/react';
+import { Icon } from '@iconify/react';
 import outlineWorkspacePremium from '@iconify/icons-ic/outline-workspace-premium';
-import { useActiveSubscription } from '../hooks/useActiveSubscription';
+import { useActiveSubscription } from '../hooks/apollo/useActiveSubscription';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import InfoIcon from '@material-ui/icons/Info';
 import goalIcon from '@iconify/icons-fluent/target-arrow-20-filled';
@@ -28,6 +28,11 @@ const ListItemIconStyled = styled(ListItemIcon)`
 const DividerStyled = styled(Divider)`
   margin-top: 6px;
   margin-bottom: 10px;
+`;
+
+const GoalIconContainer = styled(Icon)`
+  position: relative;
+  left: -1px;
 `;
 
 const Other = () => {
@@ -63,7 +68,7 @@ const Other = () => {
         {isInternalTestUser && (
           <ListItem button onClick={goForwardToCb('PremiumPlan')}>
             <ListItemIconStyled>
-              <Iconify icon={outlineWorkspacePremium} width={26} />
+              <Icon icon={outlineWorkspacePremium} width={26} />
             </ListItemIconStyled>
 
             <ListItemText primary="Premium Subscription" />
@@ -80,7 +85,7 @@ const Other = () => {
 
         <ListItem button onClick={goForwardToCb('Goals')}>
           <ListItemIconStyled>
-            <Icon icon={goalIcon} width={26} />
+            <GoalIconContainer icon={goalIcon} width={26} />
           </ListItemIconStyled>
 
           <ListItemText primary="Goals" />

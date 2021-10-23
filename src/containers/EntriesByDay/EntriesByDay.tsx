@@ -2,16 +2,16 @@ import React, { useCallback, useMemo } from 'react';
 import _ from 'lodash';
 import styled from 'styled-components';
 import EventIcon from '@material-ui/icons/Event';
-import { useApolloError } from '../../hooks/useApolloError';
+import { useApolloError } from '../../hooks/apollo/useApolloError';
 import { ScreenWrapper } from '../App/ScreenWrapper';
-import { useDaysStatisticText } from '../../hooks/useDaysStatisticText';
+import { useDaysStatisticText } from '../../hooks/apollo/useDaysStatisticText';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { FabButton } from '../../components/FabButton';
 import { EmptyState } from '../../components/EmptyState';
 import { EntriesLabels } from './EntriesLabels';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { Spinner } from '../../components/Spinner';
-import { useInfiniteQuery } from '../../hooks/useInfiniteQuery';
+import { useInfiniteQuery } from '../../hooks/apollo/useInfiniteQuery';
 import {
   GetEntriesByDayDocument,
   GetEntriesByDayQuery,
@@ -22,15 +22,15 @@ import { getIsToday, toLuxon } from '../../helpers/date';
 import { DayCard } from '../../components/DayCard';
 import { HeaderCard } from '../../components/HeaderCard';
 import { getDayQueryVariables } from '../../helpers/getDayQueryVariables';
-import { usePushTokenUpdate } from '../../hooks/usePushTokenUpdate';
+import { usePushTokenUpdate } from '../../hooks/apollo/usePushTokenUpdate';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { FabWrapper } from '../../components/FabWrapper';
 import { EmptyBlock } from '../../components/EmptyBlock';
 import { useLocalNotificationsUpdate } from '../../hooks/useLocalNotificationsUpdate';
-import { useCheckStoreSubscription } from '../../hooks/storeSubscription/useCheckStoreSubscription';
-import { CurrentGoalsResults } from './CurrentGoalResults/CurrentGoalsResults';
+import { useCheckStoreSubscription } from '../../hooks/apollo/storeSubscription/useCheckStoreSubscription';
+import { CurrentGoalsResults } from '../CurrentGoalResults/CurrentGoalsResults';
 import { FlexBox } from '../../components/FlexBox';
-import { useCheckFailedGoalsResults } from '../../hooks/useCheckFailedGoalsResults';
+import { useCheckFailedGoalsResults } from '../../hooks/apollo/useCheckFailedGoalsResults';
 
 const EntriesLabelsWrapper = styled.div`
   margin: 6px 16px 14px 16px;

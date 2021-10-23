@@ -1,17 +1,14 @@
 import _ from 'lodash';
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
-import { ConditionType, GoalResultStatus } from '../../generated/apollo';
+import { ConditionType, GoalResultStatus, GoalResultFragment } from '../../generated/apollo';
 import { MainColors, WhiteColor } from '../../common/colors';
 import { DoneIcon } from '../../assets/done';
 import { ReactComponent as FailIcon } from '../../assets/failed.svg';
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 
 export interface GoalStepsProps {
-  conditionType: ConditionType;
-  timesPerDuration: number;
-  entriesCount: number;
-  status: GoalResultStatus;
+  goalResult: GoalResultFragment;
 }
 
 enum GoalEmptyStepStatus {
@@ -97,12 +94,15 @@ const Connector = styled.div<{ $statusBefore: GoalStepStatus; $statusAfter: Goal
   );
 `;
 
-export const GoalSteps: React.FC<GoalStepsProps> = ({
-  conditionType,
-  status,
-  entriesCount,
-  timesPerDuration
-}) => {
+export const GoalSteps: React.FC<GoalStepsProps> = ({ goalResult }) => {
+  const {
+    goal: { conditionType },
+    status,
+    entries,
+    timesPerDuration
+  } = goalResult;
+  const entriesCount = entries.length;
+
   let total = Math.max(timesPerDuration, entriesCount);
 
   if (conditionType === ConditionType.LessOrEqual && status !== GoalResultStatus.Failed) {

@@ -1,9 +1,9 @@
-import { getPlatform, getSubscriptionPlatform } from '../../common/platform';
+import { getPlatform, getSubscriptionPlatform } from '../../../common/platform';
 import { useEffect } from 'react';
 import { InAppPurchase2 as store, IAPProduct } from '@ionic-native/in-app-purchase-2';
-import { UseApolloErrorProps } from '../useLocalNotificationsUpdate';
-import { useCancelSubscription, refetchGetActiveSubscription } from '../../generated/apollo';
-import { productsMap } from '../../common/subscriptionProducts';
+import { UseApolloErrorProps } from '../../useLocalNotificationsUpdate';
+import { useCancelSubscription, refetchGetActiveSubscription } from '../../../generated/apollo';
+import { productsMap } from '../../../common/subscriptionProducts';
 import { useActiveSubscription } from '../useActiveSubscription';
 
 export const useCheckStoreSubscription = ({ onError }: UseApolloErrorProps) => {

@@ -35,6 +35,7 @@ export type Query = {
   entry?: Maybe<Entry>;
   goal?: Maybe<Goal>;
   goals: Array<Goal>;
+  goalsResults: Array<GoalResult>;
   journal: Array<Journal>;
   paymentUrl: Scalars['String'];
   pushTokens: Array<PushToken>;
@@ -71,6 +72,7 @@ export type QueryBalanceArgs = {
 export type QueryEntriesByDayArgs = {
   dateAfter?: Maybe<Scalars['Date']>;
   dateBefore?: Maybe<Scalars['Date']>;
+  activityId?: Maybe<Scalars['ID']>;
 };
 
 export type QueryEntriesByOneDayArgs = {
@@ -83,6 +85,13 @@ export type QueryEntryArgs = {
 
 export type QueryGoalArgs = {
   _id: Scalars['ID'];
+};
+
+export type QueryGoalsResultsArgs = {
+  dateAfter: Scalars['Date'];
+  limit: Scalars['Int'];
+  goalsIds?: Maybe<Array<Scalars['ID']>>;
+  durationType?: Maybe<DurationType>;
 };
 
 export type QueryJournalArgs = {
@@ -109,6 +118,8 @@ export type Mutation = {
   restoreActivity: Scalars['Boolean'];
   createGoal: Goal;
   updateGoalById: Goal;
+  archiveGoal: Scalars['Boolean'];
+  restoreGoal: Scalars['Boolean'];
   checkFailedGoalsResults: Scalars['Boolean'];
   createEntry: Entry;
   updateEntryById: Entry;
@@ -149,6 +160,14 @@ export type MutationCreateGoalArgs = {
 export type MutationUpdateGoalByIdArgs = {
   _id: Scalars['ID'];
   data: UpdateGoalInput;
+};
+
+export type MutationArchiveGoalArgs = {
+  _id: Scalars['ID'];
+};
+
+export type MutationRestoreGoalArgs = {
+  _id: Scalars['ID'];
 };
 
 export type MutationCreateEntryArgs = {
@@ -215,11 +234,11 @@ export type Goal = {
   activity: Activity;
   activityId: Scalars['ID'];
   conditionType: ConditionType;
-  durationEndCheckedAt: Scalars['Date'];
   durationType: DurationType;
   failPoints?: Maybe<Scalars['Float']>;
+  isArchived: Scalars['Boolean'];
+  lastSyncAt: Scalars['Date'];
   negativeFailPoints?: Maybe<Scalars['Float']>;
-  startDate: Scalars['Date'];
   successPoints?: Maybe<Scalars['Float']>;
   timesPerDuration: Scalars['Int'];
   userId: Scalars['String'];
@@ -242,7 +261,7 @@ export type CreateGoalInput = {
   timesPerDuration: Scalars['Int'];
   successPoints?: Maybe<Scalars['Float']>;
   failPoints?: Maybe<Scalars['Float']>;
-  startDate?: Maybe<Scalars['Date']>;
+  lastSyncAt: Scalars['Date'];
 };
 
 export type UpdateGoalInput = {
@@ -252,7 +271,7 @@ export type UpdateGoalInput = {
   timesPerDuration?: Maybe<Scalars['Int']>;
   successPoints?: Maybe<Scalars['Float']>;
   failPoints?: Maybe<Scalars['Float']>;
-  startDate?: Maybe<Scalars['Date']>;
+  lastSyncAt?: Maybe<Scalars['Date']>;
 };
 
 export type GoalResult = {
@@ -265,6 +284,7 @@ export type GoalResult = {
   recordedAt: Scalars['Date'];
   status: GoalResultStatus;
   points: Scalars['Float'];
+  timesPerDuration: Scalars['Int'];
 };
 
 export enum GoalResultStatus {
@@ -551,7 +571,8 @@ export type GoalFragment = { __typename?: 'Goal' } & Pick<
   | 'durationType'
   | 'failPoints'
   | 'successPoints'
-  | 'startDate'
+  | 'lastSyncAt'
+  | 'isArchived'
 > & { activity: { __typename?: 'Activity' } & Pick<Activity, '_id' | 'name' | 'emoji'> };
 
 export type GetGoalQueryVariables = Exact<{
@@ -568,17 +589,41 @@ export type GetGoalsQuery = { __typename?: 'Query' } & {
   goals: Array<{ __typename?: 'Goal' } & GoalFragment>;
 };
 
+export type ArchiveGoalMutationVariables = Exact<{
+  _id: Scalars['ID'];
+}>;
+
+export type ArchiveGoalMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'archiveGoal'>;
+
+export type RestoreGoalMutationVariables = Exact<{
+  _id: Scalars['ID'];
+}>;
+
+export type RestoreGoalMutation = { __typename?: 'Mutation' } & Pick<Mutation, 'restoreGoal'>;
+
+export type GoalResultFragment = { __typename?: 'GoalResult' } & Pick<
+  GoalResult,
+  '_id' | 'status' | 'points' | 'recordedAt' | 'timesPerDuration'
+> & {
+    entries: Array<{ __typename?: 'Entry' } & Pick<Entry, '_id'>>;
+    goal: { __typename?: 'Goal' } & GoalFragment;
+  };
+
 export type GetCurrentGoalsResultsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetCurrentGoalsResultsQuery = { __typename?: 'Query' } & {
-  currentGoalsResults: Array<
-    { __typename?: 'GoalResult' } & Pick<GoalResult, '_id' | 'status' | 'points'> & {
-        entries: Array<{ __typename?: 'Entry' } & Pick<Entry, '_id'>>;
-        goal: { __typename?: 'Goal' } & Pick<Goal, '_id' | 'conditionType' | 'timesPerDuration'> & {
-            activity: { __typename?: 'Activity' } & Pick<Activity, '_id' | 'name' | 'emoji'>;
-          };
-      }
-  >;
+  currentGoalsResults: Array<{ __typename?: 'GoalResult' } & GoalResultFragment>;
+};
+
+export type GetGoalsResultsQueryVariables = Exact<{
+  goalsIds?: Maybe<Array<Scalars['ID']> | Scalars['ID']>;
+  durationType?: Maybe<DurationType>;
+  dateAfter: Scalars['Date'];
+  limit: Scalars['Int'];
+}>;
+
+export type GetGoalsResultsQuery = { __typename?: 'Query' } & {
+  goalsResults: Array<{ __typename?: 'GoalResult' } & GoalResultFragment>;
 };
 
 export type CreateGoalMutationVariables = Exact<{
@@ -695,6 +740,7 @@ export type GetJournalQuery = { __typename?: 'Query' } & {
 export type GetCalendarDaysQueryVariables = Exact<{
   dateAfter?: Maybe<Scalars['Date']>;
   dateBefore?: Maybe<Scalars['Date']>;
+  activityId?: Maybe<Scalars['ID']>;
 }>;
 
 export type GetCalendarDaysQuery = { __typename?: 'Query' } & {
@@ -953,13 +999,30 @@ export const GoalFragmentDoc = gql`
     durationType
     failPoints
     successPoints
-    startDate
+    lastSyncAt
+    isArchived
     activity @client {
       _id
       name
       emoji
     }
   }
+`;
+export const GoalResultFragmentDoc = gql`
+  fragment GoalResultFragment on GoalResult {
+    _id
+    status
+    points
+    recordedAt
+    timesPerDuration
+    entries {
+      _id
+    }
+    goal {
+      ...GoalFragment
+    }
+  }
+  ${GoalFragmentDoc}
 `;
 export const EntriesByDayResultFragmentDoc = gql`
   fragment EntriesByDayResult on EntriesByDay {
@@ -1231,27 +1294,95 @@ export type GetGoalsQueryResult = Apollo.QueryResult<GetGoalsQuery, GetGoalsQuer
 export function refetchGetGoalsQuery(variables?: GetGoalsQueryVariables) {
   return { query: GetGoalsDocument, variables: variables };
 }
+export const ArchiveGoalDocument = gql`
+  mutation ArchiveGoal($_id: ID!) {
+    archiveGoal(_id: $_id)
+  }
+`;
+export type ArchiveGoalMutationFn = Apollo.MutationFunction<
+  ArchiveGoalMutation,
+  ArchiveGoalMutationVariables
+>;
+
+/**
+ * __useArchiveGoalMutation__
+ *
+ * To run a mutation, you first call `useArchiveGoalMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useArchiveGoalMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [archiveGoalMutation, { data, loading, error }] = useArchiveGoalMutation({
+ *   variables: {
+ *      _id: // value for '_id'
+ *   },
+ * });
+ */
+export function useArchiveGoalMutation(
+  baseOptions?: Apollo.MutationHookOptions<ArchiveGoalMutation, ArchiveGoalMutationVariables>
+) {
+  return Apollo.useMutation<ArchiveGoalMutation, ArchiveGoalMutationVariables>(
+    ArchiveGoalDocument,
+    baseOptions
+  );
+}
+export type ArchiveGoalMutationHookResult = ReturnType<typeof useArchiveGoalMutation>;
+export type ArchiveGoalMutationResult = Apollo.MutationResult<ArchiveGoalMutation>;
+export type ArchiveGoalMutationOptions = Apollo.BaseMutationOptions<
+  ArchiveGoalMutation,
+  ArchiveGoalMutationVariables
+>;
+export const RestoreGoalDocument = gql`
+  mutation RestoreGoal($_id: ID!) {
+    restoreGoal(_id: $_id)
+  }
+`;
+export type RestoreGoalMutationFn = Apollo.MutationFunction<
+  RestoreGoalMutation,
+  RestoreGoalMutationVariables
+>;
+
+/**
+ * __useRestoreGoalMutation__
+ *
+ * To run a mutation, you first call `useRestoreGoalMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRestoreGoalMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [restoreGoalMutation, { data, loading, error }] = useRestoreGoalMutation({
+ *   variables: {
+ *      _id: // value for '_id'
+ *   },
+ * });
+ */
+export function useRestoreGoalMutation(
+  baseOptions?: Apollo.MutationHookOptions<RestoreGoalMutation, RestoreGoalMutationVariables>
+) {
+  return Apollo.useMutation<RestoreGoalMutation, RestoreGoalMutationVariables>(
+    RestoreGoalDocument,
+    baseOptions
+  );
+}
+export type RestoreGoalMutationHookResult = ReturnType<typeof useRestoreGoalMutation>;
+export type RestoreGoalMutationResult = Apollo.MutationResult<RestoreGoalMutation>;
+export type RestoreGoalMutationOptions = Apollo.BaseMutationOptions<
+  RestoreGoalMutation,
+  RestoreGoalMutationVariables
+>;
 export const GetCurrentGoalsResultsDocument = gql`
   query GetCurrentGoalsResults {
     currentGoalsResults {
-      _id
-      status
-      points
-      entries {
-        _id
-      }
-      goal {
-        _id
-        conditionType
-        timesPerDuration
-        activity {
-          _id
-          name
-          emoji
-        }
-      }
+      ...GoalResultFragment
     }
   }
+  ${GoalResultFragmentDoc}
 `;
 
 /**
@@ -1305,6 +1436,69 @@ export function refetchGetCurrentGoalsResultsQuery(
   variables?: GetCurrentGoalsResultsQueryVariables
 ) {
   return { query: GetCurrentGoalsResultsDocument, variables: variables };
+}
+export const GetGoalsResultsDocument = gql`
+  query GetGoalsResults(
+    $goalsIds: [ID!]
+    $durationType: DurationType
+    $dateAfter: Date!
+    $limit: Int!
+  ) {
+    goalsResults(
+      goalsIds: $goalsIds
+      durationType: $durationType
+      dateAfter: $dateAfter
+      limit: $limit
+    ) {
+      ...GoalResultFragment
+    }
+  }
+  ${GoalResultFragmentDoc}
+`;
+
+/**
+ * __useGetGoalsResultsQuery__
+ *
+ * To run a query within a React component, call `useGetGoalsResultsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGoalsResultsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetGoalsResultsQuery({
+ *   variables: {
+ *      goalsIds: // value for 'goalsIds'
+ *      durationType: // value for 'durationType'
+ *      dateAfter: // value for 'dateAfter'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useGetGoalsResultsQuery(
+  baseOptions: Apollo.QueryHookOptions<GetGoalsResultsQuery, GetGoalsResultsQueryVariables>
+) {
+  return Apollo.useQuery<GetGoalsResultsQuery, GetGoalsResultsQueryVariables>(
+    GetGoalsResultsDocument,
+    baseOptions
+  );
+}
+export function useGetGoalsResultsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetGoalsResultsQuery, GetGoalsResultsQueryVariables>
+) {
+  return Apollo.useLazyQuery<GetGoalsResultsQuery, GetGoalsResultsQueryVariables>(
+    GetGoalsResultsDocument,
+    baseOptions
+  );
+}
+export type GetGoalsResultsQueryHookResult = ReturnType<typeof useGetGoalsResultsQuery>;
+export type GetGoalsResultsLazyQueryHookResult = ReturnType<typeof useGetGoalsResultsLazyQuery>;
+export type GetGoalsResultsQueryResult = Apollo.QueryResult<
+  GetGoalsResultsQuery,
+  GetGoalsResultsQueryVariables
+>;
+export function refetchGetGoalsResultsQuery(variables?: GetGoalsResultsQueryVariables) {
+  return { query: GetGoalsResultsDocument, variables: variables };
 }
 export const CreateGoalDocument = gql`
   mutation CreateGoal($data: CreateGoalInput!) {
@@ -1604,8 +1798,8 @@ export function refetchGetJournalQuery(variables?: GetJournalQueryVariables) {
   return { query: GetJournalDocument, variables: variables };
 }
 export const GetCalendarDaysDocument = gql`
-  query GetCalendarDays($dateAfter: Date, $dateBefore: Date) {
-    entriesByDay(dateAfter: $dateAfter, dateBefore: $dateBefore) {
+  query GetCalendarDays($dateAfter: Date, $dateBefore: Date, $activityId: ID) {
+    entriesByDay(dateAfter: $dateAfter, dateBefore: $dateBefore, activityId: $activityId) {
       date
       points
       entries {
@@ -1631,6 +1825,7 @@ export const GetCalendarDaysDocument = gql`
  *   variables: {
  *      dateAfter: // value for 'dateAfter'
  *      dateBefore: // value for 'dateBefore'
+ *      activityId: // value for 'activityId'
  *   },
  * });
  */

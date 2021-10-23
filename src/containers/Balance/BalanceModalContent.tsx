@@ -9,7 +9,7 @@ import { EmptyBlock } from '../../components/EmptyBlock';
 import { TooltipCheckbox } from '../../components/TooltipCheckbox';
 import { useToggle } from 'react-use';
 import { BasePickerProps } from '@material-ui/pickers/typings/BasePicker';
-import { useDatePickerRenderDayExtremes } from '../../hooks/useDatePickerRenderDayExtremes';
+import { useDatePickerRenderDayExtremes } from '../../hooks/apollo/useDatePickerRenderDayExtremes';
 import { Center } from '../../components/Center';
 import { SwitchBaseProps } from '@material-ui/core/internal/SwitchBase';
 import { formatDateLabel } from '../../common/datePicker';

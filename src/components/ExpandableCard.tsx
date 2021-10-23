@@ -1,5 +1,5 @@
 import { Card, Typography, IconButton, Collapse } from '@material-ui/core';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useToggle } from 'react-use';
 import styled from 'styled-components';
 import ExpandMore from '@material-ui/icons/ExpandMore';
@@ -9,6 +9,7 @@ import { grey } from '@material-ui/core/colors';
 
 export interface ExpandableCardProps {
   defaultExpanded?: boolean;
+  shouldExpand?: boolean;
   title: string;
 }
 
@@ -21,20 +22,21 @@ const TitleWrapper = styled.div<{ isExpanded: boolean }>`
   cursor: pointer;
 `;
 
-const Content = styled.div`
-  margin: 0 0 10px 15px;
-`;
-
 const SpeedDialIconStyled = styled(SpeedDialIcon)`
   color: ${grey[400]};
 `;
 
 export const ExpandableCard: React.FC<ExpandableCardProps> = ({
   defaultExpanded = true,
+  shouldExpand,
   title,
   children
 }) => {
   const [isExpanded, toggleExpanded] = useToggle(defaultExpanded);
+
+  useEffect(() => {
+    if (shouldExpand) toggleExpanded(true);
+  }, [shouldExpand, toggleExpanded]);
 
   return (
     <Card>
@@ -52,7 +54,7 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
       </TitleWrapper>
 
       <Collapse in={isExpanded} timeout="auto" mountOnEnter>
-        <Content>{children}</Content>
+        {children}
       </Collapse>
     </Card>
   );

@@ -4,8 +4,8 @@ import {
   IAPProduct,
   InAppPurchase2Original
 } from '@ionic-native/in-app-purchase-2';
-import { sentryService } from '../../services/sentry';
-import { getPlatform } from '../../common/platform';
+import { sentryService } from '../../../services/sentry';
+import { getPlatform } from '../../../common/platform';
 import _ from 'lodash';
 
 export interface HookArgs {

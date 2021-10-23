@@ -38,7 +38,8 @@ fragment GoalFragment on Goal {
   durationType
   failPoints
   successPoints
-  startDate
+  lastSyncAt
+  isArchived
   activity @client {
     _id
     name
@@ -58,24 +59,37 @@ query GetGoals {
   }
 }
 
+mutation ArchiveGoal($_id: ID!) {
+  archiveGoal(_id: $_id)
+}
+
+mutation RestoreGoal($_id: ID!) {
+  restoreGoal(_id: $_id)
+}
+
+fragment GoalResultFragment on GoalResult {
+  _id
+  status
+  points
+  recordedAt
+  timesPerDuration
+  entries {
+    _id
+  }
+  goal {
+    ...GoalFragment
+  }
+}
+
 query GetCurrentGoalsResults {
   currentGoalsResults {
-    _id
-    status
-    points
-    entries {
-      _id
-    }
-    goal {
-      _id
-      conditionType
-      timesPerDuration
-      activity {
-        _id
-        name
-        emoji
-      }
-    }
+   ...GoalResultFragment
+  }
+}
+
+query GetGoalsResults($goalsIds: [ID!], $durationType: DurationType, $dateAfter: Date!, $limit: Int!) {
+  goalsResults(goalsIds: $goalsIds, durationType: $durationType, dateAfter: $dateAfter, limit: $limit) {
+   ...GoalResultFragment
   }
 }
 
@@ -178,8 +192,8 @@ query GetJournal($dateAfter: Date, $daysLimit: Int!, $activities: [String!]) {
   }
 }
 
-query GetCalendarDays($dateAfter: Date, $dateBefore: Date) {
-  entriesByDay(dateAfter: $dateAfter, dateBefore: $dateBefore) {
+query GetCalendarDays($dateAfter: Date, $dateBefore: Date, $activityId: ID) {
+  entriesByDay(dateAfter: $dateAfter, dateBefore: $dateBefore, activityId: $activityId) {
     date
     points
     entries {

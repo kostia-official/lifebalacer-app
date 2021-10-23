@@ -2,7 +2,7 @@ import 'devextreme/dist/css/dx.material.teal.dark.css';
 
 import React, { Fragment, useCallback, useState, useMemo } from 'react';
 import { ScreenWrapper } from '../App/ScreenWrapper';
-import { useApolloError } from '../../hooks/useApolloError';
+import { useApolloError } from '../../hooks/apollo/useApolloError';
 import { Grid, Paper, Typography, SvgIcon } from '@material-ui/core';
 import { ActivityType } from '../../generated/apollo';
 import styled from 'styled-components';
@@ -17,7 +17,7 @@ import { EmptyBlock } from '../../components/EmptyBlock';
 import { EntryPerDateChart } from './components/EntryPerDateChart';
 import { CountPerValueChart } from './components/CountPerValueChart';
 import { RangeDatePicker, RangeDatePickerProps } from '../../components/RangeDatePicker';
-import { useActivityStatistic } from '../../hooks/useActivityStatistic';
+import { useActivityStatistic } from '../../hooks/apollo/useActivityStatistic';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { NavigationParams } from '../App/App';
 import { Icon } from '@iconify/react';

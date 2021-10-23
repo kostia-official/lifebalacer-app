@@ -1,12 +1,12 @@
 import { setContext } from '@apollo/client/link/context';
 import { auth0Client } from '../common/auth0';
-import { useTimezone } from '../hooks/useTimezone';
 import { config } from '../common/config';
 import { RetryLink } from '@apollo/client/link/retry';
 import { ApolloLink } from '@apollo/client/link/core';
 import { HttpLink } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { OperationDefinitionNode } from 'graphql/language';
+import { getTimezone } from '../helpers/date';
 
 const retryLink = new RetryLink({
   delay: {
@@ -24,7 +24,7 @@ const retryLink = new RetryLink({
 
 const authLink = setContext(async (_, { headers }) => {
   const token = await auth0Client.getTokenSilently();
-  const timezone = useTimezone();
+  const timezone = getTimezone();
 
   return {
     headers: {

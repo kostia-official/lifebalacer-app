@@ -1,14 +1,14 @@
 import React, { Fragment, useCallback, useMemo } from 'react';
-import { useApolloError } from '../../hooks/useApolloError';
+import { useApolloError } from '../../hooks/apollo/useApolloError';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { Typography } from '@material-ui/core';
 import { EmptyState } from '../../components/EmptyState';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import styled from 'styled-components';
-import { useActivities } from '../../hooks/useActivities';
+import { useActivities } from '../../hooks/apollo/useActivities';
 import { Spinner } from '../../components/Spinner';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
-import { useInfiniteQuery } from '../../hooks/useInfiniteQuery';
+import { useInfiniteQuery } from '../../hooks/apollo/useInfiniteQuery';
 import {
   GetJournalQuery,
   GetJournalQueryVariables,

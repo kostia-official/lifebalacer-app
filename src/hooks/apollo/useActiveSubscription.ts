@@ -2,7 +2,7 @@ import {
   useGetActiveSubscription,
   GetActiveSubscriptionQuery,
   GetActiveSubscriptionQueryVariables
-} from '../generated/apollo';
+} from '../../generated/apollo';
 import * as Apollo from '@apollo/client';
 import { useSyncedCachePolicy } from './useSyncedCachePolicy';
 

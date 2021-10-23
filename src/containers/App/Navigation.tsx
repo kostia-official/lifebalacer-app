@@ -42,7 +42,8 @@ export const linking: LinkingOptions = {
             screens: {
               EntriesByDay: '',
               EntriesCalendar: 'entries/calendar',
-              EntriesForm: 'entries/:date'
+              EntriesForm: 'entries/:date',
+              GoalsResults: 'goals/results'
             }
           },
           CalendarStack: {
@@ -128,6 +129,7 @@ const Activities = LazyComponent(() => import('../Activities/Activities'));
 const ActivityForm = LazyComponent(() => import('../ActivityForm/ActivityForm'));
 const Goals = LazyComponent(() => import('../Goals/Goals'));
 const GoalForm = LazyComponent(() => import('../Goals/GoalForm'));
+const GoalsResults = LazyComponent(() => import('../GoalsResults/GoalsResults'));
 const Calendar = LazyComponent(() => import('../Calendar/Calendar'));
 const Reminders = LazyComponent(() => import('../Reminders'));
 const About = LazyComponent(() => import('../About/About'));
@@ -174,6 +176,7 @@ export const EntriesScreen = () => (
     <EntriesStack.Screen name="EntriesByDay" component={EntriesByDay} />
     <EntriesStack.Screen name="EntriesCalendar" component={Calendar} />
     <EntriesStack.Screen name="EntriesForm" component={EntriesForm} />
+    <EntriesStack.Screen name="GoalsResults" component={GoalsResults} />
   </EntriesStack.Navigator>
 );
 

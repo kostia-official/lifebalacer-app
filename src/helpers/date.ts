@@ -1,4 +1,4 @@
-import { DateTime, DurationObject } from 'luxon';
+import { DateTime, DurationObject, DateTimeFormatOptions } from 'luxon';
 
 export type DateAny = string | Date | DateTime;
 
@@ -22,4 +22,11 @@ export const getDateTitle = (date: DateAny) => {
 
 export const getDayStartFromToday = (duration: DurationObject): DateTime => {
   return DateTime.local().minus(duration).startOf('day');
+};
+
+export const makeDateFormatter = (options?: DateTimeFormatOptions) =>
+  new Intl.DateTimeFormat(Intl.DateTimeFormat().resolvedOptions().locale, options);
+
+export const getTimezone = () => {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
 };

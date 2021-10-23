@@ -1,11 +1,11 @@
 import React, { useCallback, ChangeEvent, useMemo, useState, useEffect } from 'react';
 import { Calendar as MaterialCalendar, useStaticState } from '@material-ui/pickers';
 import styled from 'styled-components';
-import { useApolloError } from '../../hooks/useApolloError';
+import { useApolloError } from '../../hooks/apollo/useApolloError';
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import { ScreenWrapper } from '../App/ScreenWrapper';
 import { CalendarLegends } from './CalendarLegends';
-import { useActivities } from '../../hooks/useActivities';
+import { useActivities } from '../../hooks/apollo/useActivities';
 import {
   useGetActivitiesExtremesQuery,
   ActivityType,
@@ -14,7 +14,7 @@ import {
   refetchGetActivitiesExtremesQuery
 } from '../../generated/apollo';
 import { ValueGradient } from './ValueGradient';
-import { useDatePickerRenderDayExtremes } from '../../hooks/useDatePickerRenderDayExtremes';
+import { useDatePickerRenderDayExtremes } from '../../hooks/apollo/useDatePickerRenderDayExtremes';
 import { useReactiveVar } from '@apollo/client';
 import { calendarActivityIdVar } from '../../reactiveState';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';

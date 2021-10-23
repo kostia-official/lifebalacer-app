@@ -4,7 +4,7 @@ import {
   useGetActivityStatisticQuery,
   GetActivityStatisticQuery,
   GetActivityStatisticQueryVariables
-} from '../generated/apollo';
+} from '../../generated/apollo';
 import { useRef } from 'react';
 
 export const useActivityStatistic = (
