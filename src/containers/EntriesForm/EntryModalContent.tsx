@@ -17,16 +17,14 @@ import {
   TextField,
   Button,
   FormLabel,
-  FormControl,
-  CircularProgress,
-  Fade
+  FormControl
 } from '@material-ui/core';
 import { InputProps as StandardInputProps } from '@material-ui/core/Input/Input';
 import _ from 'lodash';
-import { useDeviceMediaQuery } from '../../hooks/useDeviceMediaQuery';
-import { usePreventBlur } from '../../hooks/usePreventBlur';
-import { useFocusOnTheEnd } from '../../hooks/useFocusOnTheEnd';
 import { useDebouncedCallback } from 'use-debounce';
+import { DescriptionCKEditor } from './DescriptionCKEditor';
+import { useIsInternalTestUser } from '../../hooks/useIsInternalTestUser';
+import { DescriptionTextField } from './DescriptionTextField';
 
 export interface EntryValueModalContentProps {
   onUpdate: (toUpdate: Partial<EntryResult>) => Promise<void>;
@@ -54,12 +52,6 @@ const SliderLabel = styled(FormLabel)`
   margin-bottom: 16px;
 `;
 
-const AutoSaveWrapper = styled.div`
-  align-self: flex-end;
-  margin: 0 0 0 -12px;
-  opacity: 0.6;
-`;
-
 export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   onDone,
   onUpdate,
@@ -68,13 +60,9 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   activity,
   isForceDescription
 }) => {
-  const { isDesktop } = useDeviceMediaQuery();
-
   const min = activity?.rangeMeta?.from!;
   const max = activity?.rangeMeta?.to!;
   const averageValue = Math.ceil((max + min) / 2);
-
-  const { onBlur, inputRef } = usePreventBlur({ preventTime: 1000 });
 
   const [value, setValue] = useState(
     activity.valueType === ActivityType.Range ? entry.value || averageValue : entry.value
@@ -120,10 +108,8 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
     1000
   );
 
-  const onDescriptionChange: StandardInputProps['onChange'] = useCallback(
-    (event) => {
-      const description = event.target.value;
-
+  const onDescriptionChange = useCallback(
+    (description: string) => {
       setDescription(description);
       debouncedAutoSave.callback(description);
     },
@@ -148,7 +134,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   const isFocusDescription = activity.valueType === ActivityType.Simple;
   const valueLabel = activity.valueLabel || activity.name;
 
-  const { onFocus } = useFocusOnTheEnd({ isAutoFocus: isFocusDescription });
+  const isInternalTestUser = useIsInternalTestUser();
 
   if (!activity) return <Fragment />;
 
@@ -188,30 +174,17 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
           </FormControl>
         )}
 
-        {isWithDescription && (
-          <TextField
-            inputRef={inputRef}
-            margin="normal"
-            label="Description"
-            type="text"
-            value={description}
-            onChange={onDescriptionChange}
-            multiline
-            rowsMax={isDesktop ? 20 : 10}
-            autoFocus={isFocusDescription}
-            onBlur={onBlur}
-            onFocus={onFocus}
-            InputProps={{
-              endAdornment: (
-                <AutoSaveWrapper>
-                  <Fade in={isLoading} timeout={300}>
-                    <CircularProgress size={8} disableShrink />
-                  </Fade>
-                </AutoSaveWrapper>
-              )
-            }}
-          />
-        )}
+        {isWithDescription &&
+          (isInternalTestUser ? (
+            <DescriptionCKEditor value={description} onChange={onDescriptionChange} />
+          ) : (
+            <DescriptionTextField
+              value={description}
+              onChange={onDescriptionChange}
+              isFocusDescription={isFocusDescription}
+              isLoading={isLoading}
+            />
+          ))}
       </CardContentStyled>
 
       <CardActionsStyled>

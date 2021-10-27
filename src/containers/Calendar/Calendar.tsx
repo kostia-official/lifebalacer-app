@@ -23,6 +23,7 @@ import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { Greyscale } from '../../components/Greyscale';
 import { toLuxon } from '../../helpers/date';
 import { useRoute } from '@react-navigation/native';
+import { InteractionManager } from 'react-native';
 
 const CalendarWrapper = styled.div`
   overflow: hidden;
@@ -57,7 +58,9 @@ const Calendar = () => {
   const [isCanRenderCalendar, setIsCanRenderCalendar] = useState(false);
 
   useEffect(() => {
-    setIsCanRenderCalendar(true);
+    InteractionManager.runAfterInteractions(() => {
+      setIsCanRenderCalendar(true);
+    });
   }, []);
 
   const { errorMessage, errorTime, onError } = useApolloError();
@@ -67,8 +70,11 @@ const Calendar = () => {
     calendarActivityIdVar(e.target?.value);
   }, []);
 
-  const { allActivities } = useActivities({ onError });
-  const { data, refetch: refetchExtremes } = useGetActivitiesExtremesQuery({ onError });
+  const { allActivities } = useActivities({ onError, skip: !isCanRenderCalendar });
+  const { data, refetch: refetchExtremes } = useGetActivitiesExtremesQuery({
+    onError,
+    skip: !isCanRenderCalendar
+  });
   const activitiesExtremes = data?.activitiesExtremes;
 
   useOnEntryUpdate([refetchExtremes]);
@@ -109,7 +115,8 @@ const Calendar = () => {
   const { renderDay } = useDatePickerRenderDayExtremes({
     onError,
     selectedActivityExtremes,
-    isReverseColors
+    isReverseColors,
+    skip: !isCanRenderCalendar
   });
 
   const onDateChange = useCallback(
@@ -140,6 +147,7 @@ const Calendar = () => {
       errorMessage={errorMessage}
       errorTime={errorTime}
       isLoading={!allActivities || !isCanRenderCalendar}
+      unmountOnHide
     >
       <CalendarWrapper>
         <FormControlWrapper>

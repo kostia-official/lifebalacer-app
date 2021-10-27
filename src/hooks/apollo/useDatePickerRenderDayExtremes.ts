@@ -12,6 +12,7 @@ export interface UseDatePickerRenderDayProps {
   selectedActivityExtremes?: ActivityExtremes;
   isReverseColors?: boolean;
   activityId?: string;
+  skip?: boolean;
 }
 
 export interface DaysPayload {
@@ -22,10 +23,12 @@ export const useDatePickerRenderDayExtremes = ({
   onError,
   selectedActivityExtremes,
   isReverseColors = false,
-  activityId
+  activityId,
+  skip
 }: UseDatePickerRenderDayProps = {}) => {
   const { data: daysData, refetch } = useGetCalendarDaysQuery({
     onError,
+    skip,
     variables: {
       activityId,
       dateAfter: DateTime.local().endOf('day').toISO(),

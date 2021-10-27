@@ -21,6 +21,9 @@ import _ from 'lodash';
 import { getDayQueryVariables } from '../../helpers/getDayQueryVariables';
 import { toLuxon } from '../../helpers/date';
 import { ScreenWrapper } from '../App/ScreenWrapper';
+import DOMPurify from 'dompurify';
+
+const domPurify = DOMPurify(window);
 
 const ActivityTitle = styled(Typography)`
   display: flex;
@@ -35,8 +38,52 @@ const Description = styled(Typography)`
   margin-bottom: 16px;
   white-space: pre-line;
 
+  figure {
+    margin: 0;
+  }
+
+  img {
+    max-width: 100%;
+    max-height: 60vh;
+    height: auto;
+    width: auto;
+  }
+
   :last-child {
     margin-bottom: 0;
+  }
+`;
+
+const CKEditorContent = styled.span`
+  figure {
+    margin: 0;
+  }
+
+  img {
+    max-width: 100%;
+    max-height: 60vh;
+    height: auto;
+    width: auto;
+  }
+
+  .todo-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0 0 0 16px;
+  }
+
+  .todo-list__label input {
+    margin-right: 8px;
+  }
+
+  ol {
+    margin: 0;
+  }
+
+  p {
+    :last-child {
+      margin-block-end: 0em;
+    }
   }
 `;
 
@@ -121,7 +168,15 @@ const Journal = () => {
                           <Emoji>{activity?.emoji}</Emoji>
                           {getEntryLabel({ entry, activity })}
                         </ActivityTitle>
-                        <Description variant="body2">{entry.description}</Description>
+                        <Description variant="body2">
+                          {entry.description && (
+                            <CKEditorContent
+                              dangerouslySetInnerHTML={{
+                                __html: domPurify.sanitize(entry.description)
+                              }}
+                            />
+                          )}
+                        </Description>
                       </Fragment>
                     );
                   })}
