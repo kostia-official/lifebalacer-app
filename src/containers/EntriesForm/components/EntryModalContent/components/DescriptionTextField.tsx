@@ -1,9 +1,10 @@
-import { TextField, CircularProgress, Fade } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import React from 'react';
-import { useFocusOnTheEnd } from '../../hooks/useFocusOnTheEnd';
-import { useDeviceMediaQuery } from '../../hooks/useDeviceMediaQuery';
-import { usePreventBlur } from '../../hooks/usePreventBlur';
+import { useFocusOnTheEnd } from '../../../../../hooks/useFocusOnTheEnd';
+import { useDeviceMediaQuery } from '../../../../../hooks/useDeviceMediaQuery';
+import { usePreventBlur } from '../../../../../hooks/usePreventBlur';
 import styled from 'styled-components';
+import { AutoSaveSpinner } from './AutoSaveSpinner';
 
 export interface DescriptionTextFieldProps {
   value: string;
@@ -12,7 +13,7 @@ export interface DescriptionTextFieldProps {
   isLoading: boolean;
 }
 
-const AutoSaveWrapper = styled.div`
+const AutoSaveSpinnerStyled = styled(AutoSaveSpinner)`
   align-self: flex-end;
   margin: 0 0 0 -12px;
   opacity: 0.6;
@@ -42,13 +43,7 @@ export const DescriptionTextField: React.FC<DescriptionTextFieldProps> = ({
       onBlur={onBlur}
       onFocus={onFocus}
       InputProps={{
-        endAdornment: (
-          <AutoSaveWrapper>
-            <Fade in={isLoading} timeout={300}>
-              <CircularProgress size={8} disableShrink />
-            </Fade>
-          </AutoSaveWrapper>
-        )
+        endAdornment: <AutoSaveSpinnerStyled isLoading={isLoading} />
       }}
     />
   );

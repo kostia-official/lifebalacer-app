@@ -1,6 +1,6 @@
 import React from 'react';
-import { getDateTitle, DateAny } from '../../helpers/date';
-import { HeaderCard } from '../../components/HeaderCard';
+import { getDateTitle, DateAny } from '../../../helpers/date';
+import { HeaderCard } from '../../../components/HeaderCard';
 import { Box } from '@material-ui/core';
 
 export interface DayHeaderProps {

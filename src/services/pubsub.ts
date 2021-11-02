@@ -1,6 +1,12 @@
 import * as Ably from 'ably';
 import { config } from '../common/config';
 
+export interface CommonData {
+  _id: string;
+  userId: string;
+  appInstanceId?: string;
+}
+
 class Pubsub {
   private ably: Ably.Realtime;
 
@@ -8,7 +14,7 @@ class Pubsub {
     this.ably = new Ably.Realtime(config.ably.apiKey);
   }
 
-  subscribe(channelName: string, cb: (payload: unknown) => void) {
+  subscribe(channelName: string, cb: (payload: { data: CommonData }) => void) {
     const channel = this.ably.channels.get(channelName);
 
     channel.subscribe(cb);

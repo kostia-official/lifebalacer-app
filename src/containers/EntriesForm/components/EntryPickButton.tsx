@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
 import { Button, PropTypes, BadgeTypeMap, Badge } from '@material-ui/core';
 import styled from 'styled-components';
-import { SelectedEntry, ActivityResult } from '../../common/types';
-import { ActivityCategory, Activity } from '../../generated/apollo';
+import { SelectedEntry, ActivityResult } from '../../../common/types';
+import { ActivityCategory, Activity } from '../../../generated/apollo';
 import { useLongPress } from 'use-long-press';
-import { EntryLabelTruncate } from '../../components/EntryLabelTruncate';
+import { EntryLabelTruncate } from '../../../components/EntryLabelTruncate';
 
 const ButtonWrapper = styled.div`
   display: inline-block;

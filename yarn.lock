@@ -2992,10 +2992,10 @@
   resolved "https://registry.yarnpkg.com/@iconify/icons-ci/-/icons-ci-1.1.0.tgz#4ff10465de7d495146dd6042fa8967d007255d40"
   integrity sha512-p6nMnq/GNWU7lcqyiB0uoGlqoTWMBzWBIGKQgLmIOEHNeYrYf1aBfzMsux/qNisywmcY991O+Ztni9U3tVZfiQ==
 
-"@iconify/icons-fluent@^1.1.27":
-  version "1.1.27"
-  resolved "https://registry.yarnpkg.com/@iconify/icons-fluent/-/icons-fluent-1.1.27.tgz#10f9ce8f598d3e09536b47907c744b0eae1e12b3"
-  integrity sha512-0wIJrJNV4cDlhrXc/bp2NahsWI17++Jnu+ba8MFqS7l5CbXblBxVyGt2ztXyKAm5IhgMbE6O+bBFsbhS376qww==
+"@iconify/icons-fluent@^1.1.30":
+  version "1.1.30"
+  resolved "https://registry.yarnpkg.com/@iconify/icons-fluent/-/icons-fluent-1.1.30.tgz#dd72c065162846e1043ffb6fcadfad7e39cd3938"
+  integrity sha512-C3JVE3x0mLFMGAferC/CasxcUARAKFrNV2ApVTNP2XAJlLixU/xgdfF6lRtTeHiUfCpAaSRh9wzDQEdG9DLTkQ==
 
 "@iconify/icons-ic@^1.1.10":
   version "1.1.10"

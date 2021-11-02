@@ -3,6 +3,9 @@ import { pubsub } from '../services/pubsub';
 // @ts-ignore
 import { usePageVisibility } from 'react-page-visibility';
 import { useAuth } from './useAuth';
+import * as uuid from 'uuid';
+
+export const appInstanceId = uuid.v4();
 
 export type PromiseFn = () => Promise<unknown>;
 
@@ -32,7 +35,11 @@ export const useOnUpdate = (channelPrefix: string, toCall: PromiseFn[] = []) => 
 
     const channelName = `${channelPrefix}_${userId}`;
 
-    pubsub.subscribe(channelName, () => onUpdate());
+    pubsub.subscribe(channelName, (payload) => {
+      if (payload.data.appInstanceId === appInstanceId) return;
+
+      return onUpdate();
+    });
 
     return () => {
       pubsub.unsubscribe(channelName);

@@ -23,7 +23,7 @@ export const Balance = () => {
 
   return (
     <Fragment>
-      <CardModal isShow={isModalOpen} onClose={toggle}>
+      <CardModal open={isModalOpen} onClose={toggle}>
         <BalanceModalContent />
       </CardModal>
 

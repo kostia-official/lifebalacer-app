@@ -7,6 +7,8 @@ export interface FlexBoxProps extends BoxProps {
   gap?: number;
   gapX?: number;
   gapY?: number;
+  centerX?: boolean;
+  centerY?: boolean;
   column?: boolean;
   row?: boolean;
 }
@@ -40,6 +42,8 @@ export const FlexBox: React.FC<FlexBoxProps> = ({
   gap,
   gapX,
   gapY,
+  centerX,
+  centerY,
   column,
   row,
   ...boxProps
@@ -51,10 +55,24 @@ export const FlexBox: React.FC<FlexBoxProps> = ({
     return {};
   }, [column, row]);
 
+  const centeringProps = useMemo(() => {
+    const props: BoxProps = {};
+
+    if ((row && centerX) || (column && centerY)) {
+      props.justifyContent = 'center';
+    }
+    if ((row && centerY) || (column && centerX)) {
+      props.alignItems = 'center';
+    }
+
+    return props;
+  }, [centerX, centerY, column, row]);
+
   return (
     <StyledBox
       display="flex"
       {...flexDirectionProp}
+      {...centeringProps}
       {...boxProps}
       $gap={gap}
       $gapX={gapX}

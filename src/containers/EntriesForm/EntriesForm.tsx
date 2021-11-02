@@ -2,13 +2,12 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import ObjectId from 'bson-objectid';
 import {
   ActivityType,
+  refetchGetDaysStatisticQuery,
   useCreateEntryMutation,
-  refetchGetBalanceQuery,
-  refetchGetEntriesByDayQuery,
   useGetEntriesByOneDayQuery,
   useUpdateEntryMutation,
-  refetchGetDaysStatisticQuery,
-  refetchGetActivitiesExtremesQuery,
+  refetchGetEntriesByDayQuery,
+  refetchGetBalanceQuery,
   refetchGetCurrentGoalsResultsQuery
 } from '../../generated/apollo';
 import ReturnIcon from '@material-ui/icons/KeyboardReturn';
@@ -19,10 +18,10 @@ import { Card } from '@material-ui/core';
 import styled from 'styled-components';
 import { CardModal } from '../../components/CardModal';
 import { ActivityResult, SelectedEntry, EntryResult } from '../../common/types';
-import { EntryPickButton } from './EntryPickButton';
+import { EntryPickButton } from './components/EntryPickButton';
 import { useActivities } from '../../hooks/apollo/useActivities';
 import { DateTime } from 'luxon';
-import { EntryModalContent } from './EntryModalContent';
+import { EntryModalContent } from './components/EntryModalContent/EntryModalContent';
 import { getIsToday } from '../../helpers/date';
 import { FabButton } from '../../components/FabButton';
 import {
@@ -32,7 +31,7 @@ import {
 import { ScreenWrapper } from '../App/ScreenWrapper';
 import { useDeleteEntry } from '../../hooks/apollo/useDeleteEntry';
 import { useOnActivityUpdate } from '../../hooks/useOnActivityUpdate';
-import { DayHeader } from './DayHeader';
+import { DayHeader } from './components/DayHeader';
 import { calcPoints } from '../../helpers/calcPoints';
 import { ExpandableCard } from '../../components/ExpandableCard';
 import { useRoute, RouteProp } from '@react-navigation/native';
@@ -49,8 +48,6 @@ const Content = styled.div`
   margin: 0 0 10px 15px;
 `;
 
-const showDelay = 300;
-
 const EntriesForm = () => {
   const { goBackCb } = useNavigationHelpers();
 
@@ -61,7 +58,7 @@ const EntriesForm = () => {
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
     setIsForceDescription(false);
-    setTimeout(() => setModalEntry(null), showDelay + 200);
+    setTimeout(() => setModalEntry(null), 500);
   }, []);
 
   const openModal = useCallback((entry: SelectedEntry) => {
@@ -88,7 +85,6 @@ const EntriesForm = () => {
   const entriesByDay = entriesData?.entriesByOneDay?.entries;
   const missingEntries = entriesData?.entriesByOneDay?.missing;
 
-  // useOnEntryUpdate([refetch]);
   useOnActivityUpdate([refetch]);
 
   const [selectedEntries, setSelectedEntries] = useState<SelectedEntry[]>(entriesByDay || []);
@@ -128,22 +124,24 @@ const EntriesForm = () => {
 
   const deleteField = useDeleteFieldFromCache();
 
-  const mutationOptions = {
-    onError,
-    onCompleted() {
-      deleteField('journal');
-    },
-    refetchQueries: [
-      refetchGetDaysStatisticQuery(),
-      refetchGetEntriesByDayQuery(),
-      refetchGetBalanceQuery(),
-      refetchGetActivitiesExtremesQuery(),
-      refetchGetCurrentGoalsResultsQuery()
-    ]
-  };
-  const [deleteEntryMutation] = useDeleteEntry(mutationOptions);
-  const [createEntryMutation] = useCreateEntryMutation(mutationOptions);
-  const [updateEntryMutation] = useUpdateEntryMutation(mutationOptions);
+  const mutationOptions = useMemo(() => {
+    return {
+      onCompleted() {
+        deleteField('journal');
+        deleteField('activitiesExtremes');
+      },
+      refetchQueries: [
+        refetchGetDaysStatisticQuery(),
+        refetchGetEntriesByDayQuery(),
+        refetchGetBalanceQuery(),
+        refetchGetCurrentGoalsResultsQuery()
+      ]
+    };
+  }, [deleteField]);
+
+  const [deleteEntryMutation] = useDeleteEntry({ onError });
+  const [createEntryMutation] = useCreateEntryMutation({ onError });
+  const [updateEntryMutation] = useUpdateEntryMutation({ onError });
 
   const createEntry = useCallback(
     async (activityId: string, data = {}) => {
@@ -163,18 +161,26 @@ const EntriesForm = () => {
       if (modalEntry) setModalEntry(entry);
       setSelectedEntries((prev) => [...prev, { ...entry, points }]);
 
-      await createEntryMutation({ variables: { data: entry } });
+      await createEntryMutation({ variables: { data: entry }, ...mutationOptions });
     },
-    [getEntriesByActivityId, getActivityById, getCompletedAt, modalEntry, createEntryMutation]
+    [
+      getEntriesByActivityId,
+      getActivityById,
+      getCompletedAt,
+      modalEntry,
+      createEntryMutation,
+      mutationOptions
+    ]
   );
 
   const updateEntry = useCallback(
-    async (entryId: string, toUpdate: Partial<SelectedEntry>) => {
+    async (entryId: string, toUpdate: Partial<SelectedEntry>, isAutoSave: boolean) => {
       const entry = getEntryById(entryId);
       if (!entry) return;
 
       const activity = getActivityById(entry.activityId)!;
       const points = calcPoints(activity, toUpdate?.value);
+      const updateEntryOptions = isAutoSave ? {} : mutationOptions;
 
       setSelectedEntries((prev) =>
         prev.map((entry) => {
@@ -183,9 +189,12 @@ const EntriesForm = () => {
           return { ...entry, ...toUpdate, points };
         })
       );
-      await updateEntryMutation({ variables: { _id: entryId, data: toUpdate } });
+      await updateEntryMutation({
+        variables: { _id: entryId, data: toUpdate },
+        ...updateEntryOptions
+      });
     },
-    [getEntryById, getActivityById, updateEntryMutation]
+    [getEntryById, getActivityById, updateEntryMutation, mutationOptions]
   );
 
   const deleteEntry = useCallback(
@@ -195,9 +204,9 @@ const EntriesForm = () => {
       setSelectedEntries((prev) => {
         return prev.filter((entry) => entry._id !== entryId);
       });
-      await deleteEntryMutation({ variables: { _id: entryId } });
+      await deleteEntryMutation({ variables: { _id: entryId }, ...mutationOptions });
     },
-    [deleteEntryMutation, getEntryById]
+    [deleteEntryMutation, getEntryById, mutationOptions]
   );
 
   const selectEntry = useCallback(
@@ -256,13 +265,13 @@ const EntriesForm = () => {
   );
 
   const upsertEntry = useCallback(
-    async (data: Partial<EntryResult>) => {
+    async (data: Partial<EntryResult>, isAutoSave: boolean) => {
       if (!modalEntry) return;
 
       const existingEntry = getEntryById(modalEntry._id);
 
       return existingEntry
-        ? updateEntry(existingEntry._id, data)
+        ? updateEntry(existingEntry._id, data, isAutoSave)
         : createEntry(modalEntry.activityId, data);
     },
     [updateEntry, getEntryById, createEntry, modalEntry]
@@ -289,7 +298,7 @@ const EntriesForm = () => {
       <ScreenWrapper errorMessage={errorMessage} errorTime={errorTime} isLoading={!allActivities}>
         <DayHeader date={dayDate} />
 
-        <CardModal isShow={isModalOpen} onClose={closeModal} showDelay={showDelay}>
+        <CardModal open={isModalOpen} onClose={closeModal} scroll="paper">
           <EntryModalContent
             onDelete={onDeleteFromModal}
             onDone={closeModal}

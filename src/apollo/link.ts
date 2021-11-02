@@ -7,6 +7,7 @@ import { HttpLink } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { OperationDefinitionNode } from 'graphql/language';
 import { getTimezone } from '../helpers/date';
+import { appInstanceId } from '../hooks/useOnUpdate';
 
 const retryLink = new RetryLink({
   delay: {
@@ -22,7 +23,7 @@ const retryLink = new RetryLink({
   }
 });
 
-const authLink = setContext(async (_, { headers }) => {
+const headersResolverLink = setContext(async (_, { headers }) => {
   const token = await auth0Client.getTokenSilently();
   const timezone = getTimezone();
 
@@ -30,7 +31,8 @@ const authLink = setContext(async (_, { headers }) => {
     headers: {
       ...headers,
       Authorization: token,
-      timezone
+      timezone,
+      appInstanceId
     }
   };
 });
@@ -54,4 +56,9 @@ export const uriResolverLink = new ApolloLink((operation, forward) => {
   return forward(operation);
 });
 
-export const link = ApolloLink.from([retryLink, authLink, uriResolverLink, new HttpLink()]);
+export const link = ApolloLink.from([
+  retryLink,
+  headersResolverLink,
+  uriResolverLink,
+  new HttpLink()
+]);

@@ -222,6 +222,16 @@ type Mutation {
   cancelSubscription(_id: ID!): Boolean!
 }
 
+type PaidSubscription {
+  _id: String!
+  userId: String!
+  productId: String!
+  subscriptionId: String
+  platform: SubscriptionPlatform!
+  status: SubscriptionStatus!
+  expireAt: Date
+}
+
 enum PointsType {
   Const
   Linear
@@ -258,8 +268,8 @@ type Query {
   journal(dateAfter: Date, daysLimit: Int!, activities: [String!]): [Journal!]!
   balance(dateAfter: Date): Balance!
   paymentUrl(callbackUrl: String!): String!
-  subscription(platform: SubscriptionPlatform): Subscription
-  activeSubscription: Subscription
+  subscription(platform: SubscriptionPlatform): PaidSubscription
+  activeSubscription: PaidSubscription
 }
 
 type RangeMeta {
@@ -293,13 +303,7 @@ type Streak {
 }
 
 type Subscription {
-  _id: String!
-  userId: String!
-  productId: String!
-  subscriptionId: String
-  platform: SubscriptionPlatform!
-  status: SubscriptionStatus!
-  expireAt: Date
+  entryUpdated: Boolean
 }
 
 enum SubscriptionPlatform {

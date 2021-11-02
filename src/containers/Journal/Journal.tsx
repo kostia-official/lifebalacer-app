@@ -4,7 +4,7 @@ import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { Typography } from '@material-ui/core';
 import { EmptyState } from '../../components/EmptyState';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useActivities } from '../../hooks/apollo/useActivities';
 import { Spinner } from '../../components/Spinner';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
@@ -21,9 +21,8 @@ import _ from 'lodash';
 import { getDayQueryVariables } from '../../helpers/getDayQueryVariables';
 import { toLuxon } from '../../helpers/date';
 import { ScreenWrapper } from '../App/ScreenWrapper';
-import DOMPurify from 'dompurify';
-
-const domPurify = DOMPurify(window);
+import { sanitizeHtml } from '../../helpers/sanitizeHtml';
+import { desktopStyles } from '../../common/breakpoints';
 
 const ActivityTitle = styled(Typography)`
   display: flex;
@@ -38,17 +37,6 @@ const Description = styled(Typography)`
   margin-bottom: 16px;
   white-space: pre-line;
 
-  figure {
-    margin: 0;
-  }
-
-  img {
-    max-width: 100%;
-    max-height: 60vh;
-    height: auto;
-    width: auto;
-  }
-
   :last-child {
     margin-bottom: 0;
   }
@@ -59,11 +47,14 @@ const CKEditorContent = styled.span`
     margin: 0;
   }
 
-  img {
+  & img {
     max-width: 100%;
-    max-height: 60vh;
+    ${desktopStyles(css`
+      max-height: 60vh;
+    `)}
     height: auto;
     width: auto;
+    display: block;
   }
 
   .todo-list {
@@ -76,13 +67,18 @@ const CKEditorContent = styled.span`
     margin-right: 8px;
   }
 
-  ol {
-    margin: 0;
-  }
-
   p {
     :last-child {
-      margin-block-end: 0em;
+      margin-block-end: 0;
+    }
+  }
+
+  ul,
+  ol {
+    margin: 0;
+
+    :last-child {
+      margin-block-end: 0;
     }
   }
 `;
@@ -172,7 +168,7 @@ const Journal = () => {
                           {entry.description && (
                             <CKEditorContent
                               dangerouslySetInnerHTML={{
-                                __html: domPurify.sanitize(entry.description)
+                                __html: sanitizeHtml(entry.description)
                               }}
                             />
                           )}
