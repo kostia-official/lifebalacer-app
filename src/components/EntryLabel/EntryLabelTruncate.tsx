@@ -1,20 +1,23 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { Emoji } from './Emoji';
+import { Emoji } from '../Emoji';
 import _ from 'lodash';
-import { Activity, Entry } from '../generated/apollo';
+import { Activity } from '../../generated/apollo';
 import { DescriptionIcon } from './DescriptionIcon';
-import { Points } from './Points';
+import { Points } from '../Points';
+import { SelectedEntry } from '../../common/types';
+import { GoalsResultsIcons } from './GoalsResultsIcons';
 
 export interface GetEntryLabelProps {
   activity?: Pick<Activity, 'name' | 'emoji' | 'valueType' | 'isWithDescription' | 'isWidget'>;
-  entry?: Pick<Entry, 'description' | 'value' | 'points'>;
+  entry?: SelectedEntry;
 }
 
 const Label = styled.div`
   white-space: nowrap;
   display: flex;
   align-items: center;
+  gap: 3px;
 `;
 
 const TextWrapper = styled.div`
@@ -25,7 +28,19 @@ const TextWrapper = styled.div`
 `;
 
 const PointsWrapper = styled.div`
-  margin-left: 6px;
+  margin-left: 2px;
+`;
+
+const IconsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  position: relative;
+  top: -1px;
+`;
+
+const EmojiStyled = styled(Emoji)`
+  margin-left: 2px;
 `;
 
 export const EntryLabelTruncate = ({ entry, activity }: GetEntryLabelProps) => {
@@ -35,11 +50,19 @@ export const EntryLabelTruncate = ({ entry, activity }: GetEntryLabelProps) => {
 
   return (
     <Label>
-      <Emoji>{activity?.emoji}</Emoji>
-      <TextWrapper>{text}</TextWrapper>
-      {value}
-      <DescriptionIcon entry={entry} activity={activity} />
-      {entry?.points ? (
+      <EmojiStyled>{activity?.emoji}</EmojiStyled>
+      <TextWrapper>
+        {text}
+        {value}
+      </TextWrapper>
+
+      <IconsWrapper>
+        <DescriptionIcon entry={entry} activity={activity} />
+
+        <GoalsResultsIcons goalResults={entry?.goalResults} />
+      </IconsWrapper>
+
+      {!!entry?.points && (
         <PointsWrapper>
           <Points
             points={points}
@@ -49,8 +72,6 @@ export const EntryLabelTruncate = ({ entry, activity }: GetEntryLabelProps) => {
             interval={2}
           />
         </PointsWrapper>
-      ) : (
-        <Fragment />
       )}
     </Label>
   );

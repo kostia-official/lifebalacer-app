@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { SelectedEntry, ActivityResult } from '../../../common/types';
 import { ActivityCategory, Activity } from '../../../generated/apollo';
 import { useLongPress } from 'use-long-press';
-import { EntryLabelTruncate } from '../../../components/EntryLabelTruncate';
+import { EntryLabelTruncate } from '../../../components/EntryLabel/EntryLabelTruncate';
 
 const ButtonWrapper = styled.div`
   display: inline-block;

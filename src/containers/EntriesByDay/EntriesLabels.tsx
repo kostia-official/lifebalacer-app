@@ -1,7 +1,7 @@
 import React, { useMemo, Fragment } from 'react';
 import _ from 'lodash';
 import { groupTodoistEntries } from '../../helpers/groupTodoistEntries';
-import { EntryLabel } from '../../components/EntryLabel';
+import { EntryLabel } from '../../components/EntryLabel/EntryLabel';
 import { ActivityResult, DayResult } from '../../common/types';
 import styled from 'styled-components';
 import { MissingLabel } from './MissingLabel';

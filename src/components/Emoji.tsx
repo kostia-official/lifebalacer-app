@@ -15,9 +15,9 @@ const Span = styled.span`
   color: white;
 `;
 
-export const Emoji: React.FC = ({ children }) => {
+export const Emoji: React.FC = ({ children, ...props }) => {
   return (
-    <Wrapper>
+    <Wrapper {...props}>
       <Span>{children}</Span>
     </Wrapper>
   );

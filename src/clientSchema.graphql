@@ -8,6 +8,7 @@ type ActivityAdvancedStatistic {
 
 type Entry {
     activity: Activity!
+    isWithDescription: Boolean!
 }
 
 type EntryMissing {

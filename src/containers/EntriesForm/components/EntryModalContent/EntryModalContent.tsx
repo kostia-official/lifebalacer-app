@@ -1,5 +1,5 @@
-import { ActivityType } from '../../../../generated/apollo';
-import { ActivityResult, EntryResult, SelectedEntry } from '../../../../common/types';
+import { ActivityType, Entry } from '../../../../generated/apollo';
+import { ActivityResult, EntryResult } from '../../../../common/types';
 import React, {
   useState,
   useCallback,
@@ -27,11 +27,16 @@ import { DescriptionCKEditor } from './components/DescriptionCKEditor';
 import { FlexBox } from '../../../../components/FlexBox';
 import { sanitizeHtml } from '../../../../helpers/sanitizeHtml';
 
+export type EntryModalData = Pick<
+  Entry,
+  '_id' | 'activityId' | 'completedAt' | 'value' | 'description' | 'points'
+>;
+
 export interface EntryValueModalContentProps {
   onUpdate: (toUpdate: Partial<EntryResult>, isAutoSave: boolean) => Promise<void>;
   onDone: () => void;
   onDelete: () => void;
-  entry: SelectedEntry;
+  entry: EntryModalData;
   activity: ActivityResult;
   isForceDescription: boolean;
 }

@@ -2,13 +2,13 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import ObjectId from 'bson-objectid';
 import {
   ActivityType,
-  refetchGetDaysStatisticQuery,
   useCreateEntryMutation,
   useGetEntriesByOneDayQuery,
   useUpdateEntryMutation,
   refetchGetEntriesByDayQuery,
   refetchGetBalanceQuery,
-  refetchGetCurrentGoalsResultsQuery
+  refetchGetCurrentGoalsResultsQuery,
+  useDeleteEntryMutation
 } from '../../generated/apollo';
 import ReturnIcon from '@material-ui/icons/KeyboardReturn';
 import { useApolloError } from '../../hooks/apollo/useApolloError';
@@ -21,7 +21,10 @@ import { ActivityResult, SelectedEntry, EntryResult } from '../../common/types';
 import { EntryPickButton } from './components/EntryPickButton';
 import { useActivities } from '../../hooks/apollo/useActivities';
 import { DateTime } from 'luxon';
-import { EntryModalContent } from './components/EntryModalContent/EntryModalContent';
+import {
+  EntryModalContent,
+  EntryModalData
+} from './components/EntryModalContent/EntryModalContent';
 import { getIsToday } from '../../helpers/date';
 import { FabButton } from '../../components/FabButton';
 import {
@@ -29,7 +32,6 @@ import {
   ARCHIVED_CATEGORY
 } from '../../hooks/apollo/useActivitiesByCategory';
 import { ScreenWrapper } from '../App/ScreenWrapper';
-import { useDeleteEntry } from '../../hooks/apollo/useDeleteEntry';
 import { useOnActivityUpdate } from '../../hooks/useOnActivityUpdate';
 import { DayHeader } from './components/DayHeader';
 import { calcPoints } from '../../helpers/calcPoints';
@@ -51,7 +53,7 @@ const Content = styled.div`
 const EntriesForm = () => {
   const { goBackCb } = useNavigationHelpers();
 
-  const [modalEntry, setModalEntry] = useState<SelectedEntry | null>(null);
+  const [modalEntry, setModalEntry] = useState<EntryModalData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isForceDescription, setIsForceDescription] = useState(false);
 
@@ -61,7 +63,7 @@ const EntriesForm = () => {
     setTimeout(() => setModalEntry(null), 500);
   }, []);
 
-  const openModal = useCallback((entry: SelectedEntry) => {
+  const openModal = useCallback((entry: EntryModalData) => {
     setModalEntry(entry);
     setIsModalOpen(true);
   }, []);
@@ -129,9 +131,9 @@ const EntriesForm = () => {
       onCompleted() {
         deleteField('journal');
         deleteField('activitiesExtremes');
+        deleteField('daysStatistic');
       },
       refetchQueries: [
-        refetchGetDaysStatisticQuery(),
         refetchGetEntriesByDayQuery(),
         refetchGetBalanceQuery(),
         refetchGetCurrentGoalsResultsQuery()
@@ -139,7 +141,7 @@ const EntriesForm = () => {
     };
   }, [deleteField]);
 
-  const [deleteEntryMutation] = useDeleteEntry({ onError });
+  const [deleteEntryMutation] = useDeleteEntryMutation({ onError });
   const [createEntryMutation] = useCreateEntryMutation({ onError });
   const [updateEntryMutation] = useUpdateEntryMutation({ onError });
 
@@ -204,7 +206,18 @@ const EntriesForm = () => {
       setSelectedEntries((prev) => {
         return prev.filter((entry) => entry._id !== entryId);
       });
-      await deleteEntryMutation({ variables: { _id: entryId }, ...mutationOptions });
+      await deleteEntryMutation({
+        variables: { _id: entryId },
+        ...mutationOptions,
+        update(cache) {
+          cache.modify({
+            id: `Entry:${entryId}`,
+            fields(fieldValue, document) {
+              return document.DELETE;
+            }
+          });
+        }
+      });
     },
     [deleteEntryMutation, getEntryById, mutationOptions]
   );
