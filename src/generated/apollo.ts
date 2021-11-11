@@ -551,6 +551,7 @@ export type Balance = {
 
 export type CreateEntryInput = {
   _id?: Maybe<Scalars['ID']>;
+  name?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   completedAt: Scalars['Date'];
   activityId: Scalars['ID'];
@@ -558,6 +559,7 @@ export type CreateEntryInput = {
 };
 
 export type UpdateEntryInput = {
+  name?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   completedAt?: Maybe<Scalars['Date']>;
   value?: Maybe<Scalars['Float']>;

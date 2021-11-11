@@ -26,6 +26,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import { DescriptionCKEditor } from './components/DescriptionCKEditor';
 import { FlexBox } from '../../../../components/FlexBox';
 import { sanitizeHtml } from '../../../../helpers/sanitizeHtml';
+import { TextEditField } from './components/TextEditField';
 
 export type EntryModalData = Pick<
   Entry,
@@ -78,25 +79,33 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   const [value, setValue] = useState(
     activity.valueType === ActivityType.Range ? entry.value || averageValue : entry.value
   );
-  const getValueOptional = useCallback(() => {
-    return _.isNil(value) ? {} : { value: Number(value) };
-  }, [value]);
-
-  const descriptionInitialValue =
-    activity.valueType === ActivityType.Todoist ? entry.name : entry.description;
-
-  const [description, setDescription] = useState<string>(descriptionInitialValue || '');
+  const [description, setDescription] = useState<string>(entry.description || '');
+  const [name, setName] = useState<string>(entry.name || '');
   const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit = useCallback(
-    (e: SyntheticEvent) => {
-      onUpdate({ ...getValueOptional(), description }, false).then();
-      onDone();
+  const getValueOptional = useCallback((value?: number | null) => {
+    return _.isNil(value) ? {} : { value: Number(value) };
+  }, []);
+  const getDescriptionOptional = useCallback((description?: string) => {
+    return description ? { description: sanitizeHtml(description) } : {};
+  }, []);
+  const getNameOptional = useCallback((name?: string) => {
+    return name ? { name: sanitizeHtml(name) } : {};
+  }, []);
 
-      e.preventDefault();
-    },
-    [onUpdate, getValueOptional, description, onDone]
-  );
+  const onSubmit = (e: SyntheticEvent) => {
+    onUpdate(
+      {
+        ...getValueOptional(value),
+        ...getDescriptionOptional(description),
+        ...getNameOptional(name)
+      },
+      false
+    ).then();
+    onDone();
+
+    e.preventDefault();
+  };
 
   const onValueChange: StandardInputProps['onChange'] = useCallback((e) => {
     setValue(e.target.value);
@@ -108,14 +117,15 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
 
   const debouncedAutoSave = useDebouncedCallback(
     useCallback(
-      async (description: string) => {
+      async ({ description, name }: { description?: string; name?: string }) => {
         try {
           setIsLoading(true);
 
           await onUpdate(
             {
-              ...getValueOptional(),
-              description: sanitizeHtml(description)
+              ...getValueOptional(value),
+              ...getDescriptionOptional(description),
+              ...getNameOptional(name)
             },
             true
           );
@@ -123,7 +133,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
           setIsLoading(false);
         }
       },
-      [getValueOptional, onUpdate]
+      [getDescriptionOptional, getNameOptional, getValueOptional, onUpdate, value]
     ),
     1000
   );
@@ -131,7 +141,15 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   const onDescriptionChange = useCallback(
     (description: string) => {
       setDescription(description);
-      debouncedAutoSave.callback(description);
+      debouncedAutoSave.callback({ description });
+    },
+    [debouncedAutoSave]
+  );
+
+  const onNameChange = useCallback(
+    (name: string) => {
+      setName(name);
+      debouncedAutoSave.callback({ name });
     },
     [debouncedAutoSave]
   );
@@ -150,8 +168,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   }, [min, max]);
 
   const isWithValue = [ActivityType.Value, ActivityType.Todoist].includes(activity.valueType);
-  const isWithDescription =
-    isForceDescription || activity.isWithDescription || entry.description || entry.name;
+  const isWithDescription = isForceDescription || activity.isWithDescription || entry.description;
   const isSimpleActivity = activity.valueType === ActivityType.Simple;
   const valueLabel = activity.valueLabel || activity.name;
   const descriptionLabel =
@@ -204,6 +221,16 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
             label={descriptionLabel}
             value={description}
             onChange={onDescriptionChange}
+            isFocusDescription={isSimpleActivity}
+            isLoading={isLoading}
+          />
+        )}
+
+        {entry.name && (
+          <TextEditField
+            label="Name"
+            value={name}
+            onChange={onNameChange}
             isFocusDescription={isSimpleActivity}
             isLoading={isLoading}
           />

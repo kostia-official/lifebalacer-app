@@ -3,23 +3,19 @@ import React from 'react';
 import { useFocusOnTheEnd } from '../../../../../hooks/useFocusOnTheEnd';
 import { useDeviceMediaQuery } from '../../../../../hooks/useDeviceMediaQuery';
 import { usePreventBlur } from '../../../../../hooks/usePreventBlur';
-import styled from 'styled-components';
-import { AutoSaveSpinner } from './AutoSaveSpinner';
+import { FlexBox } from '../../../../../components/FlexBox';
+import { AutoSaveInputLabel } from './AutoSaveInputLabel';
 
 export interface DescriptionTextFieldProps {
+  label: string;
   value: string;
   onChange: (value: string) => void;
   isFocusDescription: boolean;
   isLoading: boolean;
 }
 
-const AutoSaveSpinnerStyled = styled(AutoSaveSpinner)`
-  align-self: flex-end;
-  margin: 0 0 0 -12px;
-  opacity: 0.6;
-`;
-
-export const DescriptionTextField: React.FC<DescriptionTextFieldProps> = ({
+export const TextEditField: React.FC<DescriptionTextFieldProps> = ({
+  label,
   value,
   onChange,
   isFocusDescription,
@@ -30,21 +26,20 @@ export const DescriptionTextField: React.FC<DescriptionTextFieldProps> = ({
   const { onFocus } = useFocusOnTheEnd({ isAutoFocus: isFocusDescription });
 
   return (
-    <TextField
-      inputRef={inputRef}
-      margin="normal"
-      label="Description"
-      type="text"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      multiline
-      rowsMax={isDesktop ? 20 : 10}
-      autoFocus={isFocusDescription}
-      onBlur={onBlur}
-      onFocus={onFocus}
-      InputProps={{
-        endAdornment: <AutoSaveSpinnerStyled isLoading={isLoading} />
-      }}
-    />
+    <FlexBox column gap={4}>
+      <AutoSaveInputLabel label={label} isLoading={isLoading} />
+
+      <TextField
+        inputRef={inputRef}
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        multiline
+        rowsMax={isDesktop ? 20 : 10}
+        autoFocus={isFocusDescription}
+        onBlur={onBlur}
+        onFocus={onFocus}
+      />
+    </FlexBox>
   );
 };

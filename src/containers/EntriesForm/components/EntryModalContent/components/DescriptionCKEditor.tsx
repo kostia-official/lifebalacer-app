@@ -19,14 +19,13 @@ import styled from 'styled-components';
 import { MainColors } from '../../../../../common/colors';
 import grey from '@material-ui/core/colors/grey';
 import { sentryService } from '../../../../../services/sentry';
-import { InputLabel } from '@material-ui/core';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import { FlexBox } from '../../../../../components/FlexBox';
 import { useToggle } from 'react-use';
 import { Icon } from '@iconify/react';
 import editSettings24Filled from '@iconify/icons-fluent/edit-settings-24-filled';
 import Writer from '@ckeditor/ckeditor5-engine/src/model/writer';
-import { AutoSaveSpinner } from './AutoSaveSpinner';
+import { AutoSaveInputLabel } from './AutoSaveInputLabel';
 
 export interface DescriptionEditorProps {
   label: string;
@@ -103,10 +102,7 @@ export const DescriptionCKEditor: React.FC<DescriptionEditorProps> = ({
   return (
     <Wrapper>
       <FlexBox row justifyContent="space-between" centerY>
-        <FlexBox row gap={8} centerY>
-          <InputLabel>{label}</InputLabel>
-          <AutoSaveSpinner isLoading={isLoading} />
-        </FlexBox>
+        <AutoSaveInputLabel label={label} isLoading={isLoading} />
 
         <StyledToggle
           value="check"
