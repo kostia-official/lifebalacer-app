@@ -126,24 +126,24 @@ const EntriesForm = () => {
 
   const deleteField = useDeleteFieldFromCache();
 
-  const mutationOptions = useMemo(() => {
-    return {
-      onCompleted() {
-        deleteField('journal');
-        deleteField('activitiesExtremes');
-        deleteField('daysStatistic');
-      },
-      refetchQueries: [
-        refetchGetEntriesByDayQuery(),
-        refetchGetBalanceQuery(),
-        refetchGetCurrentGoalsResultsQuery()
-      ]
-    };
-  }, [deleteField]);
+  const onCompleted = () => {
+    deleteField('journal');
+    deleteField('activitiesExtremes');
+    deleteField('daysStatistic');
+  };
 
-  const [deleteEntryMutation] = useDeleteEntryMutation({ onError });
-  const [createEntryMutation] = useCreateEntryMutation({ onError });
-  const [updateEntryMutation] = useUpdateEntryMutation({ onError });
+  const refetchQueries = useMemo(
+    () => [
+      refetchGetEntriesByDayQuery(),
+      refetchGetBalanceQuery(),
+      refetchGetCurrentGoalsResultsQuery()
+    ],
+    []
+  );
+
+  const [deleteEntryMutation] = useDeleteEntryMutation({ onError, onCompleted });
+  const [createEntryMutation] = useCreateEntryMutation({ onError, onCompleted });
+  const [updateEntryMutation] = useUpdateEntryMutation({ onError, onCompleted });
 
   const createEntry = useCallback(
     async (activityId: string, data = {}) => {
@@ -163,7 +163,7 @@ const EntriesForm = () => {
       if (modalEntry) setModalEntry(entry);
       setSelectedEntries((prev) => [...prev, { ...entry, points }]);
 
-      await createEntryMutation({ variables: { data: entry }, ...mutationOptions });
+      await createEntryMutation({ variables: { data: entry }, refetchQueries });
     },
     [
       getEntriesByActivityId,
@@ -171,7 +171,7 @@ const EntriesForm = () => {
       getCompletedAt,
       modalEntry,
       createEntryMutation,
-      mutationOptions
+      refetchQueries
     ]
   );
 
@@ -182,7 +182,7 @@ const EntriesForm = () => {
 
       const activity = getActivityById(entry.activityId)!;
       const points = calcPoints(activity, toUpdate?.value);
-      const updateEntryOptions = isAutoSave ? {} : mutationOptions;
+      const refetchQueriesOptional = isAutoSave ? [] : refetchQueries;
 
       setSelectedEntries((prev) =>
         prev.map((entry) => {
@@ -193,10 +193,10 @@ const EntriesForm = () => {
       );
       await updateEntryMutation({
         variables: { _id: entryId, data: toUpdate },
-        ...updateEntryOptions
+        refetchQueries: refetchQueriesOptional
       });
     },
-    [getEntryById, getActivityById, updateEntryMutation, mutationOptions]
+    [getEntryById, getActivityById, updateEntryMutation, refetchQueries]
   );
 
   const deleteEntry = useCallback(
@@ -208,7 +208,7 @@ const EntriesForm = () => {
       });
       await deleteEntryMutation({
         variables: { _id: entryId },
-        ...mutationOptions,
+        refetchQueries,
         update(cache) {
           cache.modify({
             id: `Entry:${entryId}`,
@@ -219,7 +219,7 @@ const EntriesForm = () => {
         }
       });
     },
-    [deleteEntryMutation, getEntryById, mutationOptions]
+    [deleteEntryMutation, getEntryById, refetchQueries]
   );
 
   const selectEntry = useCallback(

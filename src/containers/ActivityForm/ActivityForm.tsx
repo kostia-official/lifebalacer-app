@@ -39,6 +39,7 @@ import { useRoute, RouteProp } from '@react-navigation/native';
 import { NavigationParams } from '../App/App';
 import { FabWrapper } from '../../components/FabWrapper';
 import SaveIcon from '@material-ui/icons/Save';
+import { useDeleteFieldFromCache } from '../../hooks/apollo/useDeleteFieldFromCache';
 
 const FormContainer = styled.form`
   display: flex;
@@ -90,14 +91,19 @@ const ActivityForm = () => {
 
   const { errorMessage, onError, errorTime } = useApolloError({ isForceShowError: true });
 
-  const { goBackCb } = useNavigationHelpers();
+  const { goBack } = useNavigationHelpers();
 
   const { data } = useGetActivityQuery({ onError, variables: { _id }, skip: !isEdit });
   const existingActivity: Partial<ActivityResult> = isEdit && data?.activity ? data?.activity : {};
 
+  const deleteFromCache = useDeleteFieldFromCache();
+
   const mutationOptions = {
     onError,
-    onCompleted: goBackCb('/'),
+    onCompleted: () => {
+      deleteFromCache('entriesByDay');
+      goBack('/');
+    },
     refetchQueries: [refetchGetActivitiesQuery(), refetchGetActivitiesExtremesQuery()]
   };
 

@@ -27,7 +27,6 @@ import { desktopStyles } from '../../common/breakpoints';
 const ActivityTitle = styled(Typography)`
   display: flex;
   align-items: center;
-
   margin-bottom: 8px;
 `;
 
@@ -68,6 +67,10 @@ const CKEditorContent = styled.span`
   }
 
   p {
+    :first-child {
+      margin-block-start: 0;
+    }
+
     :last-child {
       margin-block-end: 0;
     }

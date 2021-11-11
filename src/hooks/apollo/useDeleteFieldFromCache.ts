@@ -2,16 +2,13 @@ import { useApolloClient } from '@apollo/client';
 import { useCallback } from 'react';
 
 export const useDeleteFieldFromCache = () => {
-  const client = useApolloClient();
+  const { cache } = useApolloClient();
 
   return useCallback(
-    (field: string) => {
-      client.cache.modify({
-        fields: {
-          [field]: (_, { DELETE }) => DELETE
-        }
-      });
+    (fieldName: string) => {
+      cache.evict({ id: 'ROOT_QUERY', fieldName });
+      cache.gc();
     },
-    [client.cache]
+    [cache]
   );
 };
