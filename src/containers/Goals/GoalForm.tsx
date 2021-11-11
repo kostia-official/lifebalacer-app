@@ -93,6 +93,7 @@ const GoalForm = () => {
       <Form
         onSubmit={onSubmit}
         initialValues={initialValues}
+        keepDirtyOnReinitialize
         render={({ handleSubmit, values }) => (
           <form onSubmit={handleSubmit}>
             <Spacer flex column spacingY={16}>

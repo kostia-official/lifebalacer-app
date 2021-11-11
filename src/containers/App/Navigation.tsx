@@ -62,9 +62,10 @@ export const linking: LinkingOptions = {
             }
           },
           StatisticStack: {
-            initialRouteName: 'ActivitiesStatistic',
+            initialRouteName: 'Statistic',
             screens: {
-              ActivitiesStatistic: 'statistic/activities',
+              Statistic: 'statistic',
+              PointsStatistic: 'statistic/points',
               ActivityStatistic: 'statistic/activities/:id'
             }
           },
@@ -134,7 +135,8 @@ const Calendar = LazyComponent(() => import('../Calendar/Calendar'));
 const Reminders = LazyComponent(() => import('../Reminders'));
 const About = LazyComponent(() => import('../About/About'));
 const DevTools = LazyComponent(() => import('../About/DevTools'));
-const ActivitiesStatistic = LazyComponent(() => import('../Statistic/ActivitiesStatistic'));
+const Statistic = LazyComponent(() => import('../Statistic/Statistic'));
+const PointsStatistic = LazyComponent(() => import('../Statistic/PointsStatistic'));
 const ActivityStatistic = LazyComponent(() => import('../Statistic/ActivityStatistic'));
 
 const AnonAboutStackComponent = () => {
@@ -197,7 +199,8 @@ export const JournalScreen = () => (
 
 export const StatisticScreen = () => (
   <StatisticStack.Navigator screenOptions={{ header: () => <AppBar /> }}>
-    <StatisticStack.Screen name="ActivitiesStatistic" component={ActivitiesStatistic} />
+    <StatisticStack.Screen name="Statistic" component={Statistic} />
+    <StatisticStack.Screen name="PointsStatistic" component={PointsStatistic} />
     <StatisticStack.Screen name="ActivityStatistic" component={ActivityStatistic} />
   </StatisticStack.Navigator>
 );

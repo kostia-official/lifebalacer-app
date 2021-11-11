@@ -22,15 +22,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { NavigationParams } from '../App/App';
 import { Icon } from '@iconify/react';
 import baselineReceiptLong from '@iconify/icons-ic/baseline-receipt-long';
-
-const TitlePaper = styled(Paper)`
-  padding: 7px 6px 7px 15px;
-  margin-bottom: 8px;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
+import { TitlePaper } from './components/TitlePaper';
 
 const StatBlockPaper = styled(Paper)`
   padding: 15px;

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 export interface CoinProps {
   size?: number;
-  coinStyle: string;
+  coinStyle?: string;
 }
 
 const Wrapper = styled.div<{ $size: number }>`
@@ -13,7 +13,7 @@ const Wrapper = styled.div<{ $size: number }>`
   position: relative;
 `;
 
-const CoinStyled = styled(CoinIcon)<{ $size: number; $coinStyle: string }>`
+const CoinStyled = styled(CoinIcon)<{ $size: number; $coinStyle?: string }>`
   position: absolute;
   bottom: 0.5px; // Not sure why, but it needs this small offset to be vertically centered
   width: ${(props) => props.$size}px;
