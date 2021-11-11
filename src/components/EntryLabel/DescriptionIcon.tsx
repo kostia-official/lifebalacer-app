@@ -10,7 +10,7 @@ export interface DescriptionIconProps {
 }
 
 const FontAwesomeIconStyled = styled(FontAwesomeIcon)`
-  margin-left: 2px;
+  margin-left: 1px;
   font-size: 14px;
 `;
 
