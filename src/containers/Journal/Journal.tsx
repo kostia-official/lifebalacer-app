@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useMemo } from 'react';
+import React, { Fragment, useCallback } from 'react';
 import { useApolloError } from '../../hooks/apollo/useApolloError';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { Typography } from '@material-ui/core';
@@ -94,15 +94,7 @@ const Journal = () => {
   const { goForwardTo } = useNavigationHelpers();
   const { errorMessage, onError, errorTime } = useApolloError();
 
-  const { getActivityById, todoistActivity, allActivities } = useActivities({ onError });
-
-  const activities = useMemo(
-    () =>
-      allActivities
-        ?.filter((activity) => activity._id !== todoistActivity?._id)
-        .map((activity) => activity._id),
-    [allActivities, todoistActivity?._id]
-  );
+  const { getActivityById, allActivities } = useActivities({ onError });
 
   const { data, isHasMore, loadMore, refetch } = useInfiniteQuery<
     GetJournalQuery,
@@ -111,13 +103,11 @@ const Journal = () => {
     onError,
     field: 'journal',
     variables: {
-      daysLimit,
-      activities
+      daysLimit
     },
     fetchMoreVariables: (data) => ({
       ...getDayQueryVariables(_.last(data.journal)?.date),
-      daysLimit,
-      activities
+      daysLimit
     })
   });
 

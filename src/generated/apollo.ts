@@ -455,7 +455,7 @@ export type Entry = {
   description?: Maybe<Scalars['String']>;
   goalResults: Array<GoalResult>;
   goalResultsIds: Array<Maybe<Scalars['ID']>>;
-  isWithDescription: Scalars['Boolean'];
+  name?: Maybe<Scalars['String']>;
   points: Scalars['Float'];
   userId: Scalars['String'];
   value?: Maybe<Scalars['Float']>;
@@ -739,7 +739,7 @@ export type EntriesByDayResultFragment = (
   & Pick<EntriesByDay, 'date' | 'points'>
   & { entries: Array<(
     { __typename?: 'Entry' }
-    & Pick<Entry, '_id' | 'description' | 'value' | 'completedAt' | 'isWithDescription' | 'activityId' | 'points'>
+    & Pick<Entry, '_id' | 'name' | 'description' | 'value' | 'completedAt' | 'activityId' | 'points'>
     & { activity: (
       { __typename?: 'Activity' }
       & Pick<Activity, '_id' | 'name' | 'emoji' | 'category' | 'valueLabel' | 'valueType' | 'pointsType' | 'points' | 'isArchived' | 'isWithDescription' | 'isWidget' | 'isReverseColors' | 'isRequired'>
@@ -1171,10 +1171,10 @@ export const EntriesByDayResultFragmentDoc = gql`
   points
   entries {
     _id
+    name
     description
     value
     completedAt
-    isWithDescription @client
     activityId
     activity @client {
       _id

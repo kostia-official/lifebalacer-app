@@ -123,10 +123,10 @@ fragment EntriesByDayResult on EntriesByDay {
   points
   entries {
     _id
+    name
     description
     value
     completedAt
-    isWithDescription @client
     activityId
     activity @client {
       _id

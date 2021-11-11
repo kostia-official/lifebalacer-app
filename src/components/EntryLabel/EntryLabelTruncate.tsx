@@ -44,7 +44,7 @@ const EmojiStyled = styled(Emoji)`
 `;
 
 export const EntryLabelTruncate = ({ entry, activity }: GetEntryLabelProps) => {
-  const text = activity?.isWidget && entry?.description ? entry.description : activity?.name;
+  const text = entry?.name || activity?.name;
   const value = _.isNumber(entry?.value) ? `: ${entry?.value}` : '';
   const points = entry?.points && entry?.points > 0 ? `+${entry?.points}` : entry?.points;
 
@@ -57,7 +57,7 @@ export const EntryLabelTruncate = ({ entry, activity }: GetEntryLabelProps) => {
       </TextWrapper>
 
       <IconsWrapper>
-        <DescriptionIcon entry={entry} activity={activity} />
+        <DescriptionIcon entry={entry} />
 
         <GoalsResultsIcons goalResults={entry?.goalResults} />
       </IconsWrapper>

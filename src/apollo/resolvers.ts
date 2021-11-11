@@ -1,5 +1,5 @@
 import { Resolvers, ApolloClient, InMemoryCache } from '@apollo/client';
-import { refetchGetActivitiesQuery, Entry } from '../generated/apollo';
+import { refetchGetActivitiesQuery } from '../generated/apollo';
 import { ActivityResult } from '../common/types';
 
 const activityResolver = async (client: ApolloClient<InMemoryCache>, activityId: string) => {
@@ -24,9 +24,6 @@ export const resolvers: Resolvers = {
   Entry: {
     activity: async ({ activityId }, _args, { client }) => {
       return activityResolver(client, activityId);
-    },
-    isWithDescription: ({ description, activity }: Entry) => {
-      return description && !activity?.isWidget;
     }
   },
   EntryMissing: {

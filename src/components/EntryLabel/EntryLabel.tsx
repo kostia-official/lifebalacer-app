@@ -9,7 +9,7 @@ import { SelectedEntry } from '../../common/types';
 import { EmptyBlock } from '../EmptyBlock';
 
 export interface EntryLabelProps {
-  activity?: Pick<Activity, 'name' | 'emoji' | 'valueType' | 'isWithDescription' | 'isWidget'>;
+  activity?: Pick<Activity, 'name' | 'emoji'>;
   entry?: SelectedEntry;
   isAddComa?: boolean;
 }
@@ -41,10 +41,10 @@ const EmojiStyled = styled(Emoji)`
 `;
 
 export const EntryLabel = ({ entry, activity, isAddComa = false }: EntryLabelProps) => {
-  const text = activity?.isWidget && entry?.description ? entry.description : activity?.name;
+  const text = entry?.name || activity?.name;
   const value = _.isNumber(entry?.value) ? `: ${entry?.value}` : '';
 
-  const hasIcons = entry?.isWithDescription || !!entry?.goalResults.length;
+  const hasIcons = entry?.description || !!entry?.goalResults.length;
 
   return (
     <Label>
@@ -58,7 +58,7 @@ export const EntryLabel = ({ entry, activity, isAddComa = false }: EntryLabelPro
 
       {hasIcons && (
         <IconsWrapper>
-          <DescriptionIcon entry={entry} activity={activity} />
+          <DescriptionIcon entry={entry} />
 
           <GoalsResultsIcons goalResults={entry?.goalResults} />
         </IconsWrapper>

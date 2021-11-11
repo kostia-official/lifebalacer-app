@@ -19,7 +19,7 @@ export const groupTodoistEntries = ({ entries, todoistActivityId }: HookProps) =
           ...acc,
           ...item,
           value: (acc.value ?? 0) + (item.value ?? 0),
-          description: 'Todoist tasks'
+          name: 'Todoist tasks'
         };
       }, {} as EntryResult);
 

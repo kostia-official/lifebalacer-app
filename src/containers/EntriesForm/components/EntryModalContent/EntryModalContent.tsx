@@ -29,7 +29,7 @@ import { sanitizeHtml } from '../../../../helpers/sanitizeHtml';
 
 export type EntryModalData = Pick<
   Entry,
-  '_id' | 'activityId' | 'completedAt' | 'value' | 'description' | 'points'
+  '_id' | 'activityId' | 'completedAt' | 'value' | 'description' | 'points' | 'name'
 >;
 
 export interface EntryValueModalContentProps {
@@ -82,7 +82,10 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
     return _.isNil(value) ? {} : { value: Number(value) };
   }, [value]);
 
-  const [description, setDescription] = useState<string>(entry.description || '');
+  const descriptionInitialValue =
+    activity.valueType === ActivityType.Todoist ? entry.name : entry.description;
+
+  const [description, setDescription] = useState<string>(descriptionInitialValue || '');
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = useCallback(
@@ -147,10 +150,12 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   }, [min, max]);
 
   const isWithValue = [ActivityType.Value, ActivityType.Todoist].includes(activity.valueType);
-  const isWithDescription = isForceDescription || activity.isWithDescription || entry.description;
+  const isWithDescription =
+    isForceDescription || activity.isWithDescription || entry.description || entry.name;
   const isSimpleActivity = activity.valueType === ActivityType.Simple;
   const valueLabel = activity.valueLabel || activity.name;
-  const descriptionLabel = isSimpleActivity ? activity.name : 'Description';
+  const descriptionLabel =
+    !isWithValue && activity.isWithDescription ? activity.name : 'Description';
 
   if (!activity) return <Fragment />;
 
@@ -158,7 +163,7 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
     <form onSubmit={onSubmit}>
       <CardContentStyled>
         {isWithValue && (
-          <FlexBox column>
+          <FlexBox column gap={4}>
             <InputLabel>{valueLabel}</InputLabel>
             <TextField
               required
