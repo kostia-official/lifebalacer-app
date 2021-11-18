@@ -13,26 +13,28 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
-import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
 import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar';
 import styled from 'styled-components';
-import { MainColors } from '../../../../../common/colors';
+import { MainColors } from '../../common/colors';
 import grey from '@material-ui/core/colors/grey';
-import { sentryService } from '../../../../../services/sentry';
+import { sentryService } from '../../services/sentry';
 import ToggleButton from '@material-ui/lab/ToggleButton';
-import { FlexBox } from '../../../../../components/FlexBox';
+import { FlexBox } from '../FlexBox';
 import { useToggle } from 'react-use';
 import { Icon } from '@iconify/react';
 import editSettings24Filled from '@iconify/icons-fluent/edit-settings-24-filled';
 import Writer from '@ckeditor/ckeditor5-engine/src/model/writer';
-import { AutoSaveInputLabel } from './AutoSaveInputLabel';
+import { AutoSaveInputLabel } from '../../containers/EntriesForm/components/EntryModalContent/components/AutoSaveInputLabel';
+import { useReactiveVar } from '@apollo/client';
+import { isUploadingVar } from '../../reactiveState';
+import { S3UploadAdapterPlugin } from './S3UploadAdapterPlugin';
 
 export interface DescriptionEditorProps {
   label: string;
   value: string;
   onChange: (value: string) => void;
   isFocusDescription?: boolean;
-  isLoading?: boolean;
+  isSaving?: boolean;
 }
 
 const Wrapper = styled.div`
@@ -62,6 +64,7 @@ const EditorWrapper = styled.div<{ $isShowToolbar: boolean }>`
   --ck-color-button-on-active-shadow: ${grey[800]}50;
   --ck-color-button-on-disabled-background: ${grey[900]}50;
   --ck-color-button-default-active-background: ${grey[800]};
+  --ck-color-image-upload-icon-background: ${MainColors.Primary};
 
   & .ck-tooltip {
     display: block;
@@ -95,14 +98,15 @@ export const DescriptionCKEditor: React.FC<DescriptionEditorProps> = ({
   onChange,
   label,
   isFocusDescription,
-  isLoading
+  isSaving
 }) => {
   const [isShowToolbar, toggleIsShowToolbar] = useToggle(false);
+  const isFileUploading = useReactiveVar(isUploadingVar);
 
   return (
     <Wrapper>
       <FlexBox row justifyContent="space-between" centerY>
-        <AutoSaveInputLabel label={label} isLoading={isLoading} />
+        <AutoSaveInputLabel label={label} isLoading={isSaving || isFileUploading} />
 
         <StyledToggle
           value="check"
@@ -129,7 +133,7 @@ export const DescriptionCKEditor: React.FC<DescriptionEditorProps> = ({
               Image,
               ImageUpload,
               ImageStyle,
-              Base64UploadAdapter,
+              S3UploadAdapterPlugin,
               Undo,
               BlockToolbar
             ],

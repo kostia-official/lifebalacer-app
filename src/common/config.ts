@@ -35,6 +35,9 @@ class Config {
   ably = {
     apiKey: process.env.REACT_APP_ABLY_API_KEY!
   };
+  fileServer = {
+    url: process.env.REACT_APP_FILES_SERVER_URL!
+  };
 }
 
 export const config = new Config();

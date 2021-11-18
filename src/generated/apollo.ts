@@ -38,6 +38,7 @@ export type Query = {
   goalsResults: Array<GoalResult>;
   journal: Array<Journal>;
   paymentUrl: Scalars['String'];
+  prepareUploadRequest: UploadRequest;
   pushTokens: Array<PushToken>;
   reminder?: Maybe<Reminder>;
   subscription?: Maybe<Subscription>;
@@ -563,6 +564,12 @@ export type UpdateEntryInput = {
   description?: Maybe<Scalars['String']>;
   completedAt?: Maybe<Scalars['Date']>;
   value?: Maybe<Scalars['Float']>;
+};
+
+export type UploadRequest = {
+  __typename?: 'UploadRequest';
+  url: Scalars['String'];
+  fields: Scalars['String'];
 };
 
 export type ActivityFragment = (
@@ -1111,6 +1118,17 @@ export type CancelSubscriptionMutationVariables = Exact<{
 export type CancelSubscriptionMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'cancelSubscription'>
+);
+
+export type PrepareUploadRequestQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PrepareUploadRequestQuery = (
+  { __typename?: 'Query' }
+  & { prepareUploadRequest: (
+    { __typename?: 'UploadRequest' }
+    & Pick<UploadRequest, 'url' | 'fields'>
+  ) }
 );
 
 export const ActivityFragmentDoc = gql`
@@ -2563,3 +2581,39 @@ export function useCancelSubscription(baseOptions?: Apollo.MutationHookOptions<C
 export type CancelSubscriptionHookResult = ReturnType<typeof useCancelSubscription>;
 export type CancelSubscriptionMutationResult = Apollo.MutationResult<CancelSubscriptionMutation>;
 export type CancelSubscriptionMutationOptions = Apollo.BaseMutationOptions<CancelSubscriptionMutation, CancelSubscriptionMutationVariables>;
+export const PrepareUploadRequestDocument = gql`
+    query PrepareUploadRequest {
+  prepareUploadRequest {
+    url
+    fields
+  }
+}
+    `;
+
+/**
+ * __usePrepareUploadRequestQuery__
+ *
+ * To run a query within a React component, call `usePrepareUploadRequestQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePrepareUploadRequestQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePrepareUploadRequestQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePrepareUploadRequestQuery(baseOptions?: Apollo.QueryHookOptions<PrepareUploadRequestQuery, PrepareUploadRequestQueryVariables>) {
+        return Apollo.useQuery<PrepareUploadRequestQuery, PrepareUploadRequestQueryVariables>(PrepareUploadRequestDocument, baseOptions);
+      }
+export function usePrepareUploadRequestLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PrepareUploadRequestQuery, PrepareUploadRequestQueryVariables>) {
+          return Apollo.useLazyQuery<PrepareUploadRequestQuery, PrepareUploadRequestQueryVariables>(PrepareUploadRequestDocument, baseOptions);
+        }
+export type PrepareUploadRequestQueryHookResult = ReturnType<typeof usePrepareUploadRequestQuery>;
+export type PrepareUploadRequestLazyQueryHookResult = ReturnType<typeof usePrepareUploadRequestLazyQuery>;
+export type PrepareUploadRequestQueryResult = Apollo.QueryResult<PrepareUploadRequestQuery, PrepareUploadRequestQueryVariables>;
+export function refetchPrepareUploadRequestQuery(variables?: PrepareUploadRequestQueryVariables) {
+      return { query: PrepareUploadRequestDocument, variables: variables }
+    }

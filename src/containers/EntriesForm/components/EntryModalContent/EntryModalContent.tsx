@@ -23,10 +23,12 @@ import {
 import { InputProps as StandardInputProps } from '@material-ui/core/Input/Input';
 import _ from 'lodash';
 import { useDebouncedCallback } from 'use-debounce';
-import { DescriptionCKEditor } from './components/DescriptionCKEditor';
+import { DescriptionCKEditor } from '../../../../components/DescriptionCKEditor/DescriptionCKEditor';
 import { FlexBox } from '../../../../components/FlexBox';
 import { sanitizeHtml } from '../../../../helpers/sanitizeHtml';
 import { TextEditField } from './components/TextEditField';
+import { useReactiveVar } from '@apollo/client';
+import { isUploadingVar } from '../../../../reactiveState';
 
 export type EntryModalData = Pick<
   Entry,
@@ -84,13 +86,13 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const getValueOptional = useCallback((value?: number | null) => {
-    return _.isNil(value) ? {} : { value: Number(value) };
+    return value != null ? { value: Number(value) } : {};
   }, []);
   const getDescriptionOptional = useCallback((description?: string) => {
-    return description ? { description: sanitizeHtml(description) } : {};
+    return description != null ? { description: sanitizeHtml(description) } : {};
   }, []);
   const getNameOptional = useCallback((name?: string) => {
-    return name ? { name: sanitizeHtml(name) } : {};
+    return name != null ? { name: sanitizeHtml(name) } : {};
   }, []);
 
   const onSubmit = (e: SyntheticEvent) => {
@@ -169,10 +171,13 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
 
   const isWithValue = [ActivityType.Value, ActivityType.Todoist].includes(activity.valueType);
   const isWithDescription = isForceDescription || activity.isWithDescription || entry.description;
+  const isWithName = entry.name || activity.valueType === ActivityType.Todoist;
   const isSimpleActivity = activity.valueType === ActivityType.Simple;
   const valueLabel = activity.valueLabel || activity.name;
   const descriptionLabel =
     !isWithValue && activity.isWithDescription ? activity.name : 'Description';
+
+  const isFileUploading = useReactiveVar(isUploadingVar);
 
   if (!activity) return <Fragment />;
 
@@ -222,11 +227,11 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
             value={description}
             onChange={onDescriptionChange}
             isFocusDescription={isSimpleActivity}
-            isLoading={isLoading}
+            isSaving={isLoading}
           />
         )}
 
-        {entry.name && (
+        {isWithName && (
           <TextEditField
             label="Name"
             value={name}
@@ -238,8 +243,11 @@ export const EntryModalContent: React.FC<EntryValueModalContentProps> = ({
       </CardContentStyled>
 
       <CardActionsStyled>
-        <Button onClick={onDelete}>Delete</Button>
-        <Button type="submit" variant="contained" color="primary">
+        <Button onClick={onDelete} disabled={isFileUploading}>
+          Delete
+        </Button>
+
+        <Button type="submit" variant="contained" color="primary" disabled={isFileUploading}>
           Done
         </Button>
       </CardActionsStyled>

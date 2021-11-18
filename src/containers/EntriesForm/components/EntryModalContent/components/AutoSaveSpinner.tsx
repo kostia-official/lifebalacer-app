@@ -17,7 +17,7 @@ export const AutoSaveSpinner: React.FC<AutoSaveSpinnerProps> = ({ isLoading, cla
   return (
     <Wrapper className={className}>
       <Fade in={isLoading} timeout={200}>
-        <CircularProgress size={8} disableShrink />
+        <CircularProgress size={10} disableShrink />
       </Fade>
     </Wrapper>
   );

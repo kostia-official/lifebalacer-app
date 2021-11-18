@@ -157,6 +157,7 @@ const Journal = () => {
                           <Emoji>{activity?.emoji}</Emoji>
                           {getEntryLabel({ entry, activity })}
                         </ActivityTitle>
+
                         <Description variant="body2">
                           {entry.description && (
                             <CKEditorContent

@@ -32,7 +32,7 @@ export const DayCard: React.FC<DayCardProps> = ({ children, onClick, day }) => {
 
   return (
     <CardStyled onClick={onCardClick}>
-      <CardActionArea>
+      <CardActionArea disableRipple disableTouchRipple>
         <CardHeaderStyled title={<DayTitle day={day} />} />
         <CardContentStyled>{children}</CardContentStyled>
       </CardActionArea>

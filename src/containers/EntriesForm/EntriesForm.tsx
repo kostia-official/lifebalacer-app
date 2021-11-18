@@ -41,6 +41,8 @@ import { NavigationParams } from '../App/App';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
 import { FabWrapper } from '../../components/FabWrapper';
 import { useDeleteFieldFromCache } from '../../hooks/apollo/useDeleteFieldFromCache';
+import { useReactiveVar } from '@apollo/client';
+import { isUploadingVar } from '../../reactiveState';
 
 const CategoryWrapper = styled(Card)`
   margin-bottom: 8px;
@@ -56,12 +58,15 @@ const EntriesForm = () => {
   const [modalEntry, setModalEntry] = useState<EntryModalData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isForceDescription, setIsForceDescription] = useState(false);
+  const isFileUploading = useReactiveVar(isUploadingVar);
 
   const closeModal = useCallback(() => {
+    if (isFileUploading) return;
+
     setIsModalOpen(false);
     setIsForceDescription(false);
     setTimeout(() => setModalEntry(null), 500);
-  }, []);
+  }, [isFileUploading]);
 
   const openModal = useCallback((entry: EntryModalData) => {
     setModalEntry(entry);
