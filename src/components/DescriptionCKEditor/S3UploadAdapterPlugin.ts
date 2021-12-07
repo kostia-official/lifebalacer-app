@@ -10,27 +10,6 @@ class S3UploadAdapter {
     this.loader = loader;
   }
 
-  // Unused, should be working if needed
-  getVideoDimensions(file: File): Promise<{ width: number; height: number }> {
-    return new Promise((resolve) => {
-      const url = URL.createObjectURL(file);
-      const video = document.createElement('video');
-
-      video.addEventListener(
-        'loadedmetadata',
-        function () {
-          const height = this.videoHeight;
-          const width = this.videoWidth;
-
-          resolve({ height, width });
-        },
-        false
-      );
-
-      video.src = url;
-    });
-  }
-
   async getImageDimensions(file: File): Promise<{ width: number; height: number }> {
     return new Promise((resolve) => {
       const url = URL.createObjectURL(file);
