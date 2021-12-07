@@ -23,6 +23,7 @@ import { toLuxon } from '../../helpers/date';
 import { ScreenWrapper } from '../App/ScreenWrapper';
 import { sanitizeHtml } from '../../helpers/sanitizeHtml';
 import { desktopStyles } from '../../common/breakpoints';
+import { BackgroundColor } from '../../common/colors';
 
 const ActivityTitle = styled(Typography)`
   display: flex;
@@ -46,14 +47,16 @@ const CKEditorContent = styled.span`
     margin: 0;
   }
 
-  & img {
-    max-width: 100%;
+  & img,
+  video {
     ${desktopStyles(css`
-      max-height: 60vh;
+      height: 60vh;
+      width: auto;
     `)}
     height: auto;
-    width: auto;
+    width: 100%;
     display: block;
+    background-color: ${BackgroundColor.Lighter};
   }
 
   .todo-list {

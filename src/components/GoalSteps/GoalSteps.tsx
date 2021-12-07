@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { ConditionType, GoalResultStatus, GoalResultFragment } from '../../generated/apollo';
-import { MainColors, WhiteColor } from '../../common/colors';
+import { MainColors, WhiteColor, BackgroundColor } from '../../common/colors';
 import { DoneIcon } from '../../assets/done';
 import { ReactComponent as FailIcon } from '../../assets/failed.svg';
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
@@ -30,7 +30,7 @@ const CompletedStep = styled(DoneIcon)`
   padding: 3px;
   border-radius: 50%;
   background-color: ${MainColors.Primary};
-  color: ${MainColors.BackgroundLight};
+  color: ${BackgroundColor.Light};
 `;
 
 const PendingStep = styled(DoubleArrowIcon)`
@@ -39,7 +39,7 @@ const PendingStep = styled(DoubleArrowIcon)`
   padding: 3px;
   border-radius: 50%;
   background-color: ${MainColors.Yellow};
-  color: ${MainColors.BackgroundLight};
+  color: ${BackgroundColor.Light};
 `;
 
 const FailedStep = styled(FailIcon)`
@@ -48,7 +48,7 @@ const FailedStep = styled(FailIcon)`
   padding: 4px;
   border-radius: 50%;
   background-color: ${MainColors.Secondary};
-  color: ${MainColors.BackgroundLight};
+  color: ${BackgroundColor.Light};
 `;
 
 const EmptyFailedStep = styled(FailIcon)`

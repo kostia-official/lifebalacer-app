@@ -414,7 +414,7 @@ mutation CancelSubscription($_id: ID!) {
   cancelSubscription(_id: $_id)
 }
 
-query PrepareUploadRequest {
+mutation PrepareUploadRequest {
   prepareUploadRequest {
     url
     fields

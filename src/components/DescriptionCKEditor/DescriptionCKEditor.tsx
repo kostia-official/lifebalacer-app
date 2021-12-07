@@ -12,8 +12,15 @@ import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar';
+// @ts-ignore
+import Video from '@visao/ckeditor5-video/src/video';
+// @ts-ignore
+import VideoUpload from '@visao/ckeditor5-video/src/videoupload';
+// @ts-ignore
+import VideoUploadEditing from '@visao/ckeditor5-video/src/videoupload/videouploadediting';
 import styled from 'styled-components';
 import { MainColors } from '../../common/colors';
 import grey from '@material-ui/core/colors/grey';
@@ -132,7 +139,11 @@ export const DescriptionCKEditor: React.FC<DescriptionEditorProps> = ({
               TodoList,
               Image,
               ImageUpload,
+              ImageUploadEditing,
               ImageStyle,
+              Video,
+              VideoUpload,
+              VideoUploadEditing,
               S3UploadAdapterPlugin,
               Undo,
               BlockToolbar
@@ -142,6 +153,7 @@ export const DescriptionCKEditor: React.FC<DescriptionEditorProps> = ({
               'redo',
               '|',
               'imageUpload',
+              'videoUpload',
               '|',
               'numberedList',
               'bulletedList',
@@ -150,7 +162,13 @@ export const DescriptionCKEditor: React.FC<DescriptionEditorProps> = ({
               'bold',
               'italic',
               'strikethrough'
-            ]
+            ],
+            video: {
+              upload: {
+                types: ['mp4', 'webm', 'ogg', 'mov', 'webm'],
+                allowMultipleFiles: false
+              }
+            }
           }}
           data={value.replaceAll('\n', '<br />')}
           onChange={(e: unknown, editor: ClassicEditor) => {

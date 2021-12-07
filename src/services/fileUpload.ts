@@ -1,5 +1,5 @@
 import { apolloClient } from '../apollo';
-import { PrepareUploadRequestDocument, PrepareUploadRequestQuery } from '../generated/apollo';
+import { PrepareUploadRequestDocument, PrepareUploadRequestMutation } from '../generated/apollo';
 import FormData from 'form-data';
 import { config } from '../common/config';
 
@@ -21,16 +21,18 @@ export interface UploadRequestFields {
 
 class FileUpload {
   async prepareUploadRequest(): Promise<UploadRequestResult> {
-    const { data } = await apolloClient.query<PrepareUploadRequestQuery>({
-      query: PrepareUploadRequestDocument,
+    const { data } = await apolloClient.mutate<PrepareUploadRequestMutation>({
+      mutation: PrepareUploadRequestDocument,
       fetchPolicy: 'network-only'
     });
+    if (!data?.prepareUploadRequest) throw new Error();
+
     const { url, fields } = data.prepareUploadRequest;
 
     return { url, fields: JSON.parse(fields) };
   }
 
-  async upload(file: any) {
+  async upload(file: File) {
     const { url, fields } = await this.prepareUploadRequest();
 
     const form = new FormData();
@@ -44,7 +46,10 @@ class FileUpload {
       body: form as any
     });
 
-    return `${config.fileServer.url}/${fields.key}`;
+    return {
+      url: `${config.fileServer.url}/${fields.key}`,
+      key: fields.key
+    };
   }
 }
 

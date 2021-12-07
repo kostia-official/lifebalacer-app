@@ -95,6 +95,7 @@ input CreateActivityInput {
 
 input CreateEntryInput {
   _id: ID
+  name: String
   description: String
   completedAt: Date!
   activityId: ID!
@@ -145,13 +146,14 @@ type EntriesPerDateGroup {
 type Entry {
   _id: ID!
   userId: String!
+  name: String
   description: String
   completedAt: Date!
   activityId: ID!
   points: Float!
   value: Float
   goalResultsIds: [ID]!
-  goalResults: [GoalResult]
+  goalResults: [GoalResult!]!
 }
 
 type EntryMissing {
@@ -221,6 +223,7 @@ type Mutation {
   deleteEntry(_id: ID!): String
   connectTodoist(authCode: String!): Activity!
   cancelSubscription(_id: ID!): Boolean!
+  prepareUploadRequest: UploadRequest!
 }
 
 enum PointsType {
@@ -343,6 +346,7 @@ input UpdateActivityInput {
 }
 
 input UpdateEntryInput {
+  name: String
   description: String
   completedAt: Date
   value: Float
@@ -356,6 +360,11 @@ input UpdateGoalInput {
   successPoints: Float
   failPoints: Float
   lastSyncAt: Date
+}
+
+type UploadRequest {
+  url: String!
+  fields: String!
 }
 
 type WeekdayStatistic {

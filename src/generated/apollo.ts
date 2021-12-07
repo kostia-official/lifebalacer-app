@@ -38,7 +38,6 @@ export type Query = {
   goalsResults: Array<GoalResult>;
   journal: Array<Journal>;
   paymentUrl: Scalars['String'];
-  prepareUploadRequest: UploadRequest;
   pushTokens: Array<PushToken>;
   reminder?: Maybe<Reminder>;
   subscription?: Maybe<Subscription>;
@@ -140,6 +139,7 @@ export type Mutation = {
   deleteEntry?: Maybe<Scalars['String']>;
   connectTodoist: Activity;
   cancelSubscription: Scalars['Boolean'];
+  prepareUploadRequest: UploadRequest;
 };
 
 
@@ -1120,11 +1120,11 @@ export type CancelSubscriptionMutation = (
   & Pick<Mutation, 'cancelSubscription'>
 );
 
-export type PrepareUploadRequestQueryVariables = Exact<{ [key: string]: never; }>;
+export type PrepareUploadRequestMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type PrepareUploadRequestQuery = (
-  { __typename?: 'Query' }
+export type PrepareUploadRequestMutation = (
+  { __typename?: 'Mutation' }
   & { prepareUploadRequest: (
     { __typename?: 'UploadRequest' }
     & Pick<UploadRequest, 'url' | 'fields'>
@@ -2582,38 +2582,34 @@ export type CancelSubscriptionHookResult = ReturnType<typeof useCancelSubscripti
 export type CancelSubscriptionMutationResult = Apollo.MutationResult<CancelSubscriptionMutation>;
 export type CancelSubscriptionMutationOptions = Apollo.BaseMutationOptions<CancelSubscriptionMutation, CancelSubscriptionMutationVariables>;
 export const PrepareUploadRequestDocument = gql`
-    query PrepareUploadRequest {
+    mutation PrepareUploadRequest {
   prepareUploadRequest {
     url
     fields
   }
 }
     `;
+export type PrepareUploadRequestMutationFn = Apollo.MutationFunction<PrepareUploadRequestMutation, PrepareUploadRequestMutationVariables>;
 
 /**
- * __usePrepareUploadRequestQuery__
+ * __usePrepareUploadRequestMutation__
  *
- * To run a query within a React component, call `usePrepareUploadRequestQuery` and pass it any options that fit your needs.
- * When your component renders, `usePrepareUploadRequestQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
+ * To run a mutation, you first call `usePrepareUploadRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePrepareUploadRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
  *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const { data, loading, error } = usePrepareUploadRequestQuery({
+ * const [prepareUploadRequestMutation, { data, loading, error }] = usePrepareUploadRequestMutation({
  *   variables: {
  *   },
  * });
  */
-export function usePrepareUploadRequestQuery(baseOptions?: Apollo.QueryHookOptions<PrepareUploadRequestQuery, PrepareUploadRequestQueryVariables>) {
-        return Apollo.useQuery<PrepareUploadRequestQuery, PrepareUploadRequestQueryVariables>(PrepareUploadRequestDocument, baseOptions);
+export function usePrepareUploadRequestMutation(baseOptions?: Apollo.MutationHookOptions<PrepareUploadRequestMutation, PrepareUploadRequestMutationVariables>) {
+        return Apollo.useMutation<PrepareUploadRequestMutation, PrepareUploadRequestMutationVariables>(PrepareUploadRequestDocument, baseOptions);
       }
-export function usePrepareUploadRequestLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PrepareUploadRequestQuery, PrepareUploadRequestQueryVariables>) {
-          return Apollo.useLazyQuery<PrepareUploadRequestQuery, PrepareUploadRequestQueryVariables>(PrepareUploadRequestDocument, baseOptions);
-        }
-export type PrepareUploadRequestQueryHookResult = ReturnType<typeof usePrepareUploadRequestQuery>;
-export type PrepareUploadRequestLazyQueryHookResult = ReturnType<typeof usePrepareUploadRequestLazyQuery>;
-export type PrepareUploadRequestQueryResult = Apollo.QueryResult<PrepareUploadRequestQuery, PrepareUploadRequestQueryVariables>;
-export function refetchPrepareUploadRequestQuery(variables?: PrepareUploadRequestQueryVariables) {
-      return { query: PrepareUploadRequestDocument, variables: variables }
-    }
+export type PrepareUploadRequestMutationHookResult = ReturnType<typeof usePrepareUploadRequestMutation>;
+export type PrepareUploadRequestMutationResult = Apollo.MutationResult<PrepareUploadRequestMutation>;
+export type PrepareUploadRequestMutationOptions = Apollo.BaseMutationOptions<PrepareUploadRequestMutation, PrepareUploadRequestMutationVariables>;
