@@ -52,7 +52,7 @@ const GoalsResults = () => {
     },
     fetchMoreVariables: (data) => ({
       limit,
-      dateAfter: _.last(data.goalsResults)?.recordedAt!
+      dateAfter: _.last(data?.goalsResults)?.recordedAt!
     })
   });
   const goalsResults = data?.goalsResults;

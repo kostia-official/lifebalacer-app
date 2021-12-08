@@ -3,11 +3,12 @@ import { Icon } from '@iconify/react';
 import outlineFilterAlt from '@iconify/icons-ic/outline-filter-alt';
 import baselineFilterAlt from '@iconify/icons-ic/baseline-filter-alt';
 import { FabButton } from '../../../components/FabButton';
-import { useSelectGoalModal, SelectGoalModal } from './SelectGoalModal';
+import { useSelectGoalModal, SelectGoalModalBody } from './SelectGoalModalBody';
 import { useGoalsResultsFilters } from '../hooks/useGoalsResultsFilters';
+import { Dialog } from '@material-ui/core';
 
 export const GoalsResultsFilters: React.FC = () => {
-  const { openModal: openSelectGoalModal } = useSelectGoalModal();
+  const { openModal: openSelectGoalModal, open, closeModal } = useSelectGoalModal();
   const { count } = useGoalsResultsFilters();
 
   return (
@@ -23,7 +24,9 @@ export const GoalsResultsFilters: React.FC = () => {
         }}
       />
 
-      <SelectGoalModal />
+      <Dialog onClose={closeModal} open={open}>
+        {open && <SelectGoalModalBody />}
+      </Dialog>
     </>
   );
 };
