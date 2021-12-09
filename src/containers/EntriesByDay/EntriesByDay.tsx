@@ -31,6 +31,7 @@ import { useCheckStoreSubscription } from '../../hooks/apollo/storeSubscription/
 import { CurrentGoalsResults } from '../CurrentGoalResults/CurrentGoalsResults';
 import { FlexBox } from '../../components/FlexBox';
 import { useCheckFailedGoalsResults } from '../../hooks/apollo/useCheckFailedGoalsResults';
+import { useSyncActivities } from '../../hooks/apollo/useSyncActivities';
 
 const EntriesLabelsWrapper = styled.div`
   margin: 6px 16px 14px 16px;
@@ -46,6 +47,7 @@ const EntriesByDay = React.memo(() => {
   useLocalNotificationsUpdate({ onError });
   useCheckStoreSubscription({ onError });
   useCheckFailedGoalsResults({ onError });
+  useSyncActivities({ onError });
 
   const { statisticText, refetch: refetchStatistic } = useDaysStatisticText({ onError });
 
