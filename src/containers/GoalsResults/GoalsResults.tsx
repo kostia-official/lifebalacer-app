@@ -64,13 +64,13 @@ const GoalsResults = () => {
         goal: { durationType }
       } = item;
 
-      const { startDate, endDate } = getGoalDurationDates({
+      const { startDateTime, endDateTime } = getGoalDurationDates({
         durationType,
         recordedAt,
         timezone: getTimezone()
       });
 
-      const dateRange = dateFormatter.formatRange(new Date(startDate), new Date(endDate));
+      const dateRange = dateFormatter.formatRange(startDateTime.toJSDate(), endDateTime.toJSDate());
       const goalsResults = acc[dateRange] || [];
 
       return { ...acc, [dateRange]: [...goalsResults, item] };

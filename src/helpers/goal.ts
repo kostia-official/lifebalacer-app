@@ -2,7 +2,7 @@ import { DurationUnit } from 'luxon';
 import { DurationType } from '../generated/apollo';
 import { toLuxon } from './date';
 
-const goalDurationToLuxonDurationMap: Record<DurationType, DurationUnit> = {
+export const goalDurationToLuxonDurationMap: Record<DurationType, DurationUnit> = {
   [DurationType.Week]: 'week',
   [DurationType.Month]: 'month'
 };
@@ -19,8 +19,8 @@ export const getGoalDurationDates = ({
   const duration = goalDurationToLuxonDurationMap[durationType];
   const recordedAtDateTime = toLuxon(recordedAt).setZone(timezone);
 
-  const startDate = recordedAtDateTime.startOf(duration).toISO();
-  const endDate = recordedAtDateTime.endOf(duration).toISO();
+  const startDateTime = recordedAtDateTime.startOf(duration);
+  const endDateTime = recordedAtDateTime.endOf(duration);
 
-  return { startDate, endDate, recordedAt };
+  return { startDateTime, endDateTime, recordedAtDateTime };
 };

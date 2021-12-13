@@ -1,11 +1,13 @@
 import _ from 'lodash';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { ConditionType, GoalResultStatus, GoalResultFragment } from '../../generated/apollo';
 import { MainColors, WhiteColor, BackgroundColor } from '../../common/colors';
 import { DoneIcon } from '../../assets/done';
 import { ReactComponent as FailIcon } from '../../assets/failed.svg';
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
+import { toLuxon, getTimezone } from '../../helpers/date';
+import { getGoalDurationDates } from '../../helpers/goal';
 
 export interface GoalStepsProps {
   goalResult: GoalResultFragment;
@@ -96,16 +98,36 @@ const Connector = styled.div<{ $statusBefore: GoalStepStatus; $statusAfter: Goal
 
 export const GoalSteps: React.FC<GoalStepsProps> = ({ goalResult }) => {
   const {
-    goal: { conditionType },
+    goal: { conditionType, durationType },
     status,
     entries,
-    timesPerDuration
+    timesPerDuration,
+    recordedAt
   } = goalResult;
+
+  const isInCurrentDuration = useMemo(() => {
+    const currentDuration = getGoalDurationDates({
+      durationType,
+      recordedAt: new Date().toISOString(),
+      timezone: getTimezone()
+    });
+    const recordedAtDateTime = toLuxon(recordedAt);
+
+    return (
+      currentDuration.startDateTime <= recordedAtDateTime &&
+      recordedAtDateTime <= currentDuration.endDateTime
+    );
+  }, [durationType, recordedAt]);
+
   const entriesCount = entries.length;
 
   let total = Math.max(timesPerDuration, entriesCount);
 
-  if (conditionType === ConditionType.LessOrEqual && status !== GoalResultStatus.Failed) {
+  if (
+    isInCurrentDuration &&
+    conditionType === ConditionType.LessOrEqual &&
+    status !== GoalResultStatus.Failed
+  ) {
     total += 1;
   }
 
@@ -114,6 +136,7 @@ export const GoalSteps: React.FC<GoalStepsProps> = ({ goalResult }) => {
       const stepNumber = stepIndex + 1;
 
       if (
+        isInCurrentDuration &&
         conditionType === ConditionType.LessOrEqual &&
         stepNumber === timesPerDuration + 1 &&
         entriesCount < timesPerDuration + 1
@@ -122,6 +145,7 @@ export const GoalSteps: React.FC<GoalStepsProps> = ({ goalResult }) => {
       }
 
       if (
+        isInCurrentDuration &&
         conditionType === ConditionType.GreaterOrEqual &&
         stepNumber === timesPerDuration &&
         entriesCount < timesPerDuration
@@ -131,7 +155,7 @@ export const GoalSteps: React.FC<GoalStepsProps> = ({ goalResult }) => {
 
       return stepNumber > entriesCount ? GoalEmptyStepStatus.Empty : status;
     },
-    [conditionType, entriesCount, status, timesPerDuration]
+    [conditionType, entriesCount, isInCurrentDuration, status, timesPerDuration]
   );
 
   const getStepComponent = useCallback((status: GoalStepStatus) => {
