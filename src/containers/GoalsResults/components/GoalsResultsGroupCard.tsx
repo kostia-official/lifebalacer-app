@@ -31,7 +31,7 @@ export const GoalsResultsGroupCard: React.FC<GoalsResultsGroupCardProps> = ({
   dateRange
 }) => {
   const sortedGoalsResults = useMemo(() => {
-    return _.sortBy(goalsResults, ['goal.activity.name']);
+    return _.sortBy(goalsResults, ['goal._id']);
   }, [goalsResults]);
 
   return (
