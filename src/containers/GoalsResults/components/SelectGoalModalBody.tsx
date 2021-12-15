@@ -1,5 +1,4 @@
 import {
-  DialogTitle,
   ListItem,
   ListItemText,
   List,
@@ -7,37 +6,23 @@ import {
   Checkbox,
   ListSubheader,
   Radio,
-  DialogActions,
   Button
 } from '@material-ui/core';
 import React, { useState, useCallback } from 'react';
 import { makeModal } from '../../../hooks/useModal';
 import { DurationType } from '../../../generated/apollo';
 import { Emoji } from '../../../components/Emoji';
-import styled from 'styled-components';
 import { useGoalsResultsFilters } from '../hooks/useGoalsResultsFilters';
 import { useGoals } from '../../../hooks/apollo/useGoals';
 import { FlexBox } from '../../../components/FlexBox';
+import {
+  ModalTitle,
+  ModalContent,
+  ModalActions,
+  ModalSubListContainer
+} from '../../../components/Modal';
 
 export const useSelectGoalModal = makeModal();
-
-const DialogTitleStyled = styled(DialogTitle)`
-  min-width: 300px;
-  padding-bottom: 0;
-`;
-
-const DialogActionsStyled = styled(DialogActions)`
-  display: flex;
-  justify-content: space-between;
-`;
-
-const ContentWrapper = styled.div`
-  padding: 0 8px;
-`;
-
-const SubListWrapper = styled.div`
-  margin: 0 10px;
-`;
 
 export const SelectGoalModalBody: React.FC = () => {
   const { closeModal } = useSelectGoalModal();
@@ -72,12 +57,12 @@ export const SelectGoalModalBody: React.FC = () => {
 
   return (
     <>
-      <DialogTitleStyled>Filters</DialogTitleStyled>
+      <ModalTitle onClose={closeModal}>Filters</ModalTitle>
 
-      <ContentWrapper>
+      <ModalContent dividers>
         <List>
-          <ListSubheader>Goals</ListSubheader>
-          <SubListWrapper>
+          <ListSubheader disableSticky>Goals</ListSubheader>
+          <ModalSubListContainer>
             {goals?.map((goal) => {
               const {
                 _id,
@@ -88,7 +73,7 @@ export const SelectGoalModalBody: React.FC = () => {
                 <ListItem key={_id} button onClick={selectGoal(_id)}>
                   <ListItemText
                     primary={
-                      <FlexBox row gap={4}>
+                      <FlexBox row gap={4} centerY>
                         <Emoji>{emoji}</Emoji>
                         {name}
                       </FlexBox>
@@ -106,11 +91,11 @@ export const SelectGoalModalBody: React.FC = () => {
                 </ListItem>
               );
             })}
-          </SubListWrapper>
+          </ModalSubListContainer>
 
           <ListSubheader>Duration</ListSubheader>
 
-          <SubListWrapper>
+          <ModalSubListContainer>
             <ListItem button onClick={selectDuration(DurationType.Month)}>
               <ListItemText primary="Month" />
               <ListItemSecondaryAction>
@@ -136,11 +121,11 @@ export const SelectGoalModalBody: React.FC = () => {
                 />
               </ListItemSecondaryAction>
             </ListItem>
-          </SubListWrapper>
+          </ModalSubListContainer>
         </List>
-      </ContentWrapper>
+      </ModalContent>
 
-      <DialogActionsStyled>
+      <ModalActions>
         <Button variant="text" onClick={clearAll}>
           Clear all
         </Button>
@@ -148,7 +133,7 @@ export const SelectGoalModalBody: React.FC = () => {
         <Button variant="contained" color="primary" onClick={apply}>
           Apply
         </Button>
-      </DialogActionsStyled>
+      </ModalActions>
     </>
   );
 };

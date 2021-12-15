@@ -5,7 +5,7 @@ import baselineFilterAlt from '@iconify/icons-ic/baseline-filter-alt';
 import { FabButton } from '../../../components/FabButton';
 import { useSelectGoalModal, SelectGoalModalBody } from './SelectGoalModalBody';
 import { useGoalsResultsFilters } from '../hooks/useGoalsResultsFilters';
-import { Dialog } from '@material-ui/core';
+import { Modal } from '../../../components/Modal';
 
 export const GoalsResultsFilters: React.FC = () => {
   const { openModal: openSelectGoalModal, open, closeModal } = useSelectGoalModal();
@@ -24,9 +24,9 @@ export const GoalsResultsFilters: React.FC = () => {
         }}
       />
 
-      <Dialog onClose={closeModal} open={open}>
+      <Modal onClose={closeModal} open={open}>
         {open && <SelectGoalModalBody />}
-      </Dialog>
+      </Modal>
     </>
   );
 };
