@@ -16,8 +16,10 @@ import { getTimezone, makeDateFormatter } from '../../helpers/date';
 import { getGoalDurationDates } from '../../helpers/goal';
 import { GoalsResultsGroupCard } from './components/GoalsResultsGroupCard';
 import { FabWrapper } from '../../components/FabWrapper';
-import { GoalsResultsFilters } from './components/GoalsResultsFilters';
-import { useGoalsResultsFilters } from './hooks/useGoalsResultsFilters';
+import {
+  GoalsResultsFiltersFab,
+  useGoalsResultsFilters
+} from './components/GoalsResultsFiltersFab';
 import { DateTime } from 'luxon';
 
 const scrollTargetId = 'goals-results-wrapper';
@@ -36,7 +38,7 @@ const GoalsResults = () => {
 
   const currentDate = DateTime.local().endOf('day').toISO();
 
-  const { filters } = useGoalsResultsFilters();
+  const { persistFilters } = useGoalsResultsFilters();
 
   const { data, isHasMore, loadMore } = useInfiniteQuery<
     GetGoalsResultsQuery,
@@ -45,8 +47,8 @@ const GoalsResults = () => {
     onError,
     field: 'goalsResults',
     variables: {
-      durationType: filters.duration,
-      goalsIds: filters.goalsIds,
+      durationType: persistFilters.duration,
+      goalsIds: persistFilters.goalsIds,
       limit,
       dateAfter: currentDate
     },
@@ -111,7 +113,7 @@ const GoalsResults = () => {
       </ScreenWrapper>
 
       <FabWrapper>
-        <GoalsResultsFilters />
+        <GoalsResultsFiltersFab />
       </FabWrapper>
     </>
   );

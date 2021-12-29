@@ -1,10 +1,9 @@
-import React, { useCallback, ChangeEvent, useMemo, useState, useEffect } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { Calendar as MaterialCalendar, useStaticState } from '@material-ui/pickers';
 import styled from 'styled-components';
 import { useApolloError } from '../../hooks/apollo/useApolloError';
-import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import { ScreenWrapper } from '../App/ScreenWrapper';
-import { CalendarLegends } from './CalendarLegends';
+import { CalendarLegends } from './components/CalendarLegends';
 import { useActivities } from '../../hooks/apollo/useActivities';
 import {
   useGetActivitiesExtremesQuery,
@@ -13,17 +12,17 @@ import {
   refetchGetActivitiesQuery,
   refetchGetActivitiesExtremesQuery
 } from '../../generated/apollo';
-import { ValueGradient } from './ValueGradient';
+import { ValueGradient } from './components/ValueGradient';
 import { useDatePickerRenderDayExtremes } from '../../hooks/apollo/useDatePickerRenderDayExtremes';
-import { useReactiveVar } from '@apollo/client';
-import { calendarActivityIdVar } from '../../reactiveState';
 import { useOnEntryUpdate } from '../../hooks/useOnEntryUpdate';
 import { useOnActivityUpdate } from '../../hooks/useOnActivityUpdate';
 import { useNavigationHelpers } from '../../hooks/useNavigationHelpers';
-import { Greyscale } from '../../components/Greyscale';
 import { toLuxon } from '../../helpers/date';
 import { useRoute } from '@react-navigation/native';
 import { InteractionManager } from 'react-native';
+import { FabWrapper } from '../../components/FabWrapper';
+import { useCalendarFilters } from './components/CalendarFilters/hooks/useCalendarFilters';
+import { CalendarFilters } from './components/CalendarFilters/CalendarFilters';
 
 const CalendarWrapper = styled.div`
   overflow: hidden;
@@ -32,17 +31,8 @@ const CalendarWrapper = styled.div`
 const CalendarLegendsWrapper = styled.div`
   margin-top: 20px;
   display: flex;
-  justify-content: center;
-`;
-
-const FormControlWrapper = styled(FormControl)`
-  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-`;
-
-const FormControlStyled = styled(FormControl)`
-  width: 200px;
 `;
 
 const MaterialCalendarWrapper = styled.div`
@@ -64,11 +54,6 @@ const Calendar = () => {
   }, []);
 
   const { errorMessage, errorTime, onError } = useApolloError();
-  const selectedActivityId = useReactiveVar(calendarActivityIdVar);
-
-  const onActivitySelect = useCallback((e: ChangeEvent<{ name?: string; value: any }>) => {
-    calendarActivityIdVar(e.target?.value);
-  }, []);
 
   const { allActivities } = useActivities({ onError, skip: !isCanRenderCalendar });
   const { data, refetch: refetchExtremes } = useGetActivitiesExtremesQuery({
@@ -79,6 +64,10 @@ const Calendar = () => {
 
   useOnEntryUpdate([refetchExtremes]);
   useOnActivityUpdate([refetchExtremes]);
+
+  const {
+    persistFilters: { activityId: selectedActivityId, ...highlightOptions }
+  } = useCalendarFilters();
 
   const selectedActivity = useMemo(() => {
     return allActivities?.find(({ _id }) => _id === selectedActivityId);
@@ -114,8 +103,10 @@ const Calendar = () => {
 
   const { renderDay } = useDatePickerRenderDayExtremes({
     onError,
+    selectedActivityId,
     selectedActivityExtremes,
     isReverseColors,
+    highlightOptions,
     skip: !isCanRenderCalendar
   });
 
@@ -142,50 +133,44 @@ const Calendar = () => {
     onChange: onDateChange
   });
 
+  const isShowDaysLegend =
+    !selectedActivity ||
+    selectedActivity.isWidget ||
+    selectedActivity?.valueType === ActivityType.Simple;
+
   return (
-    <ScreenWrapper
-      errorMessage={errorMessage}
-      errorTime={errorTime}
-      isLoading={!allActivities || !isCanRenderCalendar}
-      unmountOnHide
-    >
-      <CalendarWrapper>
-        <FormControlWrapper>
-          <FormControlStyled margin="dense">
-            <InputLabel shrink>Activity</InputLabel>
-            <Select value={selectedActivityId} onChange={onActivitySelect} displayEmpty>
-              <MenuItem value="">All</MenuItem>
-              {allActivities?.map((activity) => (
-                <MenuItem key={activity._id} value={activity._id}>
-                  <Greyscale isEnable={activity.isArchived}>
-                    {activity.emoji} {activity.name}
-                  </Greyscale>
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControlStyled>
-        </FormControlWrapper>
+    <>
+      <ScreenWrapper
+        errorMessage={errorMessage}
+        errorTime={errorTime}
+        isLoading={!allActivities || !isCanRenderCalendar}
+        unmountOnHide
+      >
+        <CalendarWrapper>
+          <MaterialCalendarWrapper>
+            {isCanRenderCalendar && <MaterialCalendar {...pickerProps} renderDay={renderDay} />}
+          </MaterialCalendarWrapper>
 
-        <MaterialCalendarWrapper>
-          {isCanRenderCalendar && <MaterialCalendar {...pickerProps} renderDay={renderDay} />}
-        </MaterialCalendarWrapper>
+          <CalendarLegendsWrapper>
+            {isShowDaysLegend ? (
+              <CalendarLegends selectedActivity={selectedActivity} />
+            ) : (
+              <ValueGradient
+                selectedActivity={selectedActivity}
+                isReverseColors={isReverseColors}
+                onReverseColors={reverseColors}
+                min={selectedActivityExtremes?.min!}
+                max={selectedActivityExtremes?.max!}
+              />
+            )}
+          </CalendarLegendsWrapper>
+        </CalendarWrapper>
+      </ScreenWrapper>
 
-        <CalendarLegendsWrapper>
-          {!selectedActivity ||
-          selectedActivity.isWidget ||
-          selectedActivity?.valueType === ActivityType.Simple ? (
-            <CalendarLegends />
-          ) : (
-            <ValueGradient
-              isReverseColors={isReverseColors}
-              onReverseColors={reverseColors}
-              min={selectedActivityExtremes?.min!}
-              max={selectedActivityExtremes?.max!}
-            />
-          )}
-        </CalendarLegendsWrapper>
-      </CalendarWrapper>
-    </ScreenWrapper>
+      <FabWrapper>
+        <CalendarFilters />
+      </FabWrapper>
+    </>
   );
 };
 

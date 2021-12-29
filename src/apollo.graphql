@@ -205,6 +205,10 @@ query GetCalendarDays($dateAfter: Date, $dateBefore: Date, $activityId: ID) {
       _id
       value
       activityId
+      hasDescription
+      hasImage
+      hasVideo
+      imageSrc
     }
   }
 }

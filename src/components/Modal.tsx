@@ -60,5 +60,5 @@ export const ModalActions = styled(DialogActions)`
 `;
 
 export const ModalSubListContainer = styled.div`
-  margin: 0 10px;
+  padding: 0 10px;
 `;

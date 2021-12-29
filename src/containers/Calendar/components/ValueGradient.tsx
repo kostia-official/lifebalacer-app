@@ -1,10 +1,13 @@
 import React, { useMemo, Fragment } from 'react';
 import styled from 'styled-components';
 import { Typography, IconButton, Tooltip } from '@material-ui/core';
-import { getColorsOfRange } from '../../helpers/color';
+import { getColorsOfRange } from '../../../helpers/color';
 import _ from 'lodash';
 import { grey } from '@material-ui/core/colors';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
+import { ActivityFragment } from '../../../generated/apollo';
+import { Emoji } from '../../../components/Emoji';
+import { FlexBox } from '../../../components/FlexBox';
 
 const Wrapper = styled.div`
   position: relative;
@@ -43,6 +46,7 @@ const SwapIcon = styled(SwapHorizIcon)`
 `;
 
 export interface ValueGradientProps {
+  selectedActivity?: ActivityFragment;
   min: number;
   max: number;
   isReverseColors: boolean;
@@ -50,6 +54,7 @@ export interface ValueGradientProps {
 }
 
 export const ValueGradient: React.FC<ValueGradientProps> = ({
+  selectedActivity,
   min,
   max,
   isReverseColors,
@@ -65,30 +70,39 @@ export const ValueGradient: React.FC<ValueGradientProps> = ({
   if (max - min < 1) return <Fragment />;
 
   return (
-    <Wrapper>
-      <ChartWrapper>
-        <Gradient colors={colors} />
-        <ExtremesWrapper>
-          {isShowOnlyExtremes ? (
-            <Fragment>
-              <Typography variant="body2">{min}</Typography>
-              <Typography variant="body2">{max}</Typography>
-            </Fragment>
-          ) : (
-            _.range(min, max + 1).map((n) => (
-              <Typography variant="body2" key={n}>
-                {Math.round(n)}
-              </Typography>
-            ))
-          )}
-        </ExtremesWrapper>
-      </ChartWrapper>
+    <FlexBox column gap={4} centerX>
+      {selectedActivity && (
+        <Typography gutterBottom>
+          <Emoji>{selectedActivity.emoji}</Emoji>
+          {selectedActivity.name} values:
+        </Typography>
+      )}
 
-      <Tooltip title="Reverse colors">
-        <IconButtonStyled onClick={() => onReverseColors(!isReverseColors)}>
-          <SwapIcon />
-        </IconButtonStyled>
-      </Tooltip>
-    </Wrapper>
+      <Wrapper>
+        <ChartWrapper>
+          <Gradient colors={colors} />
+          <ExtremesWrapper>
+            {isShowOnlyExtremes ? (
+              <Fragment>
+                <Typography variant="body2">{min}</Typography>
+                <Typography variant="body2">{max}</Typography>
+              </Fragment>
+            ) : (
+              _.range(min, max + 1).map((n) => (
+                <Typography variant="body2" key={n}>
+                  {Math.round(n)}
+                </Typography>
+              ))
+            )}
+          </ExtremesWrapper>
+        </ChartWrapper>
+
+        <Tooltip title="Reverse colors">
+          <IconButtonStyled onClick={() => onReverseColors(!isReverseColors)}>
+            <SwapIcon />
+          </IconButtonStyled>
+        </Tooltip>
+      </Wrapper>
+    </FlexBox>
   );
 };

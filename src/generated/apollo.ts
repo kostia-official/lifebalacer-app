@@ -316,6 +316,7 @@ export type GoalResult = {
   status: GoalResultStatus;
   points: Scalars['Float'];
   timesPerDuration: Scalars['Int'];
+  isArchived: Scalars['Boolean'];
 };
 
 export enum GoalResultStatus {
@@ -456,6 +457,10 @@ export type Entry = {
   description?: Maybe<Scalars['String']>;
   goalResults: Array<GoalResult>;
   goalResultsIds: Array<Maybe<Scalars['ID']>>;
+  hasDescription: Scalars['Boolean'];
+  hasImage: Scalars['Boolean'];
+  hasVideo: Scalars['Boolean'];
+  imageSrc?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   points: Scalars['Float'];
   userId: Scalars['String'];
@@ -820,7 +825,7 @@ export type GetCalendarDaysQuery = (
     & Pick<EntriesByDay, 'date' | 'points'>
     & { entries: Array<(
       { __typename?: 'Entry' }
-      & Pick<Entry, '_id' | 'value' | 'activityId'>
+      & Pick<Entry, '_id' | 'value' | 'activityId' | 'hasDescription' | 'hasImage' | 'hasVideo' | 'imageSrc'>
     )> }
   )> }
 );
@@ -1788,6 +1793,10 @@ export const GetCalendarDaysDocument = gql`
       _id
       value
       activityId
+      hasDescription
+      hasImage
+      hasVideo
+      imageSrc
     }
   }
 }

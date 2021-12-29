@@ -8,11 +8,10 @@ import {
   Radio,
   Button
 } from '@material-ui/core';
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { makeModal } from '../../../hooks/useModal';
 import { DurationType } from '../../../generated/apollo';
 import { Emoji } from '../../../components/Emoji';
-import { useGoalsResultsFilters } from '../hooks/useGoalsResultsFilters';
 import { useGoals } from '../../../hooks/apollo/useGoals';
 import { FlexBox } from '../../../components/FlexBox';
 import {
@@ -21,6 +20,7 @@ import {
   ModalActions,
   ModalSubListContainer
 } from '../../../components/Modal';
+import { useGoalsResultsFilters } from './GoalsResultsFiltersFab';
 
 export const useSelectGoalModal = makeModal();
 
@@ -28,36 +28,38 @@ export const SelectGoalModalBody: React.FC = () => {
   const { closeModal } = useSelectGoalModal();
   const { goals } = useGoals();
 
-  const { filters, setFilters, clearFilters } = useGoalsResultsFilters();
-
-  const [duration, setDuration] = useState<DurationType | undefined>(filters?.duration);
-  const [goalsIds, setGoalsIds] = useState<string[]>(filters?.goalsIds || []);
+  const {
+    applyFilters,
+    clearFilters,
+    filtersSelection: { goalsIds, duration },
+    setFiltersSelection
+  } = useGoalsResultsFilters();
 
   const apply = useCallback(() => {
-    setFilters({ duration, goalsIds });
+    applyFilters();
     closeModal();
-  }, [closeModal, duration, goalsIds, setFilters]);
+  }, [applyFilters, closeModal]);
 
   const clearAll = useCallback(() => {
     clearFilters();
-    setDuration(undefined);
-    setGoalsIds([]);
     closeModal();
   }, [clearFilters, closeModal]);
 
   const selectGoal = (_id: string) => () => {
-    setGoalsIds((prev) =>
-      prev.includes(_id) ? prev.filter((prevId) => prevId !== _id) : [...prev, _id]
-    );
+    setFiltersSelection((prev) => ({
+      goalsIds: prev.goalsIds.includes(_id)
+        ? prev.goalsIds.filter((prevId) => prevId !== _id)
+        : [...prev.goalsIds, _id]
+    }));
   };
 
   const selectDuration = (durationType: DurationType) => () => {
-    setDuration(durationType);
+    setFiltersSelection({ duration: durationType });
   };
 
   return (
     <>
-      <ModalTitle onClose={closeModal}>Filters</ModalTitle>
+      <ModalTitle onClose={closeModal}>Options</ModalTitle>
 
       <ModalContent dividers>
         <List>

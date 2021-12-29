@@ -154,6 +154,9 @@ type Entry {
   value: Float
   goalResultsIds: [ID]!
   goalResults: [GoalResult!]!
+  hasDescription: Boolean!
+  hasImage: Boolean!
+  hasVideo: Boolean!
 }
 
 type EntryMissing {
@@ -192,6 +195,7 @@ type GoalResult {
   status: GoalResultStatus!
   points: Float!
   timesPerDuration: Int!
+  isArchived: Boolean!
 }
 
 enum GoalResultStatus {
