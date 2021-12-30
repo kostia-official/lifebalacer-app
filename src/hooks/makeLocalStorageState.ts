@@ -4,9 +4,13 @@ import { LocalStorageHelper } from '../helpers/localStorageHelper';
 
 export type SetterCb<T> = (prev: T) => T;
 
-export const makeLocalStorageState = <T>(key: string, defaultValue: T) => {
+export const makeLocalStorageState = <T extends object>(key: string, defaultValue: T) => {
   const localStorageHelper = new LocalStorageHelper<T>(key, defaultValue);
-  const reactiveVar = makeVar<T>(localStorageHelper.get() || defaultValue);
+
+  const initialValue = { ...defaultValue, ...localStorageHelper.get() };
+
+  localStorageHelper.set(initialValue);
+  const reactiveVar = makeVar<T>(initialValue);
 
   return (): [T, (newValue: T | SetterCb<T>) => void, () => void] => {
     const value = useReactiveVar(reactiveVar);
