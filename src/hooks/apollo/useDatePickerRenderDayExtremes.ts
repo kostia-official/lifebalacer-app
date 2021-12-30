@@ -11,7 +11,7 @@ import { getColorFromPoints, getColorInGradient } from '../../helpers/color';
 import { useOnEntryUpdate } from '../useOnEntryUpdate';
 import _ from 'lodash';
 import { useDatePickerRenderDay } from './useDatePickerRenderDay';
-import { CalendarHighlightOptions } from '../../containers/Calendar/components/CalendarFilters/hooks/useCalendarFilters';
+import { CalendarHighlightOptionsData } from '../../containers/Calendar/components/CalendarOptions/hooks/useCalendarOptions';
 
 export interface UseDatePickerRenderDayProps {
   onError?: (error: ApolloError) => void;
@@ -19,13 +19,13 @@ export interface UseDatePickerRenderDayProps {
   selectedActivityExtremes?: ActivityExtremes;
   isReverseColors?: boolean;
   activityId?: string;
-  highlightOptions?: CalendarHighlightOptions;
+  highlightOptions?: CalendarHighlightOptionsData;
   skip?: boolean;
 }
 
 export interface DayPayload {
   color: string;
-  highlightResults: CalendarHighlightOptions;
+  highlightResults: CalendarHighlightOptionsData;
   imageSrc?: string | null;
 }
 

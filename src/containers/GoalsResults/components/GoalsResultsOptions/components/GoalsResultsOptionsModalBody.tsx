@@ -9,44 +9,44 @@ import {
   Button
 } from '@material-ui/core';
 import React, { useCallback } from 'react';
-import { makeModal } from '../../../hooks/useModal';
-import { DurationType } from '../../../generated/apollo';
-import { Emoji } from '../../../components/Emoji';
-import { useGoals } from '../../../hooks/apollo/useGoals';
-import { FlexBox } from '../../../components/FlexBox';
+import { makeModal } from '../../../../../hooks/useModal';
+import { DurationType } from '../../../../../generated/apollo';
+import { Emoji } from '../../../../../components/Emoji';
+import { useGoals } from '../../../../../hooks/apollo/useGoals';
+import { FlexBox } from '../../../../../components/FlexBox';
 import {
   ModalTitle,
   ModalContent,
   ModalActions,
   ModalSubListContainer
-} from '../../../components/Modal';
-import { useGoalsResultsFilters } from './GoalsResultsFiltersFab';
+} from '../../../../../components/Modal';
+import { useGoalsResultsOptions } from '../GoalsResultsOptions';
 
 export const useSelectGoalModal = makeModal();
 
-export const SelectGoalModalBody: React.FC = () => {
+export const GoalsResultsOptionsModalBody: React.FC = () => {
   const { closeModal } = useSelectGoalModal();
   const { goals } = useGoals();
 
   const {
-    applyFilters,
-    clearFilters,
-    filtersSelection: { goalsIds, duration },
-    setFiltersSelection
-  } = useGoalsResultsFilters();
+    applyOptions,
+    clearOptions,
+    selectedOptions: { goalsIds, duration },
+    setSelectedOptions
+  } = useGoalsResultsOptions();
 
   const apply = useCallback(() => {
-    applyFilters();
+    applyOptions();
     closeModal();
-  }, [applyFilters, closeModal]);
+  }, [applyOptions, closeModal]);
 
   const clearAll = useCallback(() => {
-    clearFilters();
+    clearOptions();
     closeModal();
-  }, [clearFilters, closeModal]);
+  }, [clearOptions, closeModal]);
 
   const selectGoal = (_id: string) => () => {
-    setFiltersSelection((prev) => ({
+    setSelectedOptions((prev) => ({
       goalsIds: prev.goalsIds.includes(_id)
         ? prev.goalsIds.filter((prevId) => prevId !== _id)
         : [...prev.goalsIds, _id]
@@ -54,7 +54,7 @@ export const SelectGoalModalBody: React.FC = () => {
   };
 
   const selectDuration = (durationType: DurationType) => () => {
-    setFiltersSelection({ duration: durationType });
+    setSelectedOptions({ duration: durationType });
   };
 
   return (

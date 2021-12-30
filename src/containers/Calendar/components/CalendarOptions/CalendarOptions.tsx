@@ -1,16 +1,16 @@
 import React from 'react';
 import { Modal } from '../../../../components/Modal';
 import {
-  CalendarFiltersModalBody,
+  CalendarOptionsModalBody,
   useCalendarFiltersModal
-} from './components/CalendarFiltersModalBody';
+} from './components/CalendarOptionsModalBody';
 import { useActivities } from '../../../../hooks/apollo/useActivities';
 import { OptionsFabButton } from '../../../../components/OptionsFabButton';
-import { useCalendarFilters } from './hooks/useCalendarFilters';
+import { useCalendarOptions } from './hooks/useCalendarOptions';
 
-export const CalendarFilters: React.FC = () => {
+export const CalendarOptions: React.FC = () => {
   const { openModal, open, closeModal } = useCalendarFiltersModal();
-  const { count } = useCalendarFilters();
+  const { count } = useCalendarOptions();
   const { allActivities } = useActivities();
 
   return (
@@ -18,7 +18,7 @@ export const CalendarFilters: React.FC = () => {
       <OptionsFabButton onClick={openModal} count={count} />
 
       <Modal onClose={closeModal} open={open}>
-        {open && allActivities && <CalendarFiltersModalBody allActivities={allActivities} />}
+        {open && allActivities && <CalendarOptionsModalBody allActivities={allActivities} />}
       </Modal>
     </>
   );

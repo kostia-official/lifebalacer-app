@@ -21,8 +21,8 @@ import { toLuxon } from '../../helpers/date';
 import { useRoute } from '@react-navigation/native';
 import { InteractionManager } from 'react-native';
 import { FabWrapper } from '../../components/FabWrapper';
-import { useCalendarFilters } from './components/CalendarFilters/hooks/useCalendarFilters';
-import { CalendarFilters } from './components/CalendarFilters/CalendarFilters';
+import { useCalendarOptions } from './components/CalendarOptions/hooks/useCalendarOptions';
+import { CalendarOptions } from './components/CalendarOptions/CalendarOptions';
 
 const CalendarWrapper = styled.div`
   overflow: hidden;
@@ -66,8 +66,8 @@ const Calendar = () => {
   useOnActivityUpdate([refetchExtremes]);
 
   const {
-    persistFilters: { activityId: selectedActivityId, ...highlightOptions }
-  } = useCalendarFilters();
+    persistOptions: { activityId: selectedActivityId, ...highlightOptions }
+  } = useCalendarOptions();
 
   const selectedActivity = useMemo(() => {
     return allActivities?.find(({ _id }) => _id === selectedActivityId);
@@ -168,7 +168,7 @@ const Calendar = () => {
       </ScreenWrapper>
 
       <FabWrapper>
-        <CalendarFilters />
+        <CalendarOptions />
       </FabWrapper>
     </>
   );

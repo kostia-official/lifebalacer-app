@@ -1,17 +1,17 @@
-import { makePersistFilters } from '../../../../../hooks/makePersistFilters';
+import { makePersistOptions } from '../../../../../hooks/makePersistOptions';
 
-export interface CalendarHighlightOptions {
+export interface CalendarHighlightOptionsData {
   isHighlightWithDescription: boolean;
   isHighlightWithImage: boolean;
   isHighlightWithVideo: boolean;
 }
 
-export interface CalendarFilters extends CalendarHighlightOptions {
+export interface CalendarOptionsData extends CalendarHighlightOptionsData {
   activityId?: string;
 }
 
-export const useCalendarFilters = makePersistFilters<CalendarFilters>(
-  'calendarFilters',
+export const useCalendarOptions = makePersistOptions<CalendarOptionsData>(
+  'calendarOptions',
   {
     activityId: undefined,
     isHighlightWithDescription: true,

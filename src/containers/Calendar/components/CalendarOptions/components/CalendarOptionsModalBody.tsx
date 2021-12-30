@@ -19,7 +19,7 @@ import {
   Select
 } from '@material-ui/core';
 import { Greyscale } from '../../../../../components/Greyscale';
-import { useCalendarFilters, CalendarHighlightOptions } from '../hooks/useCalendarFilters';
+import { useCalendarOptions, CalendarHighlightOptionsData } from '../hooks/useCalendarOptions';
 
 export interface CalendarFiltersModalBodyProps {
   allActivities: ActivityFragment[];
@@ -27,7 +27,7 @@ export interface CalendarFiltersModalBodyProps {
 
 export const useCalendarFiltersModal = makeModal();
 
-const highlightDaysItems: { optionKey: keyof CalendarHighlightOptions; label: string }[] = [
+const highlightDaysItems: { optionKey: keyof CalendarHighlightOptionsData; label: string }[] = [
   { optionKey: 'isHighlightWithDescription', label: 'Show days with descriptions' },
   { optionKey: 'isHighlightWithImage', label: 'Show days with images' },
   { optionKey: 'isHighlightWithVideo', label: 'Show days with videos' }
@@ -39,40 +39,35 @@ interface ActivityItem {
   activityId?: string;
 }
 
-export const CalendarFiltersModalBody: React.FC<CalendarFiltersModalBodyProps> = ({
+export const CalendarOptionsModalBody: React.FC<CalendarFiltersModalBodyProps> = ({
   allActivities
 }) => {
   const { closeModal } = useCalendarFiltersModal();
 
-  const {
-    filtersSelection,
-    applyFilters,
-    setFiltersSelection,
-    clearFilters
-  } = useCalendarFilters();
+  const { selectedOptions, applyOptions, setSelectedOptions, clearOptions } = useCalendarOptions();
 
   const apply = useCallback(() => {
-    applyFilters();
+    applyOptions();
     closeModal();
-  }, [applyFilters, closeModal]);
+  }, [applyOptions, closeModal]);
 
   const clearAll = useCallback(() => {
-    clearFilters();
+    clearOptions();
     closeModal();
-  }, [clearFilters, closeModal]);
+  }, [clearOptions, closeModal]);
 
   const toggleHighlightOption = useCallback(
-    (optionKey: keyof CalendarHighlightOptions) => () => {
-      setFiltersSelection((prev) => ({ [optionKey]: !prev[optionKey] }));
+    (optionKey: keyof CalendarHighlightOptionsData) => () => {
+      setSelectedOptions((prev) => ({ [optionKey]: !prev[optionKey] }));
     },
-    [setFiltersSelection]
+    [setSelectedOptions]
   );
 
   const setActivityId = useCallback(
     (activityId: string | undefined) => () => {
-      setFiltersSelection({ activityId });
+      setSelectedOptions({ activityId });
     },
-    [setFiltersSelection]
+    [setSelectedOptions]
   );
 
   const activitiesItems: ActivityItem[] = useMemo(() => {
@@ -96,7 +91,7 @@ export const CalendarFiltersModalBody: React.FC<CalendarFiltersModalBodyProps> =
 
           <ModalSubListContainer>
             <ListItem>
-              <Select value={filtersSelection.activityId} displayEmpty fullWidth variant="outlined">
+              <Select value={selectedOptions.activityId} displayEmpty fullWidth variant="outlined">
                 {activitiesItems?.map(({ activityId, label, isArchived }, i) => (
                   <MenuItem key={i} value={activityId} onClick={setActivityId(activityId)}>
                     <Greyscale isEnable={isArchived}>{label}</Greyscale>
@@ -112,7 +107,7 @@ export const CalendarFiltersModalBody: React.FC<CalendarFiltersModalBodyProps> =
 
           <ModalSubListContainer>
             {highlightDaysItems.map(({ label, optionKey }, i) => {
-              const optionValue = filtersSelection[optionKey];
+              const optionValue = selectedOptions[optionKey];
 
               return (
                 <ListItem key={i} button onClick={toggleHighlightOption(optionKey)}>

@@ -17,9 +17,9 @@ import { getGoalDurationDates } from '../../helpers/goal';
 import { GoalsResultsGroupCard } from './components/GoalsResultsGroupCard';
 import { FabWrapper } from '../../components/FabWrapper';
 import {
-  GoalsResultsFiltersFab,
-  useGoalsResultsFilters
-} from './components/GoalsResultsFiltersFab';
+  GoalsResultsOptions,
+  useGoalsResultsOptions
+} from './components/GoalsResultsOptions/GoalsResultsOptions';
 import { DateTime } from 'luxon';
 
 const scrollTargetId = 'goals-results-wrapper';
@@ -38,7 +38,7 @@ const GoalsResults = () => {
 
   const currentDate = DateTime.local().endOf('day').toISO();
 
-  const { persistFilters } = useGoalsResultsFilters();
+  const { persistOptions } = useGoalsResultsOptions();
 
   const { data, isHasMore, loadMore } = useInfiniteQuery<
     GetGoalsResultsQuery,
@@ -47,8 +47,8 @@ const GoalsResults = () => {
     onError,
     field: 'goalsResults',
     variables: {
-      durationType: persistFilters.duration,
-      goalsIds: persistFilters.goalsIds,
+      durationType: persistOptions.duration,
+      goalsIds: persistOptions.goalsIds,
       limit,
       dateAfter: currentDate
     },
@@ -113,7 +113,7 @@ const GoalsResults = () => {
       </ScreenWrapper>
 
       <FabWrapper>
-        <GoalsResultsFiltersFab />
+        <GoalsResultsOptions />
       </FabWrapper>
     </>
   );
