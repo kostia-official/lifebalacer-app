@@ -93,7 +93,7 @@ export const JournalOptionsModalBody: React.FC<JournalOptionsModalBodyProps> = (
               </ListItemSecondaryAction>
             </ListItem>
 
-            <ListItem button onClick={toggleMediaOption('isWithImages')}>
+            <ListItem button onClick={toggleMediaOption('isWithVideos')}>
               <ListItemText primary="Videos" />
               <ListItemSecondaryAction>
                 <Checkbox
