@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { makeModal } from '../../../../../hooks/useModal';
-import { DurationType, ActivityFragment } from '../../../../../generated/apollo';
+import { ActivityFragment } from '../../../../../generated/apollo';
 import {
   ModalTitle,
   ModalContent,
@@ -14,12 +14,10 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   Button,
-  Switch,
-  MenuItem,
-  Select
+  Switch
 } from '@material-ui/core';
-import { Greyscale } from '../../../../../components/Greyscale';
 import { useCalendarOptions, CalendarHighlightOptionsData } from '../hooks/useCalendarOptions';
+import { ActivitySelect } from '../../../../../components/ActivitySelect';
 
 export interface CalendarFiltersModalBodyProps {
   allActivities: ActivityFragment[];
@@ -32,12 +30,6 @@ const highlightDaysItems: { optionKey: keyof CalendarHighlightOptionsData; label
   { optionKey: 'isHighlightWithImage', label: 'Show days with images' },
   { optionKey: 'isHighlightWithVideo', label: 'Show days with videos' }
 ];
-
-interface ActivityItem {
-  label: string;
-  isArchived?: boolean;
-  activityId?: string;
-}
 
 export const CalendarOptionsModalBody: React.FC<CalendarFiltersModalBodyProps> = ({
   allActivities
@@ -63,23 +55,9 @@ export const CalendarOptionsModalBody: React.FC<CalendarFiltersModalBodyProps> =
     [setSelectedOptions]
   );
 
-  const setActivityId = useCallback(
-    (activityId: string | undefined) => () => {
-      setSelectedOptions({ activityId });
-    },
-    [setSelectedOptions]
-  );
-
-  const activitiesItems: ActivityItem[] = useMemo(() => {
-    return [
-      { label: 'All' },
-      ...allActivities.map(({ _id, emoji, name, isArchived }) => ({
-        isArchived,
-        activityId: _id,
-        label: `${emoji} ${name}`
-      }))
-    ];
-  }, [allActivities]);
+  const setActivityId = (activityId: string | undefined) => {
+    setSelectedOptions({ activityId });
+  };
 
   return (
     <>
@@ -91,13 +69,11 @@ export const CalendarOptionsModalBody: React.FC<CalendarFiltersModalBodyProps> =
 
           <ModalSubListContainer>
             <ListItem>
-              <Select value={selectedOptions.activityId} displayEmpty fullWidth variant="outlined">
-                {activitiesItems?.map(({ activityId, label, isArchived }, i) => (
-                  <MenuItem key={i} value={activityId} onClick={setActivityId(activityId)}>
-                    <Greyscale isEnable={isArchived}>{label}</Greyscale>
-                  </MenuItem>
-                ))}
-              </Select>
+              <ActivitySelect
+                value={selectedOptions.activityId}
+                activities={allActivities}
+                onSelect={setActivityId}
+              />
             </ListItem>
           </ModalSubListContainer>
         </List>
@@ -116,7 +92,6 @@ export const CalendarOptionsModalBody: React.FC<CalendarFiltersModalBodyProps> =
                     <Switch
                       edge="end"
                       color="primary"
-                      value={DurationType.Week}
                       checked={optionValue}
                       onChange={toggleHighlightOption(optionKey)}
                     />

@@ -1,12 +1,10 @@
 import React from 'react';
-import {
-  useSelectGoalModal,
-  GoalsResultsOptionsModalBody
-} from './components/GoalsResultsOptionsModalBody';
+import { GoalsResultsOptionsModalBody } from './components/GoalsResultsOptionsModalBody';
 import { Modal } from '../../../../components/Modal';
 import { OptionsFabButton } from '../../../../components/OptionsFabButton';
 import { DurationType } from '../../../../generated/apollo';
 import { makePersistOptions } from '../../../../hooks/makePersistOptions';
+import { makeModal } from '../../../../hooks/useModal';
 
 export interface GoalsResultsOptionsData {
   duration?: DurationType;
@@ -21,8 +19,10 @@ export const useGoalsResultsOptions = makePersistOptions<GoalsResultsOptionsData
   }
 );
 
+export const useGoalsResultsOptionsModal = makeModal();
+
 export const GoalsResultsOptions: React.FC = () => {
-  const { openModal, open, closeModal } = useSelectGoalModal();
+  const { openModal, open, closeModal } = useGoalsResultsOptionsModal();
   const { count } = useGoalsResultsOptions();
 
   return (

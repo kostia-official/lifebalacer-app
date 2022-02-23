@@ -9,7 +9,6 @@ import {
   Button
 } from '@material-ui/core';
 import React, { useCallback } from 'react';
-import { makeModal } from '../../../../../hooks/useModal';
 import { DurationType } from '../../../../../generated/apollo';
 import { Emoji } from '../../../../../components/Emoji';
 import { useGoals } from '../../../../../hooks/apollo/useGoals';
@@ -20,12 +19,10 @@ import {
   ModalActions,
   ModalSubListContainer
 } from '../../../../../components/Modal';
-import { useGoalsResultsOptions } from '../GoalsResultsOptions';
-
-export const useSelectGoalModal = makeModal();
+import { useGoalsResultsOptions, useGoalsResultsOptionsModal } from '../GoalsResultsOptions';
 
 export const GoalsResultsOptionsModalBody: React.FC = () => {
-  const { closeModal } = useSelectGoalModal();
+  const { closeModal } = useGoalsResultsOptionsModal();
   const { goals } = useGoals();
 
   const {

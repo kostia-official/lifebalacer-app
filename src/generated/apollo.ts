@@ -109,6 +109,8 @@ export type QueryJournalArgs = {
   dateAfter?: Maybe<Scalars['Date']>;
   daysLimit: Scalars['Int'];
   activities?: Maybe<Array<Scalars['String']>>;
+  isWithImages?: Maybe<Scalars['Boolean']>;
+  isWithVideos?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -796,6 +798,8 @@ export type GetJournalQueryVariables = Exact<{
   dateAfter?: Maybe<Scalars['Date']>;
   daysLimit: Scalars['Int'];
   activities?: Maybe<Array<Scalars['String']> | Scalars['String']>;
+  isWithImages?: Maybe<Scalars['Boolean']>;
+  isWithVideos?: Maybe<Scalars['Boolean']>;
 }>;
 
 
@@ -1735,8 +1739,14 @@ export function refetchGetEntriesByDayQuery(variables?: GetEntriesByDayQueryVari
       return { query: GetEntriesByDayDocument, variables: variables }
     }
 export const GetJournalDocument = gql`
-    query GetJournal($dateAfter: Date, $daysLimit: Int!, $activities: [String!]) {
-  journal(dateAfter: $dateAfter, daysLimit: $daysLimit, activities: $activities) {
+    query GetJournal($dateAfter: Date, $daysLimit: Int!, $activities: [String!], $isWithImages: Boolean, $isWithVideos: Boolean) {
+  journal(
+    dateAfter: $dateAfter
+    daysLimit: $daysLimit
+    activities: $activities
+    isWithImages: $isWithImages
+    isWithVideos: $isWithVideos
+  ) {
     date
     points
     entries {
@@ -1765,6 +1775,8 @@ export const GetJournalDocument = gql`
  *      dateAfter: // value for 'dateAfter'
  *      daysLimit: // value for 'daysLimit'
  *      activities: // value for 'activities'
+ *      isWithImages: // value for 'isWithImages'
+ *      isWithVideos: // value for 'isWithVideos'
  *   },
  * });
  */

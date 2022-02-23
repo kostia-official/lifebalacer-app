@@ -24,6 +24,8 @@ import { ScreenWrapper } from '../App/ScreenWrapper';
 import { sanitizeHtml } from '../../helpers/sanitizeHtml';
 import { desktopStyles } from '../../common/breakpoints';
 import { BackgroundColor } from '../../common/colors';
+import { FabWrapper } from '../../components/FabWrapper';
+import { JournalOptions, useJournalOptions } from './components/JournalOptions/JournalOptions';
 
 const ActivityTitle = styled(Typography)`
   display: flex;
@@ -102,6 +104,11 @@ const Journal = () => {
 
   const { getActivityById, allActivities } = useActivities({ onError });
 
+  const {
+    persistOptions: { activityId, isWithImages, isWithVideos }
+  } = useJournalOptions();
+  const optionalActivitiesVariable = activityId ? { activities: [activityId] } : {};
+
   const { data, isHasMore, loadMore, refetch } = useInfiniteQuery<
     GetJournalQuery,
     GetJournalQueryVariables
@@ -109,11 +116,17 @@ const Journal = () => {
     onError,
     field: 'journal',
     variables: {
-      daysLimit
+      daysLimit,
+      isWithImages,
+      isWithVideos,
+      ...optionalActivitiesVariable
     },
     fetchMoreVariables: (data) => ({
+      daysLimit,
+      isWithImages,
+      isWithVideos,
       ...getDayQueryVariables(_.last(data.journal)?.date),
-      daysLimit
+      ...optionalActivitiesVariable
     })
   });
 
@@ -131,55 +144,61 @@ const Journal = () => {
   const isLoading = !journal || !allActivities;
 
   return (
-    <ScreenWrapper
-      id={scrollTargetId}
-      errorMessage={errorMessage}
-      errorTime={errorTime}
-      isLoading={isLoading}
-    >
-      {journal?.length === 0 ? (
-        <EmptyState text="So far no entries with description..." />
-      ) : (
-        <InfiniteScroll
-          dataLength={journal?.length ?? 0}
-          next={loadMore}
-          loader={<Spinner />}
-          hasMore={isHasMore}
-          scrollableTarget={scrollTargetId}
-        >
-          {journal?.map((day) => {
-            return (
-              <DayCard key={day.date} day={day} onClick={onDayClick}>
-                <DayContent>
-                  {day.entries.map((entry) => {
-                    const activity = getActivityById(entry.activityId);
+    <>
+      <ScreenWrapper
+        id={scrollTargetId}
+        errorMessage={errorMessage}
+        errorTime={errorTime}
+        isLoading={isLoading}
+      >
+        {journal?.length === 0 ? (
+          <EmptyState text="So far no entries with description..." />
+        ) : (
+          <InfiniteScroll
+            dataLength={journal?.length ?? 0}
+            next={loadMore}
+            loader={<Spinner />}
+            hasMore={isHasMore}
+            scrollableTarget={scrollTargetId}
+          >
+            {journal?.map((day) => {
+              return (
+                <DayCard key={day.date} day={day} onClick={onDayClick}>
+                  <DayContent>
+                    {day.entries.map((entry) => {
+                      const activity = getActivityById(entry.activityId);
 
-                    return (
-                      <Fragment key={entry._id}>
-                        <ActivityTitle>
-                          <Emoji>{activity?.emoji}</Emoji>
-                          {getEntryLabel({ entry, activity })}
-                        </ActivityTitle>
+                      return (
+                        <Fragment key={entry._id}>
+                          <ActivityTitle>
+                            <Emoji>{activity?.emoji}</Emoji>
+                            {getEntryLabel({ entry, activity })}
+                          </ActivityTitle>
 
-                        <Description variant="body2">
-                          {entry.description && (
-                            <CKEditorContent
-                              dangerouslySetInnerHTML={{
-                                __html: sanitizeHtml(entry.description)
-                              }}
-                            />
-                          )}
-                        </Description>
-                      </Fragment>
-                    );
-                  })}
-                </DayContent>
-              </DayCard>
-            );
-          })}
-        </InfiniteScroll>
-      )}
-    </ScreenWrapper>
+                          <Description variant="body2">
+                            {entry.description && (
+                              <CKEditorContent
+                                dangerouslySetInnerHTML={{
+                                  __html: sanitizeHtml(entry.description)
+                                }}
+                              />
+                            )}
+                          </Description>
+                        </Fragment>
+                      );
+                    })}
+                  </DayContent>
+                </DayCard>
+              );
+            })}
+          </InfiniteScroll>
+        )}
+      </ScreenWrapper>
+
+      <FabWrapper>
+        <JournalOptions />
+      </FabWrapper>
+    </>
   );
 };
 
