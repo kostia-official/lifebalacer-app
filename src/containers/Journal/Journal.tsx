@@ -105,7 +105,8 @@ const Journal = () => {
   const { getActivityById, allActivities } = useActivities({ onError });
 
   const {
-    persistOptions: { activityId, isWithImages, isWithVideos }
+    persistOptions: { activityId, isWithImages, isWithVideos },
+    isInitialOptions
   } = useJournalOptions();
   const optionalActivitiesVariable = activityId ? { activities: [activityId] } : {};
 
@@ -152,7 +153,9 @@ const Journal = () => {
         isLoading={isLoading}
       >
         {journal?.length === 0 ? (
-          <EmptyState text="So far no entries with description..." />
+          <EmptyState
+            text={isInitialOptions ? 'So far no entries with description...' : 'No entries found'}
+          />
         ) : (
           <InfiniteScroll
             dataLength={journal?.length ?? 0}

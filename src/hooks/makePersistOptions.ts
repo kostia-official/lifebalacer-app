@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useSetState } from 'react-use';
 import { makeLocalStorageState } from './makeLocalStorageState';
+import { isDeepEqual } from '../helpers/object';
 
 export interface Options<T> {
   ignoreCountIncrementFields?: T[];
@@ -37,13 +38,16 @@ export const makePersistOptions = <T extends object>(
       setSelectedOptions(initialData);
     }, [setSelectedOptions, setPersistOptions]);
 
+    const isInitialOptions = isDeepEqual(initialData, persistOptions);
+
     return {
       selectedOptions,
       setSelectedOptions,
       persistOptions,
       applyOptions,
       clearOptions,
-      count
+      count,
+      isInitialOptions
     };
   };
 };

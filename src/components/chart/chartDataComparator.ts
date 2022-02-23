@@ -1,4 +1,5 @@
 import { ChartData } from '../../common/types';
+import { isDeepEqual } from '../../helpers/object';
 
 interface Props {
   data: ChartData[];
@@ -13,5 +14,5 @@ export const chartDataComparator = <T extends Props>(
   if (prevData[0]?.yValue !== nextData[0]?.yValue) return false;
 
   // Rerender only if content was changed, otherwise don't show change transition
-  return JSON.stringify(prevData) === JSON.stringify(nextData);
+  return isDeepEqual(prevData, nextData);
 };
