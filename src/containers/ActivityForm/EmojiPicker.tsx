@@ -5,6 +5,7 @@ import { Picker } from 'emoji-mart';
 import styled from 'styled-components';
 import useOnclickOutside from 'react-cool-onclickoutside';
 import { Showable } from '../../components/Showable';
+import { emojiSet } from '../../components/Emoji';
 
 const EmojiPickerWrapper = styled.div`
   z-index: 500;
@@ -47,7 +48,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = React.memo(
               useButton={false}
               onSelect={onPick}
               style={{ position: 'absolute', right: 0 }}
-              native={true}
+              set={emojiSet}
             />
           </EmojiPickerWrapper>
         </Showable>
