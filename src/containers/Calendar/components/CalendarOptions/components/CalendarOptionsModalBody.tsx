@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { makeModal } from '../../../../../hooks/useModal';
+import { makeModal } from '../../../../../hooks/makeModal';
 import { ActivityFragment } from '../../../../../generated/apollo';
 import {
   ModalTitle,

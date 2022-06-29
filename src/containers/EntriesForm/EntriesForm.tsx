@@ -65,7 +65,6 @@ const EntriesForm = () => {
 
     setIsModalOpen(false);
     setIsForceDescription(false);
-    setTimeout(() => setModalEntry(null), 500);
   }, [isFileUploading]);
 
   const openModal = useCallback((entry: EntryModalData) => {

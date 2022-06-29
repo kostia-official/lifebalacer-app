@@ -3,7 +3,7 @@ import { makePersistOptions } from '../../../../hooks/makePersistOptions';
 import { OptionsFabButton } from '../../../../components/OptionsFabButton';
 import { Modal } from '../../../../components/Modal';
 import { JournalOptionsModalBody } from './components/JournalOptionsModalBody';
-import { makeModal } from '../../../../hooks/useModal';
+import { makeModal } from '../../../../hooks/makeModal';
 import { useActivities } from '../../../../hooks/apollo/useActivities';
 
 export interface JournalMediaOptionsData {

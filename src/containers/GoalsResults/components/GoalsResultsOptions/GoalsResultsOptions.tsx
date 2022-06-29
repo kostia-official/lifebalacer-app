@@ -4,7 +4,7 @@ import { Modal } from '../../../../components/Modal';
 import { OptionsFabButton } from '../../../../components/OptionsFabButton';
 import { DurationType } from '../../../../generated/apollo';
 import { makePersistOptions } from '../../../../hooks/makePersistOptions';
-import { makeModal } from '../../../../hooks/useModal';
+import { makeModal } from '../../../../hooks/makeModal';
 
 export interface GoalsResultsOptionsData {
   duration?: DurationType;

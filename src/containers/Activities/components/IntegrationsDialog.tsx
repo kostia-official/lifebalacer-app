@@ -9,7 +9,7 @@ import {
   Chip
 } from '@material-ui/core';
 import React from 'react';
-import { makeModal } from '../../../hooks/useModal';
+import { makeModal } from '../../../hooks/makeModal';
 import { Icon } from '@iconify/react';
 import todoistIconColor from '@iconify/icons-logos/todoist-icon';
 import googleFit from '@iconify/icons-logos/google-fit';
