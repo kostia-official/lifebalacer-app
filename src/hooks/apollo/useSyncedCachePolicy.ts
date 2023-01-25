@@ -18,3 +18,22 @@ export const useSyncedCachePolicy = (): HookResult => {
 
   return { fetchPolicy: isCalled ? 'cache-first' : 'cache-and-network', onCompleted };
 };
+
+export const useGetSyncedCachePolicy = () => {
+  const [isCalled, setIsCalled] = useIsCalled();
+
+  const getSyncedCachePolicy = useCallback(
+    ({ onCompleted }: { onCompleted?: () => void } = {}): HookResult => {
+      return {
+        fetchPolicy: isCalled ? 'cache-first' : 'cache-and-network',
+        onCompleted: () => {
+          setIsCalled(true);
+          onCompleted?.();
+        }
+      };
+    },
+    [isCalled, setIsCalled]
+  );
+
+  return { getSyncedCachePolicy };
+};

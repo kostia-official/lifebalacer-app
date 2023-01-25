@@ -25,7 +25,6 @@ yarn-error.log*
 # Local Netlify folder
 .netlify
 
-public/firebase-messaging-sw.js
 .eslintcache
 
 # Intermediate generated data

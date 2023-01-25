@@ -14,9 +14,9 @@ export const GoalsResultsIcons: React.FC<GoalsResultsIconsProps> = ({ goalResult
 
   return (
     <>
-      {goalResults?.map(({ status }) =>
+      {goalResults?.map(({ status, _id }) =>
         status === GoalResultStatus.Completed ? (
-          <Zoom in appear={isMounted()}>
+          <Zoom in appear={isMounted()} key={_id}>
             <Icon icon={goalIcon} width={16} />
           </Zoom>
         ) : null

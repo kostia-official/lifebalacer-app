@@ -1,27 +1,30 @@
-import firebase from 'firebase/app';
+import { initializeApp } from 'firebase/app';
+import { getMessaging, getToken, isSupported as getIsSupported } from 'firebase/messaging';
 
-import 'firebase/messaging';
 import { config } from '../common/config';
+import { Messaging } from 'firebase/messaging';
 
 class Push {
-  private readonly messaging: firebase.messaging.Messaging | undefined;
-  public readonly isSupported: boolean;
+  private readonly messaging: Messaging;
 
   constructor(config: object) {
-    firebase.initializeApp(config);
+    const app = initializeApp(config);
 
-    this.isSupported = firebase.messaging.isSupported();
-
-    if (this.isSupported) {
-      this.messaging = firebase.messaging();
-    }
+    this.messaging = getMessaging(app);
   }
 
   async getToken(): Promise<string | null> {
-    if (!this.isSupported || !this.messaging) return null;
+    const serviceWorkerRegistration = await navigator.serviceWorker.register(
+      '/firebase-messaging-sw.js'
+    );
+    const isSupported = await getIsSupported();
+    if (!this.messaging || !isSupported) return null;
 
     try {
-      return await this.messaging.getToken({ vapidKey: config.firebase.vapidKey });
+      return await getToken(this.messaging, {
+        vapidKey: config.firebase.vapidKey,
+        serviceWorkerRegistration
+      });
     } catch (err) {
       return null;
     }
