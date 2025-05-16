@@ -36,3 +36,4 @@ gradle/wrapper/gradle-wrapper.jar
 android.keystore
 app-release*
 local.properties
+.firebase

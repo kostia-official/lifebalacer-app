@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "lifebalancer-prod",
+    "production": "lifebalancer-prod"
+  }
+}
